@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>StampedLock :: 黄昏现白骨 — Just a normal blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="JDK1.8新增的并发工具，回顾之前的ReentrentReadWriteLock，它是悲观锁的实现：只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）。
+而StampedLock是乐观锁的实现，乐观读的时候不加锁，读取后发现数据改变了再升级为悲观读，此时与写互斥。
+@Slf4j public class StampedLockTest { private static final StampedLock LOCK = new StampedLock(); private static int x, y; static void add() { long stamp = LOCK.writeLock(); try { x &#43;= 1; y &#43;= 1; } finally { LOCK.unlockWrite(stamp); } } static void print() { // 尝试乐观读  long stamp = LOCK.tryOptimisticRead(); int currentX = x， currentY = y; // 如果stamp修改了，这时再加悲观读锁  if (!LOCK.validate(stamp)) { log.info(&amp;#34;value has changed ...&amp;#34;); stamp = LOCK."/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://xiaokexiang.github.io/post/stampedlock/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="StampedLock"/>
+<meta name="twitter:description" content="为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋&#43;CAS`、`类似AQS`的逻辑实现"/>
+
+
+
+<meta property="og:title" content="StampedLock" />
+<meta property="og:description" content="为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋&#43;CAS`、`类似AQS`的逻辑实现" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiaokexiang.github.io/post/stampedlock/" />
+<meta property="article:published_time" content="2020-07-01T10:32:01+08:00" />
+<meta property="article:modified_time" content="2020-07-01T10:32:01+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/stampedlock/">StampedLock</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-07-01
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/stampedlock/">StampedLock </a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <p><code>JDK1.8</code>新增的并发工具，回顾之前的<code>ReentrentReadWriteLock</code>，它是悲观锁的实现：<code>只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）</code>。</p>
+<p>而<code>StampedLock</code>是<code>乐观锁</code>的实现，<code>乐观读</code>的时候不加锁，读取后<code>发现数据改变了再升级为悲观读，此时与写互斥</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StampedLockTest</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> StampedLock LOCK <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StampedLock<span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> x<span style="color:#f92672">,</span> y<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">long</span> stamp <span style="color:#f92672">=</span> LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">writeLock</span><span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            x <span style="color:#f92672">+=</span> 1<span style="color:#f92672">;</span>
+            y <span style="color:#f92672">+=</span> 1<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+            LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">unlockWrite</span><span style="color:#f92672">(</span>stamp<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 尝试乐观读
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">long</span> stamp <span style="color:#f92672">=</span> LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">tryOptimisticRead</span><span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">int</span> currentX <span style="color:#f92672">=</span> x<span style="color:#960050;background-color:#1e0010">，</span> currentY <span style="color:#f92672">=</span> y<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 如果stamp修改了，这时再加悲观读锁
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">validate</span><span style="color:#f92672">(</span>stamp<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+            log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;value has changed ...&#34;</span><span style="color:#f92672">);</span>
+            stamp <span style="color:#f92672">=</span> LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                currentX <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span>
+                currentY <span style="color:#f92672">=</span> y<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+                LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">unlockRead</span><span style="color:#f92672">(</span>stamp<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;x: {}, y: {}&#34;</span><span style="color:#f92672">,</span> currentX<span style="color:#f92672">,</span> currentY<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> 10<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>StampedLockTest<span style="color:#f92672">::</span>add<span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Random<span style="color:#f92672">().</span><span style="color:#a6e22e">nextInt</span><span style="color:#f92672">(</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1000<span style="color:#f92672">);</span>
+            <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(</span>StampedLockTest<span style="color:#f92672">::</span>print<span style="color:#f92672">).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>如上述代码所示：</p>
+<ol>
+<li>相比读写锁，<code>StampedLock</code>引入了乐观锁概念，只有变量发生改变才去加读锁。</li>
+<li>除此之外<code>StampedLock</code>的方法都会返回一个<code>版本号：stamp（state），用来代表此时此刻的版本</code>。</li>
+</ol>
+</blockquote>
+<h3 id="stampedlock">StampedLock</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 移位基数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> LG_READERS <span style="color:#f92672">=</span> 7<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 读锁个数每次增加的单位
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> RUNIT <span style="color:#f92672">=</span> 1L<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 第8位表示写锁
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> WBIT  <span style="color:#f92672">=</span> 1L <span style="color:#f92672">&lt;&lt;</span> LG_READERS<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 低7位表示读锁
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> RBITS <span style="color:#f92672">=</span> WBIT <span style="color:#f92672">-</span> 1L<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 最大读线程个数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> RFULL <span style="color:#f92672">=</span> RBITS <span style="color:#f92672">-</span> 1L<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 写锁和读锁个数的二进制码
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> ABITS <span style="color:#f92672">=</span> RBITS <span style="color:#f92672">|</span> WBIT<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 对读线程个数取反
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> SBITS <span style="color:#f92672">=</span> <span style="color:#f92672">~</span>RBITS<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 将写线程左移一位
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> ORIGIN <span style="color:#f92672">=</span> WBIT <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">;</span>
+<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">StampedLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    state <span style="color:#f92672">=</span> ORIGIN<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>初始状态<code>state = ORIGIN = 1L &lt;&lt; 8</code>，state类型是<code>long</code>。</p>
+<p>我们可以看出<code>第8位表示写锁的状态</code>，只有0/1两种情况，这样<code>写锁就不支持重入</code>了。<code>低7位表示读锁被获取的次数</code>。剩下的其他位是用来表示版本号的，他们共同构成了state。</p>
+<p><img src="https://image.leejay.top/image/20200714/LseXmJNKqjCv.png?imageslim" alt=""></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">变量（long）</th>
+<th align="left">二进制(64bit，省略为0)</th>
+<th align="left">十进制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">RUNIT = 1L</td>
+<td align="left">0000 &hellip; 0000 0001</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left"><strong>WBIT =  1L &laquo; 7</strong></td>
+<td align="left">0000 &hellip; 1000 0000</td>
+<td align="left">128</td>
+</tr>
+<tr>
+<td align="left"><strong>RBITS = WBIT - 1L</strong></td>
+<td align="left">0000 &hellip; 0111 1111</td>
+<td align="left">127</td>
+</tr>
+<tr>
+<td align="left">RFULL = RBITS - 1L</td>
+<td align="left">0000 &hellip; 0111 1110</td>
+<td align="left">126</td>
+</tr>
+<tr>
+<td align="left"><strong>ABIT =  RBITS |  WBIT</strong></td>
+<td align="left">0000 &hellip; 1111 1111</td>
+<td align="left">255</td>
+</tr>
+<tr>
+<td align="left">SBITS = ~RBITS</td>
+<td align="left">1111 &hellip; 1000 0000</td>
+<td align="left">-128</td>
+</tr>
+<tr>
+<td align="left"><strong>ORIGIN =  WBIT &laquo; 1</strong></td>
+<td align="left">0000 &hellip; 0001 0000 0000</td>
+<td align="left">256</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wait-node">Wait Node</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WNode</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 前驱节点
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> WNode prev<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 后继节点
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> WNode next<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 读线程使用，类似栈结构的链表连接读线程
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> WNode cowait<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 节点持有的线程
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> Thread thread<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 节点的状态： 0、WAITING、CANCELED
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> status<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// RMODE WMODE
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> mode<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 构造函数 需要传入mode和当前节点前驱节点
+</span><span style="color:#75715e"></span>    WNode<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> m<span style="color:#f92672">,</span> WNode p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> mode <span style="color:#f92672">=</span> m<span style="color:#f92672">;</span> prev <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>StampedLock内部维护了和<code>AQS的Node类似</code>的节点，但有几点不同：</p>
+<ol>
+<li>WNode中的<code>cowait属性用于将读节点通过链表的形式</code>进行连接。</li>
+<li>WNode中的status只有三种状态：<code>0、WAITING、CANCELED</code>。</li>
+<li>WNode中的mode属性用于表示当前的节点是：<code>RMODE(读) or WMODE(写)</code>。</li>
+</ol>
+</blockquote>
+<p><img src="https://image.leejay.top/image/20200707/oyfmhKphdfR2.png?imageslim" alt=""></p>
+<h3 id="writelock">writeLock</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">writeLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">long</span> s<span style="color:#f92672">,</span> next<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">((((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L <span style="color:#f92672">&amp;&amp;</span>
+             U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">))</span> <span style="color:#f92672">?</span>
+            next <span style="color:#f92672">:</span> acquireWrite<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>我们将return拆分成三个部分来看：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> <span style="color:#f92672">((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L
+<span style="color:#960050;background-color:#1e0010">②</span> U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">)</span>
+<span style="color:#960050;background-color:#1e0010">③</span> <span style="color:#f92672">?</span> next <span style="color:#f92672">:</span> acquireWrite<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">)</span>
+</code></pre></div><ol>
+<li>① 与 ② 同时成立时，返回<code>next</code>。若有一个不成立，返回<code>acquireWrite(false, 0L)</code>。</li>
+<li>默认情况下<code>state第9位是1，其余位都是0</code>，而``ABIT低8位都是1(final)<code>。所以进行</code>&amp;<code>运算，可以推导出</code>只要&amp;运算的结果不为0，说明此时有写锁或者读锁。<code>若结果不为0，执行</code>acquireWrite`。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  1 0000 0000
+<span style="color:#f92672">&amp;</span> 0 1111 1111
+<span style="color:#960050;background-color:#1e0010">——————————————</span>  <span style="color:#f92672">==</span> 0 成立<span style="color:#960050;background-color:#1e0010">，</span>state的低8位中有一位不为0<span style="color:#960050;background-color:#1e0010">，</span>那么这个公式的结果肯定不为0
+  0 0000 0000     
+</code></pre></div><ol start="3">
+<li>假设state是初始状态，<code>((s = state) &amp; ABITS) == 0L</code>成立，那么执行CAS方法，尝试将<code>state</code>的值由<code>初始状态s改为s + WBIT(1000 0000)</code>，即<code>1 1000 0000</code>，表明获取写锁成功。那么返回<code>next</code>作为版本号。</li>
+<li>若CAS修改失败，那么说明有另外一个线程获取了写锁，那么执行<code>acquireWrite</code>方法。</li>
+</ol>
+</blockquote>
+<h4 id="acquirewrite">acquireWrite</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 获取CPU核心数
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> NCPU <span style="color:#f92672">=</span> Runtime<span style="color:#f92672">.</span><span style="color:#a6e22e">getRuntime</span><span style="color:#f92672">().</span><span style="color:#a6e22e">availableProcessors</span><span style="color:#f92672">();</span>
+<span style="color:#75715e">// 加入队列前的最大自旋次数 64次
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SPINS <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>NCPU <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">&lt;&lt;</span> 6 <span style="color:#f92672">:</span> 0<span style="color:#f92672">;</span>
+<span style="color:#75715e">// 前驱节点是head时的自旋次数，大于加入队列的自旋，说明要到我获取锁了，激动的自旋次数也多了
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> HEAD_SPINS <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>NCPU <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">&lt;&lt;</span> 10 <span style="color:#f92672">:</span> 0<span style="color:#f92672">;</span>
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">acquireWrite</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> interruptible<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> deadline<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 定义此次线程的wnode节点和前驱节点p
+</span><span style="color:#75715e"></span>    WNode node <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> p<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 第一次自旋，spins = -1，通过自旋加入队列尾部
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> spins <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">long</span> m<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 如果(s = state) &amp; ABITS) == 0L说明恰巧写锁被释放了，那么直接去CAS获取锁
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>m <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 若获取成功直接返回ns = 新的版本号
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">))</span>
+                <span style="color:#66d9ef">return</span> ns<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 如果自旋次数小于0，重新计算自旋次数
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+            <span style="color:#75715e">// 1. 何时m == WBIT，只有写锁没有读锁的才会成立
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 2. wtail = whead的情况和AQS的一致，就是
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 队列未初始化（wtail = whead = null）或
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 只有一个哨兵节点还没有其他节点的情况(wtail = whead = new WNode())
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 1和2同时成立说明队列没有等待节点，且写锁会被释放（时间不确定），继续自旋
+</span><span style="color:#75715e"></span>            spins <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">==</span> WBIT <span style="color:#f92672">&amp;&amp;</span> wtail <span style="color:#f92672">==</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> SPINS <span style="color:#f92672">:</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 获取当前线程的随机数（基于ThreadLocalRandom）&gt;= 0时自旋次数减1
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>LockSupport<span style="color:#f92672">.</span><span style="color:#a6e22e">nextSecondarySeed</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">)</span>
+                <span style="color:#f92672">--</span>spins<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 如果wtail = null说明队列还未初始化
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 无论p是否为null，它都代表了队列的尾节点
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p <span style="color:#f92672">=</span> wtail<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 创建写模式节点
+</span><span style="color:#75715e"></span>            WNode hd <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WNode<span style="color:#f92672">(</span>WMODE<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 通过CAS将hd设置为头节点
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> WHEAD<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> hd<span style="color:#f92672">))</span>
+                <span style="color:#75715e">// 设置成功将hd也设置为wtail（非原子性，此时可能线程切换）
+</span><span style="color:#75715e"></span>                wtail <span style="color:#f92672">=</span> hd<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 如果当前线程的WNode = null，那么创建当前线程的WNode，此时 p = whead
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+            node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WNode<span style="color:#f92672">(</span>WMODE<span style="color:#f92672">,</span> p<span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 如果node前驱不是p，那么设置为p，因为p代表了队列的tail节点
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 因为存在另一个线程比当前线程早加入了队列
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">!=</span> p<span style="color:#f92672">)</span>
+            node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 通过CAS修改tail尾节点，和AQS一样，prev是务必要保证的
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> WTAIL<span style="color:#f92672">,</span> p<span style="color:#f92672">,</span> node<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// CAS成功，设置next指针，非原子性，所以next非可靠，此时线程切换会有影响
+</span><span style="color:#75715e"></span>            p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 只有成功将当前线程加入队列尾部，那么才会退出第一次的自旋
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">// 第二次自旋
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> spins <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+        WNode h<span style="color:#f92672">,</span> np<span style="color:#f92672">,</span> pp<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> ps<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// p代表了当前节点的前驱节点，也代表了此刻的尾节点wtail
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果p = head说明当前线程的前驱结点是head节点，快要到自己
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 如果自旋次数小于0赋予新的自旋次数
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+                spins <span style="color:#f92672">=</span> HEAD_SPINS<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 如果自旋次数小于最大自旋次数那么将当前自旋次数翻倍
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&lt;</span> MAX_HEAD_SPINS<span style="color:#f92672">)</span>
+                spins <span style="color:#f92672">&lt;&lt;=</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 第三个自旋，自旋中又套了一个自旋
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> spins<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">long</span> s<span style="color:#f92672">,</span> ns<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 先判断写锁是否释放并CAS修改state
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span>
+                                             ns <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 获取成功，设置node为头节点
+</span><span style="color:#75715e"></span>                        whead <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+                        <span style="color:#75715e">// 清空prev指针
+</span><span style="color:#75715e"></span>                        node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                        <span style="color:#75715e">// 返回state
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">return</span> ns<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#75715e">// 说明此时写锁还没释放或者CAS失败（此时其他线程获取了锁）
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 随机将自旋次数k减1，直到k &lt;= 0时退出第三次自旋
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 这里的退出说明head自旋次数已经用完了
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>LockSupport<span style="color:#f92672">.</span><span style="color:#a6e22e">nextSecondarySeed</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+                         <span style="color:#f92672">--</span>k <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 执行到此：
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 1. 当前线程的前驱节点不是头节点，
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 2.第三次自旋获取写锁一直没成功（有个线程持有的写锁未释放）
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 协助唤醒head头节点下面的cowait下的读节点
+</span><span style="color:#75715e"></span>            WNode c<span style="color:#f92672">;</span> Thread w<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 循环执行，只要节点的cowait属性不为null
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>c <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 只有CAS设置当前读节点的下一个读节点成功才能唤醒当前读节点的线程
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> WCOWAIT<span style="color:#f92672">,</span> c<span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                    <span style="color:#f92672">(</span>w <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    <span style="color:#75715e">// 唤醒读线程
+</span><span style="color:#75715e"></span>                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">unpark</span><span style="color:#f92672">(</span>w<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 若whead = h，说明此间头节点没有发生变化
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>whead <span style="color:#f92672">==</span> h<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 若当前线程的前驱节点不是尾节点p，说明尾节点改变了
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>np <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 更新尾节点p并设置尾节点p的next指针为当前线程的node
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>np <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    <span style="color:#f92672">(</span>p <span style="color:#f92672">=</span> np<span style="color:#f92672">).</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>   <span style="color:#75715e">// stale
+</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+            <span style="color:#75715e">// 如果p节点的状态为0，CAS修改为WAITING
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>ps <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span>p<span style="color:#f92672">,</span> WSTATUS<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> WAITING<span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 如果p节点是CANCELLED，将p的前驱额和node相连
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ps <span style="color:#f92672">==</span> CANCELLED<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>pp <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> pp<span style="color:#f92672">;</span>
+                    pp<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 处理超时问题
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">long</span> time<span style="color:#f92672">;</span> 
+                <span style="color:#75715e">// 如果deadline = 0L就设置time = 0L
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>deadline <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span>
+                    time <span style="color:#f92672">=</span> 0L<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 判断deadline -currenttime 是否小于 0，小于0需要将节点cancel
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>time <span style="color:#f92672">=</span> deadline <span style="color:#f92672">-</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">())</span> <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> node<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+                <span style="color:#75715e">// 获取当前线程
+</span><span style="color:#75715e"></span>                Thread wt <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+                <span style="color:#75715e">// 添加当前线程到parkBlocker属性
+</span><span style="color:#75715e"></span>                U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+                <span style="color:#75715e">// 修改node的thread属性
+</span><span style="color:#75715e"></span>                node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> wt<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 如果前驱节点状态小于0 且 队列已初始化 且 无法获取写锁
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 且 头节点没有发生变化 且 node的前驱节点没有变化
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> h <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>state <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                    whead <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">==</span> p<span style="color:#f92672">)</span>
+                    <span style="color:#75715e">// 就去阻塞当前线程
+</span><span style="color:#75715e"></span>                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">park</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> time<span style="color:#f92672">);</span>
+                node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+                <span style="color:#75715e">// 如果被中断了那么就取消当前节点
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>interruptible <span style="color:#f92672">&amp;&amp;</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+                    <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> node<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>与AQS的写锁获取区别：<code>StampedLock的锁获取的自旋是有次数限制的，并且不同情况自旋次数不同</code>。</p>
+<p>写锁的获取总体分为三个部分，分别对应着<code>三次自旋</code>：</p>
+<ol>
+<li>第一次自旋：尝试获取写锁，若成功则返回state，失败就继续判断<code>spins是否需要重新赋值（若队列刚初始化且写锁还没被释放，spins = 0）</code>，若<code>spins = 0</code>则将<code>当前线程构造成node添加到队尾（此过程可能包括队列初始化）</code>，否则自旋加入队尾，最终只有加入成功才会跳出自旋。</li>
+<li>第二次自旋上：先判断<code>当前线程前驱节点是否是head节点</code>，如果是那么加大自旋次数，并开启第三次自旋去获取写锁，若成功则设置node为新head且清空prev属性。</li>
+<li>第二次自旋下：若当前节点不是head的后继节点，那么<code>尝试唤醒头节点中cowait连接的读线程</code>。最后处理节点的状态并处理超时问题（包括清理无效节点），若最终还是无法获取写锁，那么就会阻塞当前线程。</li>
+</ol>
+<p>获取写锁的标志：将变量<code>state</code>的第8位设为1。反之为0表示没有获取写锁。</p>
+</blockquote>
+<h4 id="unlockwrite">unlockWrite</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockWrite</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    WNode h<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 若state != stamp 说明当前传入的版本号不对
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 若stamp &amp; WBIT = 0L说明写锁没被获取，那就无需释放
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 上述条件成立一个抛出异常
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>state <span style="color:#f92672">!=</span> stamp <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>stamp <span style="color:#f92672">&amp;</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalMonitorStateException<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 将stamp加1同时判断版本号是否为0，为0就设为初始值否则设为当前值
+</span><span style="color:#75715e"></span>    state <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>stamp <span style="color:#f92672">+=</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L <span style="color:#f92672">?</span> ORIGIN <span style="color:#f92672">:</span> stamp<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 如果头节点不为null，且头节点不为0
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span>
+        release<span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 释放头节点的后继节点
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>WNode h<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        WNode q<span style="color:#f92672">;</span> Thread w<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 将头节点status改为WAITING
+</span><span style="color:#75715e"></span>        U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> WSTATUS<span style="color:#f92672">,</span> WAITING<span style="color:#f92672">,</span> 0<span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 如果head的后继无效，那么从后往前查找（和AQS一致），直到找到
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>q <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> q<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">==</span> CANCELLED<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>WNode t <span style="color:#f92672">=</span> wtail<span style="color:#f92672">;</span> t <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> t <span style="color:#f92672">!=</span> h<span style="color:#f92672">;</span> t <span style="color:#f92672">=</span> t<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>t<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+                    q <span style="color:#f92672">=</span> t<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 唤醒符合条件的后继节点
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>q <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>w <span style="color:#f92672">=</span> q<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+            U<span style="color:#f92672">.</span><span style="color:#a6e22e">unpark</span><span style="color:#f92672">(</span>w<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>
+<p><code>state = (stamp += WBIT) == 0L ? ORIGIN : stamp</code>：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">已知代码执行到此<span style="color:#960050;background-color:#1e0010">，</span>当前线程必有写锁<span style="color:#960050;background-color:#1e0010">，</span>那么当前stamp必符合如下个规则<span style="color:#960050;background-color:#1e0010">：</span>
+xxxx <span style="color:#f92672">...</span> xxxx 1xxx xxxx 第8位是1
+那么加上WBIT<span style="color:#960050;background-color:#1e0010">：</span> 1000 0000 变为
+xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#960050;background-color:#1e0010">，</span>即会向高位进1<span style="color:#960050;background-color:#1e0010">，</span>也就是将版本号 <span style="color:#f92672">+</span> 1
+</code></pre></div><blockquote>
+<p>何时<code>stamp += WBIT = 0L</code>呢？</p>
+<p>当<code>stamp = 0b1111...1000 0000（64bit）</code>即除了低7位是0，其他位全是1位，加上<code>WBIT = 1000 0000</code>就会为0，说明此时stamp版本号已全部用完，需要重置。</p>
+</blockquote>
+</li>
+<li>
+<p>写锁的释放与AQS的类似，除了<code>判断是否已有写锁的</code>不同，剩下的比如<code>唤醒头节点的有效后继节点、从队尾往前查找</code>都是相同的。</p>
+</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="readlock">readLock</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">readLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">long</span> s <span style="color:#f92672">=</span> state<span style="color:#f92672">,</span> next<span style="color:#f92672">;</span>  <span style="color:#75715e">// bypass acquireRead on common uncontended case
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">((</span>whead <span style="color:#f92672">==</span> wtail <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL <span style="color:#f92672">&amp;&amp;</span>
+        U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">))</span> <span style="color:#f92672">?</span>
+            next <span style="color:#f92672">:</span> acquireRead<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>又称为<code>悲观读</code>，和写锁互斥，流程分成三个部分：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> whead <span style="color:#f92672">==</span> wtail
+<span style="color:#960050;background-color:#1e0010">②</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL 
+<span style="color:#960050;background-color:#1e0010">③</span> U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">)</span>
+</code></pre></div><ol>
+<li><code>whead = wtail </code>说明队列中还没有过节点（非哨兵节点）。</li>
+<li><code>(s &amp; ABITS) &lt; RFULL </code>判断当前读锁数量是否超过最大数量。</li>
+<li>若①、②成立则尝试CAS修改<code>STATE</code>状态，将读线程数量 + 1。</li>
+<li>若①、②、③全成立返回新的state，否则返回<code>acquireRead</code>的返回值</li>
+</ol>
+</blockquote>
+<h4 id="acquireread">acquireRead</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">acquireRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> interruptible<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> deadline<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    WNode node <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> p<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 第一个自旋
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> spins <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+        WNode h<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 判断队列是否初始化且有无除当前线程外的其他节点
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">=</span> wtail<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 第二个自旋 尝试获取读锁
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> m<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 若相同则继续判断读线程是否超过最大数量
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>m <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL <span style="color:#f92672">?</span>
+                    <span style="color:#75715e">// true执行CAS修改并返回state
+</span><span style="color:#75715e"></span>                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">)</span> <span style="color:#f92672">:</span>			  				<span style="color:#75715e">// false 此时读线程溢出，重置RBITS并返回0L
+</span><span style="color:#75715e"></span>                    <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> WBIT <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>ns <span style="color:#f92672">=</span> tryIncReaderOverflow<span style="color:#f92672">(</span>s<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> 0L<span style="color:#f92672">))</span>
+                    <span style="color:#66d9ef">return</span> ns<span style="color:#f92672">;</span>
+                
+                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&gt;=</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 和写锁类似，有概率将spins-1
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>LockSupport<span style="color:#f92672">.</span><span style="color:#a6e22e">nextSecondarySeed</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">)</span>
+                            <span style="color:#f92672">--</span>spins<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                    <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 自旋为0需要判断是否跳出循环
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                            WNode nh <span style="color:#f92672">=</span> whead<span style="color:#f92672">,</span> np <span style="color:#f92672">=</span> wtail<span style="color:#f92672">;</span>
+                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>nh <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span> np <span style="color:#f92672">==</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> nh<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">=</span> np<span style="color:#f92672">))</span>
+                                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                        <span style="color:#f92672">}</span>
+                        <span style="color:#75715e">// 重置spins
+</span><span style="color:#75715e"></span>                        spins <span style="color:#f92672">=</span> SPINS<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        
+       <span style="color:#75715e">// 无尾节点那么初始化队列
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+            WNode hd <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WNode<span style="color:#f92672">(</span>WMODE<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 和写锁相同设置head节点
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> WHEAD<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> hd<span style="color:#f92672">))</span>
+                wtail <span style="color:#f92672">=</span> hd<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 和写锁类似，只是mode变为RMODE
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+            node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WNode<span style="color:#f92672">(</span>RMODE<span style="color:#f92672">,</span> p<span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 如果头尾相同或尾节点不是读模式节点
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">==</span> p <span style="color:#f92672">||</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">mode</span> <span style="color:#f92672">!=</span> RMODE<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 将当前节点入队尾
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">!=</span> p<span style="color:#f92672">)</span>
+                node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 直到添加成功退出自旋
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> WTAIL<span style="color:#f92672">,</span> p<span style="color:#f92672">,</span> node<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 这里的break会跳到第五个自旋处
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 这里说明尾节点是读模式节点 CAS 将当前节点挂到cowait属性下
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span>p<span style="color:#f92672">,</span> WCOWAIT<span style="color:#f92672">,</span>
+                                         node<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">,</span> node<span style="color:#f92672">))</span>
+            <span style="color:#75715e">// CAS失败就设为null
+</span><span style="color:#75715e"></span>            node<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 第三段自旋 用于阻塞当前线程
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+                WNode pp<span style="color:#f92672">,</span> c<span style="color:#f92672">;</span> Thread w<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 若头节点不为空且cowait不为空，那么唤醒其中等待的读线程
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> WCOWAIT<span style="color:#f92672">,</span> c<span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                    <span style="color:#f92672">(</span>w <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> 
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">unpark</span><span style="color:#f92672">(</span>w<span style="color:#f92672">);</span>
+                <span style="color:#75715e">// 若头节点等于tail的前驱节点，说明快到自己获取锁了
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">==</span> <span style="color:#f92672">(</span>pp <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span> <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> p <span style="color:#f92672">||</span> pp <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">long</span> m<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns<span style="color:#f92672">;</span>
+                    <span style="color:#75715e">// 第四段自旋 尝试获取锁
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">do</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 代码和第一段自旋中的获取锁相同，判断读锁数量同时获取读锁
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>m <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL <span style="color:#f92672">?</span>
+                            U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span>
+                                                 ns <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">)</span> <span style="color:#f92672">:</span>
+                            <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> WBIT <span style="color:#f92672">&amp;&amp;</span>
+                             <span style="color:#f92672">(</span>ns <span style="color:#f92672">=</span> tryIncReaderOverflow<span style="color:#f92672">(</span>s<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> 0L<span style="color:#f92672">))</span>
+                            <span style="color:#66d9ef">return</span> ns<span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span> <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> WBIT<span style="color:#f92672">);</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#75715e">// 如果头节点没有变过且前驱节点没有改变，那么需要阻塞当前线程了
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>whead <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">==</span> pp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">long</span> time<span style="color:#f92672">;</span>
+                    <span style="color:#75715e">// 如果前置节点的前节点为null或头节点等于前继节点或前置节点状态是cancel
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>pp <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> p <span style="color:#f92672">||</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 置为null
+</span><span style="color:#75715e"></span>                        node <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                        <span style="color:#75715e">// 退出自旋从第一个自旋重试
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span>
+                    <span style="color:#75715e">// 以下是执行超时机制的代码，和写锁相同
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>deadline <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span>
+                        time <span style="color:#f92672">=</span> 0L<span style="color:#f92672">;</span>
+                    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>time <span style="color:#f92672">=</span> deadline <span style="color:#f92672">-</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">())</span> <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span>
+                        <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> p<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+                    Thread wt <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+                    <span style="color:#75715e">// 设置当前线程到节点中
+</span><span style="color:#75715e"></span>                    node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> wt<span style="color:#f92672">;</span>
+                    <span style="color:#75715e">// 若前驱节点不是头节点 且 头节点和前驱节点没变过
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">!=</span> pp <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>state <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                        whead <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">==</span> pp<span style="color:#f92672">)</span>
+                        <span style="color:#75715e">// 当条件符合的时候阻塞当前线程
+</span><span style="color:#75715e"></span>                        U<span style="color:#f92672">.</span><span style="color:#a6e22e">park</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> time<span style="color:#f92672">);</span>
+                    node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>interruptible <span style="color:#f92672">&amp;&amp;</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+                        <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> p<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+	<span style="color:#75715e">//第五段自旋，处理第一个加入队尾的读线程
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> spins <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+        WNode h<span style="color:#f92672">,</span> np<span style="color:#f92672">,</span> pp<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> ps<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 这其中的逻辑和之前的代码类似，都是判断是否前继节点是头节点，然后尝试获取读锁
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+                spins <span style="color:#f92672">=</span> HEAD_SPINS<span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>spins <span style="color:#f92672">&lt;</span> MAX_HEAD_SPINS<span style="color:#f92672">)</span>
+                spins <span style="color:#f92672">&lt;&lt;=</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 第六段自旋
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> spins<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// spin at head
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">long</span> m<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns<span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 获取读锁且判断是否超过最大读锁限制
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>m <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL <span style="color:#f92672">?</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> ns <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">)</span> <span style="color:#f92672">:</span>
+                    <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> WBIT <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>ns <span style="color:#f92672">=</span> tryIncReaderOverflow<span style="color:#f92672">(</span>s<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> 0L<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                    WNode c<span style="color:#f92672">;</span> Thread w<span style="color:#f92672">;</span>
+                    whead <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+                    node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                    <span style="color:#75715e">// 协助唤醒当前节点中的挂在cowait属性上的读节点
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>c <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> WCOWAIT<span style="color:#f92672">,</span>
+                                                   c<span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                            <span style="color:#f92672">(</span>w <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                            U<span style="color:#f92672">.</span><span style="color:#a6e22e">unpark</span><span style="color:#f92672">(</span>w<span style="color:#f92672">);</span>
+                    <span style="color:#f92672">}</span>
+                    <span style="color:#66d9ef">return</span> ns<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#75715e">// 若其他线程占有写锁，随机将spins-1且若没有自旋次数就break
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&gt;=</span> WBIT <span style="color:#f92672">&amp;&amp;</span>
+                         LockSupport<span style="color:#f92672">.</span><span style="color:#a6e22e">nextSecondarySeed</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 0 <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">--</span>k <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            WNode c<span style="color:#f92672">;</span> Thread w<span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>c <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> WCOWAIT<span style="color:#f92672">,</span> c<span style="color:#f92672">,</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">cowait</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                    <span style="color:#f92672">(</span>w <span style="color:#f92672">=</span> c<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">unpark</span><span style="color:#f92672">(</span>w<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 如果头节点没变化
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>whead <span style="color:#f92672">==</span> h<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 更新前置节点状态
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>np <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>np <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    <span style="color:#f92672">(</span>p <span style="color:#f92672">=</span> np<span style="color:#f92672">).</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>   <span style="color:#75715e">// stale
+</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+            <span style="color:#75715e">// 将等待的节点状态设为WAITING
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>ps <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span>p<span style="color:#f92672">,</span> WSTATUS<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> WAITING<span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 如果节点已取消，那么移除队列
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ps <span style="color:#f92672">==</span> CANCELLED<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>pp <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> pp<span style="color:#f92672">;</span>
+                    pp<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 和之前逻辑相同，处理超时问题
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">long</span> time<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>deadline <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span>
+                    time <span style="color:#f92672">=</span> 0L<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>time <span style="color:#f92672">=</span> deadline <span style="color:#f92672">-</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">())</span> <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> node<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+                Thread wt <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+                U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+                node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> wt<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+                    <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> h <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>state <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                    whead <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">==</span> p<span style="color:#f92672">)</span>
+                    U<span style="color:#f92672">.</span><span style="color:#a6e22e">park</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> time<span style="color:#f92672">);</span>
+                node<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+                U<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span>wt<span style="color:#f92672">,</span> PARKBLOCKER<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>interruptible <span style="color:#f92672">&amp;&amp;</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+                    <span style="color:#66d9ef">return</span> cancelWaiter<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> node<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>一进来如果无写锁、当前队列没有其他节点或队列未初始化，那么尝试获取读锁，成功就返回。</li>
+<li>若无法获取读锁，那么和写锁一样，会尝试把当前线程加入队列，但这里分为两种：
+<ol>
+<li>如果当前线程是<code>连续几个读线程中第一个加入的读线程</code>，那么直接<code>加入队尾</code>。</li>
+<li>若不是连续几个读线程第一个加入的读线程，会<code>进入到首个读节点的cowait属性中，形成链表结构</code>。</li>
+</ol>
+</li>
+<li>和写锁相同，如果长时间无法获取读锁，那么会阻塞当前线程，直到被唤醒继续自旋获取锁。</li>
+</ol>
+</blockquote>
+<h4 id="unlockread">unlockRead</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">long</span> s<span style="color:#f92672">,</span> m<span style="color:#f92672">;</span> WNode h<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 循环执行
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 若版本号不同 或 不存在写锁 或 只有写锁无读锁
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 上述条件符合一条就抛异常
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> SBITS<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>stamp <span style="color:#f92672">&amp;</span> SBITS<span style="color:#f92672">)</span> <span style="color:#f92672">||</span>
+            <span style="color:#f92672">(</span>stamp <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">=</span> s <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L <span style="color:#f92672">||</span> m <span style="color:#f92672">==</span> WBIT<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalMonitorStateException<span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 只有当前读锁次数小于最大读锁次数尝试释放锁
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">&lt;</span> RFULL<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// CAS修改state
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> s <span style="color:#f92672">-</span> RUNIT<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 直到读锁全部释放且头节点不为null且头节点状态不为0
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>m <span style="color:#f92672">==</span> RUNIT <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> whead<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">status</span> <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span>
+                    <span style="color:#75715e">// 唤醒头节点的后继节点并break
+</span><span style="color:#75715e"></span>                    release<span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
+                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 读线程数量溢出如果
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryDecReaderOverflow<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> 0L<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>循环释放读锁节点直到为0，然后唤醒头节点的下一个有效后继节点。</p>
+</blockquote>
+<hr>
+<h3 id="tryoptimisticread">tryOptimisticRead</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 锁的乐观读
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">tryOptimisticRead</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">long</span> s<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 判断是否存在写锁，存在就返回0L，不存在就返回 state的高56位
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> WBIT<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">&amp;</span> SBITS<span style="color:#f92672">)</span> <span style="color:#f92672">:</span> 0L<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>又称为<code>乐观读</code>，此处的代码是没有加锁的，所以需要配合<code>validate</code>方法使用。</p>
+</blockquote>
+<hr>
+<h3 id="validate">validate</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 校验版本号
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">validate</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// Unsafe的内存屏障api 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 为什么使用内存屏障，因为tamp变量没有被volatile修饰
+</span><span style="color:#75715e"></span>    U<span style="color:#f92672">.</span><span style="color:#a6e22e">loadFence</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 返回state和stamp是否相同
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>stamp <span style="color:#f92672">&amp;</span> SBITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#f92672">(</span>state <span style="color:#f92672">&amp;</span> SBITS<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+	<span style="color:#66d9ef">long</span> stamp <span style="color:#f92672">=</span> LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">tryOptimisticRead</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 如果stamp修改了，这时再加悲观读锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> currentX <span style="color:#f92672">=</span> x<span style="color:#f92672">,</span> currentY <span style="color:#f92672">=</span> y<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>LOCK<span style="color:#f92672">.</span><span style="color:#a6e22e">validate</span><span style="color:#f92672">(</span>stamp<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+        <span style="color:#f92672">...</span>
+    <span style="color:#f92672">}</span>   
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>我们需要保障<code>tryOptimisticRead</code>和<code>validate</code>设计的三行代码<code>不能被重排序</code>，因为state已经被volatile修饰，但stamp不是volatile，所以在validate中加入<code>内存屏障</code>。</p>
+</blockquote>
+<hr>
+<h3 id="总结">总结</h3>
+<ul>
+<li><code>StampedLock</code>不是基于AQS来实现的，但是其内部实现和AQS类似。</li>
+<li><code>StampedLock</code>不支持锁的重入、不支持条件变量且只有非公平实现。</li>
+<li><code>StampedLock</code>的<code>允许一个线程在存在多个读线程的时候获取写锁</code>。</li>
+<li><code>StampedLock</code>的悲观读和<code>ReentrentReadWriteLock</code>相同，都会因为写锁存在而阻塞。</li>
+<li><code>StampedLock</code>的乐观读，是线程不安全的，但读写不互斥。</li>
+<li><code>StampedLock</code>支持<code>锁的升级和降级</code>，而<code>ReentrentReadWriteLock</code>只支持<code>锁降级</code>。</li>
+<li><code>StampedLock</code>唤醒线程是一次性唤醒连续的读锁，并且其他线程还会协助唤醒。</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://xiaokexiang.github.io/post/blockingqueue/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">BlockingQueue</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://xiaokexiang.github.io/post/cycliebarrier/">
+                  <span class="button__text">CyclieBarrier</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://xiaokexiang.github.io/assets/main.js"></script>
+<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

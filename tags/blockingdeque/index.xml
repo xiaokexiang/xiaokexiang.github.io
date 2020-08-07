@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>BlockingDeque  on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/tags/blockingdeque/</link>
+    <description>Recent content in BlockingDeque  on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Mon, 06 Jul 2020 19:20:56 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/tags/blockingdeque/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>BlockingDeque</title>
+      <link>https://xiaokexiang.github.io/post/blockingdeque/</link>
+      <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/blockingdeque/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          基于ReentrantLock、Condition实现的`双端阻塞队列`，支持在队首和队尾获取/添加数据。
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

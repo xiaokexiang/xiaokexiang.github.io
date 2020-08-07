@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Concurrent :: 黄昏现白骨 — Just a normal blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://xiaokexiang.github.io/categories/concurrent/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Concurrent"/>
+<meta name="twitter:description" content=""/>
+
+
+
+<meta property="og:title" content="Concurrent" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xiaokexiang.github.io/categories/concurrent/" />
+<meta property="og:updated_time" content="2020-07-19T17:11:13+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+
+
+
+<link rel="alternate" type="application/rss+xml" href="/categories/concurrent/index.xml" title="黄昏现白骨" />
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  <div class="posts">
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/future/">Future</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-19
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/future/">Future </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/futuretask/">FutureTask</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          因为原有的线程执行<code>无法获取到返回结果</code>，所以为了弥补线程无返回值的问题，才诞生了Future类。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/threadpool/">ThreadPool</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-17
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/threadpool/">ThreadPool </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          <code>ThreadPool</code>可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/concurrenthashmap/">ConcurrentHashMap</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-14
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/concurrenthashmap/">ConcurrentHashMap </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          <code>ConcurrentHashMap</code>是基于<code>CAS + Synchronized</code>的线程安全的HashMap。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/concurrentlinkedqueue/">ConcurrentLinkedQueue</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-11
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/concurrentlinkedqueue/">ConcurrentLinkedQueue </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          <code>ConcurrentLinkedQueue</code>是使用<code>自旋和CAS</code>来实现的非阻塞的有序队列，是LinkedList的线程安全变体。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/copyonwritearraylist/">CopyOnWriteArrayList</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-08
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          <code>CopyOnWriteArrayList</code>是ArrayList的线程安全变体，是通过<code>生成新的副本</code>来实现线程安全。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/blockingdeque/">BlockingDeque</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-06
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/blockingdeque/">BlockingDeque </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于ReentrantLock、Condition实现的<code>双端阻塞队列</code>，支持在队首和队尾获取/添加数据。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/blockingqueue/">BlockingQueue</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-04
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/blockingqueue/">BlockingQueue </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/stampedlock/">StampedLock</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-01
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/stampedlock/">StampedLock </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          为了实现更快的读写锁模式而诞生的框架，基于<code>乐观锁</code>、<code>自旋+CAS</code>、<code>类似AQS</code>的逻辑实现
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/cycliebarrier/">CyclieBarrier</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-29
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/countdownlatch/">CountDownLatch</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-27
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/countdownlatch/">CountDownLatch </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/readwritelock/">ReadWriteLock</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-24
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          具备<code>独占锁和共享锁</code>两者特性的读写锁，适用于读操作多于写操作的场景。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/semaphore/">Semaphore</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-20
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/semaphore/">Semaphore </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Semaphore是基于AQS的<code>可重入共享锁</code>，具有公平和非公平模式。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/condition/">Condition</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-18
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/condition/">Condition </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现<code>等待/通知</code>模式。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/reentrantlock/">AQS与ReentrantLock独占锁</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-15
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/reentrantlock/">ReentrantLock </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的<code>可重入独占锁</code>，具有公平/非公平两种实现。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/cas/">CAS</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-12
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/cas/">CAS </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java并发中<code>乐观锁的实现</code>，大部分并发框架都基于CAS实现。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/volatile/">volatile</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-08
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/volatile/">volatile </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java中volatile关键字的原理与作用。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/">MESA模型</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-06
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/mesa/">MESA </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1/">线程通信</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java中<code>管理临界区资源</code>的管理策略。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">ThreadLocal内存泄漏</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-04
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/threadlocal/">ThreadLocal </a>&nbsp;
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          ThreadLocal的内存泄露问题。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">Java内存可见性</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-05-19
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+            🍖<a href="https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性 </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          多线程中的内存可见性问题。
+        
+      </div>
+      
+    </div>
+    
+    <div class="pagination">
+  <div class="pagination__buttons">
+    
+      <span class="button previous">
+        <a href="/categories/concurrent/page/3/">
+          <span class="button__icon">←</span>
+          <span class="button__text">上一页</span>
+        </a>
+      </span>
+    
+    
+  </div>
+</div>
+
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://xiaokexiang.github.io/assets/main.js"></script>
+<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

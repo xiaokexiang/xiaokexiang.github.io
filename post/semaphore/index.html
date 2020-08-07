@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>Semaphore :: 黄昏现白骨 — Just a normal blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常  if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
+   tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://xiaokexiang.github.io/post/semaphore/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Semaphore"/>
+<meta name="twitter:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。"/>
+
+
+
+<meta property="og:title" content="Semaphore" />
+<meta property="og:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiaokexiang.github.io/post/semaphore/" />
+<meta property="article:published_time" content="2020-06-20T16:09:38+08:00" />
+<meta property="article:modified_time" content="2020-06-20T16:09:38+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/semaphore/">Semaphore</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-06-20
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/semaphore/">Semaphore </a>&nbsp;
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h3 id="acquire">acquire</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 共享锁可以立即响应中断异常
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span>
+    <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 如果线程被中断立即抛出异常
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+        doAcquireSharedInterruptibly<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。</p>
+<table>
+<thead>
+<tr>
+<th align="center">tryAcquireShared 值</th>
+<th align="center">是否获取锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">获取共享锁成功，后续获取可能不成功</td>
+</tr>
+<tr>
+<td align="center">&lt; 0</td>
+<td align="center">获取共享锁失败</td>
+</tr>
+<tr>
+<td align="center">&gt; 0</td>
+<td align="center">获取共享锁成功，后续获取可能成功</td>
+</tr>
+</tbody>
+</table>
+<h4 id="tryacquireshared">tryAcquireShared</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> nonfairTryAcquireShared<span style="color:#f92672">(</span>acquires<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 默认是采用了非公平获取锁的方式
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">nonfairTryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> available <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">int</span> remaining <span style="color:#f92672">=</span> available <span style="color:#f92672">-</span> acquires<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 如果remaining&gt;=0时就一直自旋CAS修改state状态
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>remaining <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
+            compareAndSetState<span style="color:#f92672">(</span>available<span style="color:#f92672">,</span> remaining<span style="color:#f92672">))</span>
+            <span style="color:#66d9ef">return</span> remaining<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</p>
+<p>如果tryAcquireShared的返回值小于0，说明此时没有锁可以获取，执行入队等相关操作。</p>
+</blockquote>
+<h4 id="doacquiresharedinterruptibly">doAcquireSharedInterruptibly</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span>
+          <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+      <span style="color:#75715e">// 封装共享节点添加到同步队列队尾
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Node node <span style="color:#f92672">=</span> addWaiter<span style="color:#f92672">(</span>Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SHARED</span><span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">boolean</span> failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 获取前驱节点
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">final</span> Node p <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">predecessor</span><span style="color:#f92672">();</span>
+            <span style="color:#75715e">// 如果前驱节点是head节点
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 尝试获取共享锁
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
+                <span style="color:#75715e">// 注意这里是r&gt;=0
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>r <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#75715e">// 与独占锁不同之处，独占锁是setHead()
+</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 除了当前线程获取锁，后面的线程也有可能获取共享锁
+</span><span style="color:#75715e"></span>                    setHeadAndPropagate<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> r<span style="color:#f92672">);</span>
+                    p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#75715e">// help GC
+</span><span style="color:#75715e"></span>                    failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+                    <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#75715e">// 判断是否需要中断及中断步骤 与独占锁相同
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>shouldParkAfterFailedAcquire<span style="color:#f92672">(</span>p<span style="color:#f92672">,</span> node<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+                parkAndCheckInterrupt<span style="color:#f92672">())</span>
+                <span style="color:#75715e">// 共享锁及时响应中断
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 如果抛出中断异常，此处就会执行该逻辑
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>failed<span style="color:#f92672">)</span>
+            cancelAcquire<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="setheadandpropagate">setHeadAndPropagate</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span><span style="color:#f92672">(</span>Node node<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> propagate<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 记录老的head用于下面的对比校验
+</span><span style="color:#75715e"></span>    Node h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span> 
+    <span style="color:#75715e">// 和独占锁一致，将获取锁的node设为新head，清空thread属性
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 此时node=new head，h=old head
+</span><span style="color:#75715e"></span>    setHead<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
+    <span style="color:#75715e">// 此时h = old head
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>propagate <span style="color:#f92672">&gt;</span> 0 <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
+        <span style="color:#75715e">// 此时h = new node
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        Node s <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">isShared</span><span style="color:#f92672">())</span>
+            doReleaseShared<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>doReleaseShared()可以理解成unparkSuccessor的升级方法，不止获取锁的过程中被调用，释放锁的过程中也会被调用。</p>
+<ol>
+<li>h == null 和 ((h = head) == null) 不会成立，因为之前代码执行过addWaiter，所以队列肯定已初始化，已经初始化那么肯定不为null(head节点中只是thread = null)。</li>
+<li>条件判断只剩 <code>propagate &gt; 0 || h.waitStatus &lt; 0 || h.waitStatus &lt; 0 </code>，需要注意此处的h不是同一个，前面的h是旧head，后面的h是新head。</li>
+<li>根据外层方法要求 propagate &gt;= 0，那么<code>propagate &gt; 0</code>时，获取node的next节点，如果node是tail尾节点，那么 <code>s == null</code>成立，执行<code>doReleaseShared</code>方法，如果<code>s == null</code>不成立，则判断 <code>s.nextWaiter == SHARED</code>，添加共享节点时会设置此参数，用于判断是否是共享节点。</li>
+<li>那么如果<code>propagate  = 0</code>时，继续判断<code>h.waitStatus &lt; 0</code>，从之前独占锁的唤醒我们知道在<code>unparkSuccessor</code>会将<code>head头节点的waitStatus设为0</code>，那么此处的条件何时会发生呢？我们需要先查看<code>doReleaseShared</code>中的代码，它在<code>compareAndSetWaitStatus(h, 0, Node.PROPAGATE)</code>处将head头节点设置为<code>PROPAGATE</code>，那么我们也知道<code>release</code>方法中也会调用<code>doReleaseShared</code>去释放共享锁，所以此处很有可能是其他线程释放了锁，进入下一层判断，所以此时也可能去执行<code>doReleaseShared</code>去尝试获取锁。当然此情况比较凑巧，但确实会发生。</li>
+<li>接上段，如果<code>旧h.waitStatus  &lt; 0</code>不成立，那么<code>新h.waitStatus &lt; 0</code>条件何时成立呢？在<code>shouldParkAfterFailedAcquire</code>中会将前驱节点设置为<code>SIGNAL</code>状态后去park当前节点，所以只要先执行过<code>shouldParkAfterFailedAcquire</code>方法，后获取锁，那么<code>新h.waitStatus &lt; 0</code>肯定成立，进入下一层判断，所以这里也可能会执行<code>doReleaseShared</code>方法尝试唤醒后继节点。</li>
+<li><code>setHeadAndPropagate</code>的注释中说明了此方法确实会导致<code>不必要的唤醒操作</code>。</li>
+</ol>
+</blockquote>
+<h4 id="doreleaseshared">doReleaseShared</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 唤醒后继节点并确认传播
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 循环执行
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 获取头节点，接上文，此时的头节点是node，不是老的head节点了
+</span><span style="color:#75715e"></span>        Node h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// h != null ，只要队列初始化过，就一直成立
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// h != tail 如果队列中添加过节点，就一直成立
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 这两个条件保证了队列至少有两个node，其中一个哨兵节点
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h <span style="color:#f92672">!=</span> tail<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span><span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 如果head是SIGNAL，就执行unparkSuccessor()
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ws <span style="color:#f92672">==</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SIGNAL</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>compareAndSetWaitStatus<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SIGNAL</span><span style="color:#f92672">,</span> 0<span style="color:#f92672">))</span>
+                    <span style="color:#66d9ef">continue</span><span style="color:#f92672">;</span>
+                <span style="color:#75715e">// 修改成功就唤醒头节点的有效后继节点
+</span><span style="color:#75715e"></span>                unparkSuccessor<span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#75715e">// 如果ws == 0说明h的后继节点已经或即将被唤醒
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// CAS设置为PROPAGATE
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ws <span style="color:#f92672">==</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+                     <span style="color:#f92672">!</span>compareAndSetWaitStatus<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">PROPAGATE</span><span style="color:#f92672">))</span>
+                <span style="color:#66d9ef">continue</span><span style="color:#f92672">;</span>                <span style="color:#75715e">// loop on failed CAS
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 如果waitStatus是PROPAGATE直接判断
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 跳出循环的关键: 只要新老head相等就跳出循环
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">==</span> head<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>只要有线程获取锁设置了<code>新head</code>，<code>h == head</code>就会不成立导致再次循环，其目的是为了执行<code>unparkSuccessor(head)来唤醒有效后继节点</code>。</p>
+</blockquote>
+<h3 id="release">release</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 调用semaphore的内部实现去释放锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryReleaseShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 如果成功就尝试唤醒后继节点且传播
+</span><span style="color:#75715e"></span>        doReleaseShared<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 释放共享锁
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 获取当前state
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> current <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 将 state + 1
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> releases<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>next <span style="color:#f92672">&lt;</span> current<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum permit count exceeded&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">// CAS修改state成功返回true
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>current<span style="color:#f92672">,</span> next<span style="color:#f92672">))</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>
+<p><code>doReleaseShared</code>方法在此不再赘述，它保证了<code>多线程情况下的后继节点能够正常被唤醒</code>。</p>
+</li>
+<li>
+<p><code>tryReleaseShared</code>目的就是为了恢复<code>共享变量state</code>。便于后面的新线程获取锁。</p>
+</li>
+<li>
+<p>Sempahore释放锁的时候，<code>不校验你是否持有共享锁的，所以可以理解成任意线程都可以释放锁。</code>那么就会出现你的<code>permit设置为2，当你调用了三次release，你的state为3的情况。</code></p>
+</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>即使调用多次release方法也不会产生影响，因为在<code>unparkSuccessor</code>方法中，会去获取next节点，如果没有就<code>从后往前查找有效节点</code>再唤醒，没有有效节点就不会唤醒。</p>
+</blockquote>
+<h3 id="共享锁总结">共享锁总结</h3>
+<ul>
+<li>共享锁相比独占锁最大的不同在于<code>setHeadAndPropagate</code> 和 <code>doReleaseShared</code>。</li>
+<li><code>setHeadAndPropagate</code> 用于设置新head，及一定条件下调用<code>doReleaseShared</code>，且调用<code>doReleaseShared</code>会导致线程不必要的唤醒。</li>
+<li><code>doReleaseShared</code>在获取锁和释放锁的时候都可能被调用，因为是共享锁，即便你获取了锁，后继节点也有可能获取锁。</li>
+<li><code>PROPAGATE</code>与<code>SIGNAL</code>的意义相同，都为了让唤醒线程能检测到状态变化，区别在于前者<code>只作用于共享锁</code>。</li>
+<li>共享锁操作共享变量肯定会出现<code>原子性和有序性</code>的情况(<code>permit = 1除外,此时是特殊的独占锁</code>)。</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://xiaokexiang.github.io/post/readwritelock/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">ReadWriteLock</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://xiaokexiang.github.io/post/condition/">
+                  <span class="button__text">Condition</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://xiaokexiang.github.io/assets/main.js"></script>
+<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>MESA  on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/tags/mesa/</link>
+    <description>Recent content in MESA  on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Sat, 06 Jun 2020 22:45:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/tags/mesa/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>MESA模型</title>
+      <link>https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Sat, 06 Jun 2020 22:45:30 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Java中`管理临界区资源`的管理策略。
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

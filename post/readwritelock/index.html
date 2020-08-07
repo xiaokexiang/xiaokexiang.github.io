@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>ReadWriteLock :: 黄昏现白骨 — Just a normal blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
+ 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。  ReadWriteLock的默认实现类ReentrantReadWriteLock
+public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写锁都是ReentrantReadWriteLock的内部类  private final ReentrantReadWriteLock.ReadLock readerLock; private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; // 读写锁默认是非公平锁  public ReentrantReadWriteLock() { this(false); } // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列  public ReentrantReadWriteLock(boolean fair) { sync = fair ? new FairSync() : new NonfairSync(); readerLock = new ReadLock(this); writerLock = new WriteLock(this); } }  相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。
+ state 与独占锁、共享锁的state的使用不同，因为需要表示两种状态，所以对int型state做了高低位切割，分别表示不同的状态。已知int=4byte= 32bit，所以高16位表示读，低16位表示写。他们的取值范围在[0 ~ 2^16 - 1]，进而我们可以得出，最多有2^16 -1个线程可以获取读锁。"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://xiaokexiang.github.io/post/readwritelock/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ReadWriteLock"/>
+<meta name="twitter:description" content="具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。"/>
+
+
+
+<meta property="og:title" content="ReadWriteLock" />
+<meta property="og:description" content="具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiaokexiang.github.io/post/readwritelock/" />
+<meta property="article:published_time" content="2020-06-24T09:15:29+08:00" />
+<meta property="article:modified_time" content="2020-06-24T09:15:29+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/readwritelock/">ReadWriteLock</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-06-24
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h3 id="readwritelock">ReadWriteLock</h3>
+<p>ReadWriteLock是接口，它定义了两个方法：<code>ReadLock</code>和<code>WriteLock</code>，读写锁的具体实现在<code>ReentrantReadWriteLock</code>中。读写锁是之前分析的<code>独占锁</code>和<code>共享锁</code>两个特性的集合体，具有如下规定：</p>
+<ol>
+<li>允许多个线程同时读取变量。</li>
+<li>某时刻只允许一个线程写变量。</li>
+<li>如果有写线程正在执行写操作，那么禁止其他读线程读取变量。</li>
+</ol>
+<p>ReadWriteLock的默认实现类<code>ReentrantReadWriteLock</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReentrantReadWriteLock</span>  <span style="color:#66d9ef">implements</span> ReadWriteLock <span style="color:#f92672">{</span>
+	<span style="color:#75715e">// 读锁和写锁都是ReentrantReadWriteLock的内部类
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantReadWriteLock<span style="color:#f92672">.</span><span style="color:#a6e22e">ReadLock</span> readerLock<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantReadWriteLock<span style="color:#f92672">.</span><span style="color:#a6e22e">WriteLock</span> writerLock<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">final</span> Sync sync<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 读写锁默认是非公平锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ReentrantReadWriteLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    
+    <span style="color:#75715e">// ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ReentrantReadWriteLock</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> fair<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        sync <span style="color:#f92672">=</span> fair <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> FairSync<span style="color:#f92672">()</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> NonfairSync<span style="color:#f92672">();</span>
+        readerLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReadLock<span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+        writerLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WriteLock<span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>相比于<code>Semaphore</code>，<code>ReentrantReadWriteLock</code>采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而<code>ReentrantReadWriteLock</code>会记录，只有持有相关锁才能来释放锁。</p>
+</blockquote>
+<h4 id="state">state</h4>
+<p>与独占锁、共享锁的state的使用不同，因为需要表示两种状态，所以对<code>int型state</code>做了<code>高低位切割</code>，分别表示不同的状态。已知<code>int=4byte= 32bit</code>，所以<code>高16位表示读，低16位表示写</code>。他们的取值范围在<code>[0 ~ 2^16 - 1]</code>，进而我们可以得出，最多有<code>2^16 -1</code>个线程可以获取读锁。</p>
+<p><img src="https://image.leejay.top/image/20200630/iU956J9I2D6U.png?imageslim" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
+      
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SHARED_SHIFT   <span style="color:#f92672">=</span> 16<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SHARED_UNIT    <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>1 <span style="color:#f92672">&lt;&lt;</span> SHARED_SHIFT<span style="color:#f92672">);</span>
+    <span style="color:#75715e">// 读锁和写锁的count不能超过MAX_COUNT
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MAX_COUNT      <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>1 <span style="color:#f92672">&lt;&lt;</span> SHARED_SHIFT<span style="color:#f92672">)</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> EXCLUSIVE_MASK <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>1 <span style="color:#f92672">&lt;&lt;</span> SHARED_SHIFT<span style="color:#f92672">)</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">// 返回读锁的count
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sharedCount</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+        <span style="color:#66d9ef">return</span> c <span style="color:#f92672">&gt;&gt;&gt;</span> SHARED_SHIFT<span style="color:#f92672">;</span> 
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// 返回写锁的count
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">exclusiveCount</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+        <span style="color:#66d9ef">return</span> c <span style="color:#f92672">&amp;</span> EXCLUSIVE_MASK<span style="color:#f92672">;</span> 
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>
+<p>读锁和写锁的count不能超过<code>MAX_COUNT即2^16-1</code>。</p>
+</li>
+<li>
+<p>int 型 state 无符号右移16位，得到的即为高16位的count。</p>
+</li>
+<li>
+<p>int 型 state 与 <code>1111 1111 1111 1111</code>做<code>与运算</code>，它的结果也不会超过<code>1111 1111 1111 1111</code>，因为<code>与运算</code>的规则是<code>都1为1，否则为0</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">如int state <span style="color:#f92672">=</span> 3<span style="color:#960050;background-color:#1e0010">，</span>那么它的二进制如下
+       
+  0000 0000 0000 0000 0000 0000 0000 0011
+<span style="color:#f92672">&amp;</span>                     1111 1111 1111 1111
+<span style="color:#960050;background-color:#1e0010">——————————————————————————————————————————</span>    
+                      0000 0000 0000 0011
+</code></pre></div></li>
+<li>
+<p>如果读count + 1，那么就等于 <code>c  =  c + 1 &lt;&lt; 16</code>，如果count + 1，那么<code>c = c + 1</code>。</p>
+</li>
+<li>
+<p><code>如果c 不为 0，当写count = 0时，读count &gt; 0成立</code>。即读锁已经获取。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="threadlocalholdcounter">ThreadLocalHoldCounter</h4>
+<p>除了需要记录锁被拿取的总次数，还需要记录每个线程分别拿走多少，所以我们使用[ThreadLocal](#7. ThreadLocal内存泄漏问题)，将记录的工作交给线程自己。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 当前线程持有的读锁数量，当为0的时候置为null
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> ThreadLocalHoldCounter readHolds<span style="color:#f92672">;</span>
+    
+    <span style="color:#75715e">// 保存成功获取读锁的线程的count 注意非volatile
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> HoldCounter cachedHoldCounter<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 用于读锁，表明第一个获取读锁的线程是谁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> Thread firstReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 用于读锁，表明第一个获取读锁的线程重入了几次
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">int</span> firstReaderHoldCount<span style="color:#f92672">;</span>
+	Sync<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        readHolds <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ThreadLocalHoldCounter<span style="color:#f92672">();</span>
+        setState<span style="color:#f92672">(</span>getState<span style="color:#f92672">());</span> <span style="color:#75715e">// ensures visibility of readHolds
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// 每个线程都拥有HoldCounter类的实例，互不干预
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HoldCounter</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 这里线程id直接使用id，不使用reference，便于GC
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> tid <span style="color:#f92672">=</span> getThreadId<span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocalHoldCounter</span>
+        <span style="color:#66d9ef">extends</span> ThreadLocal<span style="color:#f92672">&lt;</span>HoldCounter<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">public</span> HoldCounter <span style="color:#a6e22e">initialValue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> HoldCounter<span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>这里使用线程ID而不是用线程对象的原因时避免<code>HoldCounter和ThreadLocal互相绑定导致GC难以释放(可以释放只是需要代价)</code>，目的就是帮助GC快速回收对象。</li>
+<li>定义三个成员变量：cachedHoldCounter、firstReader和firstReaderHoldCount原因是为了<code>快速判断当前线程是否持有读锁</code>。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="writelock">WriteLock</h3>
+<p>我们从写锁开始入手，写锁就是独占锁的体现。</p>
+<ul>
+<li>
+<p>tryLock</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 写锁入口
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+  
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>tryAcquire<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+        acquireQueued<span style="color:#f92672">(</span>addWaiter<span style="color:#f92672">(</span>Node<span style="color:#f92672">.</span><span style="color:#a6e22e">EXCLUSIVE</span><span style="color:#f92672">),</span> arg<span style="color:#f92672">))</span>
+        selfInterrupt<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 与独占锁不同的子类实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 获取当前线程
+</span><span style="color:#75715e"></span>    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 获取写锁的count
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> w <span style="color:#f92672">=</span> exclusiveCount<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+    <span style="color:#75715e">// c!=0说明有锁，但不知道是什么锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// state != 0 且 w = 0说明此时存在读锁，返回false
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// w != 0 说明存在写锁，必须要求当前线程是持有写锁的线程，否则返回false
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>w <span style="color:#f92672">==</span> 0 <span style="color:#f92672">||</span> current <span style="color:#f92672">!=</span> getExclusiveOwnerThread<span style="color:#f92672">())</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 判断写锁count是否超过最大count
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>w <span style="color:#f92672">+</span> exclusiveCount<span style="color:#f92672">(</span>acquires<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;</span> MAX_COUNT<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 到此处说明是当前线程，所以无竞争，直接set改变写锁count
+</span><span style="color:#75715e"></span>        setState<span style="color:#f92672">(</span>c <span style="color:#f92672">+</span> acquires<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// c=0说明说明无锁
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 如果不需要阻塞就尝试CAS修改state
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>writerShouldBlock<span style="color:#f92672">()</span> <span style="color:#f92672">||</span>
+        <span style="color:#f92672">!</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> c <span style="color:#f92672">+</span> acquires<span style="color:#f92672">))</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 设置当前线程为独占线程
+</span><span style="color:#75715e"></span>    setExclusiveOwnerThread<span style="color:#f92672">(</span>current<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 非公平锁实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NonfairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 非公平直接返回false尝试去获取锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">writerShouldBlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+  
+<span style="color:#75715e">// 公平锁实习那
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 如果返回true说明前面有节点等待
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">writerShouldBlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 判断队列中是否有前驱节点在等待
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> hasQueuedPredecessors<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+  
+</code></pre></div></li>
+</ul>
+<blockquote>
+<p>写锁获取成功的情况：</p>
+<ol>
+<li>写锁的线程持有者重入了写锁。</li>
+<li>写锁不被任何线程持有，当前线程竞争得到了锁。</li>
+</ol>
+<p>写锁获取失败的情况：</p>
+<ol>
+<li>
+<p>当前线程不是写锁的持有者。</p>
+</li>
+<li>
+<p><code>当前只有读锁没有写锁</code>，不能将读锁升级为写锁。</p>
+</li>
+<li>
+<p>公平锁判断当前线程排在了队列中其他线程后面。</p>
+</li>
+<li>
+<p>尝试CAS修改state失败了。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="trywritelock">tryWriteLock</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryWriteLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> w <span style="color:#f92672">=</span> exclusiveCount<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>w <span style="color:#f92672">==</span> 0 <span style="color:#f92672">||</span> current <span style="color:#f92672">!=</span> getExclusiveOwnerThread<span style="color:#f92672">())</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 如果等于最大值就抛溢出异常
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>w <span style="color:#f92672">==</span> MAX_COUNT<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// 即使是写锁的持有线程还是通过CAS设置state
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> c <span style="color:#f92672">+</span> 1<span style="color:#f92672">))</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+    setExclusiveOwnerThread<span style="color:#f92672">(</span>current<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>与tryAcquire类似，是<code>非公平、一次性</code>的获取写锁，写锁计数默认加1。</p>
+</blockquote>
+<h4 id="release">release</h4>
+<p>写锁的释放流程与独占锁释放类似，只是tryRelease不同，我们只需要关注AQS的子类实现即可</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// ReentrentReadWriteLock
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+  sync<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">//AQS.release
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">release</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryRelease<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+        Node h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span>
+            unparkSuccessor<span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// boolean/false 释放/不是反
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryRelease</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 如果不是写锁持有线程则抛出异常
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>isHeldExclusively<span style="color:#f92672">())</span>
+        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalMonitorStateException<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 计算释放后新值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> getState<span style="color:#f92672">()</span> <span style="color:#f92672">-</span> releases<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 判断写锁count == 0 写锁是否存在重入
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> free <span style="color:#f92672">=</span> exclusiveCount<span style="color:#f92672">(</span>nextc<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 为true说明已经全部释放
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>free<span style="color:#f92672">)</span>
+        <span style="color:#75715e">// 清空当前独占线程
+</span><span style="color:#75715e"></span>        setExclusiveOwnerThread<span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+    <span style="color:#75715e">// 设置state
+</span><span style="color:#75715e"></span>    setState<span style="color:#f92672">(</span>nextc<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">return</span> free<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>只有<code>state中低16位值 = 0</code>的时候才表明写锁释放完毕。</p>
+</blockquote>
+<hr>
+<h3 id="readlock">ReadLock</h3>
+<p>读锁就是共享锁的体现，我们直接查看ReentrantReadWriteLock中AQS的子类的<code>tryAcquireShared</code>和<code>tryReleaseShared</code>实现即可。</p>
+<ul>
+<li>
+<p>tryAcquireShared</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 首先我们知道int返回值的不同代表了共享锁获取的不同情况(和semaphore一致)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> unused<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<span style="color:#75715e">// 获取当前线程
+</span><span style="color:#75715e"></span>    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 获取state
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 1. 写锁count = 0，说明此时没有写锁。继续执行
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 2. 写锁count != 0 ,此时有写锁，但写锁持有者是当前线程。继续执行
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 3. 写锁count != 0,此时有写锁，但写锁持有者不是当前线程，获取失败，执行中断。
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>exclusiveCount<span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+        getExclusiveOwnerThread<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> current<span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 计算读锁count，无符号右移16位
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> sharedCount<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+    <span style="color:#75715e">// 1. readerShouldBlock 判断是否需要阻塞，false/true 不阻塞/阻塞
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 2. 读锁count &lt; MAX_COUNT
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 3. 将读锁加1，即state高16位加1
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>readerShouldBlock<span style="color:#f92672">()</span> <span style="color:#f92672">&amp;&amp;</span>
+        r <span style="color:#f92672">&lt;</span> MAX_COUNT <span style="color:#f92672">&amp;&amp;</span>
+        compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> c <span style="color:#f92672">+</span> SHARED_UNIT<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 执行到这里说明已经成功将读锁加1
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果 r = 0说明当前线程是第一个获取读锁的线程，此时不存在竞争
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>r <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 设置firstReader 和 firstReaderHoldCount属性
+</span><span style="color:#75715e"></span>            firstReader  <span style="color:#f92672">=</span> current<span style="color:#f92672">;</span>
+            firstReaderHoldCount <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+          <span style="color:#75715e">// 如果r != 0 但 firstReader == current说明
+</span><span style="color:#75715e"></span>          <span style="color:#75715e">// 第一个读锁线程又重入了，那么只要修改firstReaderHoldCount即可
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReader <span style="color:#f92672">==</span> current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 这里不需要加锁，因为当前线程就是第一个读锁线程，不会有其他线程来操作
+</span><span style="color:#75715e"></span>            firstReaderHoldCount<span style="color:#f92672">++;</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 此处说明当前线程不是第一个来获取读锁的线程
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 定义局部变量rh = 成员变量cachedHoldCounter
+</span><span style="color:#75715e"></span>            HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 该条件能够保证rh持有的是当前线程的HoldCounter
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
+                <span style="color:#75715e">// a.将rh 和 cachedHoldCounter 指向ThreadLocal中的HoldCounter
+</span><span style="color:#75715e"></span>                cachedHoldCounter <span style="color:#f92672">=</span> rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+            <span style="color:#75715e">// 执行到这里说明是之前设置过cachedHoldCounter的线程来获取读锁
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 运气很好。这里尝试获取结果发现cachedHoldCounter就是当前线程
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 如果rh.count = 0就说明当前线程释放了读锁，且没有获取读锁的线程HC=null
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 所以这里当rh.count=0时需要设置rh到当前线程ThreadLocal中
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>rh<span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 不论如何rh.count都会+1，注意cacheHoldCounter = rh,所cHC.count也+1
+</span><span style="color:#75715e"></span>            rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">++;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 返回1表明获取成功
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// 如果不能获取读锁执行下面逻辑
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> fullTryAcquireShared<span style="color:#f92672">(</span>current<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 公平锁实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 判断当前线程是否是队列第一个节点
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">readerShouldBlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">return</span> hasQueuedPredecessors<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 非公平锁实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NonfairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">readerShouldBlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 第一个节点是shared就返回false否则返回true
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> apparentlyFirstQueuedIsExclusive<span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>
+<p>当<code>!readerShouldBlock() &amp;&amp; r &lt; MAX_COUNT &amp;&amp; compareAndSetState(c, c + SHARED_UNIT)</code>为true时，此时共享锁已经获取成功，大括号中的代码都是在设置相关参数。</p>
+</li>
+<li>
+<p><code>r(share read count) = 0</code>说明此时暂无共享锁，进入该分支的只能是<code>第一个</code>来获取共享锁的线程，所以这个分支设置属性时不需要进行同步操作。</p>
+</li>
+<li>
+<p>若<code>r != 0</code>，进入<code>else if 分支</code>，此时<code>firstReader != null</code>必成立，若<code>firstReader = current</code>，说明当前线程是第一个获取共享锁的线程，它重入了，所以这里只需要将<code>firstReaderHoldCount</code>加1即可。</p>
+</li>
+<li>
+<p>进入最后一个else分支，到这个地方的线程必是<code>非第一个获取共享锁的线程</code>，首先我们需要明白此处的代码是没有同步操作的，且<code>cachedHoldCounter没有用volatile</code>修饰的，也就是<code>下个线程可能看不到上个线程对cachedHoldCounter的操作</code>。</p>
+</li>
+<li>
+<p>①若<code>rh = null</code>，那么跳转③。</p>
+<p>② 若<code>rh != null 但 HC.tid != currentTid</code>，说明<code>上个获取读锁的线程和当前线程不同</code>，跳转③。</p>
+<p>③ 获取当前线程的<code>HoldCounter(简称HC)</code>，跳转⑥。</p>
+<p>④ 若 <code>rh != null 但 rh.tid = currentTid</code>，说明<code>上个获取读锁的线程和当前线程相同</code>，读锁重入了，跳转⑤。</p>
+<p>⑤ 若 <code>rh.count = 0</code>，设置<code>当前线程的HC = rh</code>，跳转⑥。</p>
+<p>⑥ 至此<code>rh = 当前线程的HC</code>，将<code>rh++的同时cachedHoldCounter++</code>，然后<code> return 1</code>，tryAcquireShared方法结束。</p>
+</li>
+<li>
+<p>step5 中比较疑惑的是何时<code>else if(rh.count == 0)</code>成立？这里需要涉及到读锁释放的代码来帮助理解。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
+    rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+<span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;=</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+        <span style="color:#66d9ef">throw</span> unmatchedUnlockException<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+<span style="color:#f92672">--</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+</code></pre></div><blockquote>
+<p>首先我们需要明确，在<code>读锁释放过程中，它只是清空了线程的貌私有HC，并没有处理cHC</code>。</p>
+<p>我们假设线程A（非第一个获取读锁的线程）获取了读锁，释放读锁后再一次获取读锁这个流程来分析：</p>
+<ol>
+<li>线程A获取读锁成功进入else分支后，它会设置<code>threadA.HoldCounter.count = cacheHoldCounter = 1</code>，进线程A读锁释放，<code>rh = cacheHoldCounter != null</code>且此时count = 1，执行<code>readHolds.remove()</code>，然后<code>--rh.count</code>，这样<code>cacheHoldCounter.count也要减1，变成了0</code>。</li>
+<li>此时线程A继续获取读锁成功，进入读锁else判断流程发现<code>rh = cacheHoldCounter != null</code>，且<code>rh.tid = currentTid</code>，所以执行<code>else if (rh.count == 0)</code>判断，此时该条件成立，并且当前线程的HC = null，所以这里需要设置当前线程的HC。代码的目的就是为了保证<code>读锁的获取-释放之后再获取读锁时，不会因为之前读锁的释放导致当前线程的HC为null</code>。</li>
+</ol>
+</blockquote>
+</li>
+<li>
+<p>获取共享锁成功后的代码，都是在处理</p>
+<p><code>firstReader</code>：第一个获取读锁的线程。</p>
+<p><code>firstReaderHoldCount</code>：第一个获取读锁的线程获取读锁次数。</p>
+<p><code>cachedHoldCounter</code>：获取最新获取读锁的线程的HoldCounter。</p>
+<p><code>HoldCounter.count</code>：将每个线程获取的读锁次数记录在本地线程中。</p>
+</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h4 id="apparentlyfirstqueuedisexclusive">apparentlyFirstQueuedIsExclusive</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 一定概率防止读锁非公平获取锁，让它去排队，让写锁不要无限等待。
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">apparentlyFirstQueuedIsExclusive</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    Node h<span style="color:#f92672">,</span> s<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span>
+        <span style="color:#f92672">(</span>s <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span>  <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span>
+        <span style="color:#f92672">!</span>s<span style="color:#f92672">.</span><span style="color:#a6e22e">isShared</span><span style="color:#f92672">()</span>         <span style="color:#f92672">&amp;&amp;</span>
+        s<span style="color:#f92672">.</span><span style="color:#a6e22e">thread</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>如果head的next节点不存在（队列中第一个等待的节点）直接返回false；</li>
+<li>如果队列第一个等待节点是<code>Shared读</code>节点，那么返回false，当前线程就可以获取读锁。</li>
+<li>如果队列的第一个等待节点是<code>EXCLUSIVE写锁</code>，那么返回true，当前线程就不能获取读锁。</li>
+<li>方法目的：<code>一定概率阻止读锁非公平获取动作，如果第一个节点是写锁，让读锁去排队，防止写锁无限等待（注意是一定概率，如果第一个是读锁，第二个是写锁，就不会排队），是非完全不公平读锁。</code></li>
+</ol>
+</blockquote>
+<h4 id="fulltryacquireshared">fullTryAcquireShared</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 第一次尝试获取共享锁失败就会进入此方法
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">fullTryAcquireShared</span><span style="color:#f92672">(</span>Thread current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 定义局部变量rh
+</span><span style="color:#75715e"></span>    HoldCounter rh <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 循环获取共享锁
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 获取state
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 如果存在写锁，当前线程不是写锁的持有线程，直接抛错。
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>exclusiveCount<span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>getExclusiveOwnerThread<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> current<span style="color:#f92672">)</span>
+                <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">else</span> 
+                <span style="color:#75715e">// do nothing
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 如果在这个else分支中return -1，会导致死锁
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 因为写锁的持有线程获取共享锁失败，会被阻塞，那就没人唤醒它了
+</span><span style="color:#75715e"></span>                
+        <span style="color:#75715e">// 执行到此处说明不存在写锁 
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 非公平锁需要判断队列第一个节点是否是写锁在等待
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 公平锁需要查看队列是否有head后继节点在等待
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>readerShouldBlock<span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 执行至此说明暂无写锁，但队列中有head后继节点在等待（公平）
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 一般有等待的节点直接返回-1，继续执行代码的原因是因为需要判断读锁是否重入
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 查看第一个获取共享锁是否是当前线程
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReader <span style="color:#f92672">==</span> current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 执行到此处说明当前线程是持有读锁的，且是第一次获取读锁的线程
+</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+                    <span style="color:#75715e">// 判断当前是否获取了读锁，若没有则将当前线程的HC置为null
+</span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                        rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+                        <span style="color:#75715e">// 执行到这说明当前线程第一次获取读锁
+</span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                            readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#75715e">// 1. rh=cachedHoldCounter=!=null 是当前线程的HC，rh.count!=0
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 2. rh=当前线程HC，cachedHoldCounter=null， rh.count=0
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                    <span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 至此当前线程可以获取读锁
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 判断读锁count是否超过MAX_COUNT
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sharedCount<span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> MAX_COUNT<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">// CAS修改state
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> c <span style="color:#f92672">+</span> SHARED_UNIT<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 这里的逻辑与tryAcquireShared类似
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sharedCount<span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                firstReader <span style="color:#f92672">=</span> current<span style="color:#f92672">;</span>
+                firstReaderHoldCount <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReader <span style="color:#f92672">==</span> current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                firstReaderHoldCount<span style="color:#f92672">++;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 这部分就是设置每个线程获取读锁的count
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+                    rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
+                    rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                    readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>rh<span style="color:#f92672">);</span>
+                rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">++;</span>
+                <span style="color:#75715e">// 设置cachedHoldCounter = 最新获取读锁成功的线程的HC
+</span><span style="color:#75715e"></span>                cachedHoldCounter <span style="color:#f92672">=</span> rh<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">return</span> 1<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>
+<p>如果<code>存在写锁，但当前线程不是写锁的持有线程</code>，直接返回-1，获取共享锁失败。若当前线程是写锁的持有线程，那么直接尝试获取读锁。</p>
+</li>
+<li>
+<p>与之前<code>readerShouldBlock</code>方法返回true直接共享锁获取失败不同，这里需要继续<code>判断是否读锁重入</code>的情况。如果当前线程已获取过读锁，那么直接获取共享锁，否则返回-1去排队。</p>
+</li>
+<li>
+<p><code>firstReader = current</code>说明当前线程是第一个获取共享锁的线程，并且当前线程准备重入锁，所以直接准备获取读锁。</p>
+</li>
+<li>
+<p><code>firstReader != current</code>就无法快速判断了，根据之前tryAcquireShared中类似的代码，执行到第一个<code>if (rh.count == 0)</code>代码前，说明<code>rh = 当前线程的HC = new HoldCounter</code>，说明当前线程是第一次获取读锁，此时第一个<code>if (rh.count == 0)</code>必定成立，需要移除<code>当前线程的HoldCounter</code>（为什么？<code>因为当线程没有读锁的时候，当前线程的HoldCounter = null</code>），这样继续执行到第二个<code>rh.count == 0</code>成立，返回-1并退出。</p>
+</li>
+<li>
+<p>如果不执行第一个而是执行到<code>if (rh.count == 0)</code>前，说明当前线程是重入锁，那么<code>rh.count != 0</code>必定成立，所以继续执行准备获取共享锁。step4和step5的作用就是：<code>先判断当队列第一个节点是写锁时（非公平），再判断如果是重入读锁可以获取，如果是第一次获取读锁则不能获取</code></p>
+</li>
+<li>
+<p>下面获取共享锁的代码逻辑与<code>tryAcquirShared</code>作用类似，都是获取读锁成功的善后工作。</p>
+</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="trylock">tryLock</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReadLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>exclusiveCount<span style="color:#f92672">(</span>c<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+            getExclusiveOwnerThread<span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> current<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> sharedCount<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>r <span style="color:#f92672">==</span> MAX_COUNT<span style="color:#f92672">)</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum lock count exceeded&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> c <span style="color:#f92672">+</span> SHARED_UNIT<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>r <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                firstReader <span style="color:#f92672">=</span> current<span style="color:#f92672">;</span>
+                firstReaderHoldCount <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReader <span style="color:#f92672">==</span> current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                firstReaderHoldCount<span style="color:#f92672">++;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
+                    cachedHoldCounter <span style="color:#f92672">=</span> rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+                    readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>rh<span style="color:#f92672">);</span>
+                rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">++;</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>tryLock和我们分析的tryAcquireShared类似，返回值不同tryLock是boolean值，同时tryLock采用的是<code>自旋</code>直到成功获取，或者<code>写锁被其他线程获取则返回false，获取失败。</code></p>
+</blockquote>
+<h3 id="tryreleaseshared">tryReleaseShared</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// AQS.unlock
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryReleaseShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+        doReleaseShared<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 我们只分析ReentrentReadWriteLock-tryReleaseShared具体实现
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> unused<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 获取当前线程
+</span><span style="color:#75715e"></span>    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 如果当前线程是第一个获取读锁的线程
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReader <span style="color:#f92672">==</span> current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 若firstReaderHoldCount = 1成立。说明该线程只获取了一次共享锁
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>firstReaderHoldCount <span style="color:#f92672">==</span> 1<span style="color:#f92672">)</span>
+            firstReader <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">else</span>
+            <span style="color:#75715e">// 说明第一个获取读锁的线程重入了读锁
+</span><span style="color:#75715e"></span>            firstReaderHoldCount<span style="color:#f92672">--;</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 执行到这说明当前线程不是第一个获取读锁的线程
+</span><span style="color:#75715e"></span>        HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 与读锁获取代码类似
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
+            rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 执行到此rh = 当前线程的HC
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果rh != null 且 rh.tid = getThreadId(current)
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 说明cachedHoldCounter恰好是当前线程的HC
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 如果rh.count &gt; 1说明该线程的读锁重入了
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果rh.count = 1说明该线程的读锁获取了一次
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;=</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 清空当前线程的HoldCounter，但是不处理cachedHoldCounter
+</span><span style="color:#75715e"></span>            readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">();</span>
+            <span style="color:#75715e">// 如果rh.count = 0说明当前线程没有持有过读锁，抛异常
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+                <span style="color:#66d9ef">throw</span> unmatchedUnlockException<span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 将rh.count减1的同时，如果cachedHoldCounter!= null
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// cachedHoldCounter.count 也要减1
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 因为他们指向了都是当前线程私有的HoldCounter
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">--</span>rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">//虽然读锁减1了，但是关键变量state还没有修改
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c <span style="color:#f92672">-</span> SHARED_UNIT<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> nextc<span style="color:#f92672">))</span>
+            <span style="color:#75715e">// 只有当读写锁全部释放了，才会返回true，否则一直是false
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>读锁的释放容易理解，就是判断当前线程的读锁是否是重入锁，以及将每个线程中的<code>HoldCounter</code>中的<code>count-1</code>。</li>
+<li>需要注意执行到<code>--rh.count;</code>，如果<code>cachedHoldCounter != null（说明cachedHoldCounter 恰好是当前线程的HC）</code>那么除了<code>rh.count，cachedHoldCounter.count</code>也需要减1。</li>
+<li><code>if (count &lt;= 1) </code>何时<code>count = 0</code>？说明当前线程没有持有过读锁，就调用了释放读锁的方法。</li>
+<li>只有读写锁完全释放，tryReleaseShared才返回true，继而调用<code>doReleaseShared</code>方法。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="锁升级与降级">锁升级与降级</h3>
+<p>读锁线程多个线程共享的，而写锁单个线程独占的，所以写锁的并发限制比读锁高。</p>
+<p>基于以上定义：</p>
+<ul>
+<li>
+<p>同一个线程中，<code>在释放读锁的前，获取了写锁</code>，这种情况叫做<code>锁升级</code>（读写锁不支持）。</p>
+<p>我们知道获取写锁的前提条件是<code>读锁释放完毕</code>，假设此时有两个读锁线程都想获取写锁，这两个线程都想释放除自己以外的读锁，但是他们都在等对方释放，那么会导致<code>死锁</code>。究其原因：读锁是多线程共享的，大家都有读锁，凭啥我要让着你去释放我自己的读锁，都不让那就死锁了。</p>
+</li>
+<li>
+<p>同一个线程中，<code>在释放写锁的前，获取了读锁</code>，这种情况叫做<code>锁降级</code>（读写锁支持）。</p>
+<p>那为什么支持锁降级呢？因为<code>写锁是独占的</code>，此刻只有我一个人持有写锁，所以我想获取读锁就获取，不会有其他人和我抢读锁（除非这个读锁本身，但只是读锁重入而已不会产生竞争）。</p>
+</li>
+</ul>
+<h3 id="总结">总结：</h3>
+<ul>
+<li>
+<p>如果有一线程持有读锁，那么此时其他线程（包括已持有读锁线程）无法获取写锁<code>（获取写锁的前提条件是所有的读锁释放完毕）</code>。</p>
+</li>
+<li>
+<p>如果有一线程持有读锁，那么其他线程（包括已持有读锁线程）是可以获取读锁的，读写互斥，读读不互斥。</p>
+</li>
+<li>
+<p>如果有一线程持有写锁，（除非是持有写锁线程本身）否则其他线程都不能获取读锁/写锁。写读/写写互斥。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CachedDate</span> <span style="color:#f92672">{</span>
+    Object data<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">boolean</span> cacheValid<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">final</span> ReentrantReadWriteLock rwl <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantReadWriteLock<span style="color:#f92672">();</span>
+  
+    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processCachedData</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 先获取读锁
+</span><span style="color:#75715e"></span>        rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 判断cacheValid即缓存是否可用
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>cacheValid<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 到这里说明cache可用准备写值
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 需要先释放读锁在获取写锁
+</span><span style="color:#75715e"></span>            rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+            rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">writeLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 需要再次简要cacheValid，防止其他线程在此期间改过该值
+</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 在use方法之前获取写锁写入data值及修改cacheValid状态
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>cacheValid<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    data <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">currentTimeMillis</span><span style="color:#f92672">();</span>
+                    cacheValid <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+                <span style="color:#75715e">// 这里就是锁降级。在写锁释放之前先获取读锁。
+</span><span style="color:#75715e"></span>                rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 释放写锁
+</span><span style="color:#75715e"></span>                rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">writeLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 模拟执行use前的耗时操作
+</span><span style="color:#75715e"></span>      Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1000L<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 对缓存数据进行打印
+</span><span style="color:#75715e"></span>            use<span style="color:#f92672">(</span>data<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 最终释放读锁
+</span><span style="color:#75715e"></span>            rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#75715e">// 只是打印缓存值
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">use</span><span style="color:#f92672">(</span>Object data<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;use cache data &#34;</span> <span style="color:#f92672">+</span> data<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>Q：为什么要在写锁释放前，获取读锁呢？</p>
+<p>A：如果线程A修改了值V，在释放写锁前没有获取读锁，那么在调用use()方法前，线程B获取了写锁，并修改了值V，这个修改<code>对线程A是不可见的</code>。最终打印的data可能是线程B修改的值。</p>
+<p>Q：锁降级是否是必要的？</p>
+<p>A：如果线程A在执行use时传递的<code>想是自己修改的数据，那么需要锁降级</code>。如果希望<code>传递的是最新的数据，那么不需要锁降级</code>。</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="读写锁总结">读写锁总结</h5>
+<ul>
+<li>ReetrentReadWriteLock通过将state变量分为高低16位来解决记录读锁写锁获取的总数。</li>
+<li>读锁的私有变HoldCounter记录者当前线程获取读锁的次数，底层通过<code>ThreadLocal</code>实现。</li>
+<li>读锁的非公平获获取，通过<code>apparentlyFirstQueuedIsExclusive</code>方法一定概率防止了写锁无限等待。</li>
+<li>当线程A获取写锁时，会因为其他持有<code>写锁（不包括线程A）</code>或<code>读锁（包括线程A）</code>的线程而阻塞。</li>
+<li>当线程A获取读锁时，会因为其他持有<code>写锁（不包括线程A)</code>而阻塞。</li>
+</ul>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="https://xiaokexiang.github.io/post/countdownlatch/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">CountDownLatch</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="https://xiaokexiang.github.io/post/semaphore/">
+                  <span class="button__text">Semaphore</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://xiaokexiang.github.io/assets/main.js"></script>
+<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

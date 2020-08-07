@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/post/</link>
+    <description>Recent content in Posts on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Sat, 01 Aug 2020 11:10:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>二叉堆时间复杂度分析</title>
+      <link>https://xiaokexiang.github.io/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</link>
+      <pubDate>Sat, 01 Aug 2020 11:10:01 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Future</title>
+      <link>https://xiaokexiang.github.io/post/future/</link>
+      <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/future/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ThreadPool</title>
+      <link>https://xiaokexiang.github.io/post/threadpool/</link>
+      <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/threadpool/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          `ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ConcurrentHashMap</title>
+      <link>https://xiaokexiang.github.io/post/concurrenthashmap/</link>
+      <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/concurrenthashmap/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          `ConcurrentHashMap`是基于`CAS + Synchronized`的线程安全的HashMap。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ConcurrentLinkedQueue</title>
+      <link>https://xiaokexiang.github.io/post/concurrentlinkedqueue/</link>
+      <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/concurrentlinkedqueue/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          `ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>CopyOnWriteArrayList</title>
+      <link>https://xiaokexiang.github.io/post/copyonwritearraylist/</link>
+      <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/copyonwritearraylist/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          `CopyOnWriteArrayList`是ArrayList的线程安全变体，是通过`生成新的副本`来实现线程安全。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>BlockingDeque</title>
+      <link>https://xiaokexiang.github.io/post/blockingdeque/</link>
+      <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/blockingdeque/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          基于ReentrantLock、Condition实现的`双端阻塞队列`，支持在队首和队尾获取/添加数据。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>BlockingQueue</title>
+      <link>https://xiaokexiang.github.io/post/blockingqueue/</link>
+      <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/blockingqueue/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>StampedLock</title>
+      <link>https://xiaokexiang.github.io/post/stampedlock/</link>
+      <pubDate>Wed, 01 Jul 2020 10:32:01 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/stampedlock/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋+CAS`、`类似AQS`的逻辑实现
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>CyclieBarrier</title>
+      <link>https://xiaokexiang.github.io/post/cycliebarrier/</link>
+      <pubDate>Mon, 29 Jun 2020 13:27:36 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/cycliebarrier/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          基于`CountDownLatch`的特性：`计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier`的出现是为了解决复杂场景`CountDownLatch`使用的劣势。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>CountDownLatch</title>
+      <link>https://xiaokexiang.github.io/post/countdownlatch/</link>
+      <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/countdownlatch/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ReadWriteLock</title>
+      <link>https://xiaokexiang.github.io/post/readwritelock/</link>
+      <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/readwritelock/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Semaphore</title>
+      <link>https://xiaokexiang.github.io/post/semaphore/</link>
+      <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/semaphore/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Condition</title>
+      <link>https://xiaokexiang.github.io/post/condition/</link>
+      <pubDate>Thu, 18 Jun 2020 20:01:58 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/condition/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现`等待/通知`模式。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>AQS与ReentrantLock独占锁</title>
+      <link>https://xiaokexiang.github.io/post/reentrantlock/</link>
+      <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/reentrantlock/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>CAS</title>
+      <link>https://xiaokexiang.github.io/post/cas/</link>
+      <pubDate>Fri, 12 Jun 2020 22:49:05 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/cas/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Java并发中`乐观锁的实现`，大部分并发框架都基于CAS实现。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>volatile</title>
+      <link>https://xiaokexiang.github.io/post/volatile/</link>
+      <pubDate>Mon, 08 Jun 2020 11:13:38 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/volatile/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Java中volatile关键字的原理与作用。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>MESA模型</title>
+      <link>https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Sat, 06 Jun 2020 22:45:30 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Java中`管理临界区资源`的管理策略。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ThreadLocal内存泄漏</title>
+      <link>https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
+      <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          ThreadLocal的内存泄露问题。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Java内存可见性</title>
+      <link>https://xiaokexiang.github.io/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Tue, 19 May 2020 08:08:47 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          多线程中的内存可见性问题。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Complexity</title>
+      <link>https://xiaokexiang.github.io/post/complexity/</link>
+      <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/complexity/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          时间复杂度与空间复杂度的概念，时间复杂度速查表。
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

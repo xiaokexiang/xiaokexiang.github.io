@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>Future  on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/tags/future/</link>
+    <description>Recent content in Future  on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Sun, 19 Jul 2020 17:11:13 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/tags/future/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Future</title>
+      <link>https://xiaokexiang.github.io/post/future/</link>
+      <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/future/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>StampedLock  on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/tags/stampedlock/</link>
+    <description>Recent content in StampedLock  on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Wed, 01 Jul 2020 10:32:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/tags/stampedlock/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>StampedLock</title>
+      <link>https://xiaokexiang.github.io/post/stampedlock/</link>
+      <pubDate>Wed, 01 Jul 2020 10:32:01 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/stampedlock/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋+CAS`、`类似AQS`的逻辑实现
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

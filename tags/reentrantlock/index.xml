@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+  <channel>
+    <title>ReentrantLock  on 黄昏现白骨</title>
+    
+    
+    
+    <link>https://xiaokexiang.github.io/tags/reentrantlock/</link>
+    <description>Recent content in ReentrantLock  on 黄昏现白骨</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-Hans</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Mon, 15 Jun 2020 15:53:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://xiaokexiang.github.io/tags/reentrantlock/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AQS与ReentrantLock独占锁</title>
+      <link>https://xiaokexiang.github.io/post/reentrantlock/</link>
+      <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
+      
+      <guid>https://xiaokexiang.github.io/post/reentrantlock/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。
+          
+        
+        </description>
+    </item>
+    
+  </channel>
+</rss>

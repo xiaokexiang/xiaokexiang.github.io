@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>二叉堆时间复杂度分析 :: 黄昏现白骨 — Just a normal blog</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="二叉堆概念 二叉堆本质上是一颗完全二叉树，它的根节点又叫做堆顶。二叉堆分为：
+ 最大堆：最大堆的任何一个父节点的值，都大于或等于它左、右节点的值。
+最小堆：最小堆的任何一个父节点的值，都小于或等于它左、右节点的值。
+ 根据定义可以推导出，二叉堆的堆顶存放的是这棵树的最大或最小元素。
+我们采用数组(物理结构)构建二叉堆(逻辑结构)，二叉堆的元素满足以下特性：
+ 假设父节点的index为0(记为i=0)，那么它的左子节点index为2n &#43; 1，右子节点index为2n &#43; 2。
+同样，如果当前节点的index=0，那么它的父节点index为(i-1)/2 或 (i-2)/2，取决于i % 2 == 0是否成立。
+  Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构实现的。
+  二叉堆推导 构建 对于二叉堆的构建，我们选择最小二叉堆推导，对于最小二叉堆构建存在两种思路：
+ 我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。  // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index  int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较  for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较  while (array[c] &amp;lt; array[p]) { // 交换位置和index  int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0  if (p &amp;lt; 0) { break; } } } return array; }  该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<link rel="canonical" href="https://xiaokexiang.github.io/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/" />
+
+
+
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+
+
+<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="二叉堆时间复杂度分析"/>
+<meta name="twitter:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。"/>
+
+
+
+<meta property="og:title" content="二叉堆时间复杂度分析" />
+<meta property="og:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xiaokexiang.github.io/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/" />
+<meta property="article:published_time" content="2020-08-01T11:10:01+08:00" />
+<meta property="article:modified_time" content="2020-08-01T11:10:01+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/">二叉堆时间复杂度分析</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-08-01
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        🍖<a href="https://xiaokexiang.github.io/tags/binarydump/">BinaryDump </a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h3 id="二叉堆概念">二叉堆概念</h3>
+<p>二叉堆本质上是一颗完全二叉树，它的根节点又叫做<code>堆顶</code>。二叉堆分为：</p>
+<blockquote>
+<p>最大堆：最大堆的任何一个父节点的值，<code>都大于或等于</code>它左、右节点的值。</p>
+<p>最小堆：最小堆的任何一个父节点的值，<code>都小于或等于</code>它左、右节点的值。</p>
+</blockquote>
+<p>根据定义可以推导出，二叉堆的<code>堆顶</code>存放的是这棵树的<code>最大或最小</code>元素。</p>
+<p>我们采用<code>数组(物理结构)</code>构建<code>二叉堆(逻辑结构)</code>，二叉堆的元素满足以下特性：</p>
+<blockquote>
+<p>假设父节点的index为0(<code>记为i=0</code>)，那么它的左子节点index为<code>2n + 1</code>，右子节点index为<code>2n + 2</code>。</p>
+<p>同样，如果当前节点的index=0，那么它的父节点index为<code>(i-1)/2 或 (i-2)/2</code>，取决于<code>i % 2 == 0</code>是否成立。</p>
+</blockquote>
+<p><img src="https://image.leejay.top/FmJ38KrBpAMKg5pqdcufzJmU0TcF" alt=""></p>
+<blockquote>
+<p>Java中的<code>PriorityBlockingQueue</code>底层就是使用<code>最小二叉堆</code>的逻辑结构实现的。</p>
+</blockquote>
+<hr>
+<h3 id="二叉堆推导">二叉堆推导</h3>
+<h4 id="构建">构建</h4>
+<p>对于二叉堆的构建，我们选择<code>最小二叉堆</code>推导，对于最小二叉堆构建存在两种思路：</p>
+<ul>
+<li>我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 计算当前index的父节点index
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> 2 <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 2<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">build</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 计算队尾节点index
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 从队尾开始往前比较,队首不需要比较
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> last<span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">int</span> p <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 如果当前节点小于父节点，那么继续循环比较
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 交换位置和index
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>p<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>c<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+            c <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+            p <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 跳出循环的条件:parentIndex&lt;0
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>该方法时间复杂度：我们假设数组有<code>n</code>个元素，那么一共需要判断<code>n-1</code>个元素，每个元素最多交换<code>logn</code>次(即树高度)，所以时间复杂度为：<code>O(nlogn)</code>。</p>
+</blockquote>
+<ul>
+<li>从非叶子节点<code>(倒数第二层)</code>最后一个节点开始倒序遍历，让当前节点依次和它下面的子节点比较，最小元素作为父节点，直到堆顶。</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">buildFast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> size<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 从非叶子节点开始遍历，从后往前遍历
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 遍历查找当前index的左右节点是否都小于当前节点
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 退出条件：当前节点的右子节点index超过数组大小
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;</span> size<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">int</span> le <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#66d9ef">int</span> rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> 1<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 左右子节点比较大小
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">],</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]);</span>
+            <span style="color:#75715e">// 如果当前节点大于子节点中的最小节点，那么需要移位
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> min<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
+                array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min<span style="color:#f92672">;</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+                    array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                    array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+            <span style="color:#75715e">// 继续判断直到左右节点溢出
+</span><span style="color:#75715e"></span>            k <span style="color:#f92672">=</span> rt<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>先说结论再证明，该方法时间复杂度：<code>O(n)</code>。</p>
+<p>基于第二种构建思路可知：<code>同一层</code>的节点的<code>最多交换次数是相同</code>的，最后一层的<code>叶子节点</code>不需要执行交换，因为它的下面没有节点了。时间复杂度即为：<code>O(sum(交换次数)) = O(每层节点数 * 该层节点的最多交换次数)</code>。</p>
+<p>推导：</p>
+<p>假设数组长度为<code>n</code>，那么树高<code>k = logn</code>，<code>sum()</code>表示为<code>总的交换次数</code>。</p>
+<ol>
+<li>第一层有1个节点，第二层有2个节点，第三层有4个节点 &hellip; 第k层有2^(k-1)个节点。</li>
+<li>第一层节点需要交换k-1次，第二层节点需要交换k-2次&hellip;第k层需要交换0次(叶子节点)。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">sum<span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 0
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>0 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1  <span style="color:#960050;background-color:#1e0010">①</span> 
+2sum<span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1  <span style="color:#960050;background-color:#1e0010">②</span>
+错位相减
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">②</span> <span style="color:#f92672">-</span> <span style="color:#960050;background-color:#1e0010">①</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>2<span style="color:#f92672">^</span>0 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>2 <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>k <span style="color:#f92672">+</span> 1 <span style="color:#f92672">+</span> 2 <span style="color:#f92672">+</span> 4 <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span>
+等比数列求和
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>k <span style="color:#f92672">-</span> k <span style="color:#f92672">-</span> 1
+k <span style="color:#f92672">=</span> logn代入
+<span style="color:#a6e22e">sum</span><span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> log2n <span style="color:#f92672">-</span> 1
+</code></pre></div><p>所以此方法的算法复杂度为 <code>O(n)</code>。</p>
+</blockquote>
+<hr>
+<h4 id="添加">添加</h4>
+<p>二叉堆的添加，都是将<code>元素添加到队尾</code>，因为此时数组已经是符合二叉堆要求的最小二叉堆，所以只需要处理新添加的元素，和新加元素的所有父节点比较替换。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 我们先使用System.arraycopy复制原有数据并将新元素加入
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">+</span> 1<span style="color:#f92672">];</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">arraycopy</span><span style="color:#f92672">(</span>array<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> arr<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> size<span style="color:#f92672">);</span>
+    arr<span style="color:#f92672">[</span>size<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">return</span> siftUp<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">// 获取当前index的父节点index
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> 2 <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 2<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e">  * 从堆底往上替换
+</span><span style="color:#75715e">  * 时间复杂度： O(logn)
+</span><span style="color:#75715e">  *
+</span><span style="color:#75715e">  * @param array 默认新增元素在队尾
+</span><span style="color:#75715e">  * @return 添加后的最小二叉堆
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftUp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 获取新加入元素的index,即队尾
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> prev<span style="color:#f92672">;</span>
+    <span style="color:#75715e">// 只要父节点的index&gt; 0，说明此时还存在父节点或爷节点
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>prev <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>last<span style="color:#f92672">))</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 只要当前节点小于父节点的值，那么就交换
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>prev<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>last<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 将当前节点的index换为父节点的index，继续循环
+</span><span style="color:#75715e"></span>        last <span style="color:#f92672">=</span> prev<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>无论数组大小是多少，只需要处理新加入那个的节点，并且该元素最多交换<code>logn</code>次（即树高），时间复杂度为：O(1 * logn) = <code>O(logn)</code>。</p>
+</blockquote>
+<hr>
+<h4 id="移除">移除</h4>
+<p>因为二叉堆的特性：<code>堆顶是整个树最大或最小的元素</code>。所以移除元素都直接<code>移除堆顶</code>，然后将<code>队尾元素直接移到堆顶</code>，此时我们需要从<code>堆顶开始往下</code>比较交换。和添加不一样，添加是从<code>堆底往上</code>比较交换。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * 移除队首元素，将队尾元素移到队首，再重新构建
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">delete</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>0<span style="color:#f92672">];</span>
+    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> 1<span style="color:#f92672">];</span>
+    <span style="color:#75715e">// 将队尾移到队首
+</span><span style="color:#75715e"></span>    array<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> 1<span style="color:#f92672">];</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">arraycopy</span><span style="color:#f92672">(</span>array<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> arr<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> size <span style="color:#f92672">-</span> 1<span style="color:#f92672">);</span>
+    siftDown<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">return</span> first<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+<span style="color:#75715e">/**
+</span><span style="color:#75715e">  * 从堆顶往堆底遍历，依次和左右子节点中较小的交换
+</span><span style="color:#75715e">  * 同样的从上往下替换，最多处理O(树高)次 -&gt; O(logn)
+</span><span style="color:#75715e">  * 时间复杂度： O(logn)
+</span><span style="color:#75715e">  *
+</span><span style="color:#75715e">  * @param index 被删除的元素index
+</span><span style="color:#75715e">  * @return 删除后的最小二叉堆
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftDown</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> index<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> index<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">int</span> le<span style="color:#f92672">,</span> rt<span style="color:#f92672">;</span>
+     <span style="color:#75715e">// 只要当前节点的左子节点小于size就继续循环
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>le <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> size<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 存在左节点没越界，但右节点越界情况
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 此时当前节点只有一个左节点，需要当前节点和左节点比较
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;=</span> size <span style="color:#f92672">&amp;&amp;</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+            k <span style="color:#f92672">=</span> le<span style="color:#f92672">;</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 此时说明左右节点都存在
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">],</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]);</span>
+            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
+            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min<span style="color:#f92672">;</span>
+            <span style="color:#75715e">// 注意这里的index要和左右子节点中较小的交换
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+                array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+                k <span style="color:#f92672">=</span> rt<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
+                k <span style="color:#f92672">=</span> le<span style="color:#f92672">;</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>只需要处理<code>移到队首的原队尾元素</code>这一个元素，并最多交换<code>logn</code>次，所以删除的时间复杂度也是<code>O(logn)</code>。</p>
+</blockquote>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://xiaokexiang.github.io/post/future/">
+                  <span class="button__text">Future</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://xiaokexiang.github.io/assets/main.js"></script>
+<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>
