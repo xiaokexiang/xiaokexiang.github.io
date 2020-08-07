@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>BlockingQueue :: 黄昏现白骨 — Just a normal blog</title>
+      <title>BlockingQueue</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -10,20 +10,20 @@
 接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/blockingqueue/" />
+<link rel="canonical" href="https://leejay.top/post/blockingqueue/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -36,9 +36,9 @@
 <meta property="og:title" content="BlockingQueue" />
 <meta property="og:description" content="基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/blockingqueue/" />
+<meta property="og:url" content="https://leejay.top/post/blockingqueue/" />
 <meta property="article:published_time" content="2020-07-04T20:38:54+08:00" />
-<meta property="article:modified_time" content="2020-07-04T20:38:54+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-07-04T20:38:54+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -50,12 +50,12 @@
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -116,7 +116,7 @@
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/blockingqueue/">BlockingQueue</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -135,7 +135,7 @@
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/blockingqueue/">BlockingQueue </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
         
       </span>
     
@@ -783,7 +783,7 @@
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/blockingdeque/">
+                <a href="https://leejay.top/post/blockingdeque/">
                   <span class="button__icon">←</span>
                   <span class="button__text">BlockingDeque</span>
                 </a>
@@ -791,7 +791,7 @@
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/stampedlock/">
+                <a href="https://leejay.top/post/stampedlock/">
                   <span class="button__text">StampedLock</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -823,8 +823,8 @@
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

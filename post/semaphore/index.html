@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>Semaphore :: 黄昏现白骨 — Just a normal blog</title>
+      <title>Semaphore</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -10,20 +10,20 @@
    tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/semaphore/" />
+<link rel="canonical" href="https://leejay.top/post/semaphore/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -36,9 +36,9 @@
 <meta property="og:title" content="Semaphore" />
 <meta property="og:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/semaphore/" />
+<meta property="og:url" content="https://leejay.top/post/semaphore/" />
 <meta property="article:published_time" content="2020-06-20T16:09:38+08:00" />
-<meta property="article:modified_time" content="2020-06-20T16:09:38+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-20T16:09:38+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -50,12 +50,12 @@
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -116,7 +116,7 @@
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/semaphore/">Semaphore</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -135,9 +135,9 @@
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/semaphore/">Semaphore </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -358,7 +358,7 @@
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/readwritelock/">
+                <a href="https://leejay.top/post/readwritelock/">
                   <span class="button__icon">←</span>
                   <span class="button__text">ReadWriteLock</span>
                 </a>
@@ -366,7 +366,7 @@
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/condition/">
+                <a href="https://leejay.top/post/condition/">
                   <span class="button__text">Condition</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -398,8 +398,8 @@
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

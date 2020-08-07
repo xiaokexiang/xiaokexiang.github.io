@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
   <channel>
-    <title>内存泄漏 on 黄昏现白骨</title>
+    <title>内存泄漏 on Aurora</title>
     
     
     
-    <link>https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
-    <description>Recent content in 内存泄漏 on 黄昏现白骨</description>
+    <link>https://leejay.top/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
+    <description>Recent content in 内存泄漏 on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Thu, 04 Jun 2020 14:49:04 +0800</lastBuildDate>
     
-	<atom:link href="https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ThreadLocal内存泄漏</title>
-      <link>https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
+      <link>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
       <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
+      <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
       <description>
         
           

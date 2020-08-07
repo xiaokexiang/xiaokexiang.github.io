@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
   <channel>
-    <title>CountDownLatch  on 黄昏现白骨</title>
+    <title>CountDownLatch  on Aurora</title>
     
     
     
-    <link>https://xiaokexiang.github.io/tags/countdownlatch/</link>
-    <description>Recent content in CountDownLatch  on 黄昏现白骨</description>
+    <link>https://leejay.top/tags/countdownlatch/</link>
+    <description>Recent content in CountDownLatch  on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Sat, 27 Jun 2020 18:44:37 +0800</lastBuildDate>
     
-	<atom:link href="https://xiaokexiang.github.io/tags/countdownlatch/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://leejay.top/tags/countdownlatch/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>CountDownLatch</title>
-      <link>https://xiaokexiang.github.io/post/countdownlatch/</link>
+      <link>https://leejay.top/post/countdownlatch/</link>
       <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/post/countdownlatch/</guid>
+      <guid>https://leejay.top/post/countdownlatch/</guid>
       <description>
         
           

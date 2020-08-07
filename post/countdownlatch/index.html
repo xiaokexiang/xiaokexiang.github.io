@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>CountDownLatch :: 黄昏现白骨 — Just a normal blog</title>
+      <title>CountDownLatch</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -12,20 +12,20 @@
 public class CountDownLatchTest { // 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法  LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0  LATCH.await(); } catch (InterruptedException e) { e."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/countdownlatch/" />
+<link rel="canonical" href="https://leejay.top/post/countdownlatch/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -38,9 +38,9 @@ public class CountDownLatchTest { // 显示传入计数器值  private static fi
 <meta property="og:title" content="CountDownLatch" />
 <meta property="og:description" content="CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/countdownlatch/" />
+<meta property="og:url" content="https://leejay.top/post/countdownlatch/" />
 <meta property="article:published_time" content="2020-06-27T18:44:37+08:00" />
-<meta property="article:modified_time" content="2020-06-27T18:44:37+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-27T18:44:37+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -52,12 +52,12 @@ public class CountDownLatchTest { // 显示传入计数器值  private static fi
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -118,7 +118,7 @@ public class CountDownLatchTest { // 显示传入计数器值  private static fi
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/countdownlatch/">CountDownLatch</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/countdownlatch/">CountDownLatch</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -137,9 +137,9 @@ public class CountDownLatchTest { // 显示传入计数器值  private static fi
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/countdownlatch/">CountDownLatch </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/countdownlatch/">CountDownLatch </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -307,7 +307,7 @@ Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/cycliebarrier/">
+                <a href="https://leejay.top/post/cycliebarrier/">
                   <span class="button__icon">←</span>
                   <span class="button__text">CyclieBarrier</span>
                 </a>
@@ -315,7 +315,7 @@ Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/readwritelock/">
+                <a href="https://leejay.top/post/readwritelock/">
                   <span class="button__text">ReadWriteLock</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -347,8 +347,8 @@ Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>Condition :: 黄昏现白骨 — Just a normal blog</title>
+      <title>Condition</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -10,20 +10,20 @@
 final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常  if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列  Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁  int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面  while (!"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/condition/" />
+<link rel="canonical" href="https://leejay.top/post/condition/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -36,9 +36,9 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
 <meta property="og:title" content="Condition" />
 <meta property="og:description" content="Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现`等待/通知`模式。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/condition/" />
+<meta property="og:url" content="https://leejay.top/post/condition/" />
 <meta property="article:published_time" content="2020-06-18T20:01:58+08:00" />
-<meta property="article:modified_time" content="2020-06-18T20:01:58+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-18T20:01:58+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -50,12 +50,12 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -116,7 +116,7 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/condition/">Condition</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/condition/">Condition</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -135,9 +135,9 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/condition/">Condition </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/condition/">Condition </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -343,7 +343,7 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/semaphore/">
+                <a href="https://leejay.top/post/semaphore/">
                   <span class="button__icon">←</span>
                   <span class="button__text">Semaphore</span>
                 </a>
@@ -351,7 +351,7 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/reentrantlock/">
+                <a href="https://leejay.top/post/reentrantlock/">
                   <span class="button__text">AQS与ReentrantLock独占锁</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -383,8 +383,8 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

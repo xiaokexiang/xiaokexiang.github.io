@@ -2,27 +2,27 @@
 <html lang="en">
   <head>
     
-      <title>ConcurrentLinkedQueue :: 黄昏现白骨 — Just a normal blog</title>
+      <title>ConcurrentLinkedQueue</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/concurrentlinkedqueue/" />
+<link rel="canonical" href="https://leejay.top/post/concurrentlinkedqueue/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -35,9 +35,9 @@
 <meta property="og:title" content="ConcurrentLinkedQueue" />
 <meta property="og:description" content="`ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/concurrentlinkedqueue/" />
+<meta property="og:url" content="https://leejay.top/post/concurrentlinkedqueue/" />
 <meta property="article:published_time" content="2020-07-11T14:53:34+08:00" />
-<meta property="article:modified_time" content="2020-07-11T14:53:34+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-07-11T14:53:34+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -49,12 +49,12 @@
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -115,7 +115,7 @@
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/concurrentlinkedqueue/">ConcurrentLinkedQueue</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/concurrentlinkedqueue/">ConcurrentLinkedQueue</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -134,7 +134,7 @@
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/concurrentlinkedqueue/">ConcurrentLinkedQueue </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/concurrentlinkedqueue/">ConcurrentLinkedQueue </a>&nbsp;
         
       </span>
     
@@ -361,7 +361,7 @@
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/concurrenthashmap/">
+                <a href="https://leejay.top/post/concurrenthashmap/">
                   <span class="button__icon">←</span>
                   <span class="button__text">ConcurrentHashMap</span>
                 </a>
@@ -369,7 +369,7 @@
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/copyonwritearraylist/">
+                <a href="https://leejay.top/post/copyonwritearraylist/">
                   <span class="button__text">CopyOnWriteArrayList</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -401,8 +401,8 @@
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>AQS与ReentrantLock独占锁 :: 黄昏现白骨 — Just a normal blog</title>
+      <title>AQS与ReentrantLock独占锁</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -16,20 +16,20 @@ FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)lo
 class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/reentrantlock/" />
+<link rel="canonical" href="https://leejay.top/post/reentrantlock/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -42,9 +42,9 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
 <meta property="og:title" content="AQS与ReentrantLock独占锁" />
 <meta property="og:description" content="AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/reentrantlock/" />
+<meta property="og:url" content="https://leejay.top/post/reentrantlock/" />
 <meta property="article:published_time" content="2020-06-15T15:53:46+08:00" />
-<meta property="article:modified_time" content="2020-06-15T15:53:46+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-15T15:53:46+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -56,12 +56,12 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -122,7 +122,7 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/reentrantlock/">AQS与ReentrantLock独占锁</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/reentrantlock/">AQS与ReentrantLock独占锁</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -141,9 +141,9 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/reentrantlock/">ReentrantLock </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/reentrantlock/">ReentrantLock </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -698,7 +698,7 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/condition/">
+                <a href="https://leejay.top/post/condition/">
                   <span class="button__icon">←</span>
                   <span class="button__text">Condition</span>
                 </a>
@@ -706,7 +706,7 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/cas/">
+                <a href="https://leejay.top/post/cas/">
                   <span class="button__text">CAS</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -738,8 +738,8 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

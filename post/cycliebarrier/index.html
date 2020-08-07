@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>CyclieBarrier :: 黄昏现白骨 — Just a normal blog</title>
+      <title>CyclieBarrier</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -15,20 +15,20 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
  @Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await  log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/cycliebarrier/" />
+<link rel="canonical" href="https://leejay.top/post/cycliebarrier/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -41,9 +41,9 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <meta property="og:title" content="CyclieBarrier" />
 <meta property="og:description" content="基于`CountDownLatch`的特性：`计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier`的出现是为了解决复杂场景`CountDownLatch`使用的劣势。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/cycliebarrier/" />
+<meta property="og:url" content="https://leejay.top/post/cycliebarrier/" />
 <meta property="article:published_time" content="2020-06-29T13:27:36+08:00" />
-<meta property="article:modified_time" content="2020-06-29T13:27:36+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-29T13:27:36+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -55,12 +55,12 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -121,7 +121,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/cycliebarrier/">CyclieBarrier</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -140,9 +140,9 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/aqs/">AQS</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -449,7 +449,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/stampedlock/">
+                <a href="https://leejay.top/post/stampedlock/">
                   <span class="button__icon">←</span>
                   <span class="button__text">StampedLock</span>
                 </a>
@@ -457,7 +457,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/countdownlatch/">
+                <a href="https://leejay.top/post/countdownlatch/">
                   <span class="button__text">CountDownLatch</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -489,8 +489,8 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

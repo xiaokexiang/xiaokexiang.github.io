@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>ThreadLocal内存泄漏 :: 黄昏现白骨 — Just a normal blog</title>
+      <title>ThreadLocal内存泄漏</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -11,20 +11,20 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
  ThreadLocal没有被外部强引用，这样在GC的时候ThreadLocal会被回收，导致key = null。 key = null后没有调用过ThreadLocalMap中的get、set或remove方法中的任意一个。(因为这些方法会将key = null的value也置为null，便于GC回收) Thread对象没有被回收，Thread强引用着ThreadLocalMap，这样ThreadLocalMap也不会被回收。 ThreadLocalMap没有被回收，但是它的Entry中的key已被回收，key关联的value也不能被外部访问，所以导致了内存泄漏。  总结如下："/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
-<link rel="canonical" href="https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
+<link rel="canonical" href="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
 
 
 
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/assets/style.css">
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
-<link rel="stylesheet" href="https://xiaokexiang.github.io/style.css">
+<link rel="stylesheet" href="https://leejay.top/style.css">
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://xiaokexiang.github.io/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://xiaokexiang.github.io/img/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
@@ -37,9 +37,9 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
 <meta property="og:title" content="ThreadLocal内存泄漏" />
 <meta property="og:description" content="ThreadLocal的内存泄露问题。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
+<meta property="og:url" content="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
 <meta property="article:published_time" content="2020-06-04T14:49:04+08:00" />
-<meta property="article:modified_time" content="2020-06-04T14:49:04+08:00" /><meta property="og:site_name" content="黄昏现白骨" />
+<meta property="article:modified_time" content="2020-06-04T14:49:04+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -51,12 +51,12 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
     <div class="container">
       <header class="header">
   <span class="header__inner">
-    <a href="https://xiaokexiang.github.io" class="logo" style="text-decoration: none;">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
     <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
   <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
 </svg></span>
-    <span class="logo__text">黄昏现白骨</span>
+    <span class="logo__text">Aurora</span>
     <span class="logo__cursor"></span>
     <span class="logo__cursor2"></span>
   
@@ -117,7 +117,7 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://xiaokexiang.github.io/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">ThreadLocal内存泄漏</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">ThreadLocal内存泄漏</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -136,9 +136,9 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
     
       <span class="post-tags">
         
-        🍖<a href="https://xiaokexiang.github.io/tags/threadlocal/">ThreadLocal </a>&nbsp;
+        🍖<a href="https://leejay.top/tags/threadlocal/">ThreadLocal </a>&nbsp;
         
-        🍖<a href="https://xiaokexiang.github.io/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>&nbsp;
+        🍖<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>&nbsp;
         
       </span>
     
@@ -211,7 +211,7 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
           <div class="pagination__buttons">
             
               <span class="button previous">
-                <a href="https://xiaokexiang.github.io/post/mesa%E6%A8%A1%E5%9E%8B/">
+                <a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">
                   <span class="button__icon">←</span>
                   <span class="button__text">MESA模型</span>
                 </a>
@@ -219,7 +219,7 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
             
             
               <span class="button next">
-                <a href="https://xiaokexiang.github.io/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">
+                <a href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">
                   <span class="button__text">Java内存可见性</span>
                   <span class="button__icon">→</span>
                 </a>
@@ -251,8 +251,8 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
   </div>
 </footer>
 
-<script src="https://xiaokexiang.github.io/assets/main.js"></script>
-<script src="https://xiaokexiang.github.io/assets/prism.js"></script>
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
 
 
       

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
   <channel>
-    <title>Collection on 黄昏现白骨</title>
+    <title>Collection on Aurora</title>
     
     
     
-    <link>https://xiaokexiang.github.io/categories/collection/</link>
-    <description>Recent content in Collection on 黄昏现白骨</description>
+    <link>https://leejay.top/categories/collection/</link>
+    <description>Recent content in Collection on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Tue, 14 Jul 2020 16:58:36 +0800</lastBuildDate>
     
-	<atom:link href="https://xiaokexiang.github.io/categories/collection/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://leejay.top/categories/collection/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>ConcurrentHashMap</title>
-      <link>https://xiaokexiang.github.io/post/concurrenthashmap/</link>
+      <link>https://leejay.top/post/concurrenthashmap/</link>
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/post/concurrenthashmap/</guid>
+      <guid>https://leejay.top/post/concurrenthashmap/</guid>
       <description>
         
           
@@ -37,10 +37,10 @@
     
     <item>
       <title>ConcurrentLinkedQueue</title>
-      <link>https://xiaokexiang.github.io/post/concurrentlinkedqueue/</link>
+      <link>https://leejay.top/post/concurrentlinkedqueue/</link>
       <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/post/concurrentlinkedqueue/</guid>
+      <guid>https://leejay.top/post/concurrentlinkedqueue/</guid>
       <description>
         
           
@@ -57,10 +57,10 @@
     
     <item>
       <title>CopyOnWriteArrayList</title>
-      <link>https://xiaokexiang.github.io/post/copyonwritearraylist/</link>
+      <link>https://leejay.top/post/copyonwritearraylist/</link>
       <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/post/copyonwritearraylist/</guid>
+      <guid>https://leejay.top/post/copyonwritearraylist/</guid>
       <description>
         
           

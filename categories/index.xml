@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on 黄昏现白骨</title>
+    <title>Categories on Aurora</title>
     
     
     
-    <link>https://xiaokexiang.github.io/categories/</link>
-    <description>Recent content in Categories on 黄昏现白骨</description>
+    <link>https://leejay.top/categories/</link>
+    <description>Recent content in Categories on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Sat, 01 Aug 2020 11:10:01 +0800</lastBuildDate>
     
-	<atom:link href="https://xiaokexiang.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://leejay.top/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>algorithm</title>
-      <link>https://xiaokexiang.github.io/categories/algorithm/</link>
+      <link>https://leejay.top/categories/algorithm/</link>
       <pubDate>Sat, 01 Aug 2020 11:10:01 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/algorithm/</guid>
+      <guid>https://leejay.top/categories/algorithm/</guid>
       <description>
         
           
@@ -37,10 +37,10 @@
     
     <item>
       <title>Concurrent</title>
-      <link>https://xiaokexiang.github.io/categories/concurrent/</link>
+      <link>https://leejay.top/categories/concurrent/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/concurrent/</guid>
+      <guid>https://leejay.top/categories/concurrent/</guid>
       <description>
         
           
@@ -57,10 +57,10 @@
     
     <item>
       <title>Future</title>
-      <link>https://xiaokexiang.github.io/categories/future/</link>
+      <link>https://leejay.top/categories/future/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/future/</guid>
+      <guid>https://leejay.top/categories/future/</guid>
       <description>
         
           
@@ -77,10 +77,10 @@
     
     <item>
       <title>ThreadPool</title>
-      <link>https://xiaokexiang.github.io/categories/threadpool/</link>
+      <link>https://leejay.top/categories/threadpool/</link>
       <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/threadpool/</guid>
+      <guid>https://leejay.top/categories/threadpool/</guid>
       <description>
         
           
@@ -97,10 +97,10 @@
     
     <item>
       <title>Collection</title>
-      <link>https://xiaokexiang.github.io/categories/collection/</link>
+      <link>https://leejay.top/categories/collection/</link>
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/collection/</guid>
+      <guid>https://leejay.top/categories/collection/</guid>
       <description>
         
           
@@ -117,10 +117,10 @@
     
     <item>
       <title>Queue</title>
-      <link>https://xiaokexiang.github.io/categories/queue/</link>
+      <link>https://leejay.top/categories/queue/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/queue/</guid>
+      <guid>https://leejay.top/categories/queue/</guid>
       <description>
         
           
@@ -137,10 +137,10 @@
     
     <item>
       <title>Complexity</title>
-      <link>https://xiaokexiang.github.io/categories/complexity/</link>
+      <link>https://leejay.top/categories/complexity/</link>
       <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
       
-      <guid>https://xiaokexiang.github.io/categories/complexity/</guid>
+      <guid>https://leejay.top/categories/complexity/</guid>
       <description>
         
           
