@@ -9,6 +9,7 @@
 <meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/concurrentlinkedqueue/" />
 
 
@@ -19,7 +20,6 @@
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -403,6 +403,26 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

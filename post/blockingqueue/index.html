@@ -10,6 +10,7 @@
 接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/blockingqueue/" />
 
 
@@ -20,7 +21,6 @@
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -825,6 +825,26 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

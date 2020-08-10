@@ -19,6 +19,7 @@ int one() { int i = 1; int j = 2; return i &#43; j; }  上述代码执行时，�
 void two(int n) { for (i = 1; i &amp;lt;= n; i&#43;&#43;) { j = i; j&#43;&#43;; } }  for循环中的代码会执行n遍，因此它消耗的时间是随着n的变化而变化的，此类代码时间复杂度用O(n)表示。"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/complexity/" />
 
 
@@ -29,7 +30,6 @@ void two(int n) { for (i = 1; i &amp;lt;= n; i&#43;&#43;) { j = i; j&#43;&#43;; 
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -431,6 +431,26 @@ $$</p>
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

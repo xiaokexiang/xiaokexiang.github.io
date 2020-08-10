@@ -10,6 +10,7 @@
 Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/concurrenthashmap/" />
 
 
@@ -20,7 +21,6 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -798,6 +798,26 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

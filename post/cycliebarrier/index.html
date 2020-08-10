@@ -15,6 +15,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
  @Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await  log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/cycliebarrier/" />
 
 
@@ -25,7 +26,6 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -491,6 +491,26 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

@@ -10,6 +10,7 @@
 final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常  if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列  Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁  int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面  while (!"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/condition/" />
 
 
@@ -20,7 +21,6 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -385,6 +385,26 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

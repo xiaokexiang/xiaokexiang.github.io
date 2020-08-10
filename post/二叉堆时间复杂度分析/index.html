@@ -18,6 +18,7 @@
  我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。  // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index  int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较  for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较  while (array[c] &amp;lt; array[p]) { // 交换位置和index  int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0  if (p &amp;lt; 0) { break; } } } return array; }  该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。"/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/" />
 
 
@@ -28,7 +29,6 @@
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -243,20 +243,16 @@
 <p>假设数组长度为<code>n</code>，那么树高<code>k = logn</code>，<code>sum()</code>表示为<code>总的交换次数</code>。</p>
 <ol>
 <li>第一层有1个节点，第二层有2个节点，第三层有4个节点 &hellip; 第k层有2^(k-1)个节点。</li>
-<li>第一层节点需要交换k-1次，第二层节点需要交换k-2次&hellip;第k层需要交换0次(叶子节点)。</li>
+<li>第一层节点需要交换k-1次，第二层节点需要交换k-2次&hellip;第k层需要交换0次(叶子节点)。
+$sum() = 1 * (k-1) + 2 * (k-2) + &hellip;+ 2^(k-3) * 2 + 2^(k-2) * 1 + 2^(k-1) * 0$
+$sum() = 2^0 * (k-1) + 2^1 * (k-2) +&hellip;+ 2^(k-3) * 2 + 2^(k-2) * 1  ①$
+$2sum() = 2^1 * (k-1) + 2^2 * (k-2) + &hellip; + 2^(k-2) * 2 + 2^(k-1) * 1 ②$
+$sum() = ② - ① = -2^0 * (k-1) + 2^1 + 2^2 + &hellip; + 2^(k-2) * 1 + 2^(k-1) * 1$
+$sum() = -k + 1 + 2 + 4 + &hellip; + 2^(k-1)$
+$sum() = 2^k - k - 1$
+$sum(n) = n - log2n - 1$</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">sum<span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 0
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>0 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+...+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>3<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1  <span style="color:#960050;background-color:#1e0010">①</span> 
-2sum<span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>2 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 2 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1  <span style="color:#960050;background-color:#1e0010">②</span>
-错位相减
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> <span style="color:#960050;background-color:#1e0010">②</span> <span style="color:#f92672">-</span> <span style="color:#960050;background-color:#1e0010">①</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>2<span style="color:#f92672">^</span>0 <span style="color:#f92672">*</span> <span style="color:#f92672">(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^</span>2 <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>2<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1 <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span> <span style="color:#f92672">*</span> 1
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>k <span style="color:#f92672">+</span> 1 <span style="color:#f92672">+</span> 2 <span style="color:#f92672">+</span> 4 <span style="color:#f92672">+</span> <span style="color:#f92672">...</span> <span style="color:#f92672">+</span> 2<span style="color:#f92672">^(</span>k<span style="color:#f92672">-</span>1<span style="color:#f92672">)</span>
-等比数列求和
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">()</span> <span style="color:#f92672">=</span> 2<span style="color:#f92672">^</span>k <span style="color:#f92672">-</span> k <span style="color:#f92672">-</span> 1
-k <span style="color:#f92672">=</span> logn代入
-<span style="color:#a6e22e">sum</span><span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> log2n <span style="color:#f92672">-</span> 1
-</code></pre></div><p>所以此方法的算法复杂度为 <code>O(n)</code>。</p>
+<p>所以此方法的算法复杂度为 <code>O(n)</code>。</p>
 </blockquote>
 <hr>
 <h4 id="添加">添加</h4>
@@ -404,6 +400,26 @@ k <span style="color:#f92672">=</span> logn代入
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       

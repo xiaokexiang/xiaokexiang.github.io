@@ -11,6 +11,7 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
  ThreadLocal没有被外部强引用，这样在GC的时候ThreadLocal会被回收，导致key = null。 key = null后没有调用过ThreadLocalMap中的get、set或remove方法中的任意一个。(因为这些方法会将key = null的value也置为null，便于GC回收) Thread对象没有被回收，Thread强引用着ThreadLocalMap，这样ThreadLocalMap也不会被回收。 ThreadLocalMap没有被回收，但是它的Entry中的key已被回收，key关联的value也不能被外部访问，所以导致了内存泄漏。  总结如下："/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <link rel="canonical" href="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" />
 
 
@@ -21,7 +22,6 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
 
 
 <link rel="stylesheet" href="https://leejay.top/style.css">
-
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
 <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
@@ -253,6 +253,26 @@ public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocal
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false, //关闭js加载过程信息
+    messageStyle: "none", //不显示信息
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code', 'a', 'annotation', 'annotation-xml'],
+      ignoreClass: 'crayon-.*' // 'crayon-' 开头的类，属于Wordpress代码高亮库，这部分不需要处理，否则会导致显示不正确,这部分是正则式，多条之间用'|'分割    
+    },
+    'HTML-CSS': {
+        showMathMenu: false //禁用右键菜单
+    }
+  });
+</script>
 
 
       
