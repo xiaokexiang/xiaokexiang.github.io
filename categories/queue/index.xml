@@ -5,22 +5,22 @@
     
     
     
-    <link>https://www.leejay.top/categories/queue/</link>
+    <link>https://leejay.top/categories/queue/</link>
     <description>Recent content in Queue on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Mon, 06 Jul 2020 19:20:56 +0800</lastBuildDate>
     
-	<atom:link href="https://www.leejay.top/categories/queue/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://leejay.top/categories/queue/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>BlockingDeque</title>
-      <link>https://www.leejay.top/post/blockingdeque/</link>
+      <link>https://leejay.top/post/blockingdeque/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       
-      <guid>https://www.leejay.top/post/blockingdeque/</guid>
+      <guid>https://leejay.top/post/blockingdeque/</guid>
       <description>
         
           
@@ -37,10 +37,10 @@
     
     <item>
       <title>BlockingQueue</title>
-      <link>https://www.leejay.top/post/blockingqueue/</link>
+      <link>https://leejay.top/post/blockingqueue/</link>
       <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
       
-      <guid>https://www.leejay.top/post/blockingqueue/</guid>
+      <guid>https://leejay.top/post/blockingqueue/</guid>
       <description>
         
           
