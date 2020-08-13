@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>CyclieBarrier</title>
+      <title>CyclieBarrier源码解析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -18,7 +18,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/cycliebarrier/" />
 
 <script type="text/javascript"
@@ -64,6 +64,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -75,12 +77,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CyclieBarrier"/>
+<meta name="twitter:title" content="CyclieBarrier源码解析"/>
 <meta name="twitter:description" content="基于`CountDownLatch`的特性：`计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier`的出现是为了解决复杂场景`CountDownLatch`使用的劣势。"/>
 
 
 
-<meta property="og:title" content="CyclieBarrier" />
+<meta property="og:title" content="CyclieBarrier源码解析" />
 <meta property="og:description" content="基于`CountDownLatch`的特性：`计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier`的出现是为了解决复杂场景`CountDownLatch`使用的劣势。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/cycliebarrier/" />
@@ -163,7 +165,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier源码解析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -182,9 +184,9 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
         
-        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -493,14 +495,14 @@ code.has-jax {
               <span class="button previous">
                 <a href="https://leejay.top/post/stampedlock/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">StampedLock</span>
+                  <span class="button__text">StampedLock读写锁源码浅析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/countdownlatch/">
-                  <span class="button__text">CountDownLatch</span>
+                  <span class="button__text">CountDownLatch源码解析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

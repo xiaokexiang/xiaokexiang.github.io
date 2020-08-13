@@ -16,7 +16,7 @@
     
     
     <item>
-      <title>BlockingQueue</title>
+      <title>BlockingQueue单向阻塞队列源码解析</title>
       <link>https://leejay.top/post/blockingqueue/</link>
       <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
       

@@ -13,7 +13,7 @@
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/" />
 
 <script type="text/javascript"
@@ -59,6 +59,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -79,7 +81,7 @@ code.has-jax {
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://leejay.top/" />
-<meta property="og:updated_time" content="2020-08-01T11:10:01+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:updated_time" content="2020-08-13T13:21:20+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -166,7 +168,41 @@ code.has-jax {
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/countdownlatch/">CountDownLatch</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-29
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/countdownlatch/">CountDownLatch源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -182,9 +218,9 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/countdownlatch/">CountDownLatch </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/countdownlatch/">CountDownLatch </a>&nbsp;
           
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
           
         </span>
       
@@ -200,7 +236,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -216,9 +252,9 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
           
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
           
         </span>
       
@@ -234,7 +270,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore共享锁源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -250,9 +286,9 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
           
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
           
         </span>
       
@@ -268,7 +304,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/condition/">Condition</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/condition/">Condition源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -284,9 +320,9 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/condition/">Condition </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/condition/">Condition </a>&nbsp;
           
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
           
         </span>
       
@@ -296,40 +332,6 @@ code.has-jax {
       <div class="post-content">
         
           Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现<code>等待/通知</code>模式。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/reentrantlock/">AQS与ReentrantLock独占锁</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-15
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          🍖<a href="https://leejay.top/tags/reentrantlock/">ReentrantLock </a>&nbsp;
-          
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的<code>可重入独占锁</code>，具有公平/非公平两种实现。
         
       </div>
       

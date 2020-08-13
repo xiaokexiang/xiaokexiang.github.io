@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>ReadWriteLock</title>
+      <title>ReadWriteLock源码解析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -15,7 +15,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/readwritelock/" />
 
 <script type="text/javascript"
@@ -61,6 +61,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -72,12 +74,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="ReadWriteLock"/>
+<meta name="twitter:title" content="ReadWriteLock源码解析"/>
 <meta name="twitter:description" content="具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。"/>
 
 
 
-<meta property="og:title" content="ReadWriteLock" />
+<meta property="og:title" content="ReadWriteLock源码解析" />
 <meta property="og:description" content="具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/readwritelock/" />
@@ -160,7 +162,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock源码解析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -179,9 +181,9 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
         
-        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -877,14 +879,14 @@ code.has-jax {
               <span class="button previous">
                 <a href="https://leejay.top/post/countdownlatch/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">CountDownLatch</span>
+                  <span class="button__text">CountDownLatch源码解析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/semaphore/">
-                  <span class="button__text">Semaphore</span>
+                  <span class="button__text">Semaphore共享锁源码解析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

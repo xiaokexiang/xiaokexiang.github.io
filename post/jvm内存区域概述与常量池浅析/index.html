@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>JVM内存区域概述与常量池浅析</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="JVM内存区域概述 虚拟机栈 虚拟机栈描述的是Java方法执行的线程内存模型:每个方法被执行时，JVM会同步创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，虚拟机栈区域是线程私有的，它的生命周期与线程相同。
+ 局部变量表：存放编译期可知的数据类型：8种基本数据类型和对象引用类型。这些数据类型在栈中用slot来表示，除了long &amp;amp; double占用2个slot，其余的都为1个。
+虚拟机栈包含用于执行native方法的本地方法栈。它们都会抛出OOM和StackOverFlow异常。
+ 虚拟机堆 这是一块线程共享的内存区域，几乎全部的对象实例、数组都在堆上分配（小对象可以在栈上分配）。
+ 从内存回收角度看， 堆被逻辑的分为：年轻代（包括eden、from、to三个区域）、老年代。
+从内存分配角度看，堆被分为多个线程私有的内存分配缓冲区（TLAB）。
+ TLAB Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是CAS &#43; 失败重试的方式。而TLAB是：
+ 通预先给每个线程在堆中分配一小块区域。 哪个线程创建对象，就在哪个线程的TLAB中分配内存。 如果这个线程的TLAB空间不够分配时，就通过同步锁定给这个线程分配新的TLAB。 -XX:&#43;/-UseTLAB来开启和关闭TLAB。  元数据区 JDK1.8起，方法区改名为元数据区（MetaSpace），是线程共享的区域，是堆的一个逻辑部分，用于存储JVM加载的类型信息、常量、静态变量及即时编译后的方法代码等数据。会抛出OOM异常。
+常量池分类  Class文件中的常量池  主要存放字面量 &amp;amp; 符号引用。前者主要是文本字符串、八种基本数据类型、final修饰的常量等，后者包含：类和接口的全限定名、字段的名称和描述符、方法的名称和描述符。在类被加载后会存放到运行时常量池中。
+ 运行时常量池  属于元数据区中的一部分，类在被JVM加载后，类的版本、字段、方法和常量池等都会进入该区域。JVM会为每个加载的class维护一个运行时常量池，同时其中存储的是引用，实际对象还在堆中。日常我们所称的常量池就是运行时常量池。
+ 全局字符串常量池  JDK7后位于堆中，运行时存在的用于记录interned string的全局表StringTabel。其中存放的是String实例的引用，实际的String对象仍存在于堆。
+ String.intern()：如果字符串常量池已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到字符串常量池并返回引用。
+ 字符常量的执行流程   首先编译期会将字面量、符号引用等放入Class文件的常量池中。
+  在JVM类加载的过程中，除了字面量，类的字段、方法等信息都会加载到当前类运行时常量池。此时运行时常量池中存放的是CONSTANT-UnresolvedString，表明尚未resolve，只有在解析后存放的是CONSTANT_String，内容是实际的String对象的引用，和字符串常量池的引用一致。
+  因为JVM类加载过程中的解析(resolve)阶段是可以懒执行的，只有当执行ldc指令时，通过存放在运行时常量池的索引去字符串常量池查找是否存在对应的String实例，如果存在就直接返回该引用，不存在就先在堆中创建对应的String对象，并将引用记录在字符串常量池中，再返回该引用。
+ ldc指令：将int、float或String类型的常量值从常量池推送至栈顶。
+资料来源：https://www.zhihu.com/question/55994121/answer/408891707
+    程序计数器 当前线程所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是线程私有的。
+直接内存 直接内存并不是JVM运行时数据区的一部分。常见于NIO类使用：通过Native方法分配堆外内存，在Java堆中持有该内存区域的引用实现操作，相比之前在Java堆和Native堆之间来回复制的方式，提升了效率。"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
+<meta name="baidu-site-verification" content="aNoX6MUEHW" />
+
+
+<link rel="canonical" href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%B5%85%E6%9E%90/" />
+
+<script type="text/javascript"
+        async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+        >
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] },
+    'HTML-CSS': {
+        showMathMenu: false 
+    }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM内存区域概述与常量池浅析"/>
+<meta name="twitter:description" content="基于JDK8的JVM内存区域概述、JVM中对象的创建及常量池相关概念浅析"/>
+
+
+
+<meta property="og:title" content="JVM内存区域概述与常量池浅析" />
+<meta property="og:description" content="基于JDK8的JVM内存区域概述、JVM中对象的创建及常量池相关概念浅析" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%B5%85%E6%9E%90/" />
+<meta property="article:published_time" content="2020-08-13T13:21:20+08:00" />
+<meta property="article:modified_time" content="2020-08-13T13:21:20+08:00" /><meta property="og:site_name" content="Aurora" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">Aurora</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%B5%85%E6%9E%90/">JVM内存区域概述与常量池浅析</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-08-13
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/jvm/">JVM </a>&nbsp;
+        
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/">常量池</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h3 id="jvm内存区域概述">JVM内存区域概述</h3>
+<h4 id="虚拟机栈">虚拟机栈</h4>
+<p>虚拟机栈描述的是Java方法执行的<code>线程内存模型:</code>每个方法被执行时，JVM会同步创建一个<code>栈帧</code>，用于存储<code>局部变量表、操作数栈、动态链接、方法出口</code>等信息，虚拟机栈区域是<code>线程私有</code>的，它的生命周期与线程相同。</p>
+<blockquote>
+<p>局部变量表：存放编译期可知的数据类型：<code>8种基本数据类型和对象引用类型</code>。这些数据类型在栈中用<code>slot</code>来表示，除了<code>long &amp; double</code>占用<code>2个slot</code>，其余的都为1个。</p>
+<p>虚拟机栈包含用于<code>执行native方法</code>的本地方法栈。它们都会抛出<code>OOM和StackOverFlow</code>异常。</p>
+</blockquote>
+<h4 id="虚拟机堆">虚拟机堆</h4>
+<p>这是一块<code>线程共享</code>的内存区域，几乎全部的<code>对象实例、数组</code>都在堆上分配（小对象可以在<code>栈上分配</code>）。</p>
+<blockquote>
+<p>从内存回收角度看， 堆被逻辑的分为：<code>年轻代（包括eden、from、to三个区域）、老年代</code>。</p>
+<p>从内存分配角度看，堆被分为<code>多个线程私有的内存分配缓冲区（TLAB）</code>。</p>
+</blockquote>
+<h5 id="tlab">TLAB</h5>
+<p>Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是<code>CAS + 失败重试</code>的方式。而<code>TLAB</code>是：</p>
+<ol>
+<li>通预先给每个线程在堆中分配一小块区域。</li>
+<li>哪个线程创建对象，就在哪个线程的TLAB中分配内存。</li>
+<li>如果这个线程的<code>TLAB</code>空间不够分配时，就通过<code>同步锁定</code>给这个线程分配新的<code>TLAB</code>。</li>
+<li><code>-XX:+/-UseTLAB</code>来开启和关闭TLAB。</li>
+</ol>
+<h4 id="元数据区">元数据区</h4>
+<p><code>JDK1.8</code>起，方法区改名为<code>元数据区（MetaSpace）</code>，是<code>线程共享</code>的区域，是堆的一个<code>逻辑部分</code>，用于存储<code>JVM加载的类型信息、常量、静态变量及即时编译后的方法代码</code>等数据。会抛出<code>OOM</code>异常。</p>
+<h4 id="常量池分类">常量池分类</h4>
+<ul>
+<li>Class文件中的常量池</li>
+</ul>
+<p>主要存放<code>字面量 &amp; 符号引用</code>。前者主要是<code>文本字符串、八种基本数据类型、final修饰的常量</code>等，后者包含：<code>类和接口的全限定名、字段的名称和描述符、方法的名称和描述符</code>。在类被加载后会存放到<code>运行时常量池</code>中。</p>
+<ul>
+<li>运行时常量池</li>
+</ul>
+<p>属于<code>元数据区</code>中的一部分，类在被JVM加载后，类的版本、字段、方法和常量池等都会进入该区域。JVM会为<code>每个加载的class维护一个运行时常量池</code>，同时其中存储的是<code>引用</code>，实际对象还在<code>堆中</code>。日常我们所称的常量池就是运行时常量池。</p>
+<ul>
+<li>全局字符串常量池</li>
+</ul>
+<p><code>JDK7后位于堆中</code>，运行时存在的用于记录<code>interned string</code>的全局表<code>StringTabel</code>。其中存放的是<code>String实例的引用</code>，实际的<code>String对象</code>仍存在于堆。</p>
+<blockquote>
+<p><code>String.intern()</code>：如果<code>字符串常量池</code>已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到<code>字符串常量池</code>并返回引用。</p>
+</blockquote>
+<h4 id="字符常量的执行流程">字符常量的执行流程</h4>
+<ul>
+<li>
+<p>首先<code>编译期</code>会将字面量、符号引用等放入Class文件的常量池中。</p>
+</li>
+<li>
+<p>在JVM<code>类加载</code>的过程中，除了字面量，类的字段、方法等信息都会加载到当前类<code>运行时常量池</code>。此时运行时常量池中存放的是<code>CONSTANT-UnresolvedString</code>，表明尚未<code>resolve</code>，只有在解析后存放的是<code>CONSTANT_String</code>，内容是实际的<code>String对象的引用</code>，和<code>字符串常量池的引用</code>一致。</p>
+</li>
+<li>
+<p>因为JVM类加载过程中的<code>解析(resolve)阶段</code>是可以懒执行的，只有当执行<code>ldc指令</code>时，通过存放在<code>运行时常量池</code>的索引去<code>字符串常量池</code>查找是否存在对应的String实例，如果存在就直接返回该引用，不存在就先在<code>堆中创建对应的String对象</code>，并将引用记录在<code>字符串常量池</code>中，再返回该引用。</p>
+<blockquote>
+<p><code>ldc指令</code>：将<code>int、float或String类型的常量值从常量池推送至栈顶</code>。</p>
+<p>资料来源：https://www.zhihu.com/question/55994121/answer/408891707</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="程序计数器">程序计数器</h3>
+<p><code>当前线程</code>所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是<code>线程私有</code>的。</p>
+<h3 id="直接内存">直接内存</h3>
+<p>直接内存并不是JVM运行时数据区的一部分。常见于<code>NIO</code>类使用：通过<code>Native方法分配堆外内存</code>，在Java堆中持有该<code>内存区域的引用</code>实现操作，相比之前<code>在Java堆和Native堆之间来回复制</code>的方式，提升了效率。</p>
+<hr>
+<h3 id="jvm中的对象">JVM中的对象</h3>
+<h4 id="对象的创建">对象的创建</h4>
+<p><img src="https://image.leejay.top/image/20200806/5Yyjn8VqQBwt.png?imageslim" alt=""></p>
+<blockquote>
+<ol>
+<li>在<code>Class类的常量池</code>中寻找该类的<code>符号引用</code>，并通过该符号引用判断类是否被加载。</li>
+<li>如果类没有被加载，那么JVM就会执行相应的类加载过程。</li>
+<li>给对象分配内存空间共有两种方式：<code>指针碰撞 &amp; 空闲列表</code>。</li>
+<li>在对象分配内存的线程安全问题，默认是通过<code>CAS + 失败重试</code>实现，也可以选择<code>TLAB</code>。</li>
+<li>初始化内存空间为零值，并对<code>Mark Word</code>进行必要设置（根据是否启动偏向锁设置信息）。</li>
+<li>最终调用对象的构造函数进行初始化。</li>
+</ol>
+</blockquote>
+<h4 id="对象的构成">对象的构成</h4>
+<p>对象在堆中的布局分为三个部分：<code>对象头、实例数据和对齐填充</code>。而对象头中又包含：<code>对象自身的运行时数据(Mark Word)、对象指向它类型元数据的指针以及数组长度(如果对象是数组)</code>。</p>
+<h5 id="对象头">对象头</h5>
+<ul>
+<li>
+<p>Mark Word</p>
+<p>用于记录存储对象自身运行时的数据。比如<code>HashCode、锁状态标识</code>等。</p>
+</li>
+</ul>
+<p><img src="https://image.leejay.top/image/20200806/bf8MF7GVoqRP.png?imageslim" alt=""></p>
+<ul>
+<li>
+<p>类型指针</p>
+<p><code>对象头中指向该对象类型元数据(元数据区)的指针</code>，通过类型指针，JVM可以判断当前对象是<code>哪个类的实例</code>。</p>
+<blockquote>
+<p>并不是所有的虚拟机都会在对象头中保留类型指针。此问题查看<a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%BC%95%E7%94%A8">对象的引用</a></p>
+</blockquote>
+</li>
+<li>
+<p>数组长度</p>
+<p>如果当前对象是数组，那么在对象头中还有一部分用于<code>存储数组长度的数据</code>。</p>
+</li>
+</ul>
+<h5 id="实例数据">实例数据</h5>
+<p>即保存代码中定义的<code>各种类型的字段内容（包括父类继承）</code>，其存储顺序除了受到代码中定义的影响，还由JVM参数<code>-XX:FiedlsAllocationStyle</code>决定。</p>
+<h5 id="对齐填充">对齐填充</h5>
+<p>对齐填充并不是<code>必然存在</code>的，因为<code>HotSpot</code>要求<code>对象的大小必须是8的整数倍</code>，对象头已经是8的整数倍，如果实例数据不是8的整数倍，那么就需要使用对齐填充来补全。</p>
+<h4 id="对象的引用">对象的引用</h4>
+<p>对象的创建是为了能够使用该对象，我们通过<code>栈上的reference数据</code>来操作堆上的具体对象。但对象的访问方式由虚拟机自行决定，目前主流的有两种：<code>句柄 &amp; 指针</code>。</p>
+<p><img src="https://image.leejay.top/image/20200811/doWGxxuV17Ne.png?imageslim" alt=""></p>
+<blockquote>
+<ol>
+<li>句柄：就是在堆中额外划分一块内存作为句柄池，栈中的<code>reference</code>存放的就是句柄池地址。句柄池中包含<code>对象实例数据 &amp; 类型数据的内存地址</code>。</li>
+<li>直接指针：栈中<code>reference</code>存放的是堆中的对象地址，对象头中又包含<code>对象类型数据指针</code>。</li>
+<li>句柄的优点在于GC回收移动对象时，只需要修改<code>句柄池中的实例数据指针</code>。而指针的优点在于<code>访问更快</code>，减少一次查找。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="模拟各区域oom">模拟各区域OOM</h3>
+<h4 id="堆">堆</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * -Xmx10m 模拟堆OOM
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Object<span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="栈">栈</h4>
+<ul>
+<li>stackOverFlow</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * -Xss1m
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// stackOverFlow
+</span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    stackOverFlow<span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>OOM</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * -Xss1m
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+    <span style="color:#75715e">// oom
+</span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">oom</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">oom</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>相比OOM，stackOverFlow更容易发生。</p>
+</blockquote>
+<h4 id="元数据区-1">元数据区</h4>
+<ul>
+<li>字符串常量池OOM</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * 1.7前 -XX:MaxPermSize=10m
+</span><span style="color:#75715e">  * 1.7后 -Xmx10m
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">((</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">++).</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>需要注意在JDK7及以上版本中不会抛出之前的<code>PemGen space</code>异常，因为字符串常量池被移到了<code>堆中</code>，如果我们限制堆的大小，会抛出<code>Java heap space</code>异常。</p>
+</blockquote>
+<ul>
+<li>元数据OOM</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * -XX:MaxMetaspaceSize=10m
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer<span style="color:#f92672">();</span>
+        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setSuperclass</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCache</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallback</span><span style="color:#f92672">((</span>MethodInterceptor<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> method<span style="color:#f92672">,</span> objects<span style="color:#f92672">,</span> methodProxy<span style="color:#f92672">)</span> 
+                             <span style="color:#f92672">-&gt;</span> methodProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> objects<span style="color:#f92672">));</span>
+        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>因为元数据区存放类型的相关信息：类名、方法描述等，通过大量创建cglib代理类实现<code>Metaspace OOM</code>。</p>
+</blockquote>
+<h4 id="直接内存-1">直接内存</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e">  * -XX：MaxDirectMemorySize=10m
+</span><span style="color:#75715e">  */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IllegalAccessException <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 反射获取unsafe类
+</span><span style="color:#75715e"></span>    Field unsafeField <span style="color:#f92672">=</span> Unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredFields</span><span style="color:#f92672">()[</span>0<span style="color:#f92672">];</span>
+    unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+    Unsafe unsafe <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Unsafe<span style="color:#f92672">)</span>unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 分配直接内存
+</span><span style="color:#75715e"></span>        unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">allocateMemory</span><span style="color:#f92672">(</span>1024 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>直接内存由：<code>-XX：MaxDirectMemorySize</code>指定，如果不指定则和<code>-Xmx</code>一致。</p>
+</blockquote>
+<hr>
+<h3 id="常量池实战">常量池实战</h3>
+<p>查看汇编指令</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">javac -encoding utf-8 StringTest.java
+javap -v StringTest.class
+</code></pre></div><ul>
+<li>字符串拼接（编译器优化）</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        String s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;he&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 编译器会自动转成 ldc &#34;hello&#34;指令
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// s1 == s2?
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>因为编译器的优化，<code>s2会被编译成&quot;ldc hello&quot;(汇编指令可见)</code>，s1 和 s2 都指向<code>字符串常量池</code>中<code>&quot;hello&quot;</code>的引用，所以<code>s1 == s2</code>成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/OB0vpDkBzHoV.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>字符串拼接（编译器不优化）</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;he&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 编译器不会优化
+</span><span style="color:#75715e"></span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+        <span style="color:#75715e">// s1 == s2?
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<ol>
+<li>编译器不会优化<code>s1</code>，堆中会创建<code>&quot;he&quot;、&quot;llo&quot;</code>对象，并将两个对象的引用放入<code>字符串常量池</code>。继而通过<code>+ (底层StringBuilder)</code>创建<code>&quot;hello&quot;</code>对象，但不会放入<code>字符串常量池</code>。</li>
+<li>此时<code>字符串常量池</code>无<code>&quot;hello&quot;</code>的引用，<code>s1.intern()</code>会将堆中<code>&quot;hello&quot;</code>对象的引用放入<code>字符串常量池</code>并返回引用。</li>
+<li><code>s2 = &quot;hello&quot;</code>，执行<code>ldc</code>指令，发现<code>字符串常量池</code>已存在<code>&quot;hello&quot;</code>的引用，返回引用（<code>即s1引用</code>）给s2，所以<code>s1 == s2</code>成立。</li>
+<li>下图汇编指令中，需要注意观察，在<code>s1.intern()</code>之前，并没有<code>ldc &quot;hello&quot;</code>，进一步说明在此之前<code>字符串常量池</code>只存在<code>&quot;he&quot;、&quot;llo&quot;</code>两个对象的引用。</li>
+</ol>
+<p><img src="https://image.leejay.top/image/20200813/n30lMesr7Kjx.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>new String(&quot;&quot;)问题</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// s1 == s2?
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>基于<code>ldc</code>指令，若<code>字符串常量池不存在该字符串就会在堆中创建字符串实例，并将引用保存在字符串常量池中</code>。</p>
+<p>此时<code>s1 = new String(&quot;hello&quot;)</code>共创建两个对象：一个由<code>显示的new</code>创建，一个由<code>JVM</code>创建。s1指向堆中的<code>&quot;hello&quot;</code>对象，而s2指向的是<code>字符串常量池</code>中持有的实例。所以<code>s1 == s2</code>不成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/f6u1Mzjxfpm7.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>intern()</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+        s1 <span style="color:#f92672">=</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// s1 == s2?
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p><code>String.intern()</code>方法会返回<code>该字符串在字符串常量池中的引用</code>，<code>s2 = &quot;hello&quot;</code>也会先去<code>字符串常量池</code>查看是否存在该字符串的引用，有就返回引用。最终<code>s1 &amp; s2</code>都指向<code>字符串常量池中的hello引用</code>。所以<code>s1 == s2</code>成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/HQTMAz6X4cCl.png?imageslim" alt=""></p>
+</blockquote>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/">
+                  <span class="button__text">二叉堆时间复杂度分析</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号-1</div>
+    
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

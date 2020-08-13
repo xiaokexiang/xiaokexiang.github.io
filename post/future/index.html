@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>Future</title>
+      <title>Future源码解析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -13,7 +13,7 @@ public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/future/" />
 
 <script type="text/javascript"
@@ -59,6 +59,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -70,12 +72,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Future"/>
+<meta name="twitter:title" content="Future源码解析"/>
 <meta name="twitter:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。"/>
 
 
 
-<meta property="og:title" content="Future" />
+<meta property="og:title" content="Future源码解析" />
 <meta property="og:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/future/" />
@@ -158,7 +160,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/future/">Future</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/future/">Future源码解析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -177,9 +179,9 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/future/">Future </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/future/">Future </a>&nbsp;
         
-        🍖<a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
         
       </span>
     
@@ -594,7 +596,7 @@ code.has-jax {
             
               <span class="button next">
                 <a href="https://leejay.top/post/threadpool/">
-                  <span class="button__text">ThreadPool</span>
+                  <span class="button__text">ThreadPool源码解析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

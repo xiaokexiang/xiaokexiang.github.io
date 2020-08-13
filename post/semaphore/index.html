@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>Semaphore</title>
+      <title>Semaphore共享锁源码解析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -13,7 +13,7 @@
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/semaphore/" />
 
 <script type="text/javascript"
@@ -59,6 +59,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -70,12 +72,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Semaphore"/>
+<meta name="twitter:title" content="Semaphore共享锁源码解析"/>
 <meta name="twitter:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。"/>
 
 
 
-<meta property="og:title" content="Semaphore" />
+<meta property="og:title" content="Semaphore共享锁源码解析" />
 <meta property="og:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/semaphore/" />
@@ -158,7 +160,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore共享锁源码解析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -177,9 +179,9 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
         
-        🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
         
       </span>
     
@@ -402,14 +404,14 @@ code.has-jax {
               <span class="button previous">
                 <a href="https://leejay.top/post/readwritelock/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">ReadWriteLock</span>
+                  <span class="button__text">ReadWriteLock源码解析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/condition/">
-                  <span class="button__text">Condition</span>
+                  <span class="button__text">Condition源码解析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

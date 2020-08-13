@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>CopyOnWriteArrayList</title>
+      <title>CopyOnWriteArrayList源码解析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -15,7 +15,7 @@ CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/copyonwritearraylist/" />
 
 <script type="text/javascript"
@@ -61,6 +61,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -72,12 +74,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CopyOnWriteArrayList"/>
+<meta name="twitter:title" content="CopyOnWriteArrayList源码解析"/>
 <meta name="twitter:description" content="`CopyOnWriteArrayList`是ArrayList的线程安全变体，是通过`生成新的副本`来实现线程安全。"/>
 
 
 
-<meta property="og:title" content="CopyOnWriteArrayList" />
+<meta property="og:title" content="CopyOnWriteArrayList源码解析" />
 <meta property="og:description" content="`CopyOnWriteArrayList`是ArrayList的线程安全变体，是通过`生成新的副本`来实现线程安全。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/copyonwritearraylist/" />
@@ -160,7 +162,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/copyonwritearraylist/">CopyOnWriteArrayList</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/copyonwritearraylist/">CopyOnWriteArrayList源码解析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -179,7 +181,7 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
         
       </span>
     
@@ -374,14 +376,14 @@ code.has-jax {
               <span class="button previous">
                 <a href="https://leejay.top/post/concurrentlinkedqueue/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">ConcurrentLinkedQueue</span>
+                  <span class="button__text">ConcurrentLinkedQueue源码浅析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/blockingdeque/">
-                  <span class="button__text">BlockingDeque</span>
+                  <span class="button__text">BlockingDeque双端阻塞队列源码浅析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

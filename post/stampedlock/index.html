@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>StampedLock</title>
+      <title>StampedLock读写锁源码浅析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -14,7 +14,7 @@
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/stampedlock/" />
 
 <script type="text/javascript"
@@ -60,6 +60,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -71,12 +73,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="StampedLock"/>
+<meta name="twitter:title" content="StampedLock读写锁源码浅析"/>
 <meta name="twitter:description" content="为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋&#43;CAS`、`类似AQS`的逻辑实现"/>
 
 
 
-<meta property="og:title" content="StampedLock" />
+<meta property="og:title" content="StampedLock读写锁源码浅析" />
 <meta property="og:description" content="为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋&#43;CAS`、`类似AQS`的逻辑实现" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/stampedlock/" />
@@ -159,7 +161,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock读写锁源码浅析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -178,7 +180,7 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
         
       </span>
     
@@ -894,14 +896,14 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
               <span class="button previous">
                 <a href="https://leejay.top/post/blockingqueue/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">BlockingQueue</span>
+                  <span class="button__text">BlockingQueue单向阻塞队列源码解析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/cycliebarrier/">
-                  <span class="button__text">CyclieBarrier</span>
+                  <span class="button__text">CyclieBarrier源码解析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

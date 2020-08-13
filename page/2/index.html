@@ -13,7 +13,7 @@
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/" />
 
 <script type="text/javascript"
@@ -59,6 +59,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -79,7 +81,7 @@ code.has-jax {
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://leejay.top/" />
-<meta property="og:updated_time" content="2020-08-01T11:10:01+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:updated_time" content="2020-08-13T13:21:20+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -166,7 +168,39 @@ code.has-jax {
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/copyonwritearraylist/">CopyOnWriteArrayList</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/concurrentlinkedqueue/">ConcurrentLinkedQueue源码浅析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-11
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/concurrentlinkedqueue/">ConcurrentLinkedQueue </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          <code>ConcurrentLinkedQueue</code>是使用<code>自旋和CAS</code>来实现的非阻塞的有序队列，是LinkedList的线程安全变体。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/copyonwritearraylist/">CopyOnWriteArrayList源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -182,7 +216,7 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
           
         </span>
       
@@ -198,7 +232,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/blockingdeque/">BlockingDeque</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/blockingdeque/">BlockingDeque双端阻塞队列源码浅析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -214,7 +248,7 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/blockingdeque/">BlockingDeque </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingdeque/">BlockingDeque </a>&nbsp;
           
         </span>
       
@@ -230,7 +264,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue单向阻塞队列源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -246,7 +280,7 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
           
         </span>
       
@@ -262,7 +296,7 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock读写锁源码浅析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
@@ -278,7 +312,7 @@ code.has-jax {
       
         <span class="post-tags">
           
-          🍖<a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
           
         </span>
       
@@ -288,40 +322,6 @@ code.has-jax {
       <div class="post-content">
         
           为了实现更快的读写锁模式而诞生的框架，基于<code>乐观锁</code>、<code>自旋+CAS</code>、<code>类似AQS</code>的逻辑实现
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-29
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          🍖<a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
-          
-          🍖<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
         
       </div>
       

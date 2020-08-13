@@ -16,7 +16,7 @@
     
     
     <item>
-      <title>BlockingDeque</title>
+      <title>BlockingDeque双端阻塞队列源码浅析</title>
       <link>https://leejay.top/post/blockingdeque/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     
-      <title>CAS</title>
+      <title>CAS乐观锁浅析</title>
     
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -16,7 +16,7 @@
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
 <meta name="baidu-site-verification" content="aNoX6MUEHW" />
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+
 <link rel="canonical" href="https://leejay.top/post/cas/" />
 
 <script type="text/javascript"
@@ -62,6 +62,8 @@ code.has-jax {
 
 
 
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
@@ -73,12 +75,12 @@ code.has-jax {
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CAS"/>
+<meta name="twitter:title" content="CAS乐观锁浅析"/>
 <meta name="twitter:description" content="Java并发中`乐观锁的实现`，大部分并发框架都基于CAS实现。"/>
 
 
 
-<meta property="og:title" content="CAS" />
+<meta property="og:title" content="CAS乐观锁浅析" />
 <meta property="og:description" content="Java并发中`乐观锁的实现`，大部分并发框架都基于CAS实现。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://leejay.top/post/cas/" />
@@ -161,7 +163,7 @@ code.has-jax {
   
 
   <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/cas/">CAS</a></h1>
+    <h1 class="post-title"><a href="https://leejay.top/post/cas/">CAS乐观锁浅析</a></h1>
     <div class="post-meta">
       
         <span class="post-date">
@@ -180,9 +182,9 @@ code.has-jax {
     
       <span class="post-tags">
         
-        🍖<a href="https://leejay.top/tags/cas/">CAS </a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cas/">CAS </a>&nbsp;
         
-        🍖<a href="https://leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
         
       </span>
     
@@ -450,14 +452,14 @@ code.has-jax {
               <span class="button previous">
                 <a href="https://leejay.top/post/reentrantlock/">
                   <span class="button__icon">←</span>
-                  <span class="button__text">AQS与ReentrantLock独占锁</span>
+                  <span class="button__text">ReentrantLock源码解析</span>
                 </a>
               </span>
             
             
               <span class="button next">
                 <a href="https://leejay.top/post/volatile/">
-                  <span class="button__text">volatile</span>
+                  <span class="button__text">volatile关键字浅析</span>
                   <span class="button__icon">→</span>
                 </a>
               </span>

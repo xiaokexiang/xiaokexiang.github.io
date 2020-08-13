@@ -16,7 +16,7 @@
     
     
     <item>
-      <title>AQS与ReentrantLock独占锁</title>
+      <title>ReentrantLock源码解析</title>
       <link>https://leejay.top/post/reentrantlock/</link>
       <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
       
