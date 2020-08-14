@@ -322,7 +322,7 @@ code.has-jax {
 <li>但JVM不一定会等待<code>finalize</code>执行结束，因为如果<code>finalize</code>方法卡顿，会导致队列中后续的对象处于等待，甚至导致<code>整个内存回收系统的崩溃</code>。</li>
 <li>若该对象的finalize方法不能<code>将对象与引用链建立连接</code>，该对象会被垃圾回收器清理。</li>
 </ol>
-<p><img src="https://image.leejay.top/image/20200814/DSyHGvRfTYvE.png?imageslim" alt=""></p>
+<p><img src="https://image.leejay.top/image/20200814/1LKD8vwaOJzB.png?imageslim" alt=""></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReachabilityAnalysis</span> <span style="color:#f92672">{</span>
     
     <span style="color:#75715e">// 创建GC Roots
