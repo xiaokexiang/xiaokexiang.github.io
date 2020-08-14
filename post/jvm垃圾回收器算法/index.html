@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>JVM垃圾回收器算法</title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="description" content="垃圾回收概述 在JVM运行期间，会对内存中不再被使用的对象进行分配和管理。若不及时对内存中的垃圾进行清理，会导致被保留的空间无法被其他对象使用，从而导致内存溢出。
+ 内存溢出：系统无法分配给程序所需要的指定大小内存。
+内存泄漏：当对象不再使用或无法继续使用时，因为强引用的存在导致本该会回收的内存无法被回收，常见于：Map用对象作为key不重写hashcode &amp;amp; equals &amp;amp; ThreadLocal内存泄漏。
+ 对象是否存活 JVM垃圾回收器会对对象中不再使用(死去)的对象进行回收，那么垃圾回收器是如何进行判断的呢。
+1. 引用计数法 对于一个对象A，只要有一个对象引用了A，那么A的计数器增加1，当引用失效的时候就减1。该算法会产生对象之间循环引用问题，会导致内存泄漏。
+2. 可达性算法 通过一系列称为&amp;quot;GC Roots&amp;quot;的根对象作为起点，根据引用关系向下搜索，搜索过程走过的路称为&amp;quot;引用链&amp;quot;。如果某个对象到&amp;quot;GC Roots&amp;quot;没有任何引用链相连，就说明该对象需要被回收。
+ 图中绿色为可达对象，灰色为不可达对象。
+GC Roots包括但不限于以下：
+ 栈帧中引用的对象（局部变量、临时变量等） 类中的引用型静态变量 字符串常量池中的引用。 被Synchronized锁持有的对象。    Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
+从JDK1.2开始，Java对引用的概念进行补充，将引用分为了：强引用、软引用、弱引用和虚引用四种。
+public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T referent; // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。
+  强引用  即最传统引用的体现，比如Object obj = new Object()，只要强引用关系存在，那么垃圾回收器永远不会回收掉被引用的对象。
+ 软引用  用于描述还有用、但非必须的对象，只被软引用关联（指向）的对象，在OOM之前，会将这些对象进行二次回收，如果回收后仍没有足够内存，才会抛出OOM。Java中用SoftReference实现。"/>
+<meta name="keywords" content=""/>
+<meta name="robots" content="noodp"/>
+<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
+<meta name="baidu-site-verification" content="aNoX6MUEHW" />
+
+
+<link rel="canonical" href="https://leejay.top/post/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%AE%97%E6%B3%95/" />
+
+<script type="text/javascript"
+        async
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+        >
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] },
+    'HTML-CSS': {
+        showMathMenu: false 
+    }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+
+
+
+<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
+<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="JVM垃圾回收器算法"/>
+<meta name="twitter:description" content="如何判断对象是否存活的，对象的回收流程及垃圾回收器采用的算法。"/>
+
+
+
+<meta property="og:title" content="JVM垃圾回收器算法" />
+<meta property="og:description" content="如何判断对象是否存活的，对象的回收流程及垃圾回收器采用的算法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://leejay.top/post/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%AE%97%E6%B3%95/" />
+<meta property="article:published_time" content="2020-08-14T16:33:06+08:00" />
+<meta property="article:modified_time" content="2020-08-14T16:33:06+08:00" /><meta property="og:site_name" content="Aurora" />
+
+
+
+
+
+
+  </head>
+  <body class="">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
+  
+    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
+</svg></span>
+    <span class="logo__text">Aurora</span>
+    <span class="logo__cursor"></span>
+    <span class="logo__cursor2"></span>
+  
+</a>
+    <span class="header__right">
+      
+        <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+  </ul>
+</nav>
+
+        <span class="menu-trigger">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </span>
+      
+      <span class="theme-toggle">
+        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
+  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
+</svg>
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title"><a href="https://leejay.top/post/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%AE%97%E6%B3%95/">JVM垃圾回收器算法</a></h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2020-08-14
+        </span>
+
+        
+          
+        
+      
+
+      
+      
+    </div>
+
+    
+      <span class="post-tags">
+        
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/jvm/">JVM </a>&nbsp;
+        
+        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reference/">reference</a>&nbsp;
+        
+      </span>
+    
+
+    
+
+    <div class="post-content">
+      
+      <h3 id="垃圾回收概述">垃圾回收概述</h3>
+<p>在JVM<code>运行期间</code>，会对内存中<code>不再被使用的对象</code>进行<code>分配和管理</code>。若不及时对内存中的垃圾进行清理，会导致被保留的空间无法被其他对象使用，从而导致<code>内存溢出</code>。</p>
+<blockquote>
+<p>内存溢出：系统无法分配给程序所<code>需要的指定大小内存</code>。</p>
+<p>内存泄漏：当<code>对象不再使用或无法继续使用时</code>，因为强引用的存在导致<code>本该会回收的内存无法被回收</code>，常见于：<code>Map用对象作为key不重写hashcode &amp; equals &amp; ThreadLocal内存泄漏</code>。</p>
+</blockquote>
+<h3 id="对象是否存活">对象是否存活</h3>
+<p>JVM垃圾回收器会对对象中<code>不再使用(死去)</code>的对象进行回收，那么垃圾回收器是如何进行判断的呢。</p>
+<h4 id="1-引用计数法">1. 引用计数法</h4>
+<p>对于一个对象A，只要有一个对象引用了A，那么A的计数器增加1，当引用失效的时候就减1。该算法会产生<code>对象之间循环引用</code>问题，会导致<code>内存泄漏</code>。</p>
+<h4 id="2-可达性算法">2. 可达性算法</h4>
+<p>通过一系列称为<code>&quot;GC Roots&quot;</code>的根对象作为起点，根据引用关系向下搜索，搜索过程走过的路称为<code>&quot;引用链&quot;</code>。如果某个对象到<code>&quot;GC Roots&quot;</code>没有任何引用链相连，就说明该对象需要被回收。</p>
+<p><img src="https://image.leejay.top/image/20200813/PK6PSNTuG2W8.png?imageslim" alt=""></p>
+<blockquote>
+<p>图中绿色为<code>可达对象</code>，灰色为<code>不可达对象</code>。</p>
+<p><code>GC Roots</code>包括但不限于以下：</p>
+<ol>
+<li>栈帧中引用的对象（局部变量、临时变量等）</li>
+<li>类中的<code>引用型静态变量</code></li>
+<li><code>字符串常量池中的引用</code>。</li>
+<li>被<code>Synchronized</code>锁持有的对象。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="java中的引用">Java中的引用</h3>
+<p>传统的引用概念：若<code>reference</code>类型的数据中存储的数值是另一块内存的起始地址，就说明该<code>reference</code>数据是某个内存、某个对象的引用。</p>
+<p>从<code>JDK1.2</code>开始，Java对引用的概念进行补充，将引用分为了：<code>强引用、软引用、弱引用和虚引用</code>四种。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Reference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 引用本身
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> T referent<span style="color:#f92672">;</span>  
+    <span style="color:#75715e">// 存储reference本身的链表队列
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> ReferenceQueue<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> T<span style="color:#f92672">&gt;</span> queue<span style="color:#f92672">;</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>当垃圾回收器准备回收一个对象时，发现它还有<code>软、弱、虚引用</code>，就会在回收对象之前，将该引用加入到与之关联的<code>引用队列ReferenceQueue</code>中去，这样就可以实现在引用对象回收前的相关操作。</p>
+</blockquote>
+<p><img src="https://image.leejay.top/image/20200813/yIcmomijhoVr.png?imageslim" alt=""></p>
+<ul>
+<li>强引用</li>
+</ul>
+<p>即最传统引用的体现，比如<code>Object obj = new Object()</code>，只要强引用关系存在，那么垃圾回收器永远不会回收掉被引用的对象。</p>
+<ul>
+<li>软引用</li>
+</ul>
+<p>用于描述<code>还有用、但非必须的对象</code>，只被软引用<code>关联（指向）</code>的对象，在OOM之前，会将这些对象进行二次回收，如果回收后仍没有足够内存，才会抛出OOM。Java中用<code>SoftReference</code>实现。</p>
+<ul>
+<li>弱引用</li>
+</ul>
+<p>相比<code>软引用</code>，只被<code>弱引用关联（指向）</code>的对象只能生存到下一次垃圾收集，只要垃圾回收器工作，<code>弱引用</code>就会被回收。Java中用<code>WeakReference</code>实现。<code>ThreadLocal.ThreadLocalMap&lt;k,v&gt;中key就继承了弱引用</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Weak</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> WeakReference<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> weakReference<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        test<span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// hello
+</span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span> <span style="color:#75715e">// test作用域结束，gc会清理weakReference
+</span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// null
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// str 作为test方法的本地变量
+</span><span style="color:#75715e"></span>        String str <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+        weakReference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WeakReference<span style="color:#f92672">&lt;&gt;(</span>str<span style="color:#f92672">);</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span><span style="color:#75715e">// 不会被清理
+</span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// hello
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>和软引用一样，弱引用也适合保存<code>可有可无的数据</code>，当系统内存不足的时候会被回收，内存充足的时候，缓存数据存在相当长的时间，达到让系统加速的作用。</p>
+</blockquote>
+<ul>
+<li>虚引用</li>
+</ul>
+<p>引用中最弱的一种，一个对象是否有<code>虚引用</code>的存在，对其生存时间不会产生影响，并且<code>无法通过虚引用获取对象实例</code>。唯一的作用就是为了在<code>该对象被回收时收到通知</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Phantom</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 实现 包含虚引用的对象在回收时接受通知
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        String hello <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 创建引用Queue
+</span><span style="color:#75715e"></span>        ReferenceQueue<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> queue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReferenceQueue<span style="color:#f92672">&lt;&gt;();</span>
+        PhantomReference<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> reference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PhantomReference<span style="color:#f92672">&lt;&gt;(</span>hello<span style="color:#f92672">,</span> queue<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                Reference<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> String<span style="color:#f92672">&gt;</span> poll <span style="color:#f92672">=</span> queue<span style="color:#f92672">.</span><span style="color:#a6e22e">poll</span><span style="color:#f92672">();</span>
+                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>poll <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+                        <span style="color:#75715e">// 此时说明hello对象被回收了
+</span><span style="color:#75715e"></span>                        Field referent <span style="color:#f92672">=</span> Reference<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span>
+                            <span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;referent&#34;</span><span style="color:#f92672">);</span>
+                        referent<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+                        String str <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> referent<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>poll<span style="color:#f92672">);</span>
+                        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;GC Will Collect &#34;</span> <span style="color:#f92672">+</span> str<span style="color:#f92672">);</span>
+                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+                    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IllegalAccessException <span style="color:#f92672">|</span> NoSuchFieldException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                        e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+                    <span style="color:#f92672">}</span>
+                <span style="color:#f92672">}</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 去除hello的引用
+</span><span style="color:#75715e"></span>        hello <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 调用垃圾回收对象
+</span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>对于虚引用，它的get()方法只会返回null，因为<code>虚引用是不可达的</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div></blockquote>
+<hr>
+<h3 id="对象的回收">对象的回收</h3>
+<p>我们知道<code>HotSpot</code>采用的是<code>可达性算法</code>判断对象是否存活，那么不再存活的对象垃圾回收器是如何回收的呢？</p>
+<ol>
+<li>垃圾回收器对对象进行回收时，先通过<code>可达性算法</code>判断该对象是否可达。</li>
+<li>如果<code>对象不可达</code>并且<code>复写了finalize方法且该对象的finalize方法之前没被调用过</code>。</li>
+<li>垃圾回收器会将对象放置到一个名叫<code>F-Queue</code>的队列中，稍后由JVM启动一个<code>低优先级的Finalizer线程</code>去执行Queue中对象的finalize方法。</li>
+<li>若该对象的finalize方法不能<code>将对象与引用链建立连接</code>，该对象会被垃圾回收器清理。</li>
+</ol>
+<p><img src="https://image.leejay.top/image/20200814/DSyHGvRfTYvE.png?imageslim" alt=""></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReachabilityAnalysis</span> <span style="color:#f92672">{</span>
+    
+    <span style="color:#75715e">// 创建GC Roots
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ReachabilityAnalysis REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">isAlive</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m still alive ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">finalize</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">finalize</span><span style="color:#f92672">();</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;execute finalize method ...&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#75715e">// 试图和引用链建立联系
+</span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 创建对象
+</span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReachabilityAnalysis<span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 去除引用链的联系, 便于测试
+</span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        <span style="color:#75715e">// 调用gc时 对象第一次尝试自救
+</span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 因为finalizer线程的低优先级, 需要休眠一会。
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// JVM会先判断是否有必要执行finalizer方法, 并执行相应的finalize()方法
+</span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span>
+
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m dead ...&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#75715e">// 第二次自救 用于判断是否会执行finalize方法两次
+</span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m dead ...&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 结论: 任何对象的finalize()方法只会被系统调用一次
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>对象<code>finalize</code>方法只会被JVM调用一次，只要执行<code>finalize</code>方法重新与<code>引用链</code>建立联系，就不会被清理。不建议使用<code>finalize进行释放资源</code>，因为可能发生引用外泄，无意中复活对象。并且finalize调用时间不确定，相比之下更推荐<code>finally释放资源</code>。</p>
+</blockquote>
+<hr>
+<h3 id="垃圾回收算法">垃圾回收算法</h3>
+<h4 id="标记清除法mark-sweep">标记清除法(Mark-Sweep)</h4>
+<p>包含<code>标记阶段</code>和<code>清除阶段</code>。标记阶段通过<code>可达性算法</code>标记分析可达对象，清除阶段会清除所有<code>未被标记的对象</code>。
+此方法会<code>产生空间碎片</code>。并且回收后的空间是<code>不连续</code>的，会导致工作效率低于连续空间。</p>
+<h4 id="复制算法copying">复制算法(Copying)</h4>
+<p>将<code>内存空间分为两份</code>，在进行垃圾回收时，将正在使用的那一份<code>内存中的活对象</code>复制到另一份内存中，之后<code>清除正在使用的内存块中的所有对象</code>，交换两个内存的角色，完成垃圾回收。
+相对于<code>标记清除算法</code>，<code>复制算法</code>不会产生空间碎片，但会导致使用的<code>内存只有一半</code>。</p>
+<blockquote>
+<p><code>新生代串行垃圾回收器</code>使用了该算法，它将新生代分为<code>eden、from(s0)、to(s1)</code>三个区域，GC在回收对象时，会先将<code>eden &amp; s0</code>区域的对象复制到<code>s1(大对象、老年对象、s1区域满时对象会直接进入老年代)</code>，然后清空<code>eden &amp; s0</code>区域，再将<code>s0 &amp; s1互换</code>，保证<code>s1永远为空</code>。</p>
+</blockquote>
+<h4 id="标记压缩算法mark-compact">标记压缩算法(Mark-Compact)</h4>
+<p>在标记阶段，使用<code>可达性算法</code>对所有可达对象进行标记。在清除阶段，将所有的存活对象压缩到内存的一端，然后清除边界外的所有空间。相比之前的算法，避免了<code>内存碎片</code>的产生且不需要<code>内存折半</code>，效率高，是老年代的回收算法。</p>
+<h4 id="分代算法generational-collecting">分代算法(Generational Collecting)</h4>
+<p>它将内存区间根据对象的特点分成几块，根据每块内存区间的特点使用不同的回收算法，以提高回收的效率。</p>
+<h4 id="分区算法region">分区算法(Region)</h4>
+<p><code>分区算法将整个堆空间分成连续的不同小区间，每个小区间都独立使用，独立回收</code>。控制一次回收小区间的数量，能够有效减少GC产生的停顿。</p>
+<p><img src="https://image.leejay.top/image/20200814/jQj1OYkGDUEJ.png?imageslim" alt=""></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h">其他文章</span>
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%B5%85%E6%9E%90/">
+                  <span class="button__text">JVM内存区域概述与常量池浅析</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+
+    
+      
+        
+
+      
+    
+
+    </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">苏ICP备18050258号</div>
+    
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

@@ -9,8 +9,8 @@
     <description>Recent content in Tags on Aurora</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
-    <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Thu, 13 Aug 2020 13:21:20 +0800</lastBuildDate>
+    <copyright>苏ICP备18050258号</copyright>
+    <lastBuildDate>Fri, 14 Aug 2020 16:33:06 +0800</lastBuildDate>
     
 	<atom:link href="https://leejay.top/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -18,9 +18,29 @@
     <item>
       <title>JVM </title>
       <link>https://leejay.top/tags/jvm/</link>
-      <pubDate>Thu, 13 Aug 2020 13:21:20 +0800</pubDate>
+      <pubDate>Fri, 14 Aug 2020 16:33:06 +0800</pubDate>
       
       <guid>https://leejay.top/tags/jvm/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>reference</title>
+      <link>https://leejay.top/tags/reference/</link>
+      <pubDate>Fri, 14 Aug 2020 16:33:06 +0800</pubDate>
+      
+      <guid>https://leejay.top/tags/reference/</guid>
       <description>
         
           
