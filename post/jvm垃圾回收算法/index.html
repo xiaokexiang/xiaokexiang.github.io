@@ -309,7 +309,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>对于虚引用，它的get()方法只会返回null，因为<code>虚引用是不可达的</code>。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
+ <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div></blockquote>
 <hr>
@@ -376,7 +376,7 @@ code.has-jax {
 <h3 id="垃圾回收算法">垃圾回收算法</h3>
 <h4 id="标记清除法mark-sweep">标记清除法(Mark-Sweep)</h4>
 <p>包含<code>标记阶段</code>和<code>清除阶段</code>。标记阶段通过<code>可达性算法</code>标记分析可达对象，清除阶段会清除所有<code>未被标记的对象</code>。
-此方法会<code>产生空间碎片</code>。并且回收后的空间是<code>不连续</code>的，会导致工作效率低于连续空间。</p>
+此方法会<code>产生空间碎片</code>。并且回收后的空间是<code>不连续</code>的，会导致工作效率低于连续空间。该算法更关注垃圾回收器的<code>耗时</code>操作。</p>
 <h4 id="复制算法copying">复制算法(Copying)</h4>
 <p>将<code>内存空间分为两份</code>，在进行垃圾回收时，将正在使用的那一份<code>内存中的活对象</code>复制到另一份内存中，之后<code>清除正在使用的内存块中的所有对象</code>，交换两个内存的角色，完成垃圾回收。
 相对于<code>标记清除算法</code>，<code>复制算法</code>不会产生空间碎片，但会导致使用的<code>内存只有一半</code>。</p>
@@ -384,9 +384,22 @@ code.has-jax {
 <p><code>新生代串行垃圾回收器</code>使用了该算法，它将新生代分为<code>eden、from(s0)、to(s1)</code>三个区域，GC在回收对象时，会先将<code>eden &amp; s0</code>区域的对象复制到<code>s1(大对象、老年对象、s1区域满时对象会直接进入老年代)</code>，然后清空<code>eden &amp; s0</code>区域，再将<code>s0 &amp; s1互换</code>，保证<code>s1永远为空</code>。</p>
 </blockquote>
 <h4 id="标记压缩算法mark-compact">标记压缩算法(Mark-Compact)</h4>
-<p>在标记阶段，使用<code>可达性算法</code>对所有可达对象进行标记。在清除阶段，将所有的存活对象压缩到内存的一端，然后清除边界外的所有空间。相比之前的算法，避免了<code>内存碎片</code>的产生且不需要<code>内存折半</code>，效率高，是老年代的回收算法。</p>
+<p>在标记阶段，使用<code>可达性算法</code>对所有可达对象进行标记。在清除阶段，将所有的存活对象压缩到内存的一端，然后清除边界外的所有空间。相比之前的算法，避免了<code>内存碎片</code>的产生且不需要<code>内存折半</code>，但是移动大对象会给系统带来较长时间的<code>STW</code>。该算法更关注垃圾回收器的<code>吞吐量</code>操作。</p>
+<blockquote>
+<p>STW：垃圾回收器工作时，Java程序需要暂停工作，等待垃圾回收完成，这种现象叫做<code>Stop The World</code>。</p>
+</blockquote>
 <h4 id="分代算法generational-collecting">分代算法(Generational Collecting)</h4>
-<p>它将内存区间根据对象的特点分成几块，根据每块内存区间的特点使用不同的回收算法，以提高回收的效率。</p>
+<p>基于两个分代假说之上：</p>
+<blockquote>
+<p>弱分代假说：绝大多数的对象都是朝生夕灭的。</p>
+<p>强分代假说：熬过多次垃圾回收的对象就越难以消亡。</p>
+</blockquote>
+<p>奠定了垃圾收集器的一致设计原则：<code>收集器应将Java堆分成不同的区域，然后将回收对象依据其年龄(对象熬过垃圾回收的次数)分配到不同的区域中存储</code>。</p>
+<p>但因为对象会存在<code>跨代引用</code>，即<code>新生代对象完全可能被老年代对象引用</code>，因此除了必要的可达性分析外，还需要<code>遍历老年代对象</code>来保证所有对象可达性分析结果的准确性。基于此理论提出了<code>跨代引用假说：</code></p>
+<blockquote>
+<p>跨代引用相对于同代引用来说仅占极少部分。</p>
+</blockquote>
+<p>并基于此假说采用了如下设计：在新生代上建立一个全局数据结构<code>记忆集(Remembered Set)</code>，该结构将老年代划成若干小块，标识出老年代哪一块内存会存在跨代引用，当发生新生代垃圾回收时，会对记忆集中的记录加入<code>GC Roots</code>进行扫描，相比扫描整个老年代来说大大的减少了运行时开销。</p>
 <h4 id="分区算法region">分区算法(Region)</h4>
 <p><code>分区算法将整个堆空间分成连续的不同小区间，每个小区间都独立使用，独立回收</code>。控制一次回收小区间的数量，能够有效减少GC产生的停顿。</p>
 <p><img src="https://image.leejay.top/image/20200814/jQj1OYkGDUEJ.png?imageslim" alt=""></p>
