@@ -10,7 +10,7 @@
 实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
 线程池类继承体系  ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。
 任何需要线程池执行的任务，都必须直接或间接的实现Runnable接口。
-  ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数巨顶 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this."/>
+  ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this."/>
 <meta name="keywords" content=""/>
 <meta name="robots" content="noodp"/>
 <meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
@@ -205,7 +205,7 @@ code.has-jax {
 <hr>
 <h3 id="threadpoolexecutor">ThreadPoolExecutor</h3>
 <h4 id="构造">构造</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 阻塞队列，具体实现由构造函数巨顶
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 阻塞队列，具体实现由构造函数决定
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> workQueue<span style="color:#f92672">;</span>
 <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> corePoolSize<span style="color:#f92672">;</span>
 <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> maximumPoolSize<span style="color:#f92672">;</span>
@@ -343,7 +343,7 @@ code.has-jax {
 <p><code>STOP</code>：不能接收新任务，也不会执行在队列中的任务，最后中断正在执行的任务。</p>
 <p><code>TIDYING</code>：所有任务都终止，worker数量变为0，转换为此状态会执行<code>terminated()</code>钩子函数。</p>
 <p><code>TERMINATED</code>：<code>terminated()</code>执行完毕，至此线程池才真正关闭。</p>
-<p><img src="https://image.leejay.top/image/20200714/VvPgLR2A4lCT.png?imageslim" alt="线程迁移状态"></p>
+<p><img src="https://image.leejay.top/image/20200714/C5qLgqKHxr5W.png?imageslim" alt="线程迁移状态"></p>
 </blockquote>
 <hr>
 <h3 id="线程池的关闭">线程池的关闭</h3>
