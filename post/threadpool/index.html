@@ -598,7 +598,7 @@ code.has-jax {
 <h4 id="正确的关闭线程池">正确的关闭线程池</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadPoolExecutorTest</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ExecutorService POOL <span style="color:#f92672">=</span> 		ThreadPoolSingleton<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ExecutorService POOL <span style="color:#f92672">=</span> ThreadPoolSingleton<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">();</span>
 
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
         POOL<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
@@ -894,10 +894,10 @@ code.has-jax {
 </li>
 <li>
 <p><code>没有firstTask任务</code>的协助线程：</p>
+<p>① 线程池<code>处于SHUTDOWN期间，协助快速处理阻塞队列任务</code>的线程。</p>
+<p>② 线程池中<code>没有固定线程(即corePoolSize=0)</code>，但此时有任务需要执行的情况。</p>
 </li>
 </ol>
-<p>​     ① 线程池<code>处于SHUTDOWN期间，协助快速处理阻塞队列任务</code>的线程。</p>
-<p>​     ② 线程池中<code>没有固定线程(即corePoolSize=0)</code>，但此时有任务需要执行的情况。</p>
 </blockquote>
 <hr>
 <h3 id="线程池执行任务">线程池执行任务</h3>
@@ -1179,14 +1179,12 @@ NThreads<span style="color:#960050;background-color:#1e0010">：</span>线程数
 NCpus<span style="color:#960050;background-color:#1e0010">：</span>cpu核数<span style="color:#f92672">(</span>Runtime<span style="color:#f92672">.</span><span style="color:#a6e22e">getRuntime</span><span style="color:#f92672">().</span><span style="color:#a6e22e">availableProcessors</span><span style="color:#f92672">()</span>可计算<span style="color:#f92672">)</span>
 UCpus: cpu使用率<span style="color:#f92672">(</span>0<span style="color:#f92672">~</span>1<span style="color:#f92672">)</span>
 W<span style="color:#f92672">/</span>C<span style="color:#960050;background-color:#1e0010">：</span> wait time<span style="color:#f92672">/</span>compute time  Cpu运行类型分为I<span style="color:#f92672">/</span>O密集型<span style="color:#f92672">(</span>W<span style="color:#f92672">)</span>和计算密集型<span style="color:#f92672">(</span>C<span style="color:#f92672">)</span>    
-</code></pre></div><blockquote>
-<p>假设：CPU使用率是100%，那么公式可以变成：<code>NThreads = NCpus * (1 + W/C)</code></p>
+</code></pre></div><p>假设：CPU使用率是100%，那么公式可以变成：<code>NThreads = NCpus * (1 + W/C)</code></p>
 <ol>
 <li>如果是<code>I/O密集型(数据库交互、文件上传下载、网络数据传输等)</code>，W越大，那么 W/C &gt; 1， NThreads &gt;= 2 * NCpus。</li>
 <li>如果是<code>计算密集型(复杂算法之类的)</code>，W 接近于0，NThreads &gt;= NCpus，推荐NCpus+1，这样即使<code>当计算密集型线程偶尔由于缺失故障或者其他原因线程暂停，这个额外的线程也能确保CPU时钟周期不被浪费</code>， 至于多一个cpu上下文切换是否值得，具体项目具体测试。</li>
 </ol>
 <p>推荐：<code> I/O密集型： NThread = 2NCpu。 计算密集型 NThread = NCpus + 1</code>。</p>
-</blockquote>
 </blockquote>
 
     </div>
