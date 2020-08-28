@@ -4,31 +4,56 @@
   
   <url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://leejay.top/categories/jvm/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://leejay.top/tags/jvm/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://leejay.top/post/jvm%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://leejay.top/post/</loc>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2020-08-28T16:39:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/collectors/</loc>
+    <lastmod>2020-08-28T16:36:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</loc>
+    <lastmod>2020-08-28T16:36:54+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</loc>
+    <lastmod>2020-08-20T16:34:32+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</loc>
     <lastmod>2020-08-14T16:33:06+08:00</lastmod>
   </url>
   
@@ -38,12 +63,7 @@
   </url>
   
   <url>
-    <loc>https://leejay.top/tags/</loc>
-    <lastmod>2020-08-14T16:33:06+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0%E4%B8%8E%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%B5%85%E6%9E%90/</loc>
+    <loc>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/</loc>
     <lastmod>2020-08-13T13:21:20+08:00</lastmod>
   </url>
   
