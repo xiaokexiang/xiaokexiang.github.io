@@ -16,6 +16,46 @@
     
     
     <item>
+      <title>ThreadPool线程池源码解析</title>
+      <link>https://leejay.top/post/threadpool/</link>
+      <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/threadpool/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          `ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>ThreadLocal内存泄漏分析</title>
+      <link>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
+      <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          ThreadLocal的内存泄露问题。
+          
+        
+        </description>
+    </item>
+    
+    <item>
       <title>Future源码解析</title>
       <link>https://leejay.top/post/future/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
@@ -30,26 +70,6 @@
         
         
           因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>ThreadPool源码解析</title>
-      <link>https://leejay.top/post/threadpool/</link>
-      <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/threadpool/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。
           
         
         </description>
@@ -350,26 +370,6 @@
         
         
           Java中`管理临界区资源`的管理策略。
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>ThreadLocal内存泄漏分析</title>
-      <link>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
-      <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          ThreadLocal的内存泄露问题。
           
         
         </description>

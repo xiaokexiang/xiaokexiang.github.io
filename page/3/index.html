@@ -81,7 +81,7 @@ code.has-jax {
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://leejay.top/" />
-<meta property="og:updated_time" content="2020-08-28T16:39:07+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:updated_time" content="2020-08-28T16:36:54+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -168,11 +168,11 @@ code.has-jax {
   <div class="posts">
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/copyonwritearraylist/">CopyOnWriteArrayList源码解析</a></h1>
+      <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock源码解析</a></h1>
       <div class="post-meta">
         
           <span class="post-date">
-            2020-07-08
+            2020-06-24
           </span>
 
           
@@ -184,135 +184,7 @@ code.has-jax {
       
         <span class="post-tags">
           
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/copyonwritearraylist/">CopyOnWriteArrayList </a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          <code>CopyOnWriteArrayList</code>是ArrayList的线程安全变体，是通过<code>生成新的副本</code>来实现线程安全。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/blockingdeque/">BlockingDeque双端阻塞队列源码浅析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-07-06
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingdeque/">BlockingDeque </a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          基于ReentrantLock、Condition实现的<code>双端阻塞队列</code>，支持在队首和队尾获取/添加数据。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue单向阻塞队列源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-07-04
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock读写锁源码浅析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-07-01
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          为了实现更快的读写锁模式而诞生的框架，基于<code>乐观锁</code>、<code>自旋+CAS</code>、<code>类似AQS</code>的逻辑实现
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-29
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
           
           <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
           
@@ -323,7 +195,243 @@ code.has-jax {
 
       <div class="post-content">
         
-          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
+          具备<code>独占锁和共享锁</code>两者特性的读写锁，适用于读操作多于写操作的场景。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore共享锁源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-20
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Semaphore是基于AQS的<code>可重入共享锁</code>，具有公平和非公平模式。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/condition/">Condition源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-18
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/condition/">Condition </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现<code>等待/通知</code>模式。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/reentrantlock/">ReentrantLock源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-15
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantlock/">ReentrantLock </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的<code>可重入独占锁</code>，具有公平/非公平两种实现。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/cas/">CAS乐观锁浅析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-12
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cas/">CAS </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java并发中<code>乐观锁的实现</code>，大部分并发框架都基于CAS实现。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/volatile/">volatile关键字浅析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-08
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/volatile/">volatile </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java中volatile关键字的原理与作用。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">MESA模型结构分析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-06
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/mesa/">MESA </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1/">线程通信</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          Java中<code>管理临界区资源</code>的管理策略。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">Java内存可见性</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-05-19
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性 </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          多线程中的内存可见性问题。
         
       </div>
       

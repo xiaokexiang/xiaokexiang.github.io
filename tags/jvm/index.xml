@@ -10,17 +10,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 28 Aug 2020 16:39:07 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 28 Aug 2020 16:36:54 +0800</lastBuildDate>
     
 	<atom:link href="https://leejay.top/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Java虚拟机学习笔记</title>
-      <link>https://leejay.top/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
-      <pubDate>Fri, 28 Aug 2020 16:39:07 +0800</pubDate>
+      <title>HotSpot垃圾收集器</title>
+      <link>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</link>
+      <pubDate>Thu, 20 Aug 2020 16:34:32 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</guid>
       <description>
         
           
@@ -29,7 +29,7 @@
         
         
         
-          对`《深入理解Java虚拟机（第三版）》、《实战Java虚拟机（第二版）》`学习与自我理解
+          JVM中`常见的垃圾收集器`，以及对象在堆中的`分配流程`。
           
         
         </description>
@@ -49,27 +49,7 @@
         
         
         
-          JVM中日常调优参数，收集器选择及相关配套参数
-          
-        
-        </description>
-    </item>
-    
-    <item>
-      <title>HotSpot垃圾收集器</title>
-      <link>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</link>
-      <pubDate>Thu, 20 Aug 2020 16:34:32 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          JVM中常见的垃圾收集器，以及对象在堆中的分配原则。
+          JVM中日常`调优参数`，收集器选择及相关配套参数
           
         
         </description>
@@ -89,7 +69,7 @@
         
         
         
-          如何判断对象是否存活的，对象的回收流程及垃圾回收器采用的算法。
+          如何判断`对象是否存活`的，对象的`回收流程`及垃圾回收器采用的算法。
           
         
         </description>
@@ -109,7 +89,7 @@
         
         
         
-          基于JDK8的JVM内存区域概述、JVM中对象的创建及常量池相关概念浅析
+          基于JDK8的`JVM内存区域概述`、JVM中`对象的创建`及`常量池`相关概念浅析
           
         
         </description>
