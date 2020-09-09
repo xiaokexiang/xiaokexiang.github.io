@@ -81,7 +81,7 @@ code.has-jax {
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://leejay.top/" />
-<meta property="og:updated_time" content="2020-08-28T16:36:54+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:updated_time" content="2020-09-09T17:51:05+08:00" /><meta property="og:site_name" content="Aurora" />
 
 
 
@@ -166,6 +166,40 @@ code.has-jax {
   
 
   <div class="posts">
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/future/">Future源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-19
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/future/">Future </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          因为原有的线程执行<code>无法获取到返回结果</code>，所以为了弥补线程无返回值的问题，才诞生了Future类。
+        
+      </div>
+      
+    </div>
     
     <div class="post on-list">
       <h1 class="post-title"><a href="https://leejay.top/post/concurrenthashmap/">ConcurrentHashMap源码浅析</a></h1>
@@ -388,40 +422,6 @@ code.has-jax {
       <div class="post-content">
         
           基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/countdownlatch/">CountDownLatch源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-27
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/countdownlatch/">CountDownLatch </a>&nbsp;
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
         
       </div>
       

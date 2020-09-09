@@ -10,7 +10,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 28 Aug 2020 16:36:54 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 09 Sep 2020 17:51:05 +0800</lastBuildDate>
     
 	<atom:link href="https://leejay.top/tags/jvm/index.xml" rel="self" type="application/rss+xml" />
     
@@ -30,6 +30,26 @@
         
         
           JVM中`常见的垃圾收集器`，以及对象在堆中的`分配流程`。
+          
+        
+        </description>
+    </item>
+    
+    <item>
+      <title>Jvm类加载机制</title>
+      <link>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Wed, 09 Sep 2020 17:51:05 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</guid>
+      <description>
+        
+          
+          
+          
+        
+        
+        
+          Java虚拟机的`类加载机制`、`类加载器`与自定义类加载器简单实现。
           
         
         </description>
