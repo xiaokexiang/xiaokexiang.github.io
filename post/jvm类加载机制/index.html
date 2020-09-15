@@ -414,7 +414,8 @@ code.has-jax {
 <h4 id="初始化">初始化</h4>
 <p>直接来说：<code>初始化</code>阶段就是执行类构造器<code>&lt;clinit&gt;</code>方法的过程。</p>
 <blockquote>
-<p><code>&lt;clinit&gt;</code>方法是由编译器自动收集类中的所有<code>类变量的赋值动作</code>与<code>静态语句块(static {})</code>中的语句合并产生的。编译器的收集顺序由语句在<code>源文件</code>中出现的顺序决定的。</p>
+<p><code>&lt;clinit&gt;</code>方法是由编译器自动收集类中的所有<code>类变量的赋值动作</code>与<code>静态语句块(static {})</code>中的语句合并产生的。编译器的收集顺序由语句在<code>源文件</code>中出现的顺序决定的。
+<code>&lt;clinit&gt;</code>不包含<code>静态方法</code>，<code>静态方法</code>在被调用的时候才会加载。</p>
 </blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>

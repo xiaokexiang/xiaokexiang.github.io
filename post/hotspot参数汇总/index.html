@@ -193,121 +193,121 @@ code.has-jax {
 <table>
 <thead>
 <tr>
-<th align="left">参数</th>
+<th style="text-align:left">参数</th>
 <th>作用</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>-XX:+PrintGCDetails</code></td>
+<td style="text-align:left"><code>-XX:+PrintGCDetails</code></td>
 <td>打印详细的GC日志</td>
 </tr>
 <tr>
-<td align="left">-XX:+PrintGCTimeStamps</td>
+<td style="text-align:left">-XX:+PrintGCTimeStamps</td>
 <td>GC开头的时间为虚拟机启动时间的偏移量</td>
 </tr>
 <tr>
-<td align="left">-XX:+PrintGCApplicationStoppedTime</td>
+<td style="text-align:left">-XX:+PrintGCApplicationStoppedTime</td>
 <td>打印引用程序由于GC而产生停顿的时间</td>
 </tr>
 <tr>
-<td align="left"><code>-Xloggc:D://log.txt</code></td>
+<td style="text-align:left"><code>-Xloggc:D://log.txt</code></td>
 <td>输出GC日志到D盘下log.txt文件中</td>
 </tr>
 <tr>
-<td align="left">-XX:+PrintVMOptions</td>
+<td style="text-align:left">-XX:+PrintVMOptions</td>
 <td>打印显示传递的参数</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:+PrintCommandLineFlags</code></td>
+<td style="text-align:left"><code>-XX:+PrintCommandLineFlags</code></td>
 <td>打印传递给虚拟机的<code>显式和隐式</code>参数</td>
 </tr>
 <tr>
-<td align="left">-XX:+PrintFlagsFinal</td>
+<td style="text-align:left">-XX:+PrintFlagsFinal</td>
 <td>打印全部参数<code>(包括虚拟机自身的参数)</code></td>
 </tr>
 <tr>
-<td align="left">-Xss1m</td>
+<td style="text-align:left">-Xss1m</td>
 <td>指定栈大小为1m</td>
 </tr>
 <tr>
-<td align="left">-Xms10m</td>
+<td style="text-align:left">-Xms10m</td>
 <td>初始堆空间大小</td>
 </tr>
 <tr>
-<td align="left">-Xmx20m</td>
+<td style="text-align:left">-Xmx20m</td>
 <td>最大堆空间大小</td>
 </tr>
 <tr>
-<td align="left"><code>-Xmn2m</code></td>
+<td style="text-align:left"><code>-Xmn2m</code></td>
 <td>新生代大小</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:SurvivorRatio</code></td>
+<td style="text-align:left"><code>-XX:SurvivorRatio</code></td>
 <td>新生代中eden/s0/s1比例，默认<code>8:1:1</code></td>
 </tr>
 <tr>
-<td align="left"><code>-XX:NewRatio</code></td>
+<td style="text-align:left"><code>-XX:NewRatio</code></td>
 <td>老年代/新生代的比例，默认2:1</td>
 </tr>
 <tr>
-<td align="left">-XX:NewSize</td>
+<td style="text-align:left">-XX:NewSize</td>
 <td>新生代初始大小</td>
 </tr>
 <tr>
-<td align="left">-XX:MaxNewSize</td>
+<td style="text-align:left">-XX:MaxNewSize</td>
 <td>新生代大小最大值</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:+HeapDumpOnOutOfMemoryError</code></td>
+<td style="text-align:left"><code>-XX:+HeapDumpOnOutOfMemoryError</code></td>
 <td>堆OOM时导出堆的信息</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:HeapDumpPath=D://log.dump</code></td>
+<td style="text-align:left"><code>-XX:HeapDumpPath=D://log.dump</code></td>
 <td>将OOM信息导入到D盘下log.dump文件中</td>
 </tr>
 <tr>
-<td align="left">-XX:MetaspaceSize=1m</td>
+<td style="text-align:left">-XX:MetaspaceSize=1m</td>
 <td>设置元数据区初始大小为1m</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:MaxMetaspaceSize=2m</code></td>
+<td style="text-align:left"><code>-XX:MaxMetaspaceSize=2m</code></td>
 <td>设置元数据区大小最大为2m</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:MaxDirectMemorySize=2m</code></td>
+<td style="text-align:left"><code>-XX:MaxDirectMemorySize=2m</code></td>
 <td>本机直接内存(堆外内存)最大2m，默认等于-Xmx</td>
 </tr>
 <tr>
-<td align="left">-XX:+UseTLAB</td>
+<td style="text-align:left">-XX:+UseTLAB</td>
 <td>开启TLAB，默认开启</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:+PrintTLAB</code></td>
+<td style="text-align:left"><code>-XX:+PrintTLAB</code></td>
 <td>打印TLAB信息</td>
 </tr>
 <tr>
-<td align="left">-XX:TLABSize=1024</td>
+<td style="text-align:left">-XX:TLABSize=1024</td>
 <td>设置TLAB大小为1kb</td>
 </tr>
 <tr>
-<td align="left"><code>-XX:TLABRefillWasteFraction=64</code></td>
+<td style="text-align:left"><code>-XX:TLABRefillWasteFraction=64</code></td>
 <td>允许TLAB空间浪费的比例</td>
 </tr>
 <tr>
-<td align="left">-XX:-ResizeTLAB</td>
+<td style="text-align:left">-XX:-ResizeTLAB</td>
 <td>禁止TLAB自动调整大小和浪费比例</td>
 </tr>
 <tr>
-<td align="left">-XX:PretenureSizeThreshold=5242880</td>
+<td style="text-align:left">-XX:PretenureSizeThreshold=5242880</td>
 <td>大于5m对象直接进入老年代，只对Serial、ParNew有用</td>
 </tr>
 <tr>
-<td align="left">-XX:MaxTenuringThreshold=15</td>
+<td style="text-align:left">-XX:MaxTenuringThreshold=15</td>
 <td>晋升到老年代的年龄大小</td>
 </tr>
 <tr>
-<td align="left">-XX:TargetSurvivorRatio=50</td>
+<td style="text-align:left">-XX:TargetSurvivorRatio=50</td>
 <td>用于<code>动态对象年龄</code>判断的s0的使用率参数，默认50</td>
 </tr>
 </tbody>
@@ -355,29 +355,29 @@ code.has-jax {
 <table>
 <thead>
 <tr>
-<th align="left">收集器</th>
+<th style="text-align:left">收集器</th>
 <th>相关参数</th>
 <th>注释</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">ParNew<br>Parallel<br>CMS<br>G1<br>Parallel Old</td>
+<td style="text-align:left">ParNew<br>Parallel<br>CMS<br>G1<br>Parallel Old</td>
 <td>-XX:ParallelGCThreads=n</td>
 <td>指定并行回收线程数<br><code>n=cores&lt;8?cores:3+((5*cores))/8)</code></td>
 </tr>
 <tr>
-<td align="left">Parallel</td>
+<td style="text-align:left">Parallel</td>
 <td>-XX:MaxGCPauseMillis=n<br>-XX:GCTimeRatio=n<br>-XX:+UseAdaptiveSizePolicy</td>
 <td>最大回收停顿时长<br>不超过<code>1/1+n</code>时间进行回收<br>自适应GC策略</td>
 </tr>
 <tr>
-<td align="left">CMS</td>
+<td style="text-align:left">CMS</td>
 <td>-XX:CMSInitiatingOccupancyFraction=n<br>-XX:CMSFullGCBeforeCompaction=n<br>-XX:+UseCMSCompactAtFullCollection</td>
 <td>老年代容量到n时CMS开始工作，默认92<br>CMSn次FullGC后开启碎片整理，默认0<br>CMS进行FullGC时开启碎片整理</td>
 </tr>
 <tr>
-<td align="left">G1</td>
+<td style="text-align:left">G1</td>
 <td>-XX:G1HeapRegionSize<br>-XX:MaxGCPauseMillis<br>-XX:InitiatingHeapOccupancyPercent</td>
 <td>指定Region大小，默认1MB，最大32MB<br>垃圾收集时停顿时长，默认200ms<br>堆使用率达到n后开启并发标记，默认45</td>
 </tr>

@@ -215,30 +215,30 @@ code.has-jax {
 <table>
 <thead>
 <tr>
-<th align="left">Node状态</th>
-<th align="left">描述</th>
+<th style="text-align:left">Node状态</th>
+<th style="text-align:left">描述</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left">INIT=0</td>
-<td align="left">Node初始创建时默认为0</td>
+<td style="text-align:left">INIT=0</td>
+<td style="text-align:left">Node初始创建时默认为0</td>
 </tr>
 <tr>
-<td align="left">CANCELLED=1</td>
-<td align="left">由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。</td>
+<td style="text-align:left">CANCELLED=1</td>
+<td style="text-align:left">由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。</td>
 </tr>
 <tr>
-<td align="left">SIGNAL=-1</td>
-<td align="left">表示线程已经准备好了，等待资源释放去获取锁。</td>
+<td style="text-align:left">SIGNAL=-1</td>
+<td style="text-align:left">表示线程已经准备好了，等待资源释放去获取锁。</td>
 </tr>
 <tr>
-<td align="left">CONDITION=-2</td>
-<td align="left">表示节点处于等待队列中，等待被唤醒。</td>
+<td style="text-align:left">CONDITION=-2</td>
+<td style="text-align:left">表示节点处于等待队列中，等待被唤醒。</td>
 </tr>
 <tr>
-<td align="left">PROPAGATE=-3</td>
-<td align="left">只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。</td>
+<td style="text-align:left">PROPAGATE=-3</td>
+<td style="text-align:left">只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。</td>
 </tr>
 </tbody>
 </table>
