@@ -168,6 +168,104 @@ code.has-jax {
   <div class="posts">
     
     <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue单向阻塞队列源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-04
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/stampedlock/">StampedLock读写锁源码浅析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-07-01
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/stampedlock/">StampedLock </a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          为了实现更快的读写锁模式而诞生的框架，基于<code>乐观锁</code>、<code>自旋+CAS</code>、<code>类似AQS</code>的逻辑实现
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
+      <h1 class="post-title"><a href="https://leejay.top/post/cycliebarrier/">CyclieBarrier源码解析</a></h1>
+      <div class="post-meta">
+        
+          <span class="post-date">
+            2020-06-29
+          </span>
+
+          
+        
+        
+        
+      </div>
+
+      
+        <span class="post-tags">
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/cyclicbarrier/">CyclicBarrier </a>&nbsp;
+          
+          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+          
+        </span>
+      
+
+      
+
+      <div class="post-content">
+        
+          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
+        
+      </div>
+      
+    </div>
+    
+    <div class="post on-list">
       <h1 class="post-title"><a href="https://leejay.top/post/countdownlatch/">CountDownLatch源码解析</a></h1>
       <div class="post-meta">
         
@@ -202,74 +300,6 @@ code.has-jax {
     </div>
     
     <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/readwritelock/">ReadWriteLock源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-24
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantreadwritelock/">ReentrantReadWriteLock </a>&nbsp;
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          具备<code>独占锁和共享锁</code>两者特性的读写锁，适用于读操作多于写操作的场景。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/semaphore/">Semaphore共享锁源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-20
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/semaphore/">Semaphore </a>&nbsp;
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          Semaphore是基于AQS的<code>可重入共享锁</code>，具有公平和非公平模式。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
       <h1 class="post-title"><a href="https://leejay.top/post/condition/">Condition源码解析</a></h1>
       <div class="post-meta">
         
@@ -298,40 +328,6 @@ code.has-jax {
       <div class="post-content">
         
           Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现<code>等待/通知</code>模式。
-        
-      </div>
-      
-    </div>
-    
-    <div class="post on-list">
-      <h1 class="post-title"><a href="https://leejay.top/post/reentrantlock/">ReentrantLock源码解析</a></h1>
-      <div class="post-meta">
-        
-          <span class="post-date">
-            2020-06-15
-          </span>
-
-          
-        
-        
-        
-      </div>
-
-      
-        <span class="post-tags">
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantlock/">ReentrantLock </a>&nbsp;
-          
-          <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-          
-        </span>
-      
-
-      
-
-      <div class="post-content">
-        
-          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的<code>可重入独占锁</code>，具有公平/非公平两种实现。
         
       </div>
       
