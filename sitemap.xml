@@ -30,6 +30,13 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml">
 </url>
 
 <url>
+    <loc>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</loc>
+    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
     <loc>https://leejay.top/</loc>
     <lastmod>2020-09-09T17:51:05+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -52,13 +59,6 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 <url>
     <loc>https://leejay.top/tags/jvm/</loc>
-    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-
-<url>
-    <loc>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</loc>
     <lastmod>2020-09-09T17:51:05+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
