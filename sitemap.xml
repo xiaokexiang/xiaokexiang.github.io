@@ -66,14 +66,56 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 <url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
 
 <url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/post/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/categories/spring/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/tags/springboot/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/tags/springmvc/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2020-11-10T11:04:59+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
 </url>
@@ -87,20 +129,6 @@ xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
 <url>
     <loc>https://leejay.top/tags/jvm/</loc>
-    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-
-<url>
-    <loc>https://leejay.top/post/</loc>
-    <lastmod>2020-09-09T17:51:05+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-</url>
-
-<url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2020-09-09T17:51:05+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
