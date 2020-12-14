@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>CountDownLatch  on Aurora</title>
-    
-    
-    
+    <title>CountDownLatch  on Keep Improving</title>
     <link>https://leejay.top/tags/countdownlatch/</link>
-    <description>Recent content in CountDownLatch  on Aurora</description>
+    <description>Recent content in CountDownLatch  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Sat, 27 Jun 2020 18:44:37 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/tags/countdownlatch/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 27 Jun 2020 18:44:37 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/countdownlatch/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CountDownLatch源码解析</title>
       <link>https://leejay.top/post/countdownlatch/</link>
       <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
       
       <guid>https://leejay.top/post/countdownlatch/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
-          
-        
-        </description>
+      <description>CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
+常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
+又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
+public class CountDownLatchTest { // 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法  LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0  LATCH.await(); } catch (InterruptedException e) { e.</description>
     </item>
     
   </channel>

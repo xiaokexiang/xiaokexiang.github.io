@@ -1,112 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>Future源码解析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>Future源码解析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Future public interface Future&amp;lt;V&amp;gt; { // 获取任务结果  V get() throws InterruptedException, ExecutionException; // 获取任务结果，带超时机制  V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException; // 任务是否完成  boolean isDone(); // 任务是否取消  boolean isCancelled(); // 取消任务  boolean cancel(boolean mayInterruptIfRunning); } ThreadPoolExecutor中的submit方法是由他的父类AbstractExecutorService实现的
-public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象  RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法  execute(ftask); // 返回FutureTask  return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); }  FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); }  FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象  RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法  execute(ftask); // 返回FutureTask  return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); }  FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); }  FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/future/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Future源码解析"/>
-<meta name="twitter:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="Future源码解析" />
-<meta property="og:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="Future源码解析">
+<meta property="og:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。" />
 <meta property="og:url" content="https://leejay.top/post/future/" />
-<meta property="article:published_time" content="2020-07-19T17:11:13+08:00" />
-<meta property="article:modified_time" content="2020-07-19T17:11:13+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+  <meta property="article:section" content="Future" />
+
+
+  <meta property="article:published_time" content="2020-07-19 17:11:13 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -120,6 +99,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -132,65 +113,340 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/future/">Future源码解析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-07-19
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#future">
+                    Future
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#futuretask">
+                    FutureTask
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%b1%bb%e7%9a%84%e7%bb%a7%e6%89%bf%e7%bb%93%e6%9e%84">
+                    类的继承结构
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e9%80%a0%e5%87%bd%e6%95%b0">
+                    构造函数
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%88%90%e5%91%98%e5%b1%9e%e6%80%a7">
+                    成员属性
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#run">
+                    run
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cancel">
+                    cancel
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#awaitdone">
+                    awaitDone
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#get">
+                    get
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/future/">Future </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/future/">Future源码解析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-07-19 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="future">Future</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/future-/">Future </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="future">Future<a href="#future" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Future</span><span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 获取任务结果
 </span><span style="color:#75715e"></span>    V <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> ExecutionException<span style="color:#f92672">;</span>
@@ -219,8 +475,8 @@ code.has-jax {
     <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> FutureTask<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;(</span>callable<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><hr>
-<h3 id="futuretask">FutureTask</h3>
-<h4 id="类的继承结构">类的继承结构</h4>
+<h3 id="futuretask">FutureTask<a href="#futuretask" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="类的继承结构">类的继承结构<a href="#类的继承结构" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FutureTask</span><span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> RunnableFuture<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 <span style="color:#f92672">}</span>
 
@@ -230,7 +486,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p><code>FutureTask</code>实现了<code>RunnableFuture</code>，而<code>RunnableFuture</code>继承了<code>Runnable</code>和<code>Future</code>。那么<code>FutureTask</code>即拥有<code>Runnable</code>特性，可以配合线程池执行，又拥有了<code>Future</code>特性，可以获取执行结果。</p>
 </blockquote>
-<h4 id="构造函数">构造函数</h4>
+<h4 id="构造函数">构造函数<a href="#构造函数" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">FutureTask</span><span style="color:#f92672">(</span>Callable<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> callable<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 判空
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>callable <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
@@ -251,7 +507,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>构造函数没有特别的，就是将传入的<code>Callable</code>对象赋值给成员变量，以及初始化<code>state</code>状态。</p>
 </blockquote>
-<h4 id="成员属性">成员属性</h4>
+<h4 id="成员属性">成员属性<a href="#成员属性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 用于get()返回的结果或抛出的异常
 </span><span style="color:#75715e">// 非volatile修饰的原因：读写的时候通过state的来保护
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Object outcome<span style="color:#f92672">;</span> 
@@ -293,7 +549,7 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h4 id="run">run</h4>
+<h4 id="run">run<a href="#run" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>因为<code>FutureTask</code>间接实现了<code>Runnable</code>接口，所以在通过线程池执行时，会从<code>run</code>开始执行。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 1. 如果状态不是NEW，说明任务执行过或已取消或被中断了，直接返回
@@ -425,7 +681,7 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="cancel">cancel</h3>
+<h3 id="cancel">cancel<a href="#cancel" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// mayInterruptIfRunning true/false:
 </span><span style="color:#75715e">// 执行该任务的线程是否需要中断/正在执行任务允许被完成
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">cancel</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> mayInterruptIfRunning<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -465,7 +721,7 @@ code.has-jax {
 <p><code>cancel</code>方法要求只有在<code>state = NEW</code>的时候才能够<code>选择中断或不中断线程</code>。我们假设线程A执行<code>run</code>方法直到<code>set()</code>方法处切换到线程B，此时线程B执行<code>cancel(true)</code>，会设置<code>state = INTERRUPTING</code>，中断线程后设置<code>state = INTERRUPTED</code>，此时切换回线程A，线程A执行<code>set()</code>失败，此时会执行<code>finally</code>中处理中断的逻辑，将执行权交给线程B进行中断的处理。</p>
 </blockquote>
 <hr>
-<h3 id="awaitdone">awaitDone</h3>
+<h3 id="awaitdone">awaitDone<a href="#awaitdone" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 等待完成 或因为中断或超时导致的终止
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">awaitDone</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> timed<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanos<span style="color:#f92672">)</span>
         					<span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
@@ -534,7 +790,7 @@ code.has-jax {
 <p>​	③ 如果设置了超时，会<code>阻塞指定时长最终退出</code>，否则会一直阻塞直到被<code>set()/setException()</code>唤醒。</p>
 </blockquote>
 <hr>
-<h3 id="get">get</h3>
+<h3 id="get">get<a href="#get" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> ExecutionException <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">int</span> s <span style="color:#f92672">=</span> state<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 如果state 状态 &lt;= COMPLETEING，说明此时准备设置outcome或还没有执行run
@@ -576,54 +832,52 @@ code.has-jax {
 <p>两个方法最终都调用<code>report()</code>，通过<code>state</code>来判断是返回<code>值还是抛出异常</code>。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">JVM内存区域概述</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/concurrenthashmap/">
-                  <span class="button__text">ConcurrentHashMap源码浅析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">
+                <span class="button__icon">←</span>
+                <span class="button__text">JVM内存区域概述</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/concurrenthashmap/">
+                <span class="button__text">ConcurrentHashMap源码浅析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -631,9 +885,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

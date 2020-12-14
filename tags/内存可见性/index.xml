@@ -1,38 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>内存可见性 on Aurora</title>
-    
-    
-    
+    <title>内存可见性 on Keep Improving</title>
     <link>https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/</link>
-    <description>Recent content in 内存可见性 on Aurora</description>
+    <description>Recent content in 内存可见性 on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Mon, 08 Jun 2020 11:13:38 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 08 Jun 2020 11:13:38 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>volatile关键字浅析</title>
       <link>https://leejay.top/post/volatile/</link>
       <pubDate>Mon, 08 Jun 2020 11:13:38 +0800</pubDate>
       
       <guid>https://leejay.top/post/volatile/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Java中volatile关键字的原理与作用。
-          
-        
-        </description>
+      <description>作用 volatile保证了内存的可见性，对于共享变量操作会直接从共享内存中读取，修改时会直接将结果刷入共享内存，其次禁止了volatile修饰的变量和非volatile变量之间的重排序。
+原理 为了禁止编译器重排序和CPU重排序，底层原理是通过内存屏障指令来实现的。
+编译器内存屏障 只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。
+CPU内存屏障 由CPU提供的指令(不同的CPU架构，提供的指令不同)，可以由开发者显示调用，volatile就是通过CPU内存屏障指令来实现的。
+实现流程：
+ 在volatile写操作的前面插入一个StoreStore屏障。保证volatile写操作不会和之前的写操作重排序。 在volatile写操作的后面插入一个StoreLoad屏障。保证volatile写操作不会和之后读操作重排序。 在volatile读操作后面插入一个LoadLoad屏障 + LoadStore屏障。保证volatile读操作不会和之前的读操作、写操作重排序。  与synchronized关键字的异同 多线程会产生三大问题：原子性、有序性和可见性。
+synchronized和volatile在共享变量的操作上具有相同的内存语义(从主内存读取，立即写入主内存)，保证了变量的可见性。但是synchronized相比volatile还具有原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)，所以volatile是弱化版的synchronized。
+class Test { // 这里的flag就可以不用锁同步  private static volatile boolean flag = true; // 模拟AtomicInteger  private static CasUnsafe UNSAFE = new CasUnsafe(0); // 按照顺序打印1-100的奇偶数  public static void main(String[] args) { THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (flag) { System.out.println(UNSAFE.incrementAndGet()); flag = false; } } }); THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.</description>
     </item>
     
     <item>
@@ -41,18 +30,13 @@
       <pubDate>Tue, 19 May 2020 08:08:47 +0800</pubDate>
       
       <guid>https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          多线程中的内存可见性问题。
-          
-        
-        </description>
+      <description>CPU和JVM的重排序 CPU及JVM为了优化代码执行效率，会对代码进行重排序，其中包括：
+ 编译器重排序(没有先后依赖关系的语句，编译器可以重新调整语句执行顺序) CPU指令重排序(让没有依赖关系的多条指令并行) CPU内存重排序(CPU有自己的缓存，指令执行顺序和写入主内存顺序不一致)  其中CPU内存重排序是导致内存可见性的主因。根据JMM内存模型，我们描述下过程：
+如果线程需要修改共享变量，那么线程A会拷贝共享变量的副本到本地线程中并对其进行修改，之后会将值写回共享内存中(时间不确定)，但在写回之前，线程B读取共享变量到本地准备修改，而此时线程A修改共享变量的操作对线程B不可见。
+重排序规则： as-if-serial 不管怎么重排序，单线程程序的执行结果不能被改变。只要操作之间没有数据依赖性，那么编译器和CPU都可以任意重排序。
+happen-before(JVM层面) 为了明确多线程场景下那么可以重排序，哪些不可以重排序，引入了JMM内存模型，而JMM提供了happen-before规范，用于在开发者编写程序和系统运行之间效率找到平衡点，它描述了两个操作之间的内存可见性，若A happen before B，如果A在B之前执行，则A的执行结果必须对B可见。
+ 单线程的每个操作，happen-before 于该线程中任意后续操作。 对volatile变量的写入，happen-before 于后续对这个变量的读取。 对于synchronized的解锁，happen-before于后续对这个锁的加锁。 对final域的写(构造函数中)，happen-before于对final域所在对象的读。  happen-before传递性 假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。
+class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1  c = 1;// step 2  } int get() { int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。</description>
     </item>
     
   </channel>

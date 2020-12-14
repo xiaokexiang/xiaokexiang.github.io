@@ -1,38 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Concurrent on Aurora</title>
-    
-    
-    
+    <title>Concurrent on Keep Improving</title>
     <link>https://leejay.top/categories/concurrent/</link>
-    <description>Recent content in Concurrent on Aurora</description>
+    <description>Recent content in Concurrent on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Sun, 19 Jul 2020 17:11:13 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/categories/concurrent/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 19 Jul 2020 17:11:13 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/concurrent/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ThreadPool线程池源码解析</title>
       <link>https://leejay.top/post/threadpool/</link>
       <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
       
       <guid>https://leejay.top/post/threadpool/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。
-          
-        
-        </description>
+      <description>ThreadPool 为什么使用线程池 我们知道频繁的单独创建线程是很消耗系统资源的，而线程池中线程是可以线程复用的，不需要每次执行都重新创建，并且线程池可以提供控制线程个数等资源限制和管理的手段。
+实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
+线程池类继承体系  ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。
+任何需要线程池执行的任务，都必须直接或间接的实现Runnable接口。
+  ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this.</description>
     </item>
     
     <item>
@@ -41,18 +27,10 @@
       <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
       
       <guid>https://leejay.top/post/readwritelock/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。
-          
-        
-        </description>
+      <description>ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
+ 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。  ReadWriteLock的默认实现类ReentrantReadWriteLock
+public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写锁都是ReentrantReadWriteLock的内部类  private final ReentrantReadWriteLock.ReadLock readerLock; private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; // 读写锁默认是非公平锁  public ReentrantReadWriteLock() { this(false); } // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列  public ReentrantReadWriteLock(boolean fair) { sync = fair ? new FairSync() : new NonfairSync(); readerLock = new ReadLock(this); writerLock = new WriteLock(this); } }  相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。
+ state 与独占锁、共享锁的state的使用不同，因为需要表示两种状态，所以对int型state做了高低位切割，分别表示不同的状态。已知int=4byte= 32bit，所以高16位表示读，低16位表示写。他们的取值范围在[0 ~ 2^16 - 1]，进而我们可以得出，最多有2^16 -1个线程可以获取读锁。</description>
     </item>
     
     <item>
@@ -61,18 +39,14 @@
       <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
       
       <guid>https://leejay.top/post/reentrantlock/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。
-          
-        
-        </description>
+      <description>Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。
+AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。
+state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。
+线程阻塞和唤醒 由LockSupport类实现，其底层是调用了Unsafe的park 和 unpark。如果当前线程是非中断状态，调用park()阻塞，返回中断状态是false，如果当前线程是中断状态，调用park()会不起作用立即返回。也是为什么AQS要清空中断状态的原因。
+FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
+ 还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
+ Node的waitStatus    Node状态 描述     INIT=0 Node初始创建时默认为0   CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。   SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。   CONDITION=-2 表示节点处于等待队列中，等待被唤醒。   PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。     ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。
+class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK.</description>
     </item>
     
     <item>
@@ -81,18 +55,8 @@
       <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
       
       <guid>https://leejay.top/post/semaphore/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。
-          
-        
-        </description>
+      <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常  if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
+   tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
     </item>
     
     <item>
@@ -101,18 +65,9 @@
       <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
       
       <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          ThreadLocal的内存泄露问题。
-          
-        
-        </description>
+      <description>ThreadLocal概述 ThreadLocal类，底层由ThreadLocalMap实现，是Thread类的成员变量，因为类的每个实例的成员变量都是这个实例独有的，所以在不同的Thread中有不同的副本，每个线程的副本只能由当前线程使用，线程间互不影响。因为一个线程可以拥有多个ThreadLocal对象，所以其内部使用ThreadLocalMap&amp;lt;ThreadLocal&amp;lt;?&amp;gt;, Object&amp;gt;来实现。
+public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocals = null; } public class ThreadLocal&amp;lt;T&amp;gt; { static class ThreadLocalMap { // 需要注意的是这里的Entry key是ThreadLocal的弱引用  // 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理  static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;lt;?&amp;gt;&amp;gt; { // value 与 ThreadLocal关联  Object value; Entry(ThreadLocal&amp;lt;?&amp;gt; k, Object v) { super(k); value = v; } } } }   当前线程执行时(currentThread已初始化)，会初始化ThreadLocal对象，存储在Heap堆中，ThreadLocal的引用，即ThreadLocalRef会存储在当前线程Stack栈中。 当执行ThreadLocal的get()/set()方法时，会通过当前线程的引用找到当前线程在堆中的实例，判断这个实例的成员变量：ThreadLocalMap是否已经创建(即初始化)，如果没有则初始化。 若一个Threa中存在多个ThreadLocal，那么ThreadLocalMap会存在多个Entry，Entry的key是弱引用的ThreadLocal。    内存泄漏触发条件 根据ThreadLocal堆栈示意图，我们可以推断处只要符合以下条件，ThreadLocal就会出现内存泄漏：
+ ThreadLocal没有被外部强引用，这样在GC的时候ThreadLocal会被回收，导致key = null。 key = null后没有调用过ThreadLocalMap中的get、set或remove方法中的任意一个。(因为这些方法会将key = null的value也置为null，便于GC回收) Thread对象没有被回收，Thread强引用着ThreadLocalMap，这样ThreadLocalMap也不会被回收。 ThreadLocalMap没有被回收，但是它的Entry中的key已被回收，key关联的value也不能被外部访问，所以导致了内存泄漏。  总结如下：</description>
     </item>
     
     <item>
@@ -121,18 +76,8 @@
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
       
       <guid>https://leejay.top/post/future/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。
-          
-        
-        </description>
+      <description>Future public interface Future&amp;lt;V&amp;gt; { // 获取任务结果  V get() throws InterruptedException, ExecutionException; // 获取任务结果，带超时机制  V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException; // 任务是否完成  boolean isDone(); // 任务是否取消  boolean isCancelled(); // 取消任务  boolean cancel(boolean mayInterruptIfRunning); } ThreadPoolExecutor中的submit方法是由他的父类AbstractExecutorService实现的
+public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象  RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法  execute(ftask); // 返回FutureTask  return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); }  FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); }  FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。</description>
     </item>
     
     <item>
@@ -141,18 +86,8 @@
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
       
       <guid>https://leejay.top/post/concurrenthashmap/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `ConcurrentHashMap`是基于`CAS + Synchronized`的线程安全的HashMap。
-          
-        
-        </description>
+      <description>ConcurrentHashMap JDK1.8之后采用的是数组 + 链表 + 红黑树的结构，通过Synchronized + CAS实现线程安全，而JDK1.7采用的是将一个HashMap分成多个Segment的方式，通过继承ReentrentLock的Segment分段锁实现线程安全。
+Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this.</description>
     </item>
     
     <item>
@@ -161,18 +96,7 @@
       <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
       
       <guid>https://leejay.top/post/concurrentlinkedqueue/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。
-          
-        
-        </description>
+      <description>ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 + CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE.</description>
     </item>
     
     <item>
@@ -181,18 +105,10 @@
       <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
       
       <guid>https://leejay.top/post/copyonwritearraylist/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `CopyOnWriteArrayList`是ArrayList的线程安全变体，是通过`生成新的副本`来实现线程安全。
-          
-        
-        </description>
+      <description>CopyOnWriteArrayList  CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
+CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本来实现。
+ 构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt; implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable { // 内部独占锁  final transient ReentrantLock lock = new ReentrantLock(); // volatile 修饰的数组，只能getArray和setArray操作  private transient volatile Object[] array; // 返回当前数组  final Object[] getArray() { return array; } // 设置数组  final void setArray(Object[] a) { array = a; } // 构造函数 创建一个空数组  public CopyOnWriteArrayList() { setArray(new Object[0]); } }  底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。
+  add public boolean add(E e) { // 获取独占锁  final ReentrantLock lock = this.</description>
     </item>
     
     <item>
@@ -201,18 +117,10 @@
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       
       <guid>https://leejay.top/post/blockingdeque/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          基于ReentrantLock、Condition实现的`双端阻塞队列`，支持在队首和队尾获取/添加数据。
-          
-        
-        </description>
+      <description>BlockingDeque 双端队列，支持在队列的头尾出增加或获取数据，Deque接口中定义了相关的方法
+public interface Deque&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加到队首  void addFirst(E e); // 添加到队尾  void addLast(E e); // 获取队首  boolean offerFirst(E e); // 获取队尾  boolean offerLast(E e); ... }	 相比BlockingQueue的父接口Queue，Deque中定义了头尾操作数据的方法。
+ public interface BlockingDeque&amp;lt;E&amp;gt; extends BlockingQueue&amp;lt;E&amp;gt;, Deque&amp;lt;E&amp;gt; { void putFirst(E e) throws InterruptedException; void putLast(E e) throws InterruptedException; E takeFirst() throws InterruptedException; E takeLast() throws InterruptedException; ... }  BlockingQueue继承了BlockingQueue和Deque接口。添加了一些抛出中断的方法。
+  LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列的实现。</description>
     </item>
     
     <item>
@@ -221,18 +129,8 @@
       <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
       
       <guid>https://leejay.top/post/blockingqueue/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
-          
-        
-        </description>
+      <description>BlockingQueue 概念 BlockingQueue带阻塞功能的线程安全队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。
+接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?</description>
     </item>
     
     <item>
@@ -241,18 +139,9 @@
       <pubDate>Wed, 01 Jul 2020 10:32:01 +0800</pubDate>
       
       <guid>https://leejay.top/post/stampedlock/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋+CAS`、`类似AQS`的逻辑实现
-          
-        
-        </description>
+      <description>JDK1.8新增的并发工具，回顾之前的ReentrentReadWriteLock，它是悲观锁的实现：只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）。
+而StampedLock是乐观锁的实现，乐观读的时候不加锁，读取后发现数据改变了再升级为悲观读，此时与写互斥。
+@Slf4j public class StampedLockTest { private static final StampedLock LOCK = new StampedLock(); private static int x, y; static void add() { long stamp = LOCK.writeLock(); try { x += 1; y += 1; } finally { LOCK.unlockWrite(stamp); } } static void print() { // 尝试乐观读  long stamp = LOCK.tryOptimisticRead(); int currentX = x， currentY = y; // 如果stamp修改了，这时再加悲观读锁  if (!LOCK.validate(stamp)) { log.info(&amp;#34;value has changed ...&amp;#34;); stamp = LOCK.</description>
     </item>
     
     <item>
@@ -261,18 +150,13 @@
       <pubDate>Mon, 29 Jun 2020 13:27:36 +0800</pubDate>
       
       <guid>https://leejay.top/post/cycliebarrier/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          基于`CountDownLatch`的特性：`计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier`的出现是为了解决复杂场景`CountDownLatch`使用的劣势。
-          
-        
-        </description>
+      <description>CyclicBarrier 基于CountDownLatch的特性：计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。
+CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势。
+ CountDownLatch中存在两种类型的线程：分别是调用await方法和调用countDown方法的线程。
+而CyclicBarrier中只存在一种线程：调用await的线程扮演了上述两种角色，即先countDown后await。
+ CyclicBarrier拆分成两部分来理解：
+ Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，使其能够重用。 Barrier（屏障）：线程调用await方法就会阻塞，这个阻塞点就是屏障点，等到所有线程调用await方法后，线程就会穿过屏障继续往下执行。   相比CountDownLatch只使用一次，CyclicBarrier更强调循环使用。
+ @Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await  log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER.</description>
     </item>
     
     <item>
@@ -281,18 +165,10 @@
       <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
       
       <guid>https://leejay.top/post/countdownlatch/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
-          
-        
-        </description>
+      <description>CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
+常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
+又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
+public class CountDownLatchTest { // 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法  LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0  LATCH.await(); } catch (InterruptedException e) { e.</description>
     </item>
     
     <item>
@@ -301,18 +177,8 @@
       <pubDate>Thu, 18 Jun 2020 20:01:58 +0800</pubDate>
       
       <guid>https://leejay.top/post/condition/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现`等待/通知`模式。
-          
-        
-        </description>
+      <description>Condition是一个接口，其实现在Lock内，需要配合Lock锁使用。其内部构建了一个单向队列，操作时不需要使用CAS来保证同步。
+final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常  if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列  Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁  int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面  while (!</description>
     </item>
     
     <item>
@@ -321,18 +187,11 @@
       <pubDate>Fri, 12 Jun 2020 22:49:05 +0800</pubDate>
       
       <guid>https://leejay.top/post/cas/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Java并发中`乐观锁的实现`，大部分并发框架都基于CAS实现。
-          
-        
-        </description>
+      <description>判断数据是否被修改，同时写回新值，这两个操作要合成一个原子操作，这就是CAS(compare and swap)。
+之前多线程环境下，我们对变量进行计算都是对其加锁来实现，但是现在我们可以用过Atomic相关的类来实现相同的效果且性能更好。而AtomicInteger就是其中的一员，其底层就是通过CAS来实现的。
+// 伪代码 class AtomicInteger { // 保证内存可见性 	private volatile int value; public final int getAndIncrement() { for(;;) { int current = get(); int next = current + 1; // cas替换  if (compareAndSwap(current, next)) { return current; } } } public int get() { return value; } }  乐观锁：读操作不上锁，等到写操作的时候，判断数据在此期间是否被修改，如果已被修改，则重复该流程，直到把值写回去。CAS就是乐观锁的体现。
+ CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作compareAndSwapInt()为例。
+/** * var1: 这里就是AtomicInteger对象 * var2: AotmicInteger 中的成员变量，long型整数，变量在类中的内存偏移量 * 可以通过unsafe.objectFieldOffset(Field var1)来获得 * var4：变量的旧值 * var5: 变量的新值 */ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5)  Unsafe类提供了三种类型的CAS操作：int、long、Object，分别对应compareAndSwapInt()、compareAndSwapLong()、compareAndSwapObject()。</description>
     </item>
     
     <item>
@@ -341,18 +200,14 @@
       <pubDate>Mon, 08 Jun 2020 11:13:38 +0800</pubDate>
       
       <guid>https://leejay.top/post/volatile/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Java中volatile关键字的原理与作用。
-          
-        
-        </description>
+      <description>作用 volatile保证了内存的可见性，对于共享变量操作会直接从共享内存中读取，修改时会直接将结果刷入共享内存，其次禁止了volatile修饰的变量和非volatile变量之间的重排序。
+原理 为了禁止编译器重排序和CPU重排序，底层原理是通过内存屏障指令来实现的。
+编译器内存屏障 只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。
+CPU内存屏障 由CPU提供的指令(不同的CPU架构，提供的指令不同)，可以由开发者显示调用，volatile就是通过CPU内存屏障指令来实现的。
+实现流程：
+ 在volatile写操作的前面插入一个StoreStore屏障。保证volatile写操作不会和之前的写操作重排序。 在volatile写操作的后面插入一个StoreLoad屏障。保证volatile写操作不会和之后读操作重排序。 在volatile读操作后面插入一个LoadLoad屏障 + LoadStore屏障。保证volatile读操作不会和之前的读操作、写操作重排序。  与synchronized关键字的异同 多线程会产生三大问题：原子性、有序性和可见性。
+synchronized和volatile在共享变量的操作上具有相同的内存语义(从主内存读取，立即写入主内存)，保证了变量的可见性。但是synchronized相比volatile还具有原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)，所以volatile是弱化版的synchronized。
+class Test { // 这里的flag就可以不用锁同步  private static volatile boolean flag = true; // 模拟AtomicInteger  private static CasUnsafe UNSAFE = new CasUnsafe(0); // 按照顺序打印1-100的奇偶数  public static void main(String[] args) { THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (flag) { System.out.println(UNSAFE.incrementAndGet()); flag = false; } } }); THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.</description>
     </item>
     
     <item>
@@ -361,18 +216,9 @@
       <pubDate>Sat, 06 Jun 2020 22:45:30 +0800</pubDate>
       
       <guid>https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          Java中`管理临界区资源`的管理策略。
-          
-        
-        </description>
+      <description>在解释MESA模型之前，我们需要了解什么是管程：又称为监视器，它是描述并实现对共享变量的管理与操作，使其在多线程下能正确执行的一个管理策略。可以理解成临界区资源的管理策略。MESA模型是管程的一种实现策略，Java使用的就是该策略。
+相关术语  enterQueue：管程的入口队列，当线程在申请进入管程中发现管程已被占用，那么就会进入该队列并阻塞。 varQueue：条件变量等待队列，在线程执行过程中(已进入管程)，条件变量不符合要求，线程被阻塞时会进入该队列。 condition variables：条件变量，存在于管程中，一般由程序赋予意义，程序通过判断条件变量执行阻塞或唤醒操作。 阻塞和唤醒：wait()和await()就是阻塞操作。notify()和notifyAll()就是唤醒操作。  模型概念图  Synchronized和Lock在MSEA监视器模型中的区别在于前者只有一个条件变量，后者可以有多个。
+ 执行流程  多个线程进入入口等待队列enterQueue，JVM会保证只有一个线程能进入管程内部，Synchronized中进入管程的线程随机。 进入管程后通过条件变量判断当前线程是否能执行操作，如果不能跳到step3，否则跳到step4。 条件变量调用阻塞方法，将当前线程放入varQueue，等待其他线程唤醒，跳回step1。 执行相应操作，执行完毕后调用notify/notifyAll等唤醒操作，唤醒对应varQueue中的一个或多个等待线程。 被唤醒的线程会从varQueue放入enterQueue中，再次执行step1。 被唤醒的线程不会立即执行，会被放入enterQueue，等待JVM下一次选择运行，而正在运行的线程会继续执行，直到程序执行完毕。  </description>
     </item>
     
     <item>
@@ -381,18 +227,13 @@
       <pubDate>Tue, 19 May 2020 08:08:47 +0800</pubDate>
       
       <guid>https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          多线程中的内存可见性问题。
-          
-        
-        </description>
+      <description>CPU和JVM的重排序 CPU及JVM为了优化代码执行效率，会对代码进行重排序，其中包括：
+ 编译器重排序(没有先后依赖关系的语句，编译器可以重新调整语句执行顺序) CPU指令重排序(让没有依赖关系的多条指令并行) CPU内存重排序(CPU有自己的缓存，指令执行顺序和写入主内存顺序不一致)  其中CPU内存重排序是导致内存可见性的主因。根据JMM内存模型，我们描述下过程：
+如果线程需要修改共享变量，那么线程A会拷贝共享变量的副本到本地线程中并对其进行修改，之后会将值写回共享内存中(时间不确定)，但在写回之前，线程B读取共享变量到本地准备修改，而此时线程A修改共享变量的操作对线程B不可见。
+重排序规则： as-if-serial 不管怎么重排序，单线程程序的执行结果不能被改变。只要操作之间没有数据依赖性，那么编译器和CPU都可以任意重排序。
+happen-before(JVM层面) 为了明确多线程场景下那么可以重排序，哪些不可以重排序，引入了JMM内存模型，而JMM提供了happen-before规范，用于在开发者编写程序和系统运行之间效率找到平衡点，它描述了两个操作之间的内存可见性，若A happen before B，如果A在B之前执行，则A的执行结果必须对B可见。
+ 单线程的每个操作，happen-before 于该线程中任意后续操作。 对volatile变量的写入，happen-before 于后续对这个变量的读取。 对于synchronized的解锁，happen-before于后续对这个锁的加锁。 对final域的写(构造函数中)，happen-before于对final域所在对象的读。  happen-before传递性 假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。
+class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1  c = 1;// step 2  } int get() { int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。</description>
     </item>
     
   </channel>

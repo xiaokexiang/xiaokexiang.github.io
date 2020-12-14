@@ -1,112 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>SpringMVC使用注意</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>SpringMVC使用注意 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
-public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet."/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="SpringMVC使用注意"/>
-<meta name="twitter:description" content="SpringMVC中的拦截器、事件使用的相关注意事项"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="SpringMVC使用注意" />
-<meta property="og:description" content="SpringMVC中的拦截器、事件使用的相关注意事项" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="SpringMVC使用注意">
+<meta property="og:description" content="SpringMVC中的拦截器、事件使用的相关注意事项" />
 <meta property="og:url" content="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/" />
-<meta property="article:published_time" content="2020-11-10T11:04:59+08:00" />
-<meta property="article:modified_time" content="2020-11-10T11:04:59+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Spring" />
+
+
+  <meta property="article:published_time" content="2020-11-10 11:04:59 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -120,6 +97,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -132,66 +111,197 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/">SpringMVC使用注意</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-11-10
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#springmvc%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98">
+                    SpringMVC相关问题
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8b%a6%e6%88%aa%e5%99%a8%e4%b8%advalue%e6%b3%a8%e8%a7%a3%e4%b8%8d%e7%94%9f%e6%95%88">
+                    拦截器中@value注解不生效
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#webmvcconfigurer-%e5%92%8c-webmvcconfigurationsupport">
+                    WebMvcConfigurer 和 WebMvcConfigurationSupport
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#spring%e4%b8%ad%e7%9a%84%e4%ba%8b%e4%bb%b6">
+                    Spring中的事件
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/springmvc/">SpringMVC </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/springboot/">SpringBoot </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/">SpringMVC使用注意</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-11-10 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="springmvc相关问题">SpringMVC相关问题</h3>
-<h4 id="拦截器中value注解不生效">拦截器中@value注解不生效</h4>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/springmvc-/">SpringMVC </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/springboot-/">SpringBoot </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="springmvc相关问题">SpringMVC相关问题<a href="#springmvc相关问题" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="拦截器中value注解不生效">拦截器中@value注解不生效<a href="#拦截器中value注解不生效" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>原因在于：当我们继承<code>WebMvcConfigurationSupport</code>中的<code>addInterceptors</code>方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过<code>@value</code>注解注入配置，推荐<code>@Bean</code>注解注入。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoginInterceptor</span> <span style="color:#66d9ef">implements</span> HandlerInterceptor <span style="color:#f92672">{</span>
 
@@ -219,7 +329,7 @@ code.has-jax {
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><hr>
-<h4 id="webmvcconfigurer-和-webmvcconfigurationsupport">WebMvcConfigurer 和 WebMvcConfigurationSupport</h4>
+<h4 id="webmvcconfigurer-和-webmvcconfigurationsupport">WebMvcConfigurer 和 WebMvcConfigurationSupport<a href="#webmvcconfigurer-和-webmvcconfigurationsupport" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>存在<code>WebMvcConfigurationSupport</code>则<code>WebMvcConfigurer</code>不生效</li>
 </ul>
@@ -244,8 +354,8 @@ code.has-jax {
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><hr>
-<h4 id="spring中的事件">Spring中的事件</h4>
-<h5 id="监听事件的三种方式">监听事件的三种方式</h5>
+<h4 id="spring中的事件">Spring中的事件<a href="#spring中的事件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h5 id="监听事件的三种方式">监听事件的三种方式<a href="#监听事件的三种方式" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <ul>
 <li>实现ApplicationListener<T> + @Component</li>
 </ul>
@@ -285,7 +395,7 @@ io.spring.server.event.MyListener3
 </code></pre><blockquote>
 <p>位于resources/META-INF/spring.factories文件中</p>
 </blockquote>
-<h5 id="同步异步发送事件">同步/异步发送事件</h5>
+<h5 id="同步异步发送事件">同步/异步发送事件<a href="#同步异步发送事件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>默认情况下是同步发送事件，在容器的refresh()中存在<code>initApplicationEventMulticaster()</code>方法，用于初始化事件发送器。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initApplicationEventMulticaster</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     ConfigurableListableBeanFactory beanFactory <span style="color:#f92672">=</span> getBeanFactory<span style="color:#f92672">();</span>
@@ -333,7 +443,7 @@ io.spring.server.event.MyListener3
 </code></pre></div><blockquote>
 <p>通过传入线程池实现异步invokeListeners，需要注入注入名必须是<code>applicationEventMulticaster</code>。</p>
 </blockquote>
-<h5 id="事件发送两次">事件发送两次</h5>
+<h5 id="事件发送两次">事件发送两次<a href="#事件发送两次" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>在使用<code>spring.factories</code>注入<code>ApplicationListener</code>时，发现监听器会被调用两次，通过debug发现：因为是web项目，所以上下文中存在父子容器的问题(<code>AnnotationConfigServletWebServerApplicationContext</code>和<code>AnnotationConfigApplicationContext</code>)，所以在子容器发布事件后，父容器也会发送一次。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onApplicationEvent</span><span style="color:#f92672">(</span>MyEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -345,47 +455,45 @@ io.spring.server.event.MyListener3
 <p>只让子容器发送事件，父容器不需要发送。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">
-                  <span class="button__text">Jvm类加载机制</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">
+                <span class="button__text">Jvm类加载机制</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -393,9 +501,13 @@ io.spring.server.event.MyListener3
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>二叉堆时间复杂度分析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>二叉堆时间复杂度分析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="二叉堆概念 二叉堆本质上是一颗完全二叉树，它的根节点又叫做堆顶。二叉堆分为：
  最大堆：最大堆的任何一个父节点的值，都大于或等于它左、右节点的值。
 最小堆：最小堆的任何一个父节点的值，都小于或等于它左、右节点的值。
@@ -15,106 +15,83 @@
 同样，如果当前节点的index=0，那么它的父节点index为(i-1)/2 或 (i-2)/2，取决于i % 2 == 0是否成立。
   Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构实现的。
   二叉堆推导 构建 对于二叉堆的构建，我们选择最小二叉堆推导，对于最小二叉堆构建存在两种思路：
- 我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。  // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index  int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较  for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较  while (array[c] &amp;lt; array[p]) { // 交换位置和index  int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0  if (p &amp;lt; 0) { break; } } } return array; }  该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+ 我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。  // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index  int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较  for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较  while (array[c] &amp;lt; array[p]) { // 交换位置和index  int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0  if (p &amp;lt; 0) { break; } } } return array; }  该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="二叉堆时间复杂度分析"/>
-<meta name="twitter:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="二叉堆时间复杂度分析" />
-<meta property="og:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="二叉堆时间复杂度分析">
+<meta property="og:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。" />
 <meta property="og:url" content="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/" />
-<meta property="article:published_time" content="2020-08-01T11:10:01+08:00" />
-<meta property="article:modified_time" content="2020-08-01T11:10:01+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="algorithm" />
+
+
+  <meta property="article:published_time" content="2020-08-01 11:10:01 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -128,6 +105,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -140,63 +119,222 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/">二叉堆时间复杂度分析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-08-01
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%ba%8c%e5%8f%89%e5%a0%86%e6%a6%82%e5%bf%b5">
+                    二叉堆概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%ba%8c%e5%8f%89%e5%a0%86%e6%8e%a8%e5%af%bc">
+                    二叉堆推导
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e5%bb%ba">
+                    构建
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%b7%bb%e5%8a%a0">
+                    添加
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%a7%bb%e9%99%a4">
+                    移除
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/binarydump/">BinaryDump </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/">二叉堆时间复杂度分析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-08-01 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="二叉堆概念">二叉堆概念</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/binarydump-/">BinaryDump </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="二叉堆概念">二叉堆概念<a href="#二叉堆概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>二叉堆本质上是一颗完全二叉树，它的根节点又叫做<code>堆顶</code>。二叉堆分为：</p>
 <blockquote>
 <p>最大堆：最大堆的任何一个父节点的值，<code>都大于或等于</code>它左、右节点的值。</p>
@@ -213,8 +351,8 @@ code.has-jax {
 <p>Java中的<code>PriorityBlockingQueue</code>底层就是使用<code>最小二叉堆</code>的逻辑结构实现的。</p>
 </blockquote>
 <hr>
-<h3 id="二叉堆推导">二叉堆推导</h3>
-<h4 id="构建">构建</h4>
+<h3 id="二叉堆推导">二叉堆推导<a href="#二叉堆推导" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="构建">构建<a href="#构建" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>对于二叉堆的构建，我们选择<code>最小二叉堆</code>推导，对于最小二叉堆构建存在两种思路：</p>
 <ul>
 <li>我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。</li>
@@ -299,7 +437,7 @@ $sum(n) = n - log2n - 1$</li>
 <p>所以此方法的算法复杂度为 <code>O(n)</code>。</p>
 </blockquote>
 <hr>
-<h4 id="添加">添加</h4>
+<h4 id="添加">添加<a href="#添加" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>二叉堆的添加，都是将<code>元素添加到队尾</code>，因为此时数组已经是符合二叉堆要求的最小二叉堆，所以只需要处理新添加的元素，和新加元素的所有父节点比较替换。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 我们先使用System.arraycopy复制原有数据并将新元素加入
@@ -341,7 +479,7 @@ $sum(n) = n - log2n - 1$</li>
 <p>无论数组大小是多少，只需要处理新加入那个的节点，并且该元素最多交换<code>logn</code>次（即树高），时间复杂度为：O(1 * logn) = <code>O(logn)</code>。</p>
 </blockquote>
 <hr>
-<h4 id="移除">移除</h4>
+<h4 id="移除">移除<a href="#移除" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>因为二叉堆的特性：<code>堆顶是整个树最大或最小的元素</code>。所以移除元素都直接<code>移除堆顶</code>，然后将<code>队尾元素直接移到堆顶</code>，此时我们需要从<code>堆顶开始往下</code>比较交换。和添加不一样，添加是从<code>堆底往上</code>比较交换。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
 </span><span style="color:#75715e">  * 移除队首元素，将队尾元素移到队首，再重新构建
@@ -398,54 +536,52 @@ $sum(n) = n - log2n - 1$</li>
 <p>只需要处理<code>移到队首的原队尾元素</code>这一个元素，并最多交换<code>logn</code>次，所以删除的时间复杂度也是<code>O(logn)</code>。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/semaphore/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">Semaphore共享锁源码解析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">
-                  <span class="button__text">ThreadLocal内存泄漏分析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/semaphore/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Semaphore共享锁源码解析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">
+                <span class="button__text">ThreadLocal内存泄漏分析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -453,9 +589,13 @@ $sum(n) = n - log2n - 1$</li>
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

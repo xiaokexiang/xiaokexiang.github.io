@@ -1,38 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>CopyOnWriteArrayList  on Aurora</title>
-    
-    
-    
+    <title>CopyOnWriteArrayList  on Keep Improving</title>
     <link>https://leejay.top/tags/copyonwritearraylist/</link>
-    <description>Recent content in CopyOnWriteArrayList  on Aurora</description>
+    <description>Recent content in CopyOnWriteArrayList  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Wed, 08 Jul 2020 11:50:04 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/tags/copyonwritearraylist/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 08 Jul 2020 11:50:04 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/copyonwritearraylist/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CopyOnWriteArrayList源码解析</title>
       <link>https://leejay.top/post/copyonwritearraylist/</link>
       <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
       
       <guid>https://leejay.top/post/copyonwritearraylist/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          `CopyOnWriteArrayList`是ArrayList的线程安全变体，是通过`生成新的副本`来实现线程安全。
-          
-        
-        </description>
+      <description>CopyOnWriteArrayList  CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
+CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本来实现。
+ 构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt; implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable { // 内部独占锁  final transient ReentrantLock lock = new ReentrantLock(); // volatile 修饰的数组，只能getArray和setArray操作  private transient volatile Object[] array; // 返回当前数组  final Object[] getArray() { return array; } // 设置数组  final void setArray(Object[] a) { array = a; } // 构造函数 创建一个空数组  public CopyOnWriteArrayList() { setArray(new Object[0]); } }  底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。
+  add public boolean add(E e) { // 获取独占锁  final ReentrantLock lock = this.</description>
     </item>
     
   </channel>

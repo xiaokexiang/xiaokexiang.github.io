@@ -1,38 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Spring on Aurora</title>
-    
-    
-    
+    <title>Spring on Keep Improving</title>
     <link>https://leejay.top/categories/spring/</link>
-    <description>Recent content in Spring on Aurora</description>
+    <description>Recent content in Spring on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Tue, 10 Nov 2020 11:04:59 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/categories/spring/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 10 Nov 2020 11:04:59 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/spring/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>SpringMVC使用注意</title>
       <link>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</link>
       <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
       
       <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          SpringMVC中的拦截器、事件使用的相关注意事项
-          
-        
-        </description>
+      <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
+public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet.</description>
     </item>
     
   </channel>

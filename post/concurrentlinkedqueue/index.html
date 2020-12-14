@@ -1,111 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>ConcurrentLinkedQueue源码浅析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE."/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+<head>
+  
+    <title>ConcurrentLinkedQueue源码浅析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/concurrentlinkedqueue/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="ConcurrentLinkedQueue源码浅析"/>
-<meta name="twitter:description" content="`ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="ConcurrentLinkedQueue源码浅析" />
-<meta property="og:description" content="`ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="ConcurrentLinkedQueue源码浅析">
+<meta property="og:description" content="`ConcurrentLinkedQueue`是使用`自旋和CAS`来实现的非阻塞的有序队列，是LinkedList的线程安全变体。" />
 <meta property="og:url" content="https://leejay.top/post/concurrentlinkedqueue/" />
-<meta property="article:published_time" content="2020-07-11T14:53:34+08:00" />
-<meta property="article:modified_time" content="2020-07-11T14:53:34+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+  <meta property="article:section" content="Collection" />
+
+
+  <meta property="article:published_time" content="2020-07-11 14:53:34 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -119,6 +98,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -131,71 +112,338 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/concurrentlinkedqueue/">ConcurrentLinkedQueue源码浅析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-07-11
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#concurrentlinkedqueue">
+                    ConcurrentLinkedQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%89%b9%e6%80%a7">
+                    特性
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e9%80%a0">
+                    构造
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8f%90%e7%a4%ba">
+                    提示
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#offer">
+                    offer
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#offer%e6%89%a7%e8%a1%8c%e6%b5%81%e7%a8%8b">
+                    offer执行流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#poll">
+                    poll
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#poll%e6%89%a7%e8%a1%8c%e6%b5%81%e7%a8%8b">
+                    poll执行流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/concurrentlinkedqueue/">ConcurrentLinkedQueue </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/concurrentlinkedqueue/">ConcurrentLinkedQueue源码浅析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-07-11 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="concurrentlinkedqueue">ConcurrentLinkedQueue</h3>
-<h4 id="特性">特性</h4>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/concurrentlinkedqueue-/">ConcurrentLinkedQueue </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="concurrentlinkedqueue">ConcurrentLinkedQueue<a href="#concurrentlinkedqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="特性">特性<a href="#特性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>基于链表的无界线程安全队列。</li>
 <li>队列顺序是<code>FIFO</code>先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。</li>
 <li>使用场景：<code>许多线程将共享对一个公共集合的访问，不支持null</code>。</li>
 <li>内部的并发操作通过<code>自旋 + CAS</code>实现。与<code>LinkedBlockingQueue</code>独占锁不同。</li>
 </ul>
-<h4 id="构造">构造</h4>
+<h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
         <span style="color:#66d9ef">implements</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// head头节点
@@ -259,13 +507,13 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="提示">提示</h3>
+<h3 id="提示">提示<a href="#提示" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <blockquote>
 <p>如果使用的是idea，会出现<code>head莫名奇妙被修改，节点引用指向自己的问题</code>。</p>
 <p>解决方案：https://blog.csdn.net/AUBREY_CR7/article/details/106331490</p>
 </blockquote>
 <hr>
-<h3 id="offer">offer</h3>
+<h3 id="offer">offer<a href="#offer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 添加节点到队列中
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 老一套，判断是否为空，为空抛出NPE
@@ -319,10 +567,10 @@ code.has-jax {
 <li><code>p == q</code>需要结合<code>poll</code>方法去解析(一些线程offer，一些poll)，当它成立的时候说明<code>p.next = p = q</code>，说明这种节点是哨兵节点，表示为需要删除或者过滤的节点。</li>
 </ol>
 </blockquote>
-<h3 id="offer执行流程">offer执行流程</h3>
+<h3 id="offer执行流程">offer执行流程<a href="#offer执行流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/image/20200710/XWBJx3hhhzX3.jpg?imageslim" alt=""></p>
 <hr>
-<h3 id="poll">poll</h3>
+<h3 id="poll">poll<a href="#poll" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 删除链表的头节点并返回该节点的item
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     restartFromHead<span style="color:#f92672">:</span>
@@ -383,10 +631,10 @@ code.has-jax {
 </li>
 </ol>
 </blockquote>
-<h3 id="poll执行流程">poll执行流程</h3>
+<h3 id="poll执行流程">poll执行流程<a href="#poll执行流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/image/20200710/8Pn7oKJw2R07.jpg?imageslim" alt=""></p>
 <hr>
-<h3 id="总结">总结</h3>
+<h3 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li><code>ConcurrentlinkedQueue</code>是<code>非阻塞队列</code>，底层使用<code>自旋和CAS</code>来实现，<code>FIFO</code>且不允许<code>null</code>值。</li>
 <li><code>ConcurrentlinkedQueue</code>元素入队和出队操作都是线程安全的，但<code>遍历不是的线程安全的</code>，并且在判断元素是否为空的时候建议使用<code>isEmpty</code>而不是<code>sze == 0（遍历队列）</code></li>
@@ -394,54 +642,52 @@ code.has-jax {
 <li>相比<code>LinkedBlockingQueue</code>阻塞队列，<code>ConcurrentlinkedQueue</code>非阻塞队列的并发性能更好些。当时具体使用场景具体分析。</li>
 </ul>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/concurrenthashmap/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">ConcurrentHashMap源码浅析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/copyonwritearraylist/">
-                  <span class="button__text">CopyOnWriteArrayList源码解析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/concurrenthashmap/">
+                <span class="button__icon">←</span>
+                <span class="button__text">ConcurrentHashMap源码浅析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/copyonwritearraylist/">
+                <span class="button__text">CopyOnWriteArrayList源码解析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -449,9 +695,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

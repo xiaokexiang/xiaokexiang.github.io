@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>volatile关键字浅析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>volatile关键字浅析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="作用 volatile保证了内存的可见性，对于共享变量操作会直接从共享内存中读取，修改时会直接将结果刷入共享内存，其次禁止了volatile修饰的变量和非volatile变量之间的重排序。
 原理 为了禁止编译器重排序和CPU重排序，底层原理是通过内存屏障指令来实现的。
 编译器内存屏障 只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。
@@ -13,106 +13,83 @@ CPU内存屏障 由CPU提供的指令(不同的CPU架构，提供的指令不同
 实现流程：
  在volatile写操作的前面插入一个StoreStore屏障。保证volatile写操作不会和之前的写操作重排序。 在volatile写操作的后面插入一个StoreLoad屏障。保证volatile写操作不会和之后读操作重排序。 在volatile读操作后面插入一个LoadLoad屏障 &#43; LoadStore屏障。保证volatile读操作不会和之前的读操作、写操作重排序。  与synchronized关键字的异同 多线程会产生三大问题：原子性、有序性和可见性。
 synchronized和volatile在共享变量的操作上具有相同的内存语义(从主内存读取，立即写入主内存)，保证了变量的可见性。但是synchronized相比volatile还具有原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)，所以volatile是弱化版的synchronized。
-class Test { // 这里的flag就可以不用锁同步  private static volatile boolean flag = true; // 模拟AtomicInteger  private static CasUnsafe UNSAFE = new CasUnsafe(0); // 按照顺序打印1-100的奇偶数  public static void main(String[] args) { THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (flag) { System.out.println(UNSAFE.incrementAndGet()); flag = false; } } }); THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE."/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+class Test { // 这里的flag就可以不用锁同步  private static volatile boolean flag = true; // 模拟AtomicInteger  private static CasUnsafe UNSAFE = new CasUnsafe(0); // 按照顺序打印1-100的奇偶数  public static void main(String[] args) { THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (flag) { System.out.println(UNSAFE.incrementAndGet()); flag = false; } } }); THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/volatile/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="volatile关键字浅析"/>
-<meta name="twitter:description" content="Java中volatile关键字的原理与作用。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="volatile关键字浅析" />
-<meta property="og:description" content="Java中volatile关键字的原理与作用。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="volatile关键字浅析">
+<meta property="og:description" content="Java中volatile关键字的原理与作用。" />
 <meta property="og:url" content="https://leejay.top/post/volatile/" />
-<meta property="article:published_time" content="2020-06-08T11:13:38+08:00" />
-<meta property="article:modified_time" content="2020-06-08T11:13:38+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+
+  <meta property="article:published_time" content="2020-06-08 11:13:38 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -126,6 +103,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -138,71 +117,190 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/volatile/">volatile关键字浅析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-06-08
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%bd%9c%e7%94%a8">
+                    作用
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%8e%9f%e7%90%86">
+                    原理
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%8esynchronized%e5%85%b3%e9%94%ae%e5%ad%97%e7%9a%84%e5%bc%82%e5%90%8c">
+                    与synchronized关键字的异同
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#dcldouble-check-lock">
+                    DCL(Double Check Lock)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/volatile/">volatile </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性</a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/volatile/">volatile关键字浅析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-06-08 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="作用">作用</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/volatile-/">volatile </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="作用">作用<a href="#作用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>volatile保证了内存的可见性，对于共享变量操作会直接从共享内存中读取，修改时会直接将结果刷入共享内存，其次<code>禁止了volatile修饰的变量和非volatile变量之间的重排序</code>。</p>
-<h3 id="原理">原理</h3>
+<h3 id="原理">原理<a href="#原理" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>为了禁止编译器重排序和CPU重排序，底层原理是通过<code>内存屏障</code>指令来实现的。</p>
-<h5 id="编译器内存屏障">编译器内存屏障</h5>
+<h5 id="编译器内存屏障">编译器内存屏障<a href="#编译器内存屏障" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。</p>
-<h5 id="cpu内存屏障">CPU内存屏障</h5>
+<h5 id="cpu内存屏障">CPU内存屏障<a href="#cpu内存屏障" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>由CPU提供的指令(不同的CPU架构，提供的指令不同)，可以由开发者显示调用，volatile就是通过CPU内存屏障指令来实现的。</p>
 <p>实现流程：</p>
 <ul>
@@ -210,7 +308,7 @@ code.has-jax {
 <li>在volatile写操作的后面插入一个<code>StoreLoad屏障</code>。保证<code>volatile写操作不会和之后读操作</code>重排序。</li>
 <li>在volatile读操作后面插入一个<code>LoadLoad</code>屏障 + <code>LoadStore</code>屏障。保证<code>volatile读操作不会和之前的读操作、写操作</code>重排序。</li>
 </ul>
-<h3 id="与synchronized关键字的异同">与synchronized关键字的异同</h3>
+<h3 id="与synchronized关键字的异同">与synchronized关键字的异同<a href="#与synchronized关键字的异同" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>多线程会产生三大问题：原子性、有序性和可见性。</p>
 <p>synchronized和volatile在共享变量的操作上具有相同的内存语义(<code>从主内存读取，立即写入主内存</code>)，保证了变量的可见性。但是synchronized相比volatile还具有<code>原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)</code>，所以<code>volatile是弱化版的synchronized</code>。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
@@ -244,7 +342,7 @@ code.has-jax {
 <p>Q：什么时候用volatile而可以不用synchronized？</p>
 <p>A：如果<code>写入变量值不依赖变量当前值(count++就是依赖当前值，先去内存读取值，然后将当前值+1，将计算后的值赋给count。比如)</code>，那么就可以用volatile。</p>
 </blockquote>
-<h3 id="dcldouble-check-lock">DCL(Double Check Lock)</h3>
+<h3 id="dcldouble-check-lock">DCL(Double Check Lock)<a href="#dcldouble-check-lock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>双重检查加锁问题简称DCL</code>，用于懒汉式单例的一种写法，问题如下所示：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DoubleCheckSingleton</span> <span style="color:#f92672">{</span>
 
@@ -291,54 +389,52 @@ code.has-jax {
 <span style="color:#f92672">}</span>
 
 </code></pre></div>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/cas/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">CAS乐观锁浅析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">
-                  <span class="button__text">MESA模型结构分析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/cas/">
+                <span class="button__icon">←</span>
+                <span class="button__text">CAS乐观锁浅析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">
+                <span class="button__text">MESA模型结构分析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -346,9 +442,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

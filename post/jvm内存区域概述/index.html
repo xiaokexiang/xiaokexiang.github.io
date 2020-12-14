@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>JVM内存区域概述</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>JVM内存区域概述 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="JVM内存区域概述 虚拟机栈 虚拟机栈描述的是Java方法执行的线程内存模型:每个方法被执行时，JVM会同步创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，虚拟机栈区域是线程私有的，它的生命周期与线程相同。
  局部变量表：存放编译期可知的数据类型：8种基本数据类型和对象引用类型。这些数据类型在栈中用slot来表示，除了long &amp;amp; double占用2个slot，其余的都为1个。
 虚拟机栈包含用于执行native方法的本地方法栈。它们都会抛出OOM和StackOverFlow异常。
@@ -24,106 +24,83 @@
  ldc指令：将int、float或String类型的常量值从常量池推送至栈顶。
 资料来源：https://www.zhihu.com/question/55994121/answer/408891707
     程序计数器 当前线程所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是线程私有的。
-直接内存 直接内存并不是JVM运行时数据区的一部分。常见于NIO类使用：通过Native方法分配堆外内存，在Java堆中持有该内存区域的引用实现操作，相比之前在Java堆和Native堆之间来回复制的方式，提升了效率。"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+直接内存 直接内存并不是JVM运行时数据区的一部分。常见于NIO类使用：通过Native方法分配堆外内存，在Java堆中持有该内存区域的引用实现操作，相比之前在Java堆和Native堆之间来回复制的方式，提升了效率。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="JVM内存区域概述"/>
-<meta name="twitter:description" content="基于JDK8的`JVM内存区域概述`、JVM中`对象的创建`及`常量池`相关概念浅析"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="JVM内存区域概述" />
-<meta property="og:description" content="基于JDK8的`JVM内存区域概述`、JVM中`对象的创建`及`常量池`相关概念浅析" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="JVM内存区域概述">
+<meta property="og:description" content="基于JDK8的`JVM内存区域概述`、JVM中`对象的创建`及`常量池`相关概念浅析" />
 <meta property="og:url" content="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/" />
-<meta property="article:published_time" content="2020-08-13T13:21:20+08:00" />
-<meta property="article:modified_time" content="2020-08-13T13:21:20+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="JVM" />
+
+
+  <meta property="article:published_time" content="2020-08-13 13:21:20 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -137,6 +114,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -149,78 +128,637 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">JVM内存区域概述</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-08-13
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#jvm%e5%86%85%e5%ad%98%e5%8c%ba%e5%9f%9f%e6%a6%82%e8%bf%b0">
+                    JVM内存区域概述
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%99%9a%e6%8b%9f%e6%9c%ba%e6%a0%88">
+                    虚拟机栈
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%a0%86">
+                    虚拟机堆
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%85%83%e6%95%b0%e6%8d%ae%e5%8c%ba">
+                    元数据区
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%b8%b8%e9%87%8f%e6%b1%a0%e5%88%86%e7%b1%bb">
+                    常量池分类
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ad%97%e7%ac%a6%e5%b8%b8%e9%87%8f%e7%9a%84%e6%89%a7%e8%a1%8c%e6%b5%81%e7%a8%8b">
+                    字符常量的执行流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%a8%8b%e5%ba%8f%e8%ae%a1%e6%95%b0%e5%99%a8">
+                    程序计数器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%9b%b4%e6%8e%a5%e5%86%85%e5%ad%98">
+                    直接内存
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#jvm%e4%b8%ad%e7%9a%84%e5%af%b9%e8%b1%a1">
+                    JVM中的对象
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e5%88%9b%e5%bb%ba">
+                    对象的创建
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e6%9e%84%e6%88%90">
+                    对象的构成
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e5%bc%95%e7%94%a8">
+                    对象的引用
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a8%a1%e6%8b%9f%e5%90%84%e5%8c%ba%e5%9f%9foom">
+                    模拟各区域OOM
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a0%86">
+                    堆
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a0%88">
+                    栈
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%85%83%e6%95%b0%e6%8d%ae%e5%8c%ba-1">
+                    元数据区
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%9b%b4%e6%8e%a5%e5%86%85%e5%ad%98-1">
+                    直接内存
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%b8%b8%e9%87%8f%e6%b1%a0%e5%ae%9e%e6%88%98">
+                    常量池实战
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/jvm/">JVM </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/">常量池</a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">JVM内存区域概述</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-08-13 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="jvm内存区域概述">JVM内存区域概述</h3>
-<h4 id="虚拟机栈">虚拟机栈</h4>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/">常量池</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="jvm内存区域概述">JVM内存区域概述<a href="#jvm内存区域概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="虚拟机栈">虚拟机栈<a href="#虚拟机栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>虚拟机栈描述的是Java方法执行的<code>线程内存模型:</code>每个方法被执行时，JVM会同步创建一个<code>栈帧</code>，用于存储<code>局部变量表、操作数栈、动态链接、方法出口</code>等信息，虚拟机栈区域是<code>线程私有</code>的，它的生命周期与线程相同。</p>
 <blockquote>
 <p>局部变量表：存放编译期可知的数据类型：<code>8种基本数据类型和对象引用类型</code>。这些数据类型在栈中用<code>slot</code>来表示，除了<code>long &amp; double</code>占用<code>2个slot</code>，其余的都为1个。</p>
 <p>虚拟机栈包含用于<code>执行native方法</code>的本地方法栈。它们都会抛出<code>OOM和StackOverFlow</code>异常。</p>
 </blockquote>
-<h4 id="虚拟机堆">虚拟机堆</h4>
+<h4 id="虚拟机堆">虚拟机堆<a href="#虚拟机堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>这是一块<code>线程共享</code>的内存区域，几乎全部的<code>对象实例、数组</code>都在堆上分配（小对象可以在<code>栈上分配</code>）。</p>
 <blockquote>
 <p>从内存回收角度看， 堆被逻辑的分为：<code>年轻代（包括eden、from、to三个区域）、老年代</code>。</p>
 <p>从内存分配角度看，堆被分为<code>多个线程私有的内存分配缓冲区（TLAB）</code>。</p>
 </blockquote>
-<h5 id="tlab">TLAB</h5>
+<h5 id="tlab">TLAB<a href="#tlab" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是<code>CAS + 失败重试</code>的方式。而<code>TLAB</code>是：</p>
 <ol>
 <li>通预先给每个线程在堆中分配一小块区域。</li>
@@ -228,9 +766,9 @@ code.has-jax {
 <li>如果这个线程的<code>TLAB</code>空间不够分配时，就通过<code>同步锁定</code>给这个线程分配新的<code>TLAB</code>。</li>
 <li><code>-XX:+/-UseTLAB</code>来开启和关闭TLAB。</li>
 </ol>
-<h4 id="元数据区">元数据区</h4>
+<h4 id="元数据区">元数据区<a href="#元数据区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>JDK1.8</code>起，方法区改名为<code>元数据区（MetaSpace）</code>，是<code>线程共享</code>的区域，是堆的一个<code>逻辑部分</code>，用于存储<code>JVM加载的类型信息、常量、静态变量及即时编译后的方法代码</code>等数据。会抛出<code>OOM</code>异常。</p>
-<h4 id="常量池分类">常量池分类</h4>
+<h4 id="常量池分类">常量池分类<a href="#常量池分类" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>Class文件中的常量池</li>
 </ul>
@@ -246,7 +784,7 @@ code.has-jax {
 <blockquote>
 <p><code>String.intern()</code>：如果<code>字符串常量池</code>已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到<code>字符串常量池</code>并返回引用。</p>
 </blockquote>
-<h4 id="字符常量的执行流程">字符常量的执行流程</h4>
+<h4 id="字符常量的执行流程">字符常量的执行流程<a href="#字符常量的执行流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>
 <p>首先<code>编译期</code>会将字面量、符号引用等放入Class文件的常量池中。</p>
@@ -263,13 +801,13 @@ code.has-jax {
 </li>
 </ul>
 <hr>
-<h3 id="程序计数器">程序计数器</h3>
+<h3 id="程序计数器">程序计数器<a href="#程序计数器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>当前线程</code>所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是<code>线程私有</code>的。</p>
-<h3 id="直接内存">直接内存</h3>
+<h3 id="直接内存">直接内存<a href="#直接内存" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>直接内存并不是JVM运行时数据区的一部分。常见于<code>NIO</code>类使用：通过<code>Native方法分配堆外内存</code>，在Java堆中持有该<code>内存区域的引用</code>实现操作，相比之前<code>在Java堆和Native堆之间来回复制</code>的方式，提升了效率。</p>
 <hr>
-<h3 id="jvm中的对象">JVM中的对象</h3>
-<h4 id="对象的创建">对象的创建</h4>
+<h3 id="jvm中的对象">JVM中的对象<a href="#jvm中的对象" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="对象的创建">对象的创建<a href="#对象的创建" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><img src="https://image.leejay.top/image/20200806/5Yyjn8VqQBwt.png?imageslim" alt=""></p>
 <blockquote>
 <ol>
@@ -281,9 +819,9 @@ code.has-jax {
 <li>最终调用对象的构造函数进行初始化。</li>
 </ol>
 </blockquote>
-<h4 id="对象的构成">对象的构成</h4>
+<h4 id="对象的构成">对象的构成<a href="#对象的构成" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>对象在堆中的布局分为三个部分：<code>对象头、实例数据和对齐填充</code>。而对象头中又包含：<code>对象自身的运行时数据(Mark Word)、对象指向它类型元数据的指针以及数组长度(如果对象是数组)</code>。</p>
-<h5 id="对象头">对象头</h5>
+<h5 id="对象头">对象头<a href="#对象头" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <ul>
 <li>
 <p>Mark Word</p>
@@ -304,11 +842,11 @@ code.has-jax {
 <p>如果当前对象是数组，那么在对象头中还有一部分用于<code>存储数组长度的数据</code>。</p>
 </li>
 </ul>
-<h5 id="实例数据">实例数据</h5>
+<h5 id="实例数据">实例数据<a href="#实例数据" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>即保存代码中定义的<code>各种类型的字段内容（包括父类继承）</code>，其存储顺序除了受到代码中定义的影响，还由JVM参数<code>-XX:FiedlsAllocationStyle</code>决定。</p>
-<h5 id="对齐填充">对齐填充</h5>
+<h5 id="对齐填充">对齐填充<a href="#对齐填充" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>对齐填充并不是<code>必然存在</code>的，因为<code>HotSpot</code>要求<code>对象的大小必须是8的整数倍</code>，对象头已经是8的整数倍，如果实例数据不是8的整数倍，那么就需要使用对齐填充来补全。</p>
-<h4 id="对象的引用">对象的引用</h4>
+<h4 id="对象的引用">对象的引用<a href="#对象的引用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>对象的创建是为了能够使用该对象，我们通过<code>栈上的reference数据</code>来操作堆上的具体对象。但对象的访问方式由虚拟机自行决定，目前主流的有两种：<code>句柄 &amp; 指针</code>。</p>
 <p><img src="https://image.leejay.top/image/20200811/doWGxxuV17Ne.png?imageslim" alt=""></p>
 <blockquote>
@@ -319,8 +857,8 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="模拟各区域oom">模拟各区域OOM</h3>
-<h4 id="堆">堆</h4>
+<h3 id="模拟各区域oom">模拟各区域OOM<a href="#模拟各区域oom" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="堆">堆<a href="#堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
 </span><span style="color:#75715e">  * -Xmx10m 模拟堆OOM
 </span><span style="color:#75715e">  */</span>
@@ -330,7 +868,7 @@ code.has-jax {
         list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Object<span style="color:#f92672">());</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h4 id="栈">栈</h4>
+</code></pre></div><h4 id="栈">栈<a href="#栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>stackOverFlow</li>
 </ul>
@@ -369,7 +907,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>相比OOM，stackOverFlow更容易发生。</p>
 </blockquote>
-<h4 id="元数据区-1">元数据区</h4>
+<h4 id="元数据区-1">元数据区<a href="#元数据区-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>字符串常量池OOM</li>
 </ul>
@@ -406,7 +944,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>因为元数据区存放类型的相关信息：类名、方法描述等，通过大量创建cglib代理类实现<code>Metaspace OOM</code>。</p>
 </blockquote>
-<h4 id="直接内存-1">直接内存</h4>
+<h4 id="直接内存-1">直接内存<a href="#直接内存-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
 </span><span style="color:#75715e">  * -XX：MaxDirectMemorySize=10m
 </span><span style="color:#75715e">  */</span>
@@ -424,7 +962,7 @@ code.has-jax {
 <p>直接内存由：<code>-XX：MaxDirectMemorySize</code>指定，如果不指定则和<code>-Xmx</code>一致。</p>
 </blockquote>
 <hr>
-<h3 id="常量池实战">常量池实战</h3>
+<h3 id="常量池实战">常量池实战<a href="#常量池实战" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>查看汇编指令</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">javac -encoding utf-8 StringTest.java
 javap -v StringTest.class
@@ -493,54 +1031,52 @@ javap -v StringTest.class
 <p><img src="https://image.leejay.top/image/20200813/HQTMAz6X4cCl.png?imageslim" alt=""></p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">HotSpot参数汇总</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/future/">
-                  <span class="button__text">Future源码解析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/">
+                <span class="button__icon">←</span>
+                <span class="button__text">HotSpot参数汇总</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/future/">
+                <span class="button__text">Future源码解析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -548,9 +1084,13 @@ javap -v StringTest.class
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>常量池 on Aurora</title>
-    
-    
-    
+    <title>常量池 on Keep Improving</title>
     <link>https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/</link>
-    <description>Recent content in 常量池 on Aurora</description>
+    <description>Recent content in 常量池 on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>zh-Hans</language>
+    <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Thu, 13 Aug 2020 13:21:20 +0800</lastBuildDate>
-    
-	<atom:link href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 13 Aug 2020 13:21:20 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JVM内存区域概述</title>
       <link>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/</link>
       <pubDate>Thu, 13 Aug 2020 13:21:20 +0800</pubDate>
       
       <guid>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/</guid>
-      <description>
-        
-          
-          
-          
-        
-        
-        
-          基于JDK8的`JVM内存区域概述`、JVM中`对象的创建`及`常量池`相关概念浅析
-          
-        
-        </description>
+      <description>JVM内存区域概述 虚拟机栈 虚拟机栈描述的是Java方法执行的线程内存模型:每个方法被执行时，JVM会同步创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，虚拟机栈区域是线程私有的，它的生命周期与线程相同。
+ 局部变量表：存放编译期可知的数据类型：8种基本数据类型和对象引用类型。这些数据类型在栈中用slot来表示，除了long &amp;amp; double占用2个slot，其余的都为1个。
+虚拟机栈包含用于执行native方法的本地方法栈。它们都会抛出OOM和StackOverFlow异常。
+ 虚拟机堆 这是一块线程共享的内存区域，几乎全部的对象实例、数组都在堆上分配（小对象可以在栈上分配）。
+ 从内存回收角度看， 堆被逻辑的分为：年轻代（包括eden、from、to三个区域）、老年代。
+从内存分配角度看，堆被分为多个线程私有的内存分配缓冲区（TLAB）。
+ TLAB Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是CAS + 失败重试的方式。而TLAB是：
+ 通预先给每个线程在堆中分配一小块区域。 哪个线程创建对象，就在哪个线程的TLAB中分配内存。 如果这个线程的TLAB空间不够分配时，就通过同步锁定给这个线程分配新的TLAB。 -XX:+/-UseTLAB来开启和关闭TLAB。  元数据区 JDK1.8起，方法区改名为元数据区（MetaSpace），是线程共享的区域，是堆的一个逻辑部分，用于存储JVM加载的类型信息、常量、静态变量及即时编译后的方法代码等数据。会抛出OOM异常。
+常量池分类  Class文件中的常量池  主要存放字面量 &amp;amp; 符号引用。前者主要是文本字符串、八种基本数据类型、final修饰的常量等，后者包含：类和接口的全限定名、字段的名称和描述符、方法的名称和描述符。在类被加载后会存放到运行时常量池中。
+ 运行时常量池  属于元数据区中的一部分，类在被JVM加载后，类的版本、字段、方法和常量池等都会进入该区域。JVM会为每个加载的class维护一个运行时常量池，同时其中存储的是引用，实际对象还在堆中。日常我们所称的常量池就是运行时常量池。
+ 全局字符串常量池  JDK7后位于堆中，运行时存在的用于记录interned string的全局表StringTabel。其中存放的是String实例的引用，实际的String对象仍存在于堆。
+ String.intern()：如果字符串常量池已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到字符串常量池并返回引用。
+ 字符常量的执行流程   首先编译期会将字面量、符号引用等放入Class文件的常量池中。
+  在JVM类加载的过程中，除了字面量，类的字段、方法等信息都会加载到当前类运行时常量池。此时运行时常量池中存放的是CONSTANT-UnresolvedString，表明尚未resolve，只有在解析后存放的是CONSTANT_String，内容是实际的String对象的引用，和字符串常量池的引用一致。
+  因为JVM类加载过程中的解析(resolve)阶段是可以懒执行的，只有当执行ldc指令时，通过存放在运行时常量池的索引去字符串常量池查找是否存在对应的String实例，如果存在就直接返回该引用，不存在就先在堆中创建对应的String对象，并将引用记录在字符串常量池中，再返回该引用。
+ ldc指令：将int、float或String类型的常量值从常量池推送至栈顶。
+资料来源：https://www.zhihu.com/question/55994121/answer/408891707
+    程序计数器 当前线程所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是线程私有的。
+直接内存 直接内存并不是JVM运行时数据区的一部分。常见于NIO类使用：通过Native方法分配堆外内存，在Java堆中持有该内存区域的引用实现操作，相比之前在Java堆和Native堆之间来回复制的方式，提升了效率。</description>
     </item>
     
   </channel>

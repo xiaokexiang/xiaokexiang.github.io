@@ -1,117 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>Java内存可见性</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>Java内存可见性 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="CPU和JVM的重排序 CPU及JVM为了优化代码执行效率，会对代码进行重排序，其中包括：
  编译器重排序(没有先后依赖关系的语句，编译器可以重新调整语句执行顺序) CPU指令重排序(让没有依赖关系的多条指令并行) CPU内存重排序(CPU有自己的缓存，指令执行顺序和写入主内存顺序不一致)  其中CPU内存重排序是导致内存可见性的主因。根据JMM内存模型，我们描述下过程：
 如果线程需要修改共享变量，那么线程A会拷贝共享变量的副本到本地线程中并对其进行修改，之后会将值写回共享内存中(时间不确定)，但在写回之前，线程B读取共享变量到本地准备修改，而此时线程A修改共享变量的操作对线程B不可见。
 重排序规则： as-if-serial 不管怎么重排序，单线程程序的执行结果不能被改变。只要操作之间没有数据依赖性，那么编译器和CPU都可以任意重排序。
 happen-before(JVM层面) 为了明确多线程场景下那么可以重排序，哪些不可以重排序，引入了JMM内存模型，而JMM提供了happen-before规范，用于在开发者编写程序和系统运行之间效率找到平衡点，它描述了两个操作之间的内存可见性，若A happen before B，如果A在B之前执行，则A的执行结果必须对B可见。
  单线程的每个操作，happen-before 于该线程中任意后续操作。 对volatile变量的写入，happen-before 于后续对这个变量的读取。 对于synchronized的解锁，happen-before于后续对这个锁的加锁。 对final域的写(构造函数中)，happen-before于对final域所在对象的读。  happen-before传递性 假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。
-class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1  c = 1;// step 2  } int get() { int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1  c = 1;// step 2  } int get() { int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Java内存可见性"/>
-<meta name="twitter:description" content="多线程中的内存可见性问题。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="Java内存可见性" />
-<meta property="og:description" content="多线程中的内存可见性问题。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="Java内存可见性">
+<meta property="og:description" content="多线程中的内存可见性问题。" />
 <meta property="og:url" content="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/" />
-<meta property="article:published_time" content="2020-05-19T08:08:47+08:00" />
-<meta property="article:modified_time" content="2020-05-19T08:08:47+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+
+  <meta property="article:published_time" content="2020-05-19 08:08:47 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -125,6 +102,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -137,63 +116,222 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">Java内存可见性</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-05-19
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cpu%e5%92%8cjvm%e7%9a%84%e9%87%8d%e6%8e%92%e5%ba%8f">
+                    CPU和JVM的重排序
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%87%8d%e6%8e%92%e5%ba%8f%e8%a7%84%e5%88%99">
+                    重排序规则：
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#as-if-serial">
+                    as-if-serial
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#happen-beforejvm%e5%b1%82%e9%9d%a2">
+                    happen-before(JVM层面)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#happen-before%e4%bc%a0%e9%80%92%e6%80%a7">
+                    happen-before传递性
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性 </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/">Java内存可见性</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-05-19 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="cpu和jvm的重排序">CPU和JVM的重排序</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7-/">内存可见性 </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="cpu和jvm的重排序">CPU和JVM的重排序<a href="#cpu和jvm的重排序" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>CPU及JVM为了优化代码执行效率，会对代码进行重排序，其中包括：</p>
 <ul>
 <li>编译器重排序(没有先后依赖关系的语句，编译器可以重新调整语句执行顺序)</li>
@@ -202,10 +340,10 @@ code.has-jax {
 </ul>
 <p>其中<code>CPU内存重排序</code>是导致<code>内存可见性</code>的主因。根据JMM内存模型，我们描述下过程：</p>
 <p>如果线程需要修改共享变量，那么线程A会<code>拷贝共享变量的副本到本地线程中并对其进行修改</code>，之后会将值写回共享内存中(时间不确定)，但在写回之前，线程B读取共享变量到本地准备修改，而此时<code>线程A修改共享变量的操作对线程B不可见</code>。</p>
-<h3 id="重排序规则">重排序规则：</h3>
-<h4 id="as-if-serial">as-if-serial</h4>
+<h3 id="重排序规则">重排序规则：<a href="#重排序规则" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="as-if-serial">as-if-serial<a href="#as-if-serial" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>不管怎么重排序，<code>单线程程序的执行结果不能被改变</code>。只要操作之间没有数据依赖性，那么编译器和CPU都可以任意重排序。</p>
-<h4 id="happen-beforejvm层面">happen-before(JVM层面)</h4>
+<h4 id="happen-beforejvm层面">happen-before(JVM层面)<a href="#happen-beforejvm层面" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>为了明确多线程场景下那么可以重排序，哪些不可以重排序，引入了JMM内存模型，而JMM提供了<code>happen-before</code>规范，用于在开发者编写程序和系统运行之间效率找到平衡点，<code>它描述了两个操作之间的内存可见性，若A happen before B，如果A在B之前执行，则A的执行结果必须对B可见</code>。</p>
 <ul>
 <li>单线程的每个操作，happen-before 于该线程中任意后续操作。</li>
@@ -213,7 +351,7 @@ code.has-jax {
 <li>对于synchronized的解锁，happen-before于后续对这个锁的加锁。</li>
 <li>对final域的写(构造函数中)，happen-before于对final域所在对象的读。</li>
 </ul>
-<h4 id="happen-before传递性">happen-before传递性</h4>
+<h4 id="happen-before传递性">happen-before传递性<a href="#happen-before传递性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
@@ -233,54 +371,52 @@ code.has-jax {
 <p>因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，<code>根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性</code>，step1 的结果一定对step4可见。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">MESA模型结构分析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/complexity/">
-                  <span class="button__text">Complexity概念浅析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/">
+                <span class="button__icon">←</span>
+                <span class="button__text">MESA模型结构分析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/complexity/">
+                <span class="button__text">Complexity概念浅析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -288,9 +424,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

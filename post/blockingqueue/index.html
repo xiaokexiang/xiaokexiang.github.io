@@ -1,112 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>BlockingQueue单向阻塞队列源码解析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>BlockingQueue单向阻塞队列源码解析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BlockingQueue 概念 BlockingQueue带阻塞功能的线程安全队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。
-接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/blockingqueue/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="BlockingQueue单向阻塞队列源码解析"/>
-<meta name="twitter:description" content="基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="BlockingQueue单向阻塞队列源码解析" />
-<meta property="og:description" content="基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="BlockingQueue单向阻塞队列源码解析">
+<meta property="og:description" content="基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。" />
 <meta property="og:url" content="https://leejay.top/post/blockingqueue/" />
-<meta property="article:published_time" content="2020-07-04T20:38:54+08:00" />
-<meta property="article:modified_time" content="2020-07-04T20:38:54+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+  <meta property="article:section" content="Queue" />
+
+
+  <meta property="article:published_time" content="2020-07-04 20:38:54 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -120,6 +99,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -132,67 +113,894 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/blockingqueue/">BlockingQueue单向阻塞队列源码解析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-07-04
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#blockingqueue">
+                    BlockingQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a6%82%e5%bf%b5">
+                    概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8e%a5%e5%8f%a3%e6%96%b9%e6%b3%95">
+                    接口方法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%96%b9%e6%b3%95%e5%af%b9%e6%af%94">
+                    方法对比
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#arrayblockingqueue">
+                    ArrayBlockingQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e9%80%a0">
+                    构造
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%b7%bb%e5%8a%a0">
+                    添加
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#put">
+                    put
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#offer">
+                    offer
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#add">
+                    add
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%8e%b7%e5%8f%96">
+                    获取
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#take">
+                    take
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#poll">
+                    poll
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#peek">
+                    peek
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#linkedblockingqueue">
+                    LinkedBlockingQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e9%80%a0-1">
+                    构造
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%b7%bb%e5%8a%a0-1">
+                    添加
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#put-1">
+                    put
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#offer-1">
+                    offer
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%8e%b7%e5%8f%96-1">
+                    获取
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#poll-1">
+                    poll
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#peek-1">
+                    peek
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93-1">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#priorityblockingqueue">
+                    PriorityBlockingQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#delayqueue">
+                    DelayQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#synchronousqueue">
+                    SynchronousQueue
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/blockingqueue/">BlockingQueue </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/blockingqueue/">BlockingQueue单向阻塞队列源码解析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-07-04 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="blockingqueue">BlockingQueue</h3>
-<h4 id="概念">概念</h4>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/blockingqueue-/">BlockingQueue </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="blockingqueue">BlockingQueue<a href="#blockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="概念">概念<a href="#概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>BlockingQueue</code>带<code>阻塞</code>功能的<code>线程安全</code>队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。</p>
 <p><img src="https://image.leejay.top/image/20200707/w6jIy7hJTtxv.png?imageslim" alt=""></p>
-<h4 id="接口方法">接口方法</h4>
+<h4 id="接口方法">接口方法<a href="#接口方法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">BlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 添加元素到队列中返回boolean，队列满抛出异常
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">);</span>
@@ -223,7 +1031,7 @@ code.has-jax {
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">drainTo</span><span style="color:#f92672">(</span>Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> E<span style="color:#f92672">&gt;</span> c<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> maxElements<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
 
-</code></pre></div><h4 id="方法对比">方法对比</h4>
+</code></pre></div><h4 id="方法对比">方法对比<a href="#方法对比" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <table>
 <thead>
 <tr>
@@ -303,8 +1111,8 @@ code.has-jax {
 </tbody>
 </table>
 <hr>
-<h3 id="arrayblockingqueue">ArrayBlockingQueue</h3>
-<h4 id="构造">构造</h4>
+<h3 id="arrayblockingqueue">ArrayBlockingQueue<a href="#arrayblockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>有界阻塞队列</code>，我们将从类变量、构造函数、添加与获取角度来解析<code>ArrayBlockingQueue</code>的实现。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
         <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
@@ -347,8 +1155,8 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="添加">添加</h3>
-<h4 id="put">put</h4>
+<h3 id="添加">添加<a href="#添加" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="put">put<a href="#put" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 元素不能为null否则报NPE
 </span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
@@ -390,7 +1198,7 @@ code.has-jax {
 <li>若队列没有满，那么会调用<code>enqueue</code>将元素加入数组并修改相关变量。</li>
 </ol>
 </blockquote>
-<h4 id="offer">offer</h4>
+<h4 id="offer">offer<a href="#offer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
     <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
@@ -411,7 +1219,7 @@ code.has-jax {
 <p>offer()方法在队列满的时候直接返回<code>false</code>，而put则是调用<code>await阻塞等待</code>。</p>
 <p>offer(time)方法区别在于<code>awaitNanos阻塞一定时间，超时了队列仍满再返回false</code>。</p>
 </blockquote>
-<h4 id="add">add</h4>
+<h4 id="add">add<a href="#add" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
@@ -427,8 +1235,8 @@ code.has-jax {
 <p>add()底层是调用的offer()，只是处理队列满的手段不同，<code>add在队列满时会抛出异常</code>。</p>
 </blockquote>
 <hr>
-<h3 id="获取">获取</h3>
-<h4 id="take">take</h4>
+<h3 id="获取">获取<a href="#获取" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="take">take<a href="#take" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
     lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
@@ -472,7 +1280,7 @@ code.has-jax {
 <li>如果队列有元素就调用<code>dequeue</code>获取元素、唤醒<code>等待添加条件队列</code>的节点。</li>
 </ol>
 </blockquote>
-<h4 id="poll">poll</h4>
+<h4 id="poll">poll<a href="#poll" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
     lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
@@ -486,7 +1294,7 @@ code.has-jax {
 <p>poll()与take()区别在于队列为空时，<code>前者返回null</code>，后者阻塞等待。</p>
 <p>poll(time)与take()区别在于<code>awaitNanos</code>阻塞等待指定时长，<code>若队列仍为空返回null</code>。</p>
 </blockquote>
-<h4 id="peek">peek</h4>
+<h4 id="peek">peek<a href="#peek" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
     lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
@@ -505,7 +1313,7 @@ code.has-jax {
 <p>peek()与take()区别在于<code>返回数据时并不删除数据</code>，peek()<code>在队列为空时返回null</code>。</p>
 </blockquote>
 <hr>
-<h3 id="总结">总结</h3>
+<h3 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li><code>ArrayBlockingQueue</code>是有界（需要指定初始队列大小）的阻塞队列，最大容量不超过<code>Integer.MAX_VALUE</code>。</li>
 <li><code>ArrayBlockingQueue</code>遵循<code>FIFO先进先出的顺序规则</code>。</li>
@@ -513,8 +1321,8 @@ code.has-jax {
 <li><code>ArrayBlockingQueue</code>因为只有一把锁，所以并不是真正的<code>同时添加和获取</code>。</li>
 </ul>
 <hr>
-<h3 id="linkedblockingqueue">LinkedBlockingQueue</h3>
-<h4 id="构造-1">构造</h4>
+<h3 id="linkedblockingqueue">LinkedBlockingQueue<a href="#linkedblockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="构造-1">构造<a href="#构造-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
         <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 内部维护了Node对象，加入队列的元素被封装成node对象通过链表的形式链接
@@ -562,8 +1370,8 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="添加-1">添加</h3>
-<h4 id="put-1">put</h4>
+<h3 id="添加-1">添加<a href="#添加-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="put-1">put<a href="#put-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 判断是否为null
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
@@ -624,7 +1432,7 @@ code.has-jax {
 <li>因为是两把锁，理论上<code>添加和获取的操作是可以同时进行的</code>，所以代码最后还需要判断下<code>count == 0</code>，如果成立说明此时恰好有一个数据，唤醒<code>等待获取队列中线程</code>来获取。</li>
 </ol>
 </blockquote>
-<h4 id="offer-1">offer</h4>
+<h4 id="offer-1">offer<a href="#offer-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 判断是否为null
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
@@ -664,7 +1472,7 @@ code.has-jax {
 <p>与put()不同点在于返回值，offer()返回boolean值，当<code>队列满的时候返回false</code>。</p>
 <p>offer(time)在队列满的时候<code>等待指定时长</code>，如果<code>唤醒后队列还没有空间就返回false</code>。</p>
 </blockquote>
-<h4 id="获取-1">获取</h4>
+<h4 id="获取-1">获取<a href="#获取-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>take</li>
 </ul>
@@ -723,7 +1531,7 @@ code.has-jax {
 <li>take()当<code>队列为空的时候会阻塞</code>，直到不为空获取元素。</li>
 </ol>
 </blockquote>
-<h4 id="poll-1">poll</h4>
+<h4 id="poll-1">poll<a href="#poll-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
@@ -754,7 +1562,7 @@ code.has-jax {
 <p>和take()明显的区别在于：<code>poll()在队列满的时候返回null，并且不会阻塞</code>。</p>
 <p>poll(time)：<code>阻塞指定时长，唤醒后如果队列仍为空，那么返回null</code>。</p>
 </blockquote>
-<h4 id="peek-1">peek</h4>
+<h4 id="peek-1">peek<a href="#peek-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 如果队列为空返回null
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
@@ -780,7 +1588,7 @@ code.has-jax {
 <p>peek()相比take()：除了队列为空时返回null外，还不会阻塞等待。</p>
 </blockquote>
 <hr>
-<h3 id="总结-1">总结</h3>
+<h3 id="总结-1">总结<a href="#总结-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li><code>LinkedBlockingQueue</code>是无界（可以不传递初始队列大小）队列，不指定容量时默认<code>Integer.MAX_VALUE</code>。</li>
 <li><code>LinkedBlockingQueue</code>的底层是由<code>链表组成的</code>，它<code>head.item = null, last.next  = null</code>是永远成立的。并且它也符合<code>FIFO</code>规则。</li>
@@ -788,7 +1596,7 @@ code.has-jax {
 <li><code>LinkedBlockingQueue</code>可以实现<code>逻辑上真正的同时take和put</code>，所以性能更强。</li>
 </ul>
 <hr>
-<h3 id="priorityblockingqueue">PriorityBlockingQueue</h3>
+<h3 id="priorityblockingqueue">PriorityBlockingQueue<a href="#priorityblockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li>
 <p><code>PriorityBlockingQueue</code>是不符合<code>FIFO</code>规则的队列，它是按照<code>元素的优先级从小到大出队列的</code>，是由元素实现<code>Comparator</code>接口来实现的。</p>
@@ -804,66 +1612,64 @@ code.has-jax {
 <p>底层是数组，但是用<code>数组实现了二叉堆</code>，排在<code>堆顶</code>的就是要出队的元素。</p>
 </li>
 </ul>
-<h3 id="delayqueue">DelayQueue</h3>
+<h3 id="delayqueue">DelayQueue<a href="#delayqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li><code>延迟队列</code>，一个按照<code>延迟时间从小到大出队的PriorityBlockingQueue</code>。</li>
 <li>DelayQueue中的元素必须要实现<code>Delayed</code>接口，复写<code>getDelay和compareTo</code>方法。</li>
 <li><code>未来时间 - 当前时间 </code>，值越小就越先出队，但前提是<code>时间差 &lt;= 0</code>。</li>
 </ul>
-<h3 id="synchronousqueue">SynchronousQueue</h3>
+<h3 id="synchronousqueue">SynchronousQueue<a href="#synchronousqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li><code>SynchronousQueue</code>队列本身并没有容量的概念，<code>先调用put的线程会阻塞，直到另一个线程调用了take</code>。如果调用多次put，那么也需要调用同样次数的take，才能全部解锁。</li>
 <li><code>SynchronousQueue</code>支持公平和非公平实现，假设调用三次put，公平锁的情况下，<code>第一个take的线程对应着第一个put的线程</code>，非公平锁情况下，<code>第一个take的线程对应着第三个put的线程</code>。</li>
 </ul>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/blockingdeque/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">BlockingDeque双端阻塞队列源码浅析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/stampedlock/">
-                  <span class="button__text">StampedLock读写锁源码浅析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/blockingdeque/">
+                <span class="button__icon">←</span>
+                <span class="button__text">BlockingDeque双端阻塞队列源码浅析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/stampedlock/">
+                <span class="button__text">StampedLock读写锁源码浅析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -871,9 +1677,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

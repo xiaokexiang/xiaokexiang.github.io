@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>ReentrantLock源码解析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>ReentrantLock源码解析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。
 AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。
 state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。
@@ -13,106 +13,83 @@ state变量 内部维护了volatile修饰的state变量，state = 0时表明没�
 FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
  还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
  Node的waitStatus    Node状态 描述     INIT=0 Node初始创建时默认为0   CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。   SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。   CONDITION=-2 表示节点处于等待队列中，等待被唤醒。   PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。     ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。
-class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK."/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/reentrantlock/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="ReentrantLock源码解析"/>
-<meta name="twitter:description" content="AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="ReentrantLock源码解析" />
-<meta property="og:description" content="AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="ReentrantLock源码解析">
+<meta property="og:description" content="AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的`可重入独占锁`，具有公平/非公平两种实现。" />
 <meta property="og:url" content="https://leejay.top/post/reentrantlock/" />
-<meta property="article:published_time" content="2020-06-15T15:53:46+08:00" />
-<meta property="article:modified_time" content="2020-06-15T15:53:46+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+
+  <meta property="article:published_time" content="2020-06-15 15:53:46 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -126,6 +103,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -138,80 +117,663 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/reentrantlock/">ReentrantLock源码解析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-06-15
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#abstractqueuesynchronizer">
+                    AbstractQueueSynchronizer
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%ae%b0%e5%bd%95%e5%bd%93%e5%89%8d%e9%94%81%e7%9a%84%e6%8c%81%e6%9c%89%e7%ba%bf%e7%a8%8b">
+                    记录当前锁的持有线程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#state%e5%8f%98%e9%87%8f">
+                    state变量
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e9%98%bb%e5%a1%9e%e5%92%8c%e5%94%a4%e9%86%92">
+                    线程阻塞和唤醒
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#fifo%e9%98%9f%e5%88%97">
+                    FIFO队列
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#node%e7%9a%84waitstatus">
+                    Node的waitStatus
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#reentrentlock">
+                    ReentrentLock
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%85%ac%e5%b9%b3%e9%94%81%e5%92%8c%e9%9d%9e%e5%85%ac%e5%b9%b3%e9%94%81">
+                    公平锁和非公平锁
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#acquire">
+                    acquire
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tryacquire">
+                    tryAcquire
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#hasqueuedpredecessors">
+                    hasQueuedPredecessors
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#addwaiter">
+                    addWaiter
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#acquirequeued">
+                    acquireQueued
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cancelacquire">
+                    cancelAcquire
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#selfinterrupt">
+                    selfInterrupt
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%8b%ac%e5%8d%a0%e9%94%81%e8%8e%b7%e5%8f%96%e6%89%a7%e8%a1%8c%e6%b5%81%e7%a8%8b">
+                    独占锁获取执行流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#unlock">
+                    unlock
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#lockinterruptibly">
+                    lockInterruptibly
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#trylocktime">
+                    tryLock(time)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/reentrantlock/">ReentrantLock </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/reentrantlock/">ReentrantLock源码解析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-06-15 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <p>Lock与Synchronized都是<code>可重入锁</code>，否则会发生死锁。Lock锁核心在于<code>AbstractQueueSynchronizer</code>，又名<code>队列同步器(简称AQS)</code>。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。</p>
-<h3 id="abstractqueuesynchronizer">AbstractQueueSynchronizer</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/reentrantlock-/">ReentrantLock </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>Lock与Synchronized都是<code>可重入锁</code>，否则会发生死锁。Lock锁核心在于<code>AbstractQueueSynchronizer</code>，又名<code>队列同步器(简称AQS)</code>。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。</p>
+<h3 id="abstractqueuesynchronizer">AbstractQueueSynchronizer<a href="#abstractqueuesynchronizer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/image/20200608/GVtL7ztzwtCl.png?imageslim" alt=""></p>
-<h4 id="记录当前锁的持有线程">记录当前锁的持有线程</h4>
+<h4 id="记录当前锁的持有线程">记录当前锁的持有线程<a href="#记录当前锁的持有线程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>由AQS的父类<code>AbstractOwnableSynchronizer</code>实现记录当前锁的持有线程功能（独占锁）。</p>
-<h4 id="state变量">state变量</h4>
+<h4 id="state变量">state变量<a href="#state变量" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &gt; 1时，说明该线程重入了该锁。</p>
-<h4 id="线程阻塞和唤醒">线程阻塞和唤醒</h4>
+<h4 id="线程阻塞和唤醒">线程阻塞和唤醒<a href="#线程阻塞和唤醒" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>由<code>LockSupport</code>类实现，其底层是调用了Unsafe的park 和 unpark。<code>如果当前线程是非中断状态，调用park()阻塞，返回中断状态是false，如果当前线程是中断状态，调用park()会不起作用立即返回。也是为什么AQS要清空中断状态的原因</code>。</p>
-<h4 id="fifo队列">FIFO队列</h4>
+<h4 id="fifo队列">FIFO队列<a href="#fifo队列" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>AQS内部维护了一个基于<code>CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)</code>变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。</p>
 <p><img src="https://image.leejay.top/image/20200609/CHJldTlsLVp2.png?imageslim" alt=""></p>
 <blockquote>
 <p>还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。</p>
 </blockquote>
-<h4 id="node的waitstatus">Node的waitStatus</h4>
+<h4 id="node的waitstatus">Node的waitStatus<a href="#node的waitstatus" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <table>
 <thead>
 <tr>
@@ -243,7 +805,7 @@ code.has-jax {
 </tbody>
 </table>
 <hr>
-<h3 id="reentrentlock">ReentrentLock</h3>
+<h3 id="reentrentlock">ReentrentLock<a href="#reentrentlock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>我们选择<code>ReentrentLock</code>作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ReentrantLock LOCK <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
@@ -260,7 +822,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>判断是否成功获取锁的标志，就是CAS修改volatile修饰的state变量是否成功。</p>
 </blockquote>
-<h3 id="公平锁和非公平锁">公平锁和非公平锁</h3>
+<h3 id="公平锁和非公平锁">公平锁和非公平锁<a href="#公平锁和非公平锁" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 非公平锁实现
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">NonfairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
 	<span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -286,14 +848,14 @@ code.has-jax {
 <p>公平锁和非公平锁如何选择？</p>
 <p>非公平锁一进来就尝试去获取锁，有效的减少了线程的上下文切换，所以为了追求<code>高吞吐量</code>建议选择非公平锁，但是会导致某些线程长时间在排队，没有机会获取锁。否则建议选择公平锁。</p>
 </blockquote>
-<h3 id="acquire">acquire</h3>
+<h3 id="acquire">acquire<a href="#acquire" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 如果第一次获取锁失败，说明此时有其他线程持有锁，所以执行acquire
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>tryAcquire<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
         acquireQueued<span style="color:#f92672">(</span>addWaiter<span style="color:#f92672">(</span>Node<span style="color:#f92672">.</span><span style="color:#a6e22e">EXCLUSIVE</span><span style="color:#f92672">),</span> arg<span style="color:#f92672">))</span>
         selfInterrupt<span style="color:#f92672">();</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h4 id="tryacquire">tryAcquire</h4>
+</code></pre></div><h4 id="tryacquire">tryAcquire<a href="#tryacquire" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 调用非公平锁的tryAcquire，再一次尝试去获取锁
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">return</span> nonfairTryAcquire<span style="color:#f92672">(</span>acquires<span style="color:#f92672">);</span>
@@ -341,7 +903,7 @@ code.has-jax {
 <p>Q:  为什么有的地方使用setState()，有的地方使用CAS？</p>
 <p>A:  因为使用setState()方法的前提是已经获取了锁，使用了CAS的是因为此时还没有获取锁。</p>
 </blockquote>
-<h4 id="hasqueuedpredecessors">hasQueuedPredecessors</h4>
+<h4 id="hasqueuedpredecessors">hasQueuedPredecessors<a href="#hasqueuedpredecessors" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// true/false 有节点在等待/无节点等待
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">hasQueuedPredecessors</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 这里为什么tail获取在head之前？
@@ -397,7 +959,7 @@ code.has-jax {
 </li>
 </ol>
 </blockquote>
-<h4 id="addwaiter">addWaiter</h4>
+<h4 id="addwaiter">addWaiter<a href="#addwaiter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 获取不到锁，将当前线程构建成node对象加入队列
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Node <span style="color:#a6e22e">addWaiter</span><span style="color:#f92672">(</span>Node mode<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 创建node对象(currentThread, Node.EXCLUSIVE)
@@ -441,7 +1003,7 @@ code.has-jax {
         <span style="color:#f92672">}</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h4 id="acquirequeued">acquireQueued</h4>
+</code></pre></div><h4 id="acquirequeued">acquireQueued<a href="#acquirequeued" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 至此node已经插入队列成功，并返回
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">acquireQueued</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> Node node<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">boolean</span> failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
@@ -528,7 +1090,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>LockSupport.park()除了<code>能够被unpark()唤醒，还会响应interrupt()打断</code>，但是Lock锁不能响应中断，如果是unpark，会返回false，如果是interrupt则返回true。</p>
 </blockquote>
-<h4 id="cancelacquire">cancelAcquire</h4>
+<h4 id="cancelacquire">cancelAcquire<a href="#cancelacquire" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 节点取消获取锁
 </span><span style="color:#75715e"></span>  <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">cancelAcquire</span><span style="color:#f92672">(</span>Node node<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
       <span style="color:#75715e">// 忽略不存在的node
@@ -607,14 +1169,14 @@ code.has-jax {
 <p>②和③两行代码不是原子性的，所以就存在：线程A将nodeA成功设置为tail尾节点，如果此时线程切换，线程B执行unparkSuccessor方法唤醒尾节点，如果从前往后查询，会发现<code>tail.next = null</code>，会认为tail是尾节点，其实此时的尾节点已经被线程A改成了nodeA，doug lea在AQS的文档中也说明了<code>prev是务必要保证的可靠引用，而next只是一种优化。</code></p>
 <p>又比如cancelAcquire方法中，都是断开了next指针，prev指针没有断开，也是上诉理论的一种体现。</p>
 </blockquote>
-<h4 id="selfinterrupt">selfInterrupt</h4>
+<h4 id="selfinterrupt">selfInterrupt<a href="#selfinterrupt" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 当获取锁或插入node到队列的过程中发生了interrupt，那么这里需要补上打断
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">selfInterrupt</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h3 id="独占锁获取执行流程">独占锁获取执行流程</h3>
+</code></pre></div><h3 id="独占锁获取执行流程">独占锁获取执行流程<a href="#独占锁获取执行流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/image/20200628/9RLQ683DruWq.png?imageslim" alt=""></p>
-<h3 id="unlock">unlock</h3>
+<h3 id="unlock">unlock<a href="#unlock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">release</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 尝试释放锁
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryRelease<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
@@ -647,7 +1209,7 @@ code.has-jax {
     <span style="color:#75715e">// 释放锁成功
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> free<span style="color:#f92672">;</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h3 id="lockinterruptibly">lockInterruptibly</h3>
+</code></pre></div><h3 id="lockinterruptibly">lockInterruptibly<a href="#lockinterruptibly" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>可及时响应线程中断的获取锁的API</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 方法入口
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
@@ -672,7 +1234,7 @@ code.has-jax {
 </span><span style="color:#75715e"></span>        	<span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
     <span style="color:#f92672">...</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h3 id="trylocktime">tryLock(time)</h3>
+</code></pre></div><h3 id="trylocktime">tryLock(time)<a href="#trylocktime" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>响应中断且非阻塞，指定时间内获取不到锁就返回。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryLock</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
     <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
@@ -731,54 +1293,52 @@ code.has-jax {
 <p>相比lockInterruptibly方法，tryLock(time)除了响应中断外，还拥有超时控制，由LockSupport.parkNanos()实现。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/readwritelock/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">ReadWriteLock源码解析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">
-                  <span class="button__text">HotSpot垃圾收集器</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/readwritelock/">
+                <span class="button__icon">←</span>
+                <span class="button__text">ReadWriteLock源码解析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">
+                <span class="button__text">HotSpot垃圾收集器</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -786,9 +1346,13 @@ code.has-jax {
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

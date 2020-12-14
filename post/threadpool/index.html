@@ -1,115 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>ThreadPool线程池源码解析</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>ThreadPool线程池源码解析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="ThreadPool 为什么使用线程池 我们知道频繁的单独创建线程是很消耗系统资源的，而线程池中线程是可以线程复用的，不需要每次执行都重新创建，并且线程池可以提供控制线程个数等资源限制和管理的手段。
 实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
 线程池类继承体系  ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。
 任何需要线程池执行的任务，都必须直接或间接的实现Runnable接口。
-  ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this."/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+  ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/threadpool/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="ThreadPool线程池源码解析"/>
-<meta name="twitter:description" content="`ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="ThreadPool线程池源码解析" />
-<meta property="og:description" content="`ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="ThreadPool线程池源码解析">
+<meta property="og:description" content="`ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。" />
 <meta property="og:url" content="https://leejay.top/post/threadpool/" />
-<meta property="article:published_time" content="2020-07-17T17:01:26+08:00" />
-<meta property="article:modified_time" content="2020-07-17T17:01:26+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Concurrent" />
+
+  <meta property="article:section" content="ThreadPool" />
+
+
+  <meta property="article:published_time" content="2020-07-17 17:01:26 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -123,6 +102,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -135,76 +116,851 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/threadpool/">ThreadPool线程池源码解析</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-07-17
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#threadpool">
+                    ThreadPool
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bd%bf%e7%94%a8%e7%ba%bf%e7%a8%8b%e6%b1%a0">
+                    为什么使用线程池
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ae%9e%e7%8e%b0%e5%8e%9f%e7%90%86">
+                    实现原理
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e7%b1%bb%e7%bb%a7%e6%89%bf%e4%bd%93%e7%b3%bb">
+                    线程池类继承体系
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#threadpoolexecutor">
+                    ThreadPoolExecutor
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9e%84%e9%80%a0">
+                    构造
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#worker">
+                    Worker
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#ctl%e5%8f%98%e9%87%8f">
+                    ctl变量
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e7%9a%84%e5%85%b3%e9%97%ad">
+                    线程池的关闭
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#shutdown">
+                    shutDown
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tryterminate">
+                    tryTerminate
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#await">
+                    await
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#shutdownnow">
+                    shutDownNow
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%ad%a3%e7%a1%ae%e7%9a%84%e5%85%b3%e9%97%ad%e7%ba%bf%e7%a8%8b%e6%b1%a0">
+                    正确的关闭线程池
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e6%b7%bb%e5%8a%a0%e4%bb%bb%e5%8a%a1">
+                    线程池添加任务
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#execute">
+                    execute
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#addworker">
+                    addWorker
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e6%89%a7%e8%a1%8c%e4%bb%bb%e5%8a%a1">
+                    线程池执行任务
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#runworker">
+                    runWorker
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#gettask">
+                    getTask
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#processworkerexit">
+                    processWorkerExit
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e6%8b%92%e7%bb%9d%e7%ad%96%e7%95%a5">
+                    线程池拒绝策略
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e6%89%a7%e8%a1%8c%e7%a4%ba%e6%84%8f%e5%9b%be">
+                    线程池执行示意图
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%ba%bf%e7%a8%8b%e6%b1%a0%e9%97%ae%e9%a2%98%e6%b1%87%e6%80%bb">
+                    线程池问题汇总
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/threadpool/">ThreadPool </a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/threadpool/">ThreadPool线程池源码解析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-07-17 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="threadpool">ThreadPool</h3>
-<h4 id="为什么使用线程池">为什么使用线程池</h4>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/threadpool-/">ThreadPool </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="threadpool">ThreadPool<a href="#threadpool" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="为什么使用线程池">为什么使用线程池<a href="#为什么使用线程池" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>我们知道频繁的<code>单独创建线程</code>是很消耗系统资源的，而线程池中线程是可以<code>线程复用</code>的，不需要每次执行都重新创建，并且线程池可以提供<code>控制线程个数</code>等资源限制和管理的手段。</p>
-<h4 id="实现原理">实现原理</h4>
+<h4 id="实现原理">实现原理<a href="#实现原理" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>所谓线程池实现原理：<code>调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务</code>。典型的<code>生产者和消费者模型</code>。基于这样的原理，我们实现线程池需要使用到<code>阻塞队列</code>，避免无任务时轮询带来的资源消耗。</p>
-<h4 id="线程池类继承体系">线程池类继承体系</h4>
+<h4 id="线程池类继承体系">线程池类继承体系<a href="#线程池类继承体系" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><img src="https://image.leejay.top/image/20200714/4QO7osHQeOu6.png?imageslim" alt=""></p>
 <blockquote>
 <p><code>ThreadPoolExecutor</code>和<code>ScheduledExecutorService</code>是需要关注的两个核心类，前者是<code>线程池的具体实现</code>，后者除了能实现线程池的基本功能，还可以提供<code>周期性执行任务</code>功能。</p>
 <p>任何需要线程池执行的任务，都必须<code>直接或间接的实现Runnable接口</code>。</p>
 </blockquote>
 <hr>
-<h3 id="threadpoolexecutor">ThreadPoolExecutor</h3>
-<h4 id="构造">构造</h4>
+<h3 id="threadpoolexecutor">ThreadPoolExecutor<a href="#threadpoolexecutor" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 阻塞队列，具体实现由构造函数决定
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> workQueue<span style="color:#f92672">;</span>
 <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> corePoolSize<span style="color:#f92672">;</span>
@@ -247,7 +1003,7 @@ code.has-jax {
 <p><code>threadFactory</code>：线程工厂，用于生产线程，主要用来定义线程名字等相关参数。</p>
 <p><code>handler</code>：当<code>corePoolSize</code>、<code>maxPoolSize</code>和<code>workQueue</code>都满时的执行的拒绝策略。</p>
 </blockquote>
-<h4 id="worker">Worker</h4>
+<h4 id="worker">Worker<a href="#worker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">//Worker组成的HashSet
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> HashSet<span style="color:#f92672">&lt;</span>Worker<span style="color:#f92672">&gt;</span> workers <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HashSet<span style="color:#f92672">&lt;</span>Worker<span style="color:#f92672">&gt;();</span>
 <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Worker</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer 
@@ -282,7 +1038,7 @@ code.has-jax {
 <li>Worker初始化<code>设置state为-1</code>，直到真正启动时才会清除，是为了<code>防止该worker还没执行就被打断</code>。</li>
 </ol>
 </blockquote>
-<h4 id="ctl变量">ctl变量</h4>
+<h4 id="ctl变量">ctl变量<a href="#ctl变量" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 状态变量由 线程池运行状态(高3位)和线程池内有效线程数量(低29位)组成
 </span><span style="color:#75715e">// 初始值：1110 0000 0000 0000 0000 0000 0000 0000
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> AtomicInteger ctl <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">(</span>ctlOf<span style="color:#f92672">(</span>RUNNING<span style="color:#f92672">,</span> 0<span style="color:#f92672">));</span>
@@ -346,9 +1102,9 @@ code.has-jax {
 <p><img src="https://image.leejay.top/image/20200714/C5qLgqKHxr5W.png?imageslim" alt="线程迁移状态"></p>
 </blockquote>
 <hr>
-<h3 id="线程池的关闭">线程池的关闭</h3>
+<h3 id="线程池的关闭">线程池的关闭<a href="#线程池的关闭" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>我们先从<code>shutDown</code>和<code>shutDownNow</code>两个方法入手，先了解线程池如何关闭的。</p>
-<h4 id="shutdown">shutDown</h4>
+<h4 id="shutdown">shutDown<a href="#shutdown" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">shutdown</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> ReentrantLock mainLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">mainLock</span><span style="color:#f92672">;</span>
     <span style="color:#75715e">// 获取独占锁
@@ -429,7 +1185,7 @@ code.has-jax {
 <li>释放独占锁，并执行<code>tryTerminate</code>方法，处理线程池状态转换、执行<code>terminate</code>和唤醒等操作。</li>
 </ol>
 </blockquote>
-<h4 id="tryterminate">tryTerminate</h4>
+<h4 id="tryterminate">tryTerminate<a href="#tryterminate" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">tryTerminate</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 自旋执行
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
@@ -482,7 +1238,7 @@ code.has-jax {
 <li>我们需在<code>任何可能终止的操作之后</code>，调用<code>tryTerminate</code>方法。比如<code>减少worker线程数量</code>或<code>在shutdown期间从队列中删除任务</code>。</li>
 </ol>
 </blockquote>
-<h4 id="await">await</h4>
+<h4 id="await">await<a href="#await" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 阻塞直到三个条件满足其一：1. 所有任务在shutdown后完成 2. 超时 3.当前线程被中断
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">awaitTermination</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
     								<span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
@@ -515,7 +1271,7 @@ code.has-jax {
 </ol>
 <p>在<code>tryTerminate</code>方法中确实存在<code>唤醒因执行awaitTermination方法等待的线程</code>的代码。</p>
 </blockquote>
-<h4 id="shutdownnow">shutDownNow</h4>
+<h4 id="shutdownnow">shutDownNow<a href="#shutdownnow" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 该方法会尝试中断所有正在执行的任务，返回正在等待执行的任务列表
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">shutdownNow</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     List<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> tasks<span style="color:#f92672">;</span>
@@ -595,7 +1351,7 @@ code.has-jax {
 <li>释放独占锁，并执行<code>tryTerminate</code>方法，处理线程池状态转换、执行<code>terminate</code>和唤醒等操作。</li>
 </ol>
 </blockquote>
-<h4 id="正确的关闭线程池">正确的关闭线程池</h4>
+<h4 id="正确的关闭线程池">正确的关闭线程池<a href="#正确的关闭线程池" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadPoolExecutorTest</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ExecutorService POOL <span style="color:#f92672">=</span> ThreadPoolSingleton<span style="color:#f92672">.</span><span style="color:#a6e22e">getInstance</span><span style="color:#f92672">();</span>
@@ -650,7 +1406,7 @@ code.has-jax {
         <span style="color:#66d9ef">return</span> getInstance<span style="color:#f92672">();</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><h4 id="总结">总结</h4>
+</code></pre></div><h4 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>
 <p><code>shutDown</code>和<code>shutDownNow</code>都会去<code>修改ctl状态</code>，并<code>中断线程</code>，最后调用<code>tryTerminate</code>方法。</p>
@@ -688,8 +1444,8 @@ code.has-jax {
 </li>
 </ul>
 <hr>
-<h3 id="线程池添加任务">线程池添加任务</h3>
-<h4 id="execute">execute</h4>
+<h3 id="线程池添加任务">线程池添加任务<a href="#线程池添加任务" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="execute">execute<a href="#execute" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 提交任务给线程池，没有获取独占锁的操作
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">(</span>Runnable command<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// command不能为空
@@ -749,7 +1505,7 @@ code.has-jax {
 <li>执行至此，说明：要么<code>线程池不处于RUNNING态</code>，调用<code>addWorker</code>添加线程也会返回false，执行<code>reject</code>拒绝策略。要么<code>corePoolSize和阻塞队列已满</code>，那么调用<code>addWorker</code>当线程数达到<code>maxPoolSize</code>时也会返回false，执行<code>reject</code>拒绝策略。</li>
 </ol>
 </blockquote>
-<h4 id="addworker">addWorker</h4>
+<h4 id="addworker">addWorker<a href="#addworker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 核心方法
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">addWorker</span><span style="color:#f92672">(</span>Runnable firstTask<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> core<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     retry<span style="color:#f92672">:</span>
@@ -900,8 +1656,8 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="线程池执行任务">线程池执行任务</h3>
-<h4 id="runworker">runWorker</h4>
+<h3 id="线程池执行任务">线程池执行任务<a href="#线程池执行任务" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="runworker">runWorker<a href="#runworker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 因为worker对象本身就是实现了Runnable接口，所以线程启动时调用run方法
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">run</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     runWorker<span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
@@ -983,7 +1739,7 @@ code.has-jax {
 <li>如果<code>getTask返回null</code>或<code>执行任务发生异常</code>，最终调用<code>processWorkerExit</code>方法。</li>
 </ol>
 </blockquote>
-<h4 id="gettask">getTask</h4>
+<h4 id="gettask">getTask<a href="#gettask" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 从阻塞队列中获取任务
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Runnable <span style="color:#a6e22e">getTask</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 用于判断上次poll是否超时
@@ -1039,7 +1795,7 @@ code.has-jax {
 <li>如果<code>获取的任务!=null</code>则返回，否则设置<code>timeOut=true</code>。发生异常则设置<code>timeOut=false</code>。</li>
 </ol>
 </blockquote>
-<h4 id="processworkerexit">processWorkerExit</h4>
+<h4 id="processworkerexit">processWorkerExit<a href="#processworkerexit" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// completedAbruptly =true表明runWorker是异常退出的
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processWorkerExit</span><span style="color:#f92672">(</span>Worker w<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> completedAbruptly<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 如果异常退出，那么将workerCount减1
@@ -1098,7 +1854,7 @@ code.has-jax {
 </ol>
 </blockquote>
 <hr>
-<h3 id="线程池拒绝策略">线程池拒绝策略</h3>
+<h3 id="线程池拒绝策略">线程池拒绝策略<a href="#线程池拒绝策略" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <table>
 <thead>
 <tr>
@@ -1126,10 +1882,10 @@ code.has-jax {
 </tbody>
 </table>
 <hr>
-<h3 id="线程池执行示意图">线程池执行示意图</h3>
+<h3 id="线程池执行示意图">线程池执行示意图<a href="#线程池执行示意图" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/image/20200716/sMWBHgaW5lsx.png?imageslim" alt=""></p>
 <hr>
-<h3 id="线程池问题汇总">线程池问题汇总</h3>
+<h3 id="线程池问题汇总">线程池问题汇总<a href="#线程池问题汇总" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <ul>
 <li>为什么Worker类选择继承了AQS而不是直接使用ThreadPoolExecutor的ReentrentLock？</li>
 </ul>
@@ -1187,54 +1943,52 @@ W<span style="color:#f92672">/</span>C<span style="color:#960050;background-colo
 <p>推荐：<code> I/O密集型： NThread = 2NCpu。 计算密集型 NThread = NCpus + 1</code>。</p>
 </blockquote>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">Jvm类加载机制</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">
-                  <span class="button__text">HotSpot垃圾回收算法</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Jvm类加载机制</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">
+                <span class="button__text">HotSpot垃圾回收算法</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -1242,9 +1996,13 @@ W<span style="color:#f92672">/</span>C<span style="color:#960050;background-colo
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>

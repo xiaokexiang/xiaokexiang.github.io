@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    
-      <title>HotSpot垃圾收集器</title>
-    
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<head>
+  
+    <title>HotSpot垃圾收集器 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="JVM中经典的垃圾回收器 下图是来自oracle官方博客中介绍垃圾回收器之间的关系图。
  黄色代表新生代，灰色代表老年代，两个垃圾回收器之间相连表示这两个垃圾回收器组合使用。
 Serial &amp;amp; CMS 与 ParNew &amp;amp; Serial Old两组 在JDK8中已过期，JDK9中已移除。
@@ -21,106 +21,83 @@ Serial收集器 使用单线程工作的收集器，除了只会用一个处理�
  除了Serial收集器外，只有ParNew收集器能与CMS收集器配合工作。
 # 新生代ParNew &amp;amp; 老年代CMS 是开启CMS下新生代默认收集器 -XX:&#43;UseConcMarkSweepGC # 新生代ParNew &amp;amp; 老年代SerialOld（JDK8后已过期） -XX:&#43;UseParNewGC 因为线程交互的开销，在单核处理器下性能低于Serial，但是多核心下ParNew收集器还是很高效的。
 # 垃圾收集的线程数为8 -XX:ParallelGCThreads=8  不设置此参数时，当Cpu Cores &amp;lt; 8时，Threads=Cpu Cores，否则 Threads=3&#43;(5*cores)/8）。
- Parallel Scavenge收集器 相比ParNew收集器目标是减少用户线程的停顿时间，Paraller收集器关注则是可控制的吞吐量。 $$ 吞吐量 = 运行用户代码时间 / (运行用户代码时间 &#43; 运行垃圾收集时间） $$"/>
-<meta name="keywords" content=""/>
-<meta name="robots" content="noodp"/>
-<meta name="google-site-verification" content="e1ELBPEvOV5kwQNtzaLcNt-3iZy83eiNhSZkHhQPecs" />
-<meta name="baidu-site-verification" content="aNoX6MUEHW" />
-
-
+ Parallel Scavenge收集器 相比ParNew收集器目标是减少用户线程的停顿时间，Paraller收集器关注则是可控制的吞吐量。 $$ 吞吐量 = 运行用户代码时间 / (运行用户代码时间 &#43; 运行垃圾收集时间） $$" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" />
 
-<script type="text/javascript"
-        async
-        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-        >
-MathJax.Hub.Config({
-  tex2jax: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\[\[','\]\]']],
-    processEscapes: true,
-    processEnvironments: true,
-    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-    TeX: { equationNumbers: { autoNumber: "AMS" },
-         extensions: ["AMSmath.js", "AMSsymbols.js"] },
-    'HTML-CSS': {
-        showMathMenu: false 
-    }
-  }
-});
-
-MathJax.Hub.Queue(function() {
-    
-    
-    
-    var all = MathJax.Hub.getAllJax(), i;
-    for(i = 0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';
-    }
-});
-</script>
-
-<style>
-code.has-jax {
-    font: inherit;
-    font-size: 100%;
-    background: inherit;
-    border: inherit;
-    color: #515151;
-}
-</style>
 
 
-
-
-<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
 <link rel="stylesheet" href="https://leejay.top/assets/style.css">
 
 
 
 
-<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://leejay.top/img/apple-touch-icon-144-precomposed.png">
-<link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
 
 
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="HotSpot垃圾收集器"/>
-<meta name="twitter:description" content="JVM中`常见的垃圾收集器`，以及对象在堆中的`分配流程`。"/>
+<meta name="twitter:card" content="summary" />
 
 
 
-<meta property="og:title" content="HotSpot垃圾收集器" />
-<meta property="og:description" content="JVM中`常见的垃圾收集器`，以及对象在堆中的`分配流程`。" />
+<meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
+<meta property="og:title" content="HotSpot垃圾收集器">
+<meta property="og:description" content="JVM中`常见的垃圾收集器`，以及对象在堆中的`分配流程`。" />
 <meta property="og:url" content="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" />
-<meta property="article:published_time" content="2020-08-20T16:34:32+08:00" />
-<meta property="article:modified_time" content="2020-08-20T16:34:32+08:00" /><meta property="og:site_name" content="Aurora" />
+<meta property="og:site_name" content="Keep Improving" />
 
-
-
-
-
-
-  </head>
-  <body class="">
-    <div class="container">
-      <header class="header">
-  <span class="header__inner">
-    <a href="https://leejay.top" class="logo" style="text-decoration: none;">
   
-    <span class="logo__mark"><svg xmlns="https://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
-  <path fill="none" d="M15 8l14.729 14.382L15 35.367"/>
-</svg></span>
-    <span class="logo__text">Aurora</span>
-    <span class="logo__cursor"></span>
-    <span class="logo__cursor2"></span>
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
   
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="JVM" />
+
+
+  <meta property="article:published_time" content="2020-08-20 16:34:32 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
 </a>
-    <span class="header__right">
-      
-        <nav class="menu">
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
   <ul class="menu__inner menu__inner--desktop">
     
       
@@ -134,6 +111,8 @@ code.has-jax {
       
       
     
+
+    
   </ul>
 
   <ul class="menu__inner menu__inner--mobile">
@@ -146,65 +125,664 @@ code.has-jax {
         <li><a href="/tags">Tags</a></li>
       
     
+    
   </ul>
 </nav>
 
-        <span class="menu-trigger">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M0 0h24v24H0z" fill="none"/>
-            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-          </svg>
-        </span>
-      
-      <span class="theme-toggle">
-        <svg class="theme-toggler" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="https://www.w3.org/2000/svg">
-  <path d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
-  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
-  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"/>
-</svg>
-      </span>
-    </span>
-  </span>
+  
 </header>
 
 
-      <div class="content">
-        
   
   
-
-  <div class="post">
-    <h1 class="post-title"><a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">HotSpot垃圾收集器</a></h1>
-    <div class="post-meta">
       
-        <span class="post-date">
-          2020-08-20
-        </span>
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
 
         
-          
         
-      
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#jvm%e4%b8%ad%e7%bb%8f%e5%85%b8%e7%9a%84%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e5%99%a8">
+                    JVM中经典的垃圾回收器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%96%b0%e7%94%9f%e4%bb%a3%e6%94%b6%e9%9b%86%e5%99%a8">
+                    新生代收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#serial%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Serial收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parnew%e6%94%b6%e9%9b%86%e5%99%a8">
+                    ParNew收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parallel-scavenge%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Parallel Scavenge收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%80%81%e5%b9%b4%e4%bb%a3%e6%94%b6%e9%9b%86%e5%99%a8">
+                    老年代收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#serial-old%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Serial Old收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parallel-old%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Parallel Old收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cms%e6%94%b6%e9%9b%86%e5%99%a8">
+                    CMS收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#g1%e6%94%b6%e9%9b%86%e5%99%a8">
+                    G1收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a6%82%e5%bf%b5">
+                    概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%94%b6%e9%9b%86%e6%b5%81%e7%a8%8b-1">
+                    收集流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#g1vscms">
+                    G1vsCMS
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e5%9c%a8%e5%a0%86%e4%b8%ad%e7%9a%84%e5%88%86%e9%85%8d">
+                    对象在堆中的分配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tlab">
+                    TLAB
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%80%e8%88%ac%e5%9c%a8eden%e4%b8%ad%e5%88%86%e9%85%8d">
+                    一般在eden中分配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%a7%e5%af%b9%e8%b1%a1%e8%bf%9b%e5%85%a5%e8%80%81%e5%b9%b4%e4%bb%a3">
+                    大对象进入老年代
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%95%bf%e6%9c%9f%e5%ad%98%e6%b4%bb%e5%af%b9%e8%b1%a1%e8%bf%9b%e5%85%a5%e8%80%81%e5%b9%b4%e4%bb%a3">
+                    长期存活对象进入老年代
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
-      
-      
     </div>
 
+</div>
+
+
+
+  
+  
+  <div class="content">
     
-      <span class="post-tags">
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/jvm/">JVM </a>&nbsp;
-        
-        <i class="fa fa-hashtag"></i><a href="https://leejay.top/tags/collectors/">Collectors</a>&nbsp;
-        
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">HotSpot垃圾收集器</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-08-20 
       </span>
     
-
     
+  </div>
 
-    <div class="post-content">
-      
-      <h3 id="jvm中经典的垃圾回收器">JVM中经典的垃圾回收器</h3>
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/collectors/">Collectors</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="jvm中经典的垃圾回收器">JVM中经典的垃圾回收器<a href="#jvm中经典的垃圾回收器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>下图是来自<a href="https://blogs.oracle.com/jonthecollector/our-collectors">oracle官方博客</a>中介绍垃圾回收器之间的关系图。</p>
 <p><img src="https://image.leejay.top/image/20200817/GDG377Ck8xwv.jpg?imageslim" alt=""></p>
 <blockquote>
@@ -215,16 +793,16 @@ code.has-jax {
 <p>并发：描述垃圾回收器线程与用户线程间的关系，说明同一时间<code>垃圾回收器线程与用户线程都在运行</code>。</p>
 </blockquote>
 <hr>
-<h3 id="新生代收集器">新生代收集器</h3>
+<h3 id="新生代收集器">新生代收集器<a href="#新生代收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>以下三种收集器都采用的是<code>标记-复制算法</code>来实现收集器的回收逻辑。</p>
-<h4 id="serial收集器">Serial收集器</h4>
+<h4 id="serial收集器">Serial收集器<a href="#serial收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>使用<code>单线程</code>工作的收集器，除了只会用<code>一个处理器或一个收集线程</code>去完成垃圾收集工作，更重要的是它在进行垃圾收集时，必须<code>暂停其他所有的工作线程(STW)</code>，直到收集结束。是<code>客户端模式</code>下默认新生代收集器。</p>
 <blockquote>
 <p>客户端/服务端区别：client比server模式<code>启动速度更快</code>，当server比client模式<code>运行速度更快</code>。</p>
 </blockquote>
 <p>相比其他垃圾收集器，<code>Serial收集器</code>时所有垃圾回收器里面<code>额外内存消耗最小的</code>，但<code>STW耗时是最长的</code>；对于<code>单核处理器或处理器核心较少</code>环境来说，由于没有线程交互的开销，<code>Serial收集器</code>可以获得<code>最高的单线程收集效率</code>。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-XX:+UseSerialGC 新生代 &amp; 老年代都使用串行收集器
-</code></pre></div><h4 id="parnew收集器">ParNew收集器</h4>
+</code></pre></div><h4 id="parnew收集器">ParNew收集器<a href="#parnew收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>ParNew收集器</code>本质上是<code>Serial收集器</code>的<code>多线程并行</code>版本。除了<code>同时使用多条线程</code>进行垃圾收集外，其余的和<code>Serial收集器</code>一致。</p>
 <blockquote>
 <p>这里的并行指的是：<code>同一个时间有多个</code>这样的收集线程在协调工作，用户线程此时处于等待状态。</p>
@@ -240,7 +818,7 @@ code.has-jax {
 </code></pre></div><blockquote>
 <p>不设置此参数时，当<code>Cpu Cores &lt; 8</code>时，<code>Threads=Cpu Cores</code>，否则 <code>Threads=3+(5*cores)/8）</code>。</p>
 </blockquote>
-<h4 id="parallel-scavenge收集器">Parallel Scavenge收集器</h4>
+<h4 id="parallel-scavenge收集器">Parallel Scavenge收集器<a href="#parallel-scavenge收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>相比<code>ParNew收集器</code>目标是<code>减少用户线程的停顿时间</code>，<code>Paraller收集器</code>关注则是<code>可控制的吞吐量</code>。
 $$
 吞吐量 = 运行用户代码时间 / (运行用户代码时间 + 运行垃圾收集时间）
@@ -258,18 +836,18 @@ $$</p>
 <span style="color:#75715e"># 自适应GC策略，自动调整新生代大小，老年代晋年龄等 区别于ParNew是Paraller独有</span>
 -XX:+UseAdaptiveSizePolicy
 </code></pre></div><hr>
-<h3 id="老年代收集器">老年代收集器</h3>
-<h4 id="serial-old收集器">Serial Old收集器</h4>
+<h3 id="老年代收集器">老年代收集器<a href="#老年代收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="serial-old收集器">Serial Old收集器<a href="#serial-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>是<code>Serial</code>收集器的老年代版本，基于<code>标记-整理</code>的<code>单线程</code>收集器，用于<code>客户端</code>模式下的HotSpot虚拟机使用。</p>
 <p>在<code>服务端</code>模式下，有两个用途：JDK5及之前版本中与<code>Parallel Scavenge</code>配合使用；作为<code>CMS</code>收集器发生失败时的备用收集器。</p>
-<h4 id="parallel-old收集器">Parallel Old收集器</h4>
+<h4 id="parallel-old收集器">Parallel Old收集器<a href="#parallel-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>JDK6推出，是<code>Parallel Scavenge</code>收集器的老年代版本，支持<code>多线程并发</code>收集，基于<code>标记-整理</code>算法实现。</p>
 <p><code>Parallel Old</code>配合<code>Parallel Scavenge</code>的组合，用于<code>注重吞吐量和处理器资源较为稀缺的</code>情况。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Parallel Scavenge + Parallel Old,JDK8默认组合</span>
 -XX:+UseParallelGC
-</code></pre></div><h4 id="cms收集器">CMS收集器</h4>
+</code></pre></div><h4 id="cms收集器">CMS收集器<a href="#cms收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>CMS(<code>Concurrent Mark Sweep</code>)收集器是一种以获取<code>最短回收停顿时间</code>为目标的收集器。基于<code>标记-清除</code>算法。</p>
-<h5 id="收集流程">收集流程</h5>
+<h5 id="收集流程">收集流程<a href="#收集流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <ul>
 <li>初始标记</li>
 </ul>
@@ -286,7 +864,7 @@ $$</p>
 <li>并发清除(并发)</li>
 </ul>
 <p>清理删除掉标记阶段的已死亡对象，此阶段不需要移动存活对象。</p>
-<h5 id="cms收集器缺点">CMS收集器缺点</h5>
+<h5 id="cms收集器缺点">CMS收集器缺点<a href="#cms收集器缺点" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <ul>
 <li>对处理器资源敏感</li>
 </ul>
@@ -315,8 +893,8 @@ $$</p>
 <p>Minor GC：对新生代进行回收。</p>
 <p>Major GC：对老年代进行回收。</p>
 </blockquote>
-<h4 id="g1收集器">G1收集器</h4>
-<h4 id="概念">概念</h4>
+<h4 id="g1收集器">G1收集器<a href="#g1收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h4 id="概念">概念<a href="#概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>G1(Garbage First)收集器</code>开创了面向<code>局部收集的设计思路</code>和<code>基于Region的内存布局形式</code>。目的是为了实现支持<code>停顿时间模型</code>的收集器。基于<code>标记-整理</code>算法。</p>
 <blockquote>
 <p>停顿时间模型：支持指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不超过N毫秒。</p>
@@ -328,7 +906,7 @@ $$</p>
 <span style="color:#75715e"># 设置Region的大小=2097152B=2MB，不设置默认是1MB</span>
 -XX:G1HeapRegionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">2097152</span>
 </code></pre></div><p>G1仍然保留新生代、老年代的概念，当它们不再是固定的区域了，改为<code>一系列区域(不需要连续)的动态集合</code>。G1在后台维护一个<code>优先级列表</code>，每次根据用户通过<code>-XX:MaxGCPauseMillis</code>指定的停顿时长<code>(默认200ms)</code>，优先回收价值收益最大的<code>Region</code>，以达到最大的收集效率。</p>
-<h4 id="收集流程-1">收集流程</h4>
+<h4 id="收集流程-1">收集流程<a href="#收集流程-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>初始标记</li>
 </ul>
@@ -345,7 +923,7 @@ $$</p>
 <li>筛选回收(并行)</li>
 </ul>
 <p>负责更新<code>Region</code>的统计数据，并按照回收价值和成本进行排序，根据用户期望的<code>停顿时间</code>来指定回收计划。可见多个<code>Region</code>合并成<code>回收集(Collection Set)</code>，将回收的<code>Region</code>中的对象移到空的<code>Region</code>，再清理旧的<code>Region</code>，设计到对象的移动(体现<code>标记-整理</code>算法)，此阶段<code>用户线程暂停</code>，<code>多条收集器线程并行</code>完成。</p>
-<h4 id="g1vscms">G1vsCMS</h4>
+<h4 id="g1vscms">G1vsCMS<a href="#g1vscms" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>优势
 <ul>
@@ -361,9 +939,9 @@ $$</p>
 </li>
 </ul>
 <hr>
-<h3 id="对象在堆中的分配">对象在堆中的分配</h3>
+<h3 id="对象在堆中的分配">对象在堆中的分配<a href="#对象在堆中的分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>前面我们了解到，<code>大部分</code>的对象都是在<code>堆中</code>进行内存分配，但堆中又存在多个逻辑区域(新生代、老年代)，所以这章我们就要讨论下，对象在堆中的进行内存分配的基本原则。</p>
-<h4 id="tlab">TLAB</h4>
+<h4 id="tlab">TLAB<a href="#tlab" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>在讨论对象分配前，我们需要对之前引入的<code>TLAB</code>的概念进一步解析。<code>TLAB(本地线程缓冲)</code>，其存在的目的是为了加速对象的分配，即每个线程都拥有自己的专属区域进行对象分配，来避免多线程冲突，默认是启动的。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 开/关TLAB</span>
 -XX:+/-UseTLAB
@@ -384,16 +962,16 @@ $$</p>
 </ol>
 <p><code>-XX:TLABRefillWasteFraction=64</code>，即允许TLAB空间浪费的比例，当<code>对象/TLAB的比例</code>大于64，对象在堆中分配，小于64则会开辟新TLAB存放。</p>
 </blockquote>
-<h4 id="一般在eden中分配">一般在eden中分配</h4>
+<h4 id="一般在eden中分配">一般在eden中分配<a href="#一般在eden中分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>大部分情况下，<code>对象在Eden区中进行分配</code>，如果<code>Eden区</code>空间不够，JVM会发起一次<code>Minor GC</code>。</p>
-<h4 id="大对象进入老年代">大对象进入老年代</h4>
+<h4 id="大对象进入老年代">大对象进入老年代<a href="#大对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>大对象：需要大量连续内存空间的Java对象</code>或新生代已无足够空间分配的对象直接进入老年代。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 将大于此大小的对象直接分配到老年代</span>
 -XX:PretenureSizeThreshold<span style="color:#f92672">=</span>5242880<span style="color:#f92672">(</span>5mb<span style="color:#f92672">)</span>
 </code></pre></div><blockquote>
 <p>只适用于<code>Serial、Serial Old、ParNew</code>三种收集器。</p>
 </blockquote>
-<h4 id="长期存活对象进入老年代">长期存活对象进入老年代</h4>
+<h4 id="长期存活对象进入老年代">长期存活对象进入老年代<a href="#长期存活对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>长期存活的对象将进入老年代。对象通常在eden区诞生，如果经历了一次<code>Minor Gc</code>后仍然存活，并能够被<code>s0</code>容纳，该对象会被移动到<code>s0</code>区并将其<code>对象头中的对象年龄 + 1</code>。当年龄达到阈值，就会进入老年代。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 对象晋升到老年代的年龄阈值</span>
 -XX:MaxTenuringThreshold<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>
@@ -402,57 +980,55 @@ $$</p>
 <p>JVM不是永远要求对象年龄达到<code>-XX:MaxTenuringThreshold</code>指定的值才能晋升老年代：</p>
 <p>如果<code>s0中相同年龄的对象大小总</code>和大于s0区域的一半<code>(-XX:TargetSurvivorRatio决定，默认50)</code>，那么<code>大于等于该年龄的对象</code>就会进入老年代。</p>
 </blockquote>
-<h4 id="总结">总结</h4>
+<h4 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>对象的内存分配流程需要经历<code>栈上分配 -&gt; TLAB分配 -&gt; 是否进入老年代 -&gt; 最终eden分配</code>。</p>
 
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
     </div>
-    
-      
-        <div class="pagination">
-          <div class="pagination__title">
-            <span class="pagination__title-h">其他文章</span>
-            <hr />
-          </div>
-          <div class="pagination__buttons">
-            
-              <span class="button previous">
-                <a href="https://leejay.top/post/reentrantlock/">
-                  <span class="button__icon">←</span>
-                  <span class="button__text">ReentrantLock源码解析</span>
-                </a>
-              </span>
-            
-            
-              <span class="button next">
-                <a href="https://leejay.top/post/semaphore/">
-                  <span class="button__text">Semaphore共享锁源码解析</span>
-                  <span class="button__icon">→</span>
-                </a>
-              </span>
-            
-          </div>
-        </div>
-      
-    
-
-
-    
-      
+    <div class="pagination__buttons">
         
-
-      
-    
-
+        <span class="button previous">
+            <a href="https://leejay.top/post/reentrantlock/">
+                <span class="button__icon">←</span>
+                <span class="button__text">ReentrantLock源码解析</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/semaphore/">
+                <span class="button__text">Semaphore共享锁源码解析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
     </div>
+</div>
 
-      </div>
+  
 
-      
-        <footer class="footer">
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
   <div class="footer__inner">
     
-      <div class="copyright copyright--user">苏ICP备18050258号</div>
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
     
+        
+      </div>
   </div>
 </footer>
 
@@ -460,9 +1036,13 @@ $$</p>
 <script src="https://leejay.top/assets/prism.js"></script>
 
 
-      
-    </div>
 
-    
-  </body>
+
+
+
+
+  
+</div>
+
+</body>
 </html>
