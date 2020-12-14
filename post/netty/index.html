@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Netty框架入门 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Netty  OIO：最开始表示为旧的输入/输出（Old I/O），后又可以理解为阻塞输入/输出（Block I/O）。
+NIO：最开始表示为新的输入/输出（New I/O），后又可以理解为非阻塞输入/输出（Non-Block I/O）。
+ 核心组件 组件概览 Channel 基于Socket的进一步封装，降低了Socket的复杂度。包含众多的实现：NioSocketChannel、NioServerSocketChannel等。
+EventLoop Netty的核心抽象，用于处理连接的生命周期中所发生的事件。
+  一个EventLoopGroup包含一个或多个EventLoop。 一个EventLoop在其生命周期中只和一个Thread绑定。该EventLoop处理的I/O都在该Thread上被处理。 一个Channel在其生命周期中只会被注册到一个EventLoop中。 一个EventLoop可以被分配个一个或多个Channel。 EventLoop执行任务时，会先判断当前执行任务的线程是否是当前EventLoop的绑定线程，不是则入队等待下一次处理。   bootstrap.handle(new ChannelInitializer&amp;lt;SocketChannel&amp;gt;() { @Override protected void initChannel(SocketChannel ch) throws Exception { // 通过channel绑定的eventLoop来实现调度任务  ch.eventLoop().scheduleAtFixedRate( () -&amp;gt; log.info(&amp;#34;do something ...&amp;#34;), 1L, 1L, TimeUnit.SECONDS); });  使用Channel绑定的EventLoop实现定时任务调度。
+ ChannelFuture 因为Netty的操作都是异步的，基于Future的ChannelFuture的接口，添加ChannelFutureListener来实现某个操作完成时被通知。
+ 同属于一个channel的操作都会被保证以它们被调用的顺序来执行。
+ ChannelHandler 用于处理所有进出站的数据的事件处理器。实现类包括ChannelInboundHandler、ChannelOutboundHandler。
+public interface ChannelHandler {} public interface ChannelInboundHandler extends ChannelHandler {} public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implements ChannelInboundHandler {} public abstract class SimpleChannelInboundHandler&amp;lt;I&amp;gt; extends ChannelInboundHandlerAdapter {} ChannelPipeline 用于存储ChannelHandler链的容器。在应用程序初始化时（BootStrap引导）通过ChannelInitializer将自定义的ChannelHandler注册到ChannelPipeline中。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/netty/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Netty框架入门">
+<meta property="og:description" content="网络编程框架: Netty结构、组件知识点入门。" />
+<meta property="og:url" content="https://leejay.top/post/netty/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Netty" />
+
+
+  <meta property="article:published_time" content="2020-12-14 17:58:49 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/categories">Categories</a></li>
+        
+      
+        
+          <li><a href="/tags">Tags</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/categories">Categories</a></li>
+      
+    
+      
+        <li><a href="/tags">Tags</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  
+  
+      
+
+
+
+
+
+
+
+
+
+<div class="toc">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#netty">
+                    Netty
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a0%b8%e5%bf%83%e7%bb%84%e4%bb%b6">
+                    核心组件
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%bb%84%e4%bb%b6%e6%a6%82%e8%a7%88">
+                    组件概览
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channel">
+                    Channel
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#eventloop">
+                    EventLoop
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelfuture">
+                    ChannelFuture
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelhandler">
+                    ChannelHandler
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelpipeline">
+                    ChannelPipeline
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelhandlercontext">
+                    ChannelHandlerContext
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bootstrap">
+                    Bootstrap
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channel-1">
+                    Channel
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channels-api">
+                    Channel’s API
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channel%e7%9a%84%e5%86%85%e7%bd%ae%e4%bc%a0%e8%be%93">
+                    Channel的内置传输
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebuf">
+                    ByteBuf
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebuf%e7%b1%bb">
+                    ByteBuf类
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebuf%e5%ad%97%e8%8a%82%e6%93%8d%e4%bd%9c">
+                    ByteBuf字节操作
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebufholder%e6%8e%a5%e5%8f%a3">
+                    ByteBufHolder接口
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebuf%e5%88%86%e9%85%8d">
+                    ByteBuf分配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#bytebuf%e6%80%bb%e7%bb%93">
+                    ByteBuf总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelhandler--channelpipeline">
+                    ChannelHandler &amp; ChannelPipeline
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelhandler%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f">
+                    ChannelHandler生命周期
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelpipeline-1">
+                    ChannelPipeline
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#channelhandlercontext-1">
+                    ChannelHandlerContext
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%bc%96%e8%a7%a3%e7%a0%81%e5%99%a8">
+                    编解码器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8a%bd%e8%b1%a1%e8%a7%a3%e7%a0%81%e5%99%a8">
+                    抽象解码器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8a%bd%e8%b1%a1%e7%bc%96%e7%a0%81%e5%99%a8">
+                    抽象编码器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%ab%98%e7%ba%a7%e6%8a%bd%e8%b1%a1%e7%bc%96%e8%a7%a3%e7%a0%81%e5%99%a8">
+                    高级抽象编解码器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%86%85%e7%bd%ae%e7%9a%84%e7%bc%96%e8%a7%a3%e7%a0%81%e5%99%a8">
+                    内置的编解码器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/netty/">Netty框架入门</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-12-14 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/netty-/">Netty </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/network/">NetWork</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="netty">Netty<a href="#netty" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<blockquote>
+<p>OIO：最开始表示为旧的输入/输出（Old I/O），后又可以理解为阻塞输入/输出（Block I/O）。</p>
+<p>NIO：最开始表示为新的输入/输出（New I/O），后又可以理解为非阻塞输入/输出（Non-Block I/O）。</p>
+</blockquote>
+<h3 id="核心组件">核心组件<a href="#核心组件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="组件概览">组件概览<a href="#组件概览" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/FoaBOgwzVOuNzRywEDPxFkExNsLp" alt=""></p>
+<h4 id="channel">Channel<a href="#channel" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>基于Socket的进一步封装，降低了Socket的复杂度。包含众多的实现：<code>NioSocketChannel</code>、<code>NioServerSocketChannel</code>等。</p>
+<h4 id="eventloop">EventLoop<a href="#eventloop" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>Netty的核心抽象，用于处理连接的生命周期中所发生的事件。</p>
+<p><img src="https://image.leejay.top/Fr14vBy5nx_nPDGN2DBd0CRVN_ay" alt=""></p>
+<blockquote>
+<ol>
+<li>一个EventLoopGroup包含一个或多个EventLoop。</li>
+<li>一个EventLoop在其生命周期中只和一个Thread绑定。该EventLoop处理的I/O都在该Thread上被处理。</li>
+<li>一个Channel在其生命周期中只会被注册到一个EventLoop中。</li>
+<li>一个EventLoop可以被分配个一个或多个Channel。</li>
+<li>EventLoop执行任务时，会先判断当前<code>执行任务的线程是否是当前EventLoop的绑定线程</code>，不是则入队等待下一次处理。</li>
+</ol>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">bootstrap<span style="color:#f92672">.</span><span style="color:#a6e22e">handle</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ChannelInitializer<span style="color:#f92672">&lt;</span>SocketChannel<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>SocketChannel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 通过channel绑定的eventLoop来实现调度任务
+</span><span style="color:#75715e"></span>        ch<span style="color:#f92672">.</span><span style="color:#a6e22e">eventLoop</span><span style="color:#f92672">().</span><span style="color:#a6e22e">scheduleAtFixedRate</span><span style="color:#f92672">(</span>
+            <span style="color:#f92672">()</span> <span style="color:#f92672">-&gt;</span> log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;do something ...&#34;</span><span style="color:#f92672">),</span>
+            1L<span style="color:#f92672">,</span>
+            1L<span style="color:#f92672">,</span>
+            TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">});</span>
+</code></pre></div><blockquote>
+<p>使用Channel绑定的EventLoop实现定时任务调度。</p>
+</blockquote>
+<h4 id="channelfuture">ChannelFuture<a href="#channelfuture" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>因为Netty的操作都是异步的，基于<code>Future</code>的<code>ChannelFuture</code>的接口，添加<code>ChannelFutureListener</code>来实现某个操作完成时被通知。</p>
+<blockquote>
+<p>同属于一个channel的操作都会被保证以它们<code>被调用的顺序</code>来执行。</p>
+</blockquote>
+<h4 id="channelhandler">ChannelHandler<a href="#channelhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>用于处理<code>所有进出站的数据</code>的事件处理器。实现类包括<code>ChannelInboundHandler</code>、<code>ChannelOutboundHandler</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandler</span> <span style="color:#f92672">{}</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelInboundHandler</span> 
+    	<span style="color:#66d9ef">extends</span> ChannelHandler <span style="color:#f92672">{}</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChannelInboundHandlerAdapter</span> 
+    	<span style="color:#66d9ef">extends</span> ChannelHandlerAdapter <span style="color:#66d9ef">implements</span> ChannelInboundHandler <span style="color:#f92672">{}</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleChannelInboundHandler</span><span style="color:#f92672">&lt;</span>I<span style="color:#f92672">&gt;</span> 
+    	<span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{}</span>
+</code></pre></div><h4 id="channelpipeline">ChannelPipeline<a href="#channelpipeline" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>用于存储<code>ChannelHandler链</code>的容器。在应用程序初始化时（BootStrap引导）通过<code>ChannelInitializer</code>将自定义的<code>ChannelHandler</code>注册到<code>ChannelPipeline</code>中。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
+        <span style="color:#66d9ef">extends</span> ChannelInboundInvoker<span style="color:#f92672">,</span> ChannelOutboundInvoker<span style="color:#f92672">,</span> 
+				Iterable<span style="color:#f92672">&lt;</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ChannelHandler<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">{}</span>
+</code></pre></div><blockquote>
+<p>接口的继承表明：ChannelPipeline可以处理<code>入站和出站</code>的ChannelHandler链。</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClient</span> <span style="color:#f92672">{</span>
+    Bootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Bootstrap<span style="color:#f92672">()</span>
+        <span style="color:#f92672">.</span><span style="color:#a6e22e">handler</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ChannelInitializer<span style="color:#f92672">&lt;</span>SocketChannel<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+            <span style="color:#a6e22e">@Override</span>
+            <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>SocketChannel ch<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                <span style="color:#75715e">// 将自定义的ChannelHandler加入到ChannelPipeline的最后
+</span><span style="color:#75715e"></span>                ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span>
+                    <span style="color:#66d9ef">new</span> EchoClientHandlerFirst<span style="color:#f92672">(),</span> 
+                    <span style="color:#66d9ef">new</span> EchoClientHandler<span style="color:#f92672">(),</span> 
+                    <span style="color:#66d9ef">new</span> EchoClientHandlerLast<span style="color:#f92672">());</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">});</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClientHandlerFirst</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;EchoClientHandlerFirst received: {}&#34;</span><span style="color:#f92672">,</span> msg<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">));</span>
+        <span style="color:#75715e">// 使用Unpooled.copiedBuffer()处理ByteBuf的release问题
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 将msg传递到下个ChannelHandler
+</span><span style="color:#75715e"></span>        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">fireChannelRead</span><span style="color:#f92672">(</span>Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClientHandler</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf msg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// client接收到信息时被调用
+</span><span style="color:#75715e"></span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;EchoClientHandler received: {}&#34;</span><span style="color:#f92672">,</span> msg<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">));</span>
+        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">fireChannelRead</span><span style="color:#f92672">(</span>Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClientHandlerLast</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;EchoClientHandlerLast received: {}&#34;</span><span style="color:#f92672">,</span> msg<span style="color:#f92672">.</span><span style="color:#a6e22e">toString</span><span style="color:#f92672">(</span>CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>通过<code>handler方法</code>将ChannelPipeline绑定到bootstrap中，ChannelPipeline中的ChannelHandler的顺序由<code>添加时的顺序</code>决定。</p>
+<p>即为：EchoClientHandlerFirst -&gt; EchoClientHandler -&gt; EchoClientHandlerLast。</p>
+</blockquote>
+<p><img src="https://image.leejay.top/Fuyanerz_JSEi_Msd-OOYXYxkjN-" alt=""></p>
+<blockquote>
+<p>入站和出站是相对的，以上图为例：Server端入站即是Client端的出站，Server端的出站即是Client端的入站。</p>
+<p>虽然ChannelInboundHandler和ChannelOutboundHandler都扩展自ChannelHandler，但是Netty能够保证<code>数据旨在具有相同的两个类型的ChannelHandler中传递。</code></p>
+</blockquote>
+<h4 id="channelhandlercontext">ChannelHandlerContext<a href="#channelhandlercontext" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>作为参数传递由上一个ChannelHandler传递到下一个ChannelHandler中。包含</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClientHandler</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelActive</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// channel是活跃时被调用
+</span><span style="color:#75715e"></span>        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">writeAndFlush</span><span style="color:#f92672">(</span>Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Netty Rock&#34;</span><span style="color:#f92672">,</span> CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">));</span>
+        <span style="color:#75715e">// 从下一个ChannelHandler开始流动
+</span><span style="color:#75715e"></span>        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">fireChannelRead</span><span style="color:#f92672">(</span>Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+        <span style="color:#75715e">// 从第一个ChannelHandler开始流动
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// ctx.pipeline().fireChannelRead(Unpooled.copiedBuffer(msg));
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>可以通过<code>ChannelHandlerContext</code>写入消息，消息会从<code>下一个ChannelHandler</code>开始流动。</p>
+<p>如果是将消息写入<code>Channel</code>，那么会从<code>第一个ChannelHandler</code>开始流动。</p>
+</blockquote>
+<h4 id="bootstrap">Bootstrap<a href="#bootstrap" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>服务端和客户端采用了不同的引导，主要的区别在于：</p>
+<ol>
+<li>客户端Bootstrp连接到<code>远程的地址和端口</code>，而服务端则绑定到<code>本地的端口</code>。</li>
+<li>客户端只需要一个<code>EventLoopGroup</code>，而服务端需要两个，其中一个只包含<code>ServerChannel</code>，代表服务自身的已绑定到某个本地端口的正在监听的socket，另一个包含所有已创建的、用于传入客户端连接的channel。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Bootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Bootstrap<span style="color:#f92672">();</span><span style="color:#75715e">// client
+</span><span style="color:#75715e"></span>ServerBootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ServerBootstrap<span style="color:#f92672">();</span><span style="color:#75715e">// server
+</span></code></pre></div><hr>
+<h3 id="channel-1">Channel<a href="#channel-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="channels-api">Channel&rsquo;s API<a href="#channels-api" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/FtELlIBc5Eva4RcRK9P30RL-QDES" alt=""></p>
+<blockquote>
+<p>Channel是<code>线程安全</code>的，在多线程下发送消息，其顺序由发送的顺序决定。</p>
+</blockquote>
+<h4 id="channel的内置传输">Channel的内置传输<a href="#channel的内置传输" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>NIO</li>
+</ul>
+<p>提供基于JDK的NIO进行封装的API，所有I/O操作都是异步的，其核心就是<code>Selector</code>选择器（和某个线程绑定），会在：<code>新的Channel已被接受且就绪</code>、<code>Channel连接已经完成</code>、<code>Channel有已就绪的可供读取的数据</code>、<code>Channel可用于写数据</code>时发出通知。</p>
+<p><img src="https://image.leejay.top/FvMwqVoSwPIQ8_wJTxUQfwoe5OZj" alt=""></p>
+<ul>
+<li>Epoll</li>
+</ul>
+<p>基于Linux的Epoll特性（一个高度可扩展的I/O事件通知特性），相比原生的JDK-NIO有更强的性能，但执行流程与NIO相同。</p>
+<ul>
+<li>OIO</li>
+</ul>
+<p>原生JDK中的BIO是阻塞实现，Netty利用了<code>SO_TIMEOUT</code>标识，当阻塞一定时长时，抛出<code>SocketTimeOut</code>异常并捕获该异常，并继续循环，在EventLoop下次运行时将再次尝试。</p>
+<p><img src="https://image.leejay.top/FnOwK-sLN9h3FvLyL7vI6ERsGWaW" alt=""></p>
+<ul>
+<li>Local</li>
+</ul>
+<p>用于同一个JVM中运行的客户端和服务器程序之间的异步通信，它并没有绑定物理网络地址，不接受真正的网络流量。</p>
+<ul>
+<li>Embedded</li>
+</ul>
+<p>将一组<code>ChannelHandler</code>作为帮助类嵌入到其他的<code>ChannelHandler</code>内部，而不需要去修改代码。</p>
+<h5 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Channel</th>
+<th>EventLoopGroup</th>
+<th>支持协议</th>
+<th>使用需求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NIO</td>
+<td>NioServerSocketChannel</td>
+<td>NioEventLoopGroupNi</td>
+<td>TCP/UDP/SCTP/UDT</td>
+<td>代码库中没有非阻塞调用</td>
+</tr>
+<tr>
+<td>Epoll</td>
+<td>EpollServerSocketChannel</td>
+<td>EpollEventLoopGroup</td>
+<td>TCP/UDP</td>
+<td>相比NIO，在Linux上推荐使用</td>
+</tr>
+<tr>
+<td>OIO</td>
+<td>OioServerSocketChannel</td>
+<td>OioEventLoopGroup</td>
+<td>TCP/UDP/SCTP/UDT</td>
+<td>阻塞代码库（JDBC等）</td>
+</tr>
+<tr>
+<td>Local</td>
+<td>LocalServerChannel</td>
+<td>LocalEventLoopGroup</td>
+<td>-</td>
+<td>同一个JVM内部的通信</td>
+</tr>
+<tr>
+<td>Embedded</td>
+<td>EmbeddedEventLoop</td>
+<td>EmbeddedChannel</td>
+<td>-</td>
+<td>测试ChannelHandler的实现</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="bytebuf">ByteBuf<a href="#bytebuf" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>**<code>ByteBuf</code>**是基于JDK原生的<code>ByteBuffer</code>封装而来的字节容器。通过<code>ByteBuf</code>抽象类和<code>ByteBufHolder</code>接口进行暴露。具有<code>自定义缓冲区类型扩展</code>、<code>基于零拷贝</code>、<code>按需增长</code>、<code>读写使用不同的索引</code>、<code>支持池化</code>等优点。</p>
+<h4 id="bytebuf类">ByteBuf类<a href="#bytebuf类" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>ByteBuf维护了两个不同的索引：读索引 &amp; 写索引（这与ByteBuffer类不同，它只维护了一个索引），初始情况两者都为0，且不应超过capacity。ByteBuf可以指定一个初始容量，但最大不超过<code>Integer.MAX_VALUE</code>，内置的API中<code>以Read、Write开头的方法会推动索引变化，而get、set开头的则不会</code>。</p>
+<h5 id="bytebuf的使用模式">ByteBuf的使用模式<a href="#bytebuf的使用模式" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>堆缓冲区</li>
+</ul>
+<p>将数据存储在JVM的堆空间中，又被称为<code>支撑数组</code>。其能在没有池化的情况下提供快速的分配与释放，适合有遗留数据需要处理的情况。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dump</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    ByteBuf byteBuf <span style="color:#f92672">=</span> <span style="color:#f92672">...;</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">hasArray</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// 判断是否有支撑数组
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> array <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">array</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 若有就获取该数组的引用
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> offset <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">arrayOffset</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">readerIndex</span><span style="color:#f92672">();</span>  <span style="color:#75715e">// 计算第一个字节的偏移量
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> length <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">readableBytes</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 计算可读字节的长度
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>直接缓冲区</li>
+</ul>
+<p>自JDK1.4后允许JVM调用本地方法(native)来分配堆外内存(又称为直接内存)。主要是为了避免<code>I/O操作前后将缓冲区内容复制到一个中间缓冲区</code>。相比于<code>堆内缓冲区</code>，<code>直接缓冲区</code>的分配和释放都是昂贵的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">direct</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    ByteBuf directBuffer <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">(</span>16<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>directBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">hasArray</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// 判断是否有支撑数组
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 还未读的字节大小
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> length <span style="color:#f92672">=</span> directBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">readableBytes</span><span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> array <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>length<span style="color:#f92672">];</span>
+        <span style="color:#75715e">// 获取剩下的未读数据
+</span><span style="color:#75715e"></span>        directBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">(</span>directBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">readerIndex</span><span style="color:#f92672">(),</span> array<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>复合缓冲区</li>
+</ul>
+<p>是多个<code>ByteBuf</code>的一个聚合视图，是JDK原生所没有的功能。此类型可以同时包含堆内缓冲区和直接缓冲区，如果只有一个ByteBuf的实例，那么<code>hasArray()</code>会返回该实例的<code>hasArray()</code>的值，否则返回false。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">composite</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    CompositeByteBuf compositeByteBuf <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">compositeBuffer</span><span style="color:#f92672">();</span>
+    <span style="color:#75715e">// 添加堆内和堆外两种模式的数据
+</span><span style="color:#75715e"></span>    compositeByteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">addComponents</span><span style="color:#f92672">(</span>
+        Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">(</span>16<span style="color:#f92672">),</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">()));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="bytebuf字节操作">ByteBuf字节操作<a href="#bytebuf字节操作" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/FlQi0WTAq7pvHL8xIgMUQIYrPqcf" alt=""></p>
+<blockquote>
+<ol>
+<li>初始状态下：<code>readIndex = writeIndex = 0</code>，若<code>readIndex | writeIndex &gt; capacity-1</code>或<code>readIndex &gt; WriteIndex</code>，则会抛出<code>indexOutOfBoundException</code>。</li>
+<li>可丢弃字节，可以理解为已读字节，<code>[0, readIndex]</code>部分的字节已被全部读取，<code>(readIndex, writeIndex]</code>部分的字节可以被读取，<code>(writeIndex，capacity)</code>部分的字节尚未被写入。</li>
+<li>调用<code>discardReadBytes()</code>方法后会丢弃<code>已读字节</code>并回收他们，此时<code>readIndex</code>会被移动到缓冲区的开始位置。</li>
+<li><code>get/set</code>开头的方法不会修改index的位置，而<code>read/write</code>则会修改。</li>
+</ol>
+</blockquote>
+<h5 id="派生缓冲区">派生缓冲区<a href="#派生缓冲区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// slice类似String的slice切分
+</span><span style="color:#75715e"></span>    ByteBuf byteBuf <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Netty in Action rocks!&#34;</span><span style="color:#f92672">,</span> CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">);</span>
+    ByteBuf sliceBuf <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">slice</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 15<span style="color:#f92672">);</span>
+    byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">setByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;J&#39;</span><span style="color:#f92672">);</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> sliceBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">));</span><span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// copy方法会复制一份缓冲区的真是副本，复制出的ByteBuf具有独立的数据副本
+</span><span style="color:#75715e"></span>    ByteBuf copyBuf <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">copy</span><span style="color:#f92672">();</span>
+    byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">setByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;N&#39;</span><span style="color:#f92672">);</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> copyBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">));</span><span style="color:#75715e">// false
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// duplicate返回一个新的ByteBuf实例，但是readIndex &amp; writeIndex都是与原ByteBuf共享的
+</span><span style="color:#75715e"></span>    ByteBuf duplicate <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">duplicate</span><span style="color:#f92672">();</span>
+    byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">setByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> <span style="color:#e6db74">&#39;J&#39;</span><span style="color:#f92672">);</span>
+    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> duplicate<span style="color:#f92672">.</span><span style="color:#a6e22e">getByte</span><span style="color:#f92672">(</span>0<span style="color:#f92672">));</span><span style="color:#75715e">// true
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// print &#39;J&#39; index of byteBuf: 0
+</span><span style="color:#75715e"></span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 15<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;J&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">()[</span>0<span style="color:#f92672">]));</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>非特殊需要，<code>slice()</code>方法能满足就用该方法，避免<code>复制</code>带来的内存开销。</p>
+</blockquote>
+<h4 id="bytebufholder接口">ByteBufHolder接口<a href="#bytebufholder接口" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>ByteBuf</code>的容器，为了满足除了基本的<code>ByteBuf</code>数据负载外，还要满足类似<code>HTTP</code>响应返回的各种属性值，<code>ByteBufHolder</code>包含<code>一个ByteBuf对象</code>，可以按需实现不同的需求。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DefaultByteBufHolder byteBufHolder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultByteBufHolder<span style="color:#f92672">(</span>
+    													Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">()));</span>
+</code></pre></div><h4 id="bytebuf分配">ByteBuf分配<a href="#bytebuf分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h5 id="bytebufallocator">ByteBufAllocator<a href="#bytebufallocator" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>Netty基于ByteBufAllocator接口实现了ByteBuf的<code>池化</code>，它可以分配任意类型的ByteBuf实例。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">alloc</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// Netty默认的分配
+</span><span style="color:#75715e"></span>    ByteBufAllocator allocator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PooledByteBufAllocator<span style="color:#f92672">();</span>
+    allocator<span style="color:#f92672">.</span><span style="color:#a6e22e">buffer</span><span style="color:#f92672">();</span> <span style="color:#75715e">//堆或直接缓冲区
+</span><span style="color:#75715e"></span>    allocator<span style="color:#f92672">.</span><span style="color:#a6e22e">heapBuffer</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 堆内缓冲区
+</span><span style="color:#75715e"></span>    allocator<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 直接缓冲区
+</span><span style="color:#75715e"></span>    allocator<span style="color:#f92672">.</span><span style="color:#a6e22e">compositeBuffer</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 复合缓冲区
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>Netty默认使用<code>PooledByteBufAllocator</code>类作为分配的规则。但也提供了<code>UnpooledByteBufAllocator</code>。前者<code>池化</code>了ByteBuf实例以提高性能并最大程度减少内存碎片，后者则<code>不池化</code>ByteBuf实例，每次调用都返回一个新的实例。</p>
+</blockquote>
+<p>我们还可以通过<code>Channel</code>对象或绑定到Channel的<code>ChannelHandlerContext</code>来获取<code>ByteBufAllocator</code>的引用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandlerContext</span> <span style="color:#66d9ef">extends</span> AttributeMap<span style="color:#f92672">,</span> 
+											   ChannelInboundInvoker<span style="color:#f92672">,</span> ChannelOutboundInvoker <span style="color:#f92672">{</span>
+  	ByteBufAllocator <span style="color:#a6e22e">alloc</span><span style="color:#f92672">();</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h5 id="unpooled缓冲区">Unpooled缓冲区<a href="#unpooled缓冲区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unPool</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+    Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">();</span>
+    Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">buffer</span><span style="color:#f92672">();</span>
+    Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">wrappedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>copiedBuffer()与wrappedBuffer()的区别在于：前者会生成一个<code>新的完全独立</code>的ByteBuf，而后者与传入的byte[]仍是共享的(类似duplicate()。且它们底层是创建<code>堆内</code>缓冲区。</p>
+</blockquote>
+<h5 id="bytebufutil">ByteBufUtil<a href="#bytebufutil" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>用于操作ByteBuf的静态方法，和池化无关，可单独使用。常用的有<code>equals（比较两个ByteBuf是否相等）</code>、<code>hexDump（返回ByteBuf的十六进制内容）</code>等。</p>
+<h5 id="引用计数法">引用计数法<a href="#引用计数法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>在Netty的池化中，存有一个重要的概念：<code>引用计数法</code>，只要该实例的引用大于0，就不会被释放，如果引用降低到0，那该实例就会被释放。一般由最后访问的该实例的那一方负责释放。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ReferenceCounted</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">refCnt</span><span style="color:#f92672">();</span>
+    ReferenceCounted <span style="color:#a6e22e">retain</span><span style="color:#f92672">();</span>
+    ReferenceCounted <span style="color:#a6e22e">retain</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> increment<span style="color:#f92672">);</span>
+    ReferenceCounted <span style="color:#a6e22e">touch</span><span style="color:#f92672">();</span>
+    ReferenceCounted <span style="color:#a6e22e">touch</span><span style="color:#f92672">(</span>Object hint<span style="color:#f92672">);</span>
+    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">release</span><span style="color:#f92672">();</span>
+    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">release</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> decrement<span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h4 id="bytebuf总结">ByteBuf总结<a href="#bytebuf总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/Fs8QHe15SgVPrHy60QimS6HBGYTt" alt=""></p>
+<hr>
+<h3 id="channelhandler--channelpipeline">ChannelHandler &amp; ChannelPipeline<a href="#channelhandler--channelpipeline" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="channelhandler生命周期">ChannelHandler生命周期<a href="#channelhandler生命周期" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/FjS0ITByNINX_7YdfLPRgAVgkWdr" alt=""></p>
+<h5 id="channelhandleradapter">ChannelHandlerAdapter<a href="#channelhandleradapter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p><code>ChannelInboudHandler &amp; ChannelOutboundHandler</code>都继承了该类，在<code>ChannelHandler加入ChannelPipeline或被移除时</code>被调用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChannelHandlerAdapter</span> <span style="color:#66d9ef">implements</span> ChannelHandler <span style="color:#f92672">{</span>
+
+    <span style="color:#75715e">// 只作用于健康检查，所以不适用volatile修饰
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> added<span style="color:#f92672">;</span>
+
+    <span style="color:#75715e">// 如果isSharable()为true就抛出IllegalStateException}异常
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">ensureNotSharable</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>isSharable<span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ChannelHandler &#34;</span> <span style="color:#f92672">+</span> getClass<span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; is not allowed to be shared&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">// 判断ChannelHandlerAdapter的子类是否可共享的
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">isSharable</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        Class<span style="color:#f92672">&lt;?&gt;</span> clazz <span style="color:#f92672">=</span> getClass<span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 基于ThreadLocal实现，WeakHashMap
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// @link https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/
+</span><span style="color:#75715e"></span>        Map<span style="color:#f92672">&lt;</span>Class<span style="color:#f92672">&lt;?&gt;,</span> Boolean<span style="color:#f92672">&gt;</span> cache <span style="color:#f92672">=</span> InternalThreadLocalMap<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">().</span><span style="color:#a6e22e">handlerSharableCache</span><span style="color:#f92672">();</span>
+        Boolean sharable <span style="color:#f92672">=</span> cache<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>clazz<span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sharable <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 如果value不存在，那么判断该类是否有Sharable注解
+</span><span style="color:#75715e"></span>            sharable <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">isAnnotationPresent</span><span style="color:#f92672">(</span>Sharable<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+            <span style="color:#75715e">// 将结果保存到ThreadLocalMap中
+</span><span style="color:#75715e"></span>            cache<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>clazz<span style="color:#f92672">,</span> sharable<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> sharable<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">// 加入ChannelPipeline时触发
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">handlerAdded</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">// 被ChannelPipeline移除时触发
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">handlerRemoved</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#75715e">// 调用ChannelHandlerContext#fireExceptionCaught传递到下一个ChannelHandler
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">@Skip</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#a6e22e">@Deprecated</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">exceptionCaught</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Throwable cause<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">fireExceptionCaught</span><span style="color:#f92672">(</span>cause<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>处理入站异常</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelInboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+	<span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">exceptionCaught</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Throwable cause<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        cause<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 打印堆栈信息
+</span><span style="color:#75715e"></span>        ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 关闭channel连接
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>默认情况下，会将当前异常转发给下一个ChannelHandler，如果当前ChannelHandler已是最后一个Handler，如果不处理则会被Netty记录并打印Warning日志。</p>
+</blockquote>
+<ul>
+<li>出站异常</li>
+</ul>
+<p>出站异常，不再使用类似入站异常<code>exceptionCaught()</code>的模式，而是有两种方式可以选择。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 1. 添加监听器到ChannelFuture
+</span><span style="color:#75715e"></span>ChannelFuture future <span style="color:#f92672">=</span> bootstrap<span style="color:#f92672">.</span><span style="color:#a6e22e">bind</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sync</span><span style="color:#f92672">();</span>
+future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span><span style="color:#f92672">().</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">((</span>ChannelFutureListener<span style="color:#f92672">)</span> f <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">isSuccess</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+        f<span style="color:#f92672">.</span><span style="color:#a6e22e">cause</span><span style="color:#f92672">().</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        f<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span><span style="color:#f92672">().</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">});</span>
+
+<span style="color:#75715e">// 2. 在ChannelOutboundHandler#write()时处理
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelInboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object msg<span style="color:#f92672">,</span> ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 请求通过Channel将数据写到远程节点时被调用
+</span><span style="color:#75715e"></span>        promise<span style="color:#f92672">.</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">((</span>ChannelFutureListener<span style="color:#f92672">)</span> future <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>future<span style="color:#f92672">.</span><span style="color:#a6e22e">isSuccess</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+                future<span style="color:#f92672">.</span><span style="color:#a6e22e">cause</span><span style="color:#f92672">().</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+                future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span><span style="color:#f92672">().</span><span style="color:#a6e22e">close</span><span style="color:#f92672">();</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">});</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h5 id="channelinboudhandler">ChannelInboudHandler<a href="#channelinboudhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>作用于<code>数据被接收时</code>或与其<code>对应的channel状态改变</code>时被调用。一般通过继承<code>ChannelInboundHandler</code>来实现自定义的ChannelHandler，但是需要我们显示的<code>释放与池化的ByteBuf实例相关的内存</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelInboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ReferenceCountUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRegistered</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelRegistered ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelUnregistered</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelUnregistered ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelActive</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelActive ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelInactive</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelInactive ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelReadComplete</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelReadComplete ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">userEventTriggered</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object evt<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;userEventTriggered ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelWritabilityChanged</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;channelWritabilityChanged ...&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p><code>@Sharable</code>起到一个标识符的作用，表明其修饰的ChannelHandler能够被多个ChannelPipeline安全的共享。但并不代表被修饰的ChannelHandler就一定线程安全。</p>
+</blockquote>
+<p>但是我们更推荐使用<code>SimpleChannelInboundHandler&lt;T&gt;</code>，因为该类内置了释放内存的相关代码。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleChannelInboundHandler</span><span style="color:#f92672">&lt;</span>I<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">boolean</span> release <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>acceptInboundMessage<span style="color:#f92672">(</span>msg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+                <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
+                I imsg <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>I<span style="color:#f92672">)</span> msg<span style="color:#f92672">;</span>
+                channelRead0<span style="color:#f92672">(</span>ctx<span style="color:#f92672">,</span> imsg<span style="color:#f92672">);</span><span style="color:#75715e">// 调用子类的channelRead0方法
+</span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                release <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 如果不需要释放内存，那么就
+</span><span style="color:#75715e"></span>                ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">fireChannelRead</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 如果autoRelease为true，且处理了该msg，那么则需要释放资源
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>autoRelease <span style="color:#f92672">&amp;&amp;</span> release<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                ReferenceCountUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>核心逻辑：判断是否需要处理该msg，如果需要那么对数据进行转换并调用<code>子类的channelRead0()</code>，不需要处理则将msg交给ChannelPipeline中的<code>下一个channelHandler</code>。</p>
+<p>不管是否对数据进行处理，都最终会调用<code>ReferenceCountUtil.release(msg)</code>来释放池化的资源。</p>
+<p>我们需要避免<code>存储指向任何消息的引用</code>，因为消息资源最终会被释放。</p>
+</blockquote>
+<p>Netty内置了<code>ResourceLeakDetector类</code>来对应用程序进行内存泄漏检测。</p>
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DISBALED</strong></td>
+<td>禁用泄露检测</td>
+</tr>
+<tr>
+<td><strong>SIMPLE</strong></td>
+<td>使用1%的默认采样率检测并报告任何发现的泄露（默认）</td>
+</tr>
+<tr>
+<td><strong>ADVANCED</strong></td>
+<td>使用默认的采样率，报告发现的任何泄露和对应消息被访问的位置</td>
+</tr>
+<tr>
+<td><strong>PARANOID</strong></td>
+<td>类似<strong>ADVANCED</strong>，但每次都会对消息的访问进行采样，会影响性能</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>java -Dio.netty.leakDetectionLevel=ADVANCED</code></p>
+</blockquote>
+<h5 id="channeloutboundhandler">ChannelOutboundHandler<a href="#channeloutboundhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelOutboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelOutboundHandlerAdapter <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">bind</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> 
+                     SocketAddress localAddress<span style="color:#f92672">,</span> 
+                     ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// Channel绑定到本地地址触发
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">connect</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> 
+                        SocketAddress remoteAddress<span style="color:#f92672">,</span> 
+                        SocketAddress localAddress<span style="color:#f92672">,</span> 
+                        ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// Channel连接到远端时触发
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">disconnect</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// Channel从远端节点断开时调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">close</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 请求关闭Channel时被调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">deregister</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 从EventLoop上注销时被调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 从Channel上读取更多数据时被调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object msg<span style="color:#f92672">,</span> ChannelPromise promise<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 请求通过Channel将数据写到远程节点时被调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">flush</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// Channel将数据刷到远程节点被调用
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>ChannelPromise是<code>ChannelFuture(基于Future的子类)</code>的子类，用于在操作完成时得到通知。当Promise被完成之后，那么Future则不能进行任何修改。</p>
+</blockquote>
+<h4 id="channelpipeline-1">ChannelPipeline<a href="#channelpipeline-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>ChannelPipeline是存储ChannelHandler链的容器，每个新创建的ChannelHandler都会被分配一个新的ChannelPipeline。当执行ChannelPipeline中的ChannelHandler链时，Netty会默认的判断当前类型是否与事件运行方向一致（入站或出站）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
+        <span style="color:#66d9ef">extends</span> ChannelInboundInvoker<span style="color:#f92672">,</span> 
+				ChannelOutboundInvoker<span style="color:#f92672">,</span> Iterable<span style="color:#f92672">&lt;</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ChannelHandler<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">{</span>
+    ChannelPipeline <span style="color:#a6e22e">addFirst</span><span style="color:#f92672">(</span>ChannelHandler<span style="color:#f92672">...</span> handlers<span style="color:#f92672">);</span>
+    ChannelPipeline <span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span>ChannelHandler<span style="color:#f92672">...</span> handlers<span style="color:#f92672">);</span>
+    ChannelPipeline <span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>ChannelHandler handler<span style="color:#f92672">);</span>
+    <span style="color:#f92672">...</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>ChannelPipeline可以根据需要，动态的添加或删除ChannelHandler。且可以响应入站和出站事件。</p>
+</blockquote>
+<h4 id="channelhandlercontext-1">ChannelHandlerContext<a href="#channelhandlercontext-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>ChannelHandlerContext代表了ChannelHandler和ChannelPipeline之间的关联，每有一盒ChannelHandler添加创建到Pipeline，都会创建ChannelHandlerContext与之关联，且<code>它们之间的关联永不会变</code>。</p>
+<p><img src="https://image.leejay.top/FjKwRQeXB8Lo0Yh-6vNRkb0Qyyue" alt=""></p>
+<blockquote>
+<ol>
+<li>
+<p>Channel与ChannelPipeline绑定，ChannelPipeline包含多个ChannelHandler，一个ChannelHandler可以属于多个不同的ChannelPipeline，<code>每个ChannelHandler都有唯一一个ChannelHandlerContext与之对应</code>。</p>
+</li>
+<li>
+<p>通过Channel发送消息会从<code>ChannelPipeline的头开始流动</code>，如果通过某个ChannelHandler的ChannelHandlerContext发送消息，那么会<code>从该ChannelHandler的下个ChannelHandler</code>开始流动。</p>
+</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="编解码器">编解码器<a href="#编解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="抽象解码器">抽象解码器<a href="#抽象解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>解码器本质上继承了<code>ChannelInboundHandlerAdapter</code>，可以作为<code>ChannelHandler</code>加入到<code>ChannelPipeline</code>。</p>
+<ul>
+<li>ByteToMessageDecoder</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf in<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 如果可读字节数多于4个，那么将其添加到解码消息的list中
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">readableBytes</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 4<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">readInt</span><span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>将入站的字节按照长度为4转换为消息</p>
+</blockquote>
+<ul>
+<li>ReplayingDecoder<T></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder2</span> <span style="color:#66d9ef">extends</span> ReplayingDecoder<span style="color:#f92672">&lt;</span>Void<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf in<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 相比实现ByteToMessageDecoder，不需要判断是否存在可读字节，由父类实现
+</span><span style="color:#75715e"></span>        out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">readInt</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>相比<code>ByteToMessageDecoder</code>抽象类，<code>ReplayingDecoder</code>不需要额外判断当前是否有字节数可读。</p>
+<p><code>ByteToMessageDecoder</code>适合处理不复杂的逻辑，如果逻辑复杂建议使用<code>ReplayingDecoder</code>。</p>
+</blockquote>
+<ul>
+<li>MessageToMessageDecoder<T></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringDecoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageDecoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>将指定类型的消息转换为另一种类型，然后调用下一个<code>ChannelInboundHandler</code>。</p>
+</blockquote>
+<h4 id="抽象编码器">抽象编码器<a href="#抽象编码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>编码器本质上实现了<code>ChannelOutboundHandlerAdapter</code>，可以作为<code>ChannelHandler</code>添加到<code>ChannelPipeline</code>。</p>
+<ul>
+<li>MessageToByteEncoder</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ShortToByteEncoder</span> <span style="color:#66d9ef">extends</span> MessageToByteEncoder<span style="color:#f92672">&lt;</span>Short<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Short msg<span style="color:#f92672">,</span> ByteBuf out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">writeShort</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>出站过程中将消息转换为<code>ByteBuf</code>字节。</p>
+</blockquote>
+<ul>
+<li>MessageToMessageEncoder<T></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringEncoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageEncoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>将指定类型的消息转换为另一种类型，然后调用下一个<code>ChannelOutboundHandler</code>。</p>
+</blockquote>
+<h4 id="高级抽象编解码器">高级抽象编解码器<a href="#高级抽象编解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>高级抽象编解码器是对编码、解码器两者的结合，同样是可以作为<code>ChannelHandler</code>加入到<code>ChannelPipeline</code>中。</p>
+<ul>
+<li>ByteToMessageCodec<T></li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyByteToMessageCodec</span> <span style="color:#66d9ef">extends</span> ByteToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> ByteBuf out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">writeByte</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf in<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// byte -&gt; Integer
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">readableBytes</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;=</span> 2<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>in<span style="color:#f92672">.</span><span style="color:#a6e22e">readInt</span><span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p><code>ByteToMessage</code>编解码器同时包含编码和解码，分别是<code>入站的解码和出站的编码</code>。</p>
+</blockquote>
+<ul>
+<li>MessageToMessageCodec&lt;IN, OUT&gt;</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyMessageToMessageCodec</span> <span style="color:#66d9ef">extends</span> MessageToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> String<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> String msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p><code>MessageToMessage</code>编解码器主要是处理入站和出站中的某种消息类型转换为另一种消息类型。</p>
+</blockquote>
+<ul>
+<li>CombinedChannelDuplexHandler</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyCombinedChannelDuplexHandler</span> <span style="color:#66d9ef">extends</span> CombinedChannelDuplexHandler<span style="color:#f92672">&lt;</span>ToIntegerDecoder<span style="color:#f92672">,</span> ShortToByteEncoder<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MyCombinedChannelDuplexHandler</span><span style="color:#f92672">(</span>ToIntegerDecoder inboundHandler<span style="color:#f92672">,</span> ShortToByteEncoder outboundHandler<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>inboundHandler<span style="color:#f92672">,</span> outboundHandler<span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p><code>CombinedChannelDuplexHandler</code>抽象类相比<code>MessageToMessageCodec</code>，主要是为了解决编解码器的复用问题，将编解码器作为构造参数传入。</p>
+</blockquote>
+<h4 id="内置的编解码器">内置的编解码器<a href="#内置的编解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h5 id="应用程序连接协议">应用程序连接协议<a href="#应用程序连接协议" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>Ssl加密解密</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SslChannelInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> SslContext context<span style="color:#f92672">;</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> startTls<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SslChannelInitializer</span><span style="color:#f92672">(</span>SslContext context<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> startTls<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">context</span> <span style="color:#f92672">=</span> context<span style="color:#f92672">;</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">startTls</span> <span style="color:#f92672">=</span> startTls<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        SSLEngine sslEngine <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">newEngine</span><span style="color:#f92672">(</span>ch<span style="color:#f92672">.</span><span style="color:#a6e22e">alloc</span><span style="color:#f92672">());</span>
+        <span style="color:#75715e">// SSL/TLS加密解密一般作为第一个handler
+</span><span style="color:#75715e"></span>        ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addFirst</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;ssl&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> SslHandler<span style="color:#f92672">(</span>sslEngine<span style="color:#f92672">,</span> startTls<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>一般将SslHandler作为ChannelPipeline中的第一个handler。</p>
+</blockquote>
+<ul>
+<li>Http/Https</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpPipelineInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HttpPipelineInitializer</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isClient</span> <span style="color:#f92672">=</span> isClient<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ChannelPipeline pipeline <span style="color:#f92672">=</span> ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">();</span>
+        <span style="color:#75715e">// 因为http是由客户端发起的通信，客户端需要对请求加密，接受服务端的响应解密
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpResponseDecoder<span style="color:#f92672">());</span>
+            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpRequestEncoder<span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 服务端接受客户端请求需要先解密，返回响应加密
+</span><span style="color:#75715e"></span>            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpResponseEncoder<span style="color:#f92672">());</span>
+            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpRequestDecoder<span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>基于Http是<code>请求/响应</code>类型，由客户端发起请求，服务端响应请求，所以客户端需要对请求加密，接受服务端的响应解密，服务端接受客户端请求需要先解密，返回响应加密。</p>
+</blockquote>
+<ul>
+<li>Http/Https聚合</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpAggregatorInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">;</span>
+
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HttpAggregatorInitializer</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isClient</span> <span style="color:#f92672">=</span> isClient<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ChannelPipeline pipeline <span style="color:#f92672">=</span> ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// HttpRequestEncoder + HttpResponseDecoder
+</span><span style="color:#75715e"></span>            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpClientCodec<span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// HttpResponseDecoder + HttpRequestEncoder
+</span><span style="color:#75715e"></span>            pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpServerCodec<span style="color:#f92672">());</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#75715e">// 聚合http，限制不超过512kb
+</span><span style="color:#75715e"></span>        pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpObjectAggregator<span style="color:#f92672">(</span>512 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">));</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>因为Http/Https的数据是可以分成多个部分传送的，所以我们可以使用聚合得到一个完整的数据。但相对性能要差一些，并且我们可以指定限制<code>Http content</code>的大小。</p>
+</blockquote>
+<ul>
+<li>WebSocket</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketServerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span>
+                <span style="color:#66d9ef">new</span> HttpServerCodec<span style="color:#f92672">(),</span> <span style="color:#75715e">// 处理http
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> HttpObjectAggregator<span style="color:#f92672">(</span>512 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">),</span> <span style="color:#75715e">// 处理http数据聚合
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> WebSocketServerProtocolHandler<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/websocket&#34;</span><span style="color:#f92672">),</span> <span style="color:#75715e">// 处理/websocket路径
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> TextFrameHandler<span style="color:#f92672">(),</span> <span style="color:#75715e">// 处理text格式
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> BinaryFrameHandler<span style="color:#f92672">(),</span> <span style="color:#75715e">// 处理binary格式
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> ContinuationFrameHandler<span style="color:#f92672">()</span> <span style="color:#75715e">// 处理属于上一个binary或text的数据
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TextFrameHandler</span> 
+        <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>TextWebSocketFrame<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> TextWebSocketFrame msg<span style="color:#f92672">)</span> 
+            <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BinaryFrameHandler</span> 
+        <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>BinaryWebSocketFrame<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> BinaryWebSocketFrame msg<span style="color:#f92672">)</span> 
+            <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ContinuationFrameHandler</span> 
+        <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ContinuationWebSocketFrame<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ContinuationWebSocketFrame msg<span style="color:#f92672">)</span> 
+            <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>WebSocket是<code>基于Http的应用层协议</code>。在处理WebSocket数据之前，我们需要先使用http相关ChannelHandler处理数据，然后再使用WebSocket相关的channelHandler处理。</p>
+</blockquote>
+<h5 id="连接超时与空闲">连接超时与空闲<a href="#连接超时与空闲" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>IdleStateHandler</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IdleStateHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ChannelPipeline pipeline <span style="color:#f92672">=</span> ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">();</span>
+        pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> IdleStateHandler<span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> 60<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">));</span>
+        pipeline<span style="color:#f92672">.</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HeartBeatHandler<span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HeartBeatHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ByteBuf HEARTBEAT_SEQUENCE <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">unreleasableBuffer</span><span style="color:#f92672">(</span>
+                Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;HEART_BEAT&#34;</span><span style="color:#f92672">,</span> CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">ISO_8859_1</span><span style="color:#f92672">));</span>
+
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">userEventTriggered</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object evt<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+            <span style="color:#75715e">// 如果空闲连接时间太长，那么发送心跳事件
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>evt <span style="color:#66d9ef">instanceof</span> IdleStateEvent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+                ctx<span style="color:#f92672">.</span><span style="color:#a6e22e">writeAndFlush</span><span style="color:#f92672">(</span>HEARTBEAT_SEQUENCE<span style="color:#f92672">.</span><span style="color:#a6e22e">duplicate</span><span style="color:#f92672">())</span>
+                        <span style="color:#f92672">.</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">(</span>ChannelFutureListener<span style="color:#f92672">.</span><span style="color:#a6e22e">CLOSE_ON_FAILURE</span><span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+                <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">userEventTriggered</span><span style="color:#f92672">(</span>ctx<span style="color:#f92672">,</span> evt<span style="color:#f92672">);</span>
+            <span style="color:#f92672">}</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>如果连接空闲时间太长，那么我们发送<code>IdleStateEvent</code>，在下游的<code>userEventTriggered</code>中处理。</p>
+</blockquote>
+<ul>
+<li>Read/WriteTimeoutHandler</li>
+</ul>
+<p>除了<code>IdleStateHandler</code>的空闲连接处理，还可以处理<code>Read/Write</code>超时问题，需要交给下游的<code>ChannelHandler</code>中的<code>exeptionCaught</code>方法来处理。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReadTimeoutHandler</span> <span style="color:#66d9ef">extends</span> IdleStateHandler <span style="color:#f92672">{</span>
+    <span style="color:#75715e">// 指定读取超时时间
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ReadTimeoutHandler</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> timeoutSeconds<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>timeoutSeconds<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WriteTimeoutHandler</span> <span style="color:#66d9ef">extends</span> ChannelOutboundHandlerAdapter <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">WriteTimeoutHandler</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> timeoutSeconds<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>timeoutSeconds<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h5 id="基于分隔符的解码器">基于分隔符的解码器<a href="#基于分隔符的解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>LineBasedFrameDecoder</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LineBasedHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#75715e">// 行尾符分割并限制最大长度
+</span><span style="color:#75715e"></span>        ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> LineBasedFrameDecoder<span style="color:#f92672">(</span>64 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">),</span> <span style="color:#66d9ef">new</span> FrameHandler<span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FrameHandler</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>DelimiterBasedFrameDecoder</li>
+</ul>
+<p>相比<code>LineBasedFrameDecoder</code>，<code>DelimiterBasedFrameDecoder</code>的性能要稍低，它是使用用户指定的分隔符来提取帧的通用解码器。</p>
+<h5 id="基于长度的解码器">基于长度的解码器<a href="#基于长度的解码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>FixedLengthFrameDecoder</li>
+</ul>
+<p>每次解码都按照一定的长度进行解码，长度是在创建的时候通过构造函数指定的。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FixedLengthFrameDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
+	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">FixedLengthFrameDecoder</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> frameLength<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+        checkPositive<span style="color:#f92672">(</span>frameLength<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;frameLength&#34;</span><span style="color:#f92672">);</span>
+        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">frameLength</span> <span style="color:#f92672">=</span> frameLength<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><ul>
+<li>LengthFieldBasedFrameDecoder</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LengthBasedInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Override</span>
+    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span>
+                <span style="color:#75715e">// 最大长度，字段编码起始地址，长度编码长度
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">new</span> LengthFieldBasedFrameDecoder<span style="color:#f92672">(</span>64 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">,</span> 0<span style="color:#f92672">,</span> 8<span style="color:#f92672">),</span>
+                <span style="color:#66d9ef">new</span> FrameHandler<span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span>
+
+    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FrameHandler</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#a6e22e">@Override</span>
+        <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead0</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+        <span style="color:#f92672">}</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>相比<code>FixedLengthFrameDecoder</code>，<code>LengthFieldBasedFrameDecoder</code>可以指定长度编码的起始位置和编码长度，更加的灵活，适合每次长度都不同的情况。</p>
+</blockquote>
+<hr>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/">
+                <span class="button__text">SpringMVC使用注意</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
