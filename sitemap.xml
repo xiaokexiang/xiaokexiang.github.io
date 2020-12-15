@@ -3,6 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</loc>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://leejay.top/post/netty/</loc>
     <lastmod>2020-12-14T17:58:49+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -81,14 +88,42 @@
   
   <url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2020-12-14T17:58:49+08:00</lastmod>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2020-12-14T17:58:49+08:00</lastmod>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/categories/other/</loc>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/post/</loc>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/%E8%AF%BB%E4%B9%A6/</loc>
+    <lastmod>2020-12-15T18:08:57+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -109,20 +144,6 @@
   
   <url>
     <loc>https://leejay.top/tags/network/</loc>
-    <lastmod>2020-12-14T17:58:49+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://leejay.top/post/</loc>
-    <lastmod>2020-12-14T17:58:49+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2020-12-14T17:58:49+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
