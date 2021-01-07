@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linux on Keep Improving</title>
+    <link>https://leejay.top/categories/linux/</link>
+    <description>Recent content in linux on Keep Improving</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>苏ICP备18050258号</copyright>
+    <lastBuildDate>Thu, 07 Jan 2021 14:21:38 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux下cron定时器</title>
+      <link>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</link>
+      <pubDate>Thu, 07 Jan 2021 14:21:38 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</guid>
+      <description>&lt;h3 id=&#34;crontab命令&#34;&gt;crontab命令&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;crontab&lt;/code&gt;是linux下的定时任务服务，是基于&lt;code&gt;cron表达式&lt;/code&gt;实现定时任务操作。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

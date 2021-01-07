@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Tue, 29 Dec 2020 18:29:04 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 07 Jan 2021 14:21:38 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>《财报就像一本故事书》读后感</title>
       <link>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</link>
@@ -44,6 +44,18 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
       <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
       <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
 public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet.</description>
+    </item>
+    
+    <item>
+      <title>Linux下cron定时器</title>
+      <link>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</link>
+      <pubDate>Thu, 07 Jan 2021 14:21:38 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</guid>
+      <description>&lt;h3 id=&#34;crontab命令&#34;&gt;crontab命令&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;crontab&lt;/code&gt;是linux下的定时任务服务，是基于&lt;code&gt;cron表达式&lt;/code&gt;实现定时任务操作。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>

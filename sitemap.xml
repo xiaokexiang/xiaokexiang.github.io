@@ -24,6 +24,13 @@
   </url>
   
   <url>
+    <loc>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</loc>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/</loc>
     <lastmod>2020-12-29T18:29:04+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -95,21 +102,42 @@
   
   <url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2020-12-29T18:29:04+08:00</lastmod>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2020-12-29T18:29:04+08:00</lastmod>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/categories/linux/</loc>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/linux/</loc>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://leejay.top/post/</loc>
-    <lastmod>2020-12-29T18:29:04+08:00</lastmod>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2021-01-07T14:21:38+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -123,13 +151,6 @@
   
   <url>
     <loc>https://leejay.top/tags/shell/</loc>
-    <lastmod>2020-12-29T18:29:04+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2020-12-29T18:29:04+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
