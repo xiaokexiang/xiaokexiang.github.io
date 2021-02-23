@@ -7,7 +7,18 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Thu, 07 Jan 2021 14:21:38 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Jan 2021 11:10:39 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Redis（一）基本数据结构</title>
+      <link>https://leejay.top/post/redis%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Thu, 28 Jan 2021 11:10:39 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/redis%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;基于内存存储的&lt;code&gt;非关系型&lt;/code&gt;数据库，支持五种数据结构，并支持&lt;code&gt;发布与订阅&lt;/code&gt;、&lt;code&gt;主从复制&lt;/code&gt;、&lt;code&gt;持久化&lt;/code&gt;等功能。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
     <item>
       <title>《财报就像一本故事书》读后感</title>
       <link>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</link>
