@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Redis（二）持久化与复制 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Redis持久化  Redis提供了两种持久化方法用于将数据存储到硬盘：快照(rdb)和只追加文件(aof)。
+这两种方法和可以同时使用，也可以单独使用。
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/redis%E4%BA%8C%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%A4%8D%E5%88%B6/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Redis（二）持久化与复制">
+<meta property="og:description" content="Redis持久化  Redis提供了两种持久化方法用于将数据存储到硬盘：快照(rdb)和只追加文件(aof)。
+这两种方法和可以同时使用，也可以单独使用。
+" />
+<meta property="og:url" content="https://leejay.top/post/redis%E4%BA%8C%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%A4%8D%E5%88%B6/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Redis" />
+
+
+  <meta property="article:published_time" content="2021-02-23 11:27:01 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#redis%e6%8c%81%e4%b9%85%e5%8c%96">
+                    Redis持久化
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%bf%ab%e7%85%a7">
+                    快照
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%bf%ab%e7%85%a7%e7%9a%84%e5%88%9b%e5%bb%ba%e6%96%b9%e5%bc%8f">
+                    快照的创建方式
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#save-or-bgsave">
+                    SAVE or BGSAVE
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%8f%aa%e8%bf%bd%e5%8a%a0%e6%96%87%e4%bb%b6">
+                    只追加文件
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%bc%80%e5%90%afaof">
+                    开启AOF
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#aof%e6%96%87%e4%bb%b6%e5%8e%8b%e7%bc%a9%e9%87%8d%e5%86%99">
+                    AOF文件压缩/重写
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%8d%e5%88%b6">
+                    复制
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%85%8d%e7%bd%ae">
+                    配置
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%8d%e5%88%b6%e6%b5%81%e7%a8%8b">
+                    复制流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%9a%e5%8f%b0%e4%bb%8e%e6%9c%8d%e5%8a%a1%e5%99%a8">
+                    多台从服务器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%aa%8c%e8%af%81%e5%b7%a5%e5%85%b7">
+                    验证工具
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/redis%E4%BA%8C%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%A4%8D%E5%88%B6/">Redis（二）持久化与复制</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-02-23 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/redis/">Redis</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="redis持久化">Redis持久化<a href="#redis持久化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<blockquote>
+<p>Redis提供了两种<code>持久化</code>方法用于将数据存储到硬盘：<code>快照(rdb)和只追加文件(aof)</code>。</p>
+<p>这两种方法和可以同时使用，也可以单独使用。</p>
+</blockquote>
+<h3 id="快照">快照<a href="#快照" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Redis可以通过创建<code>快照(snapshotting)</code>来获得存储在内存里面的数据在<code>某个时间点</code>上的副本。若在新的快照文件创建完毕之前，系统、redis或硬件中任意一个崩溃，那么Redis将会<code>丢失</code>最近一次创建快照之后写入的所有数据。</p>
+<blockquote>
+<p>快照的持久化方式适合<code>即使丢了一部分数据也不会造成问题的应用程序</code>，redis中是默认开启的。</p>
+</blockquote>
+<h4 id="快照的创建方式">快照的创建方式<a href="#快照的创建方式" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>
+<p><code>BGSAVE</code>命令创建快照，Redis会调用<code>fork</code>来创建一个子进程，然后子进程负责将<code>快照写入磁盘</code>，而父进程负责继续处理命令请求。</p>
+<blockquote>
+<p>当一个线程创建子进程时，系统底层会创建该<code>进程的一个副本。在unix系统中，刚开始时，父子进程</code>共享相同的内存`，直到父或子进程对内存进行写入后，对被写入内存的共享才会结束</p>
+</blockquote>
+</li>
+<li>
+<p><code>SAVE</code>命令创建快照，Redis服务器接收到此请求后，在快照创建完成之前<code>不会响应</code>任何其他命令。该命令一般只在没有足够内存执行<code>BGSAVE</code>命令时才会使用。</p>
+</li>
+<li>
+<p><code>SAVE 60 1000</code>命令，从Redis最近一次创建快照之后算起，当<code>60s内有1000次写入</code>这个条件被满足，Redis会自动触发<code>BGSAVE</code>命令。任意一个<code>SAVE ？ ？</code>命令满足时就会触发一次<code>BGSAVE</code>命令。</p>
+<blockquote>
+<p>假如我们能接受一个小时数据的丢失，可以使用<code>SAVE 3600 1</code>。即<code>3600s内</code>有一次写入就创建快照。</p>
+</blockquote>
+</li>
+<li>
+<p>Redis接收到<code>SHUTDOWN</code>命令或<code>TERM</code>命令时，就会执行<code>SAVE</code>命令，阻塞所有客户端，不执行任何客户端发送的命令，并在<code>SAVE</code>命令执行完毕后关闭服务器。</p>
+</li>
+<li>
+<p>当一台Redis服务器连接另一台Redis服务器时，通过<code>SYNC</code>命令开始一次复制操作的时候，若主服务器没有正在执行或刚执行过<code>BGSAVE</code>命令，那么主服务器就会执行<code>BGSAVE</code>命令。</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">配置</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">save 60 1000</td>
+<td style="text-align:center">60s内有1000次写入就会触发<code>BGSAVE</code>命令</td>
+</tr>
+<tr>
+<td style="text-align:center">stop-writes-on-bgsave-error no</td>
+<td style="text-align:center">当<code>BGSAVE</code>命令执行发生错误时是否停止写入</td>
+</tr>
+<tr>
+<td style="text-align:center">rdbcompression yes</td>
+<td style="text-align:center">redis通过快照存储数据至本地数据库是否压缩</td>
+</tr>
+<tr>
+<td style="text-align:center">dbfilename dump.rdb</td>
+<td style="text-align:center">快照存储的文件名</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</li>
+</ul>
+<h4 id="save-or-bgsave">SAVE or BGSAVE<a href="#save-or-bgsave" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>我们知道<code>SAVE</code>生成快照期间会阻塞所有的客户端命令，而<code>BGSAVE</code>通过创建子进程实现的<code>快照</code>生成会带来短暂的停顿，这种情况在Redis进程占用的内存越大的情况下越明显。<code>一般来说Redis进程每多占用1GB内存，创建该进程的子进程的耗时就增加10-20ms</code>。</p>
+<p>为了防止创建子进程而出现的停顿，我们可以考虑关闭<code>自动保存</code>，通过手动发送<code>BGSAVE</code>命令控制停顿出现的时间。虽然<code>SAVE</code>会一直阻塞Redis直到快照生成完毕，但因为<code>SAVE</code>不需要创建子进程，不会导致Redis停顿且没有子进程竞争，所以<code>SAVE</code>创建快照的速度会比<code>BGSAVE</code>创建快照的时候<code>更短</code>。</p>
+<hr>
+<h3 id="只追加文件">只追加文件<a href="#只追加文件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>AOF持久化会将被执行的<code>写命令</code>写到AOF文件的末尾，以此来记录数据发生的变化。只需要从头执行一次AOF文件包含的所有写命令，就可以恢复AOF文件所记录的数据集。</p>
+<h4 id="开启aof">开启AOF<a href="#开启aof" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">appendonly yes <span style="color:#75715e"># 开启AOF</span>
+appendfsync always/everysec/no
+</code></pre></div><blockquote>
+<p>AOF模式是默认关闭的，需要手动开启</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">选项</th>
+<th style="text-align:center">同步频率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">always</td>
+<td style="text-align:center">每个<code>Redis写命令</code>都要同步写入磁盘，会严重降低redis速度</td>
+</tr>
+<tr>
+<td style="text-align:center">everysec</td>
+<td style="text-align:center">每秒执行一次同步，显式的将多个写命令同步到磁盘</td>
+</tr>
+<tr>
+<td style="text-align:center">no</td>
+<td style="text-align:center">让系统决定何时来进行同步</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<h4 id="aof文件压缩重写">AOF文件压缩/重写<a href="#aof文件压缩重写" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>AOF持久化不易丢失数据的优势下，存在着体积过大的问题。因为Redis不断将被执行的<code>写命令</code>记录到AOF文件中，随着Redis不断运行，AOF文件体积会越来越大。并且Redis重启后通过执行AOF文件还原数据集的时间也会随着体积的增大越来越长。</p>
+<blockquote>
+<p>我们可以通过<code>BGREWRITEAOF</code>重写命令，该命令会移除AOF文件中冗余的命令来重写（Rewrite）AOF文件。该命令原理与<code>BGSAVE</code>类似，都是创建子进程，并由子进程进行重写（也会带来性能和内存占用问题）。</p>
+<p>且我们可以通过<code>auto-aof-rewrite-percentage</code>和<code>auto-aof-rewrite-min-size</code>来控制<code>BGREWRITEAOF</code>命令的触发时机。</p>
+<p><code>auto-aof-rewrite-percentage 100; auto-aof-rewrite-min-size 64mb</code>表明当AOF文件体积大于64MB且AOF文件体积比上一次重写的体积大了100%时，redis会执行<code>BGREWRITEAOF</code>命令。</p>
+</blockquote>
+<hr>
+<h3 id="复制">复制<a href="#复制" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>对于多台机器之间的数据同步可以通过<code>复制</code>实现：一台主服务器（master）处理<code>写命令</code>，并向多台从服务器（slave）发送更新，从服务器处理<code>读请求</code>。</p>
+<h4 id="配置">配置<a href="#配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>默认情况下快照开启，当从服务器连接主服务器的时候，主服务器会自动执行<code>BGSAVE</code>命令，此时需要保证已经设置了如下参数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+<span style="color:#75715e"># 快照的文件名</span>
+dbfilename dump.rdb
+
+<span style="color:#75715e"># 文件默认存放到当前目录下</span>
+dir ./
+</code></pre></div><blockquote>
+<p>也可以通过<code>SLAVEOF ${host} ${port}</code>命令手动开启复制。</p>
+</blockquote>
+<h4 id="复制流程">复制流程<a href="#复制流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/Fpw3Wh42cQwbUZ3X7ON8FEa4rcvB" alt=""></p>
+<blockquote>
+<p>注意事项：</p>
+<ol>
+<li>从服务器的旧数据会被全部清空。</li>
+<li>需要保留部分内存作为缓冲区，存放写命令使用。</li>
+</ol>
+</blockquote>
+<h4 id="多台从服务器">多台从服务器<a href="#多台从服务器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>如果多台从服务器连接一台主服务器，那么所有的从服务器都会收到<code>相同的快照文件和缓冲区写命令</code>。</li>
+<li>如果一台从服务器C连接时，恰好有一台从服务器B正在复制，那么会等B执行完上图步骤后再由C执行上图步骤。</li>
+</ul>
+<h3 id="验证工具">验证工具<a href="#验证工具" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 验证/修复AOF文件</span>
+redis-check-aof <span style="color:#f92672">[</span>--fix<span style="color:#f92672">]</span> &lt;file.aof&gt;
+
+<span style="color:#75715e"># 验证快照文件</span>
+redis-check-dump &lt;dump.rdb&gt;
+
+</code></pre></div><blockquote>
+<p>修复AOF文件会将错误或不完整的命令删除，只保留正确的命令。
+目前出错的快照文件为u发删除(因为快照本身经过了压缩）。</p>
+</blockquote>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/redis%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                <span class="button__text">Redis（一）基本数据结构</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
