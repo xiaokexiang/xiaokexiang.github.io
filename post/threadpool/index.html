@@ -1906,6 +1906,56 @@ W<span style="color:#f92672">/</span>C<span style="color:#960050;background-colo
 </ol>
 <p>推荐：<code> I/O密集型： NThread = 2NCpu。 计算密集型 NThread = NCpus + 1</code>。</p>
 </blockquote>
+<ul>
+<li>Scheduled线程池中<code>scheduleAtFixedRate</code>和<code>scheduleWithFixedDelay</code>的区别</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execRate</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    ScheduledExecutorService executorService <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ScheduledThreadPoolExecutor<span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+    executorService<span style="color:#f92672">.</span><span style="color:#a6e22e">scheduleAtFixedRate</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; Start: scheduleAtFixedRate:  &#34;</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">());</span>
+            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span> <span style="color:#75715e">// 任务执行需要1s
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; End  : scheduleAtFixedRate:    &#34;</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">());</span>
+    <span style="color:#f92672">},</span> 2L<span style="color:#f92672">,</span> 3L<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 间隔3s
+</span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+<span style="color:#75715e">// pool-1-thread-1 Start: scheduleAtFixedRate:    Thu Apr 08 14:06:32 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleAtFixedRate:    Thu Apr 08 14:06:33 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 Start: scheduleAtFixedRate:    Thu Apr 08 14:06:35 CST 2021 35-32=3
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleAtFixedRate:    Thu Apr 08 14:06:36 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 Start: scheduleAtFixedRate:    Thu Apr 08 14:06:38 CST 2021 38-35=3
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleAtFixedRate:    Thu Apr 08 14:06:39 CST 2021
+</span><span style="color:#75715e"></span>
+</code></pre></div><blockquote>
+<ol>
+<li>如果线程执行任务的时间小于period设置的时间，那么即使上个线程任务执行完毕，下个线程也会等到<code>与上个线程相差period时间</code>后才会执行下个任务。</li>
+<li>如果线程执行任务的时间大于period设置的时间，那么线程任务执行完毕就会立即开始执行下个任务，因为时差已经达到了period。</li>
+</ol>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execDelay</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    ScheduledExecutorService executorService <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ScheduledThreadPoolExecutor<span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
+    executorService<span style="color:#f92672">.</span><span style="color:#a6e22e">scheduleWithFixedDelay</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Start: scheduleWithFixedDelay: &#34;</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">());</span>
+            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+        <span style="color:#f92672">}</span>
+        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;End  : scheduleWithFixedDelay: &#34;</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> Date<span style="color:#f92672">());</span>
+    <span style="color:#f92672">},</span> 2L<span style="color:#f92672">,</span> 2L<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
+<span style="color:#f92672">}</span>
+
+<span style="color:#75715e">// pool-1-thread-1 Start: scheduleWithFixedDelay: Thu Apr 08 14:12:29 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleWithFixedDelay: Thu Apr 08 14:12:30 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 Start: scheduleWithFixedDelay: Thu Apr 08 14:12:32 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleWithFixedDelay: Thu Apr 08 14:12:33 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 Start: scheduleWithFixedDelay: Thu Apr 08 14:12:35 CST 2021
+</span><span style="color:#75715e">// pool-1-thread-1 End  : scheduleWithFixedDelay: Thu Apr 08 14:12:36 CST 2021
+</span></code></pre></div><blockquote>
+<p>下个线程必须等待上个线程执行完毕后<code>线程执行时长 + Delay时长</code>才会开始执行下个任务。</p>
+</blockquote>
 
       </div></div>
 
