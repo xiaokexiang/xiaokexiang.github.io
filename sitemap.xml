@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
     <loc>https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</loc>
     <lastmod>2021-04-07T11:03:14+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -93,7 +98,32 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2021-04-07T11:03:14+08:00</lastmod>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/kubernetes/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/categories/kubernetes/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/post/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2021-04-09T11:07:57+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -103,21 +133,6 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/tags/hashmap/</loc>
-    <lastmod>2021-04-07T11:03:14+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/</loc>
-    <lastmod>2021-04-07T11:03:14+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/post/</loc>
-    <lastmod>2021-04-07T11:03:14+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2021-04-07T11:03:14+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

@@ -7,7 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Wed, 07 Apr 2021 11:03:14 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 09 Apr 2021 11:07:57 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes概念入门</title>
+      <link>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 09 Apr 2021 11:07:57 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</guid>
+      <description>容器与虚拟机的区别 虚拟机（VM）是虚拟化底层计算机，每个VM不仅需要运行操作系统的完整副本，还需要运行操作系统需要运行的所有硬件的虚拟副本。这就意味着需要大量的硬件资源。
+相比VM，容器只需要虚拟化操作系统。每个容器共享主机操作系统内核。相比VM功能类似，但是开销少很多。但是VM提供了完全隔离的环境。
+容器内的进程是运行在宿主机的操作系统上的，而虚拟机内的进程是运行在不同的操作系统上的，但容器内的进程是与其他进程隔离的。、
+  VM内的指令执行流程：VM程序指令 -&amp;gt; VM操作系统内核 -&amp;gt; 宿主机管理程序 -&amp;gt; 宿主机内核。  容器会完全指定运行在宿主机上的同一个内核的系统调用，容器间是共享操作系统内核。   容器的隔离机制实现 Linux命名空间 每个进程只能看到自己的系统视图（文件、进程、网络接口、主机名等）。进程不单单只属于一个命名空间，而是属于每个类型的一个命名空间。类型包括Mount(mnt)、Process ID(pid)、NetWork(net)、Inter-process communication(ipd)、UTS、User ID(user)。
+Linux控制组 基于cgroups实现，它是Linux内核功能，限制一个进程或一组进程的资源使用不超过被分配的量。
+Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程   在应用程序运行时，可以增加或减少副本数量。也可以交由kubernetes进行判断。 kubernetes可能需要在集群中迁移你的容器，比如运行的节点失败时、为其他容器腾空间从节点移除时。   Docker Command # 运行容器并输出hello world docker run busybox echo hello world Dockerfile const http = require(&amp;#39;http&amp;#39;); const os = require(&amp;#39;os&amp;#39;); console .log (&amp;#34;Kub i a server starting ... &amp;#34;); var handler = function(request, response){ console.</description>
+    </item>
+    
     <item>
       <title>HashMap的几点注意事项</title>
       <link>https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
