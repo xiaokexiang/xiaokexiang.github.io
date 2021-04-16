@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 09 Apr 2021 11:07:57 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 16 Apr 2021 11:02:51 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kubernetes概念入门</title>
       <link>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</link>
@@ -65,17 +65,6 @@ Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程  
     </item>
     
     <item>
-      <title>《财报就像一本故事书》读后感</title>
-      <link>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</link>
-      <pubDate>Tue, 15 Dec 2020 18:08:57 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;以前做招聘的时候经常会给准备上市的企业招聘一些高管，经常会接触这么一句话：上市？上市就是为了圈钱！当时听了一知半解没有深究，也不知道为嘛说财务总监、采购总监之类的职位是敏感职位，近期在跟小伙伴学理财，学的越久越能体会到：&lt;code&gt;学会基本的财务知识对于家庭日常收支，更好的经营家庭盈利有帮助，当然直接目的是为了日后获取更多理财收益。&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
       <title>Netty框架入门</title>
       <link>https://leejay.top/post/netty/</link>
       <pubDate>Mon, 14 Dec 2020 17:58:49 +0800</pubDate>
@@ -93,13 +82,18 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
     </item>
     
     <item>
-      <title>SpringMVC使用注意</title>
-      <link>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</link>
-      <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
+      <title>Docker命令汇总</title>
+      <link>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</link>
+      <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
       
-      <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
-      <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
-public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet.</description>
+      <guid>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</guid>
+      <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;
+docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下&lt;/span&gt;
+docker cp nginx:/etc/nginx/conf.d  /opt/nginx/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
     
     <item>
@@ -121,6 +115,27 @@ public class LoginInterceptor implements HandlerInterceptor { private final Logg
       
       <guid>https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/</guid>
       <description>__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数  usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2.</description>
+    </item>
+    
+    <item>
+      <title>SpringMVC使用注意</title>
+      <link>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</link>
+      <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
+      <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
+public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } }  WebMvcConfigurer 和 WebMvcConfigurationSupport  存在WebMvcConfigurationSupport则WebMvcConfigurer不生效  @ConditionalOnClass({ Servlet.class, DispatcherServlet.</description>
+    </item>
+    
+    <item>
+      <title>《财报就像一本故事书》读后感</title>
+      <link>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</link>
+      <pubDate>Tue, 15 Dec 2020 18:08:57 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;以前做招聘的时候经常会给准备上市的企业招聘一些高管，经常会接触这么一句话：上市？上市就是为了圈钱！当时听了一知半解没有深究，也不知道为嘛说财务总监、采购总监之类的职位是敏感职位，近期在跟小伙伴学理财，学的越久越能体会到：&lt;code&gt;学会基本的财务知识对于家庭日常收支，更好的经营家庭盈利有帮助，当然直接目的是为了日后获取更多理财收益。&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
