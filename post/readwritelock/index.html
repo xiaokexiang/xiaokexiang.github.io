@@ -590,7 +590,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <li>
 <p>int 型 state 与 <code>1111 1111 1111 1111</code>做<code>与运算</code>，它的结果也不会超过<code>1111 1111 1111 1111</code>，因为<code>与运算</code>的规则是<code>都1为1，否则为0</code>。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">如int state <span style="color:#f92672">=</span> 3<span style="color:#960050;background-color:#1e0010">，</span>那么它的二进制如下
-       
+
   0000 0000 0000 0000 0000 0000 0000 0011
 <span style="color:#f92672">&amp;</span>                     1111 1111 1111 1111
 <span style="color:#960050;background-color:#1e0010">——————————————————————————————————————————</span>    
@@ -650,7 +650,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
-  
+
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>tryAcquire<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
         acquireQueued<span style="color:#f92672">(</span>addWaiter<span style="color:#f92672">(</span>Node<span style="color:#f92672">.</span><span style="color:#a6e22e">EXCLUSIVE</span><span style="color:#f92672">),</span> arg<span style="color:#f92672">))</span>
@@ -692,7 +692,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
         <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-  
+
 <span style="color:#75715e">// 公平锁实习那
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FairSync</span> <span style="color:#66d9ef">extends</span> Sync <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 如果返回true说明前面有节点等待
@@ -701,7 +701,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> hasQueuedPredecessors<span style="color:#f92672">();</span>
     <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
-  
+
 </code></pre></div></li>
 </ul>
 <blockquote>
@@ -1148,7 +1148,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
     Object data<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">boolean</span> cacheValid<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">final</span> ReentrantReadWriteLock rwl <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantReadWriteLock<span style="color:#f92672">();</span>
-  
+
     <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">processCachedData</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 先获取读锁
 </span><span style="color:#75715e"></span>        rwl<span style="color:#f92672">.</span><span style="color:#a6e22e">readLock</span><span style="color:#f92672">().</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>

@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 16 Apr 2021 11:02:51 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 12 May 2021 16:18:28 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring</title>
+      <link>https://leejay.top/categories/spring/</link>
+      <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
+      
+      <guid>https://leejay.top/categories/spring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spring AOP </title>
+      <link>https://leejay.top/categories/spring-aop/</link>
+      <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
+      
+      <guid>https://leejay.top/categories/spring-aop/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Docker</title>
       <link>https://leejay.top/categories/docker/</link>
@@ -86,15 +104,6 @@
       <pubDate>Mon, 14 Dec 2020 17:58:49 +0800</pubDate>
       
       <guid>https://leejay.top/categories/netty/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Spring</title>
-      <link>https://leejay.top/categories/spring/</link>
-      <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
-      
-      <guid>https://leejay.top/categories/spring/</guid>
       <description></description>
     </item>
     
