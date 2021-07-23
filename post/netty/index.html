@@ -1037,7 +1037,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>EventLoop执行任务时，会先判断当前<code>执行任务的线程是否是当前EventLoop的绑定线程</code>，不是则入队等待下一次处理。</li>
 </ol>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">bootstrap<span style="color:#f92672">.</span><span style="color:#a6e22e">handle</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ChannelInitializer<span style="color:#f92672">&lt;</span>SocketChannel<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">bootstrap<span style="color:#f92672">.</span><span style="color:#a6e22e">handle</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ChannelInitializer<span style="color:#f92672">&lt;</span>SocketChannel<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>SocketChannel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 通过channel绑定的eventLoop来实现调度任务
@@ -1057,7 +1057,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 </blockquote>
 <h4 id="channelhandler">ChannelHandler<a href="#channelhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>用于处理<code>所有进出站的数据</code>的事件处理器。实现类包括<code>ChannelInboundHandler</code>、<code>ChannelOutboundHandler</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandler</span> <span style="color:#f92672">{}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandler</span> <span style="color:#f92672">{}</span>
 
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelInboundHandler</span> 
     	<span style="color:#66d9ef">extends</span> ChannelHandler <span style="color:#f92672">{}</span>
@@ -1069,13 +1069,13 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
     	<span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{}</span>
 </code></pre></div><h4 id="channelpipeline">ChannelPipeline<a href="#channelpipeline" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>用于存储<code>ChannelHandler链</code>的容器。在应用程序初始化时（BootStrap引导）通过<code>ChannelInitializer</code>将自定义的<code>ChannelHandler</code>注册到<code>ChannelPipeline</code>中。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
         <span style="color:#66d9ef">extends</span> ChannelInboundInvoker<span style="color:#f92672">,</span> ChannelOutboundInvoker<span style="color:#f92672">,</span> 
 				Iterable<span style="color:#f92672">&lt;</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ChannelHandler<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">{}</span>
 </code></pre></div><blockquote>
 <p>接口的继承表明：ChannelPipeline可以处理<code>入站和出站</code>的ChannelHandler链。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClient</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClient</span> <span style="color:#f92672">{</span>
     Bootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Bootstrap<span style="color:#f92672">()</span>
         <span style="color:#f92672">.</span><span style="color:#a6e22e">handler</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ChannelInitializer<span style="color:#f92672">&lt;</span>SocketChannel<span style="color:#f92672">&gt;()</span> <span style="color:#f92672">{</span>
             <span style="color:#a6e22e">@Override</span>
@@ -1134,7 +1134,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 </blockquote>
 <h4 id="channelhandlercontext">ChannelHandlerContext<a href="#channelhandlercontext" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>作为参数传递由上一个ChannelHandler传递到下一个ChannelHandler中。包含</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">EchoClientHandler</span> <span style="color:#66d9ef">extends</span> SimpleChannelInboundHandler<span style="color:#f92672">&lt;</span>ByteBuf<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
@@ -1157,7 +1157,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>客户端Bootstrp连接到<code>远程的地址和端口</code>，而服务端则绑定到<code>本地的端口</code>。</li>
 <li>客户端只需要一个<code>EventLoopGroup</code>，而服务端需要两个，其中一个只包含<code>ServerChannel</code>，代表服务自身的已绑定到某个本地端口的正在监听的socket，另一个包含所有已创建的、用于传入客户端连接的channel。</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Bootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Bootstrap<span style="color:#f92672">();</span><span style="color:#75715e">// client
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">Bootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Bootstrap<span style="color:#f92672">();</span><span style="color:#75715e">// client
 </span><span style="color:#75715e"></span>ServerBootstrap bootstrap <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ServerBootstrap<span style="color:#f92672">();</span><span style="color:#75715e">// server
 </span></code></pre></div><hr>
 <h3 id="channel-1">Channel<a href="#channel-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
@@ -1248,7 +1248,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>堆缓冲区</li>
 </ul>
 <p>将数据存储在JVM的堆空间中，又被称为<code>支撑数组</code>。其能在没有池化的情况下提供快速的分配与释放，适合有遗留数据需要处理的情况。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dump</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dump</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     ByteBuf byteBuf <span style="color:#f92672">=</span> <span style="color:#f92672">...;</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">hasArray</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// 判断是否有支撑数组
 </span><span style="color:#75715e"></span>        <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> array <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">array</span><span style="color:#f92672">();</span> <span style="color:#75715e">// 若有就获取该数组的引用
@@ -1260,7 +1260,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>直接缓冲区</li>
 </ul>
 <p>自JDK1.4后允许JVM调用本地方法(native)来分配堆外内存(又称为直接内存)。主要是为了避免<code>I/O操作前后将缓冲区内容复制到一个中间缓冲区</code>。相比于<code>堆内缓冲区</code>，<code>直接缓冲区</code>的分配和释放都是昂贵的。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">direct</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">direct</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     ByteBuf directBuffer <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">(</span>16<span style="color:#f92672">);</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>directBuffer<span style="color:#f92672">.</span><span style="color:#a6e22e">hasArray</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span> <span style="color:#75715e">// 判断是否有支撑数组
 </span><span style="color:#75715e"></span>        <span style="color:#75715e">// 还未读的字节大小
@@ -1274,7 +1274,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>复合缓冲区</li>
 </ul>
 <p>是多个<code>ByteBuf</code>的一个聚合视图，是JDK原生所没有的功能。此类型可以同时包含堆内缓冲区和直接缓冲区，如果只有一个ByteBuf的实例，那么<code>hasArray()</code>会返回该实例的<code>hasArray()</code>的值，否则返回false。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">composite</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">composite</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     CompositeByteBuf compositeByteBuf <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">compositeBuffer</span><span style="color:#f92672">();</span>
     <span style="color:#75715e">// 添加堆内和堆外两种模式的数据
 </span><span style="color:#75715e"></span>    compositeByteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">addComponents</span><span style="color:#f92672">(</span>
@@ -1291,7 +1291,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 </ol>
 </blockquote>
 <h5 id="派生缓冲区">派生缓冲区<a href="#派生缓冲区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// slice类似String的slice切分
 </span><span style="color:#75715e"></span>    ByteBuf byteBuf <span style="color:#f92672">=</span> Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Netty in Action rocks!&#34;</span><span style="color:#f92672">,</span> CharsetUtil<span style="color:#f92672">.</span><span style="color:#a6e22e">UTF_8</span><span style="color:#f92672">);</span>
     ByteBuf sliceBuf <span style="color:#f92672">=</span> byteBuf<span style="color:#f92672">.</span><span style="color:#a6e22e">slice</span><span style="color:#f92672">(</span>0<span style="color:#f92672">,</span> 15<span style="color:#f92672">);</span>
@@ -1316,12 +1316,12 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 </blockquote>
 <h4 id="bytebufholder接口">ByteBufHolder接口<a href="#bytebufholder接口" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>ByteBuf</code>的容器，为了满足除了基本的<code>ByteBuf</code>数据负载外，还要满足类似<code>HTTP</code>响应返回的各种属性值，<code>ByteBufHolder</code>包含<code>一个ByteBuf对象</code>，可以按需实现不同的需求。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DefaultByteBufHolder byteBufHolder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultByteBufHolder<span style="color:#f92672">(</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">DefaultByteBufHolder byteBufHolder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DefaultByteBufHolder<span style="color:#f92672">(</span>
     													Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">()));</span>
 </code></pre></div><h4 id="bytebuf分配">ByteBuf分配<a href="#bytebuf分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <h5 id="bytebufallocator">ByteBufAllocator<a href="#bytebufallocator" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>Netty基于ByteBufAllocator接口实现了ByteBuf的<code>池化</code>，它可以分配任意类型的ByteBuf实例。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">alloc</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">alloc</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// Netty默认的分配
 </span><span style="color:#75715e"></span>    ByteBufAllocator allocator <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PooledByteBufAllocator<span style="color:#f92672">();</span>
     allocator<span style="color:#f92672">.</span><span style="color:#a6e22e">buffer</span><span style="color:#f92672">();</span> <span style="color:#75715e">//堆或直接缓冲区
@@ -1333,12 +1333,12 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <p>Netty默认使用<code>PooledByteBufAllocator</code>类作为分配的规则。但也提供了<code>UnpooledByteBufAllocator</code>。前者<code>池化</code>了ByteBuf实例以提高性能并最大程度减少内存碎片，后者则<code>不池化</code>ByteBuf实例，每次调用都返回一个新的实例。</p>
 </blockquote>
 <p>我们还可以通过<code>Channel</code>对象或绑定到Channel的<code>ChannelHandlerContext</code>来获取<code>ByteBufAllocator</code>的引用。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandlerContext</span> <span style="color:#66d9ef">extends</span> AttributeMap<span style="color:#f92672">,</span> 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelHandlerContext</span> <span style="color:#66d9ef">extends</span> AttributeMap<span style="color:#f92672">,</span> 
 											   ChannelInboundInvoker<span style="color:#f92672">,</span> ChannelOutboundInvoker <span style="color:#f92672">{</span>
   	ByteBufAllocator <span style="color:#a6e22e">alloc</span><span style="color:#f92672">();</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><h5 id="unpooled缓冲区">Unpooled缓冲区<a href="#unpooled缓冲区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unPool</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unPool</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">copiedBuffer</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getBytes</span><span style="color:#f92672">());</span>
     Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">directBuffer</span><span style="color:#f92672">();</span>
     Unpooled<span style="color:#f92672">.</span><span style="color:#a6e22e">buffer</span><span style="color:#f92672">();</span>
@@ -1351,7 +1351,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <p>用于操作ByteBuf的静态方法，和池化无关，可单独使用。常用的有<code>equals（比较两个ByteBuf是否相等）</code>、<code>hexDump（返回ByteBuf的十六进制内容）</code>等。</p>
 <h5 id="引用计数法">引用计数法<a href="#引用计数法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>在Netty的池化中，存有一个重要的概念：<code>引用计数法</code>，只要该实例的引用大于0，就不会被释放，如果引用降低到0，那该实例就会被释放。一般由最后访问的该实例的那一方负责释放。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ReferenceCounted</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ReferenceCounted</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">refCnt</span><span style="color:#f92672">();</span>
     ReferenceCounted <span style="color:#a6e22e">retain</span><span style="color:#f92672">();</span>
     ReferenceCounted <span style="color:#a6e22e">retain</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> increment<span style="color:#f92672">);</span>
@@ -1368,7 +1368,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <p><img src="https://image.leejay.top/FjS0ITByNINX_7YdfLPRgAVgkWdr" alt=""></p>
 <h5 id="channelhandleradapter">ChannelHandlerAdapter<a href="#channelhandleradapter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p><code>ChannelInboudHandler &amp; ChannelOutboundHandler</code>都继承了该类，在<code>ChannelHandler加入ChannelPipeline或被移除时</code>被调用。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChannelHandlerAdapter</span> <span style="color:#66d9ef">implements</span> ChannelHandler <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChannelHandlerAdapter</span> <span style="color:#66d9ef">implements</span> ChannelHandler <span style="color:#f92672">{</span>
 
     <span style="color:#75715e">// 只作用于健康检查，所以不适用volatile修饰
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> added<span style="color:#f92672">;</span>
@@ -1417,7 +1417,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 </code></pre></div><ul>
 <li>处理入站异常</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#a6e22e">@ChannelHandler.Sharable</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelInboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
 	<span style="color:#a6e22e">@Override</span>
@@ -1433,7 +1433,7 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
 <li>出站异常</li>
 </ul>
 <p>出站异常，不再使用类似入站异常<code>exceptionCaught()</code>的模式，而是有两种方式可以选择。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 1. 添加监听器到ChannelFuture
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 1. 添加监听器到ChannelFuture
 </span><span style="color:#75715e"></span>ChannelFuture future <span style="color:#f92672">=</span> bootstrap<span style="color:#f92672">.</span><span style="color:#a6e22e">bind</span><span style="color:#f92672">().</span><span style="color:#a6e22e">sync</span><span style="color:#f92672">();</span>
 future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span><span style="color:#f92672">().</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">addListener</span><span style="color:#f92672">((</span>ChannelFutureListener<span style="color:#f92672">)</span> f <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>f<span style="color:#f92672">.</span><span style="color:#a6e22e">isSuccess</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
@@ -1459,7 +1459,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <span style="color:#f92672">}</span>
 </code></pre></div><h5 id="channelinboudhandler">ChannelInboudHandler<a href="#channelinboudhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>作用于<code>数据被接收时</code>或与其<code>对应的channel状态改变</code>时被调用。一般通过继承<code>ChannelInboundHandler</code>来实现自定义的ChannelHandler，但是需要我们显示的<code>释放与池化的ByteBuf实例相关的内存</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#a6e22e">@ChannelHandler.Sharable</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelInboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
 
@@ -1507,7 +1507,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <p><code>@Sharable</code>起到一个标识符的作用，表明其修饰的ChannelHandler能够被多个ChannelPipeline安全的共享。但并不代表被修饰的ChannelHandler就一定线程安全。</p>
 </blockquote>
 <p>但是我们更推荐使用<code>SimpleChannelInboundHandler&lt;T&gt;</code>，因为该类内置了释放内存的相关代码。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleChannelInboundHandler</span><span style="color:#f92672">&lt;</span>I<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SimpleChannelInboundHandler</span><span style="color:#f92672">&lt;</span>I<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> ChannelInboundHandlerAdapter <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">channelRead</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Object msg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">boolean</span> release <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
@@ -1564,7 +1564,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <p><code>java -Dio.netty.leakDetectionLevel=ADVANCED</code></p>
 </blockquote>
 <h5 id="channeloutboundhandler">ChannelOutboundHandler<a href="#channeloutboundhandler" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@ChannelHandler.Sharable</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyChannelOutboundHandler</span> <span style="color:#66d9ef">extends</span> ChannelOutboundHandlerAdapter <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
@@ -1617,7 +1617,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 </blockquote>
 <h4 id="channelpipeline-1">ChannelPipeline<a href="#channelpipeline-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>ChannelPipeline是存储ChannelHandler链的容器，每个新创建的ChannelHandler都会被分配一个新的ChannelPipeline。当执行ChannelPipeline中的ChannelHandler链时，Netty会默认的判断当前类型是否与事件运行方向一致（入站或出站）。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">ChannelPipeline</span>
         <span style="color:#66d9ef">extends</span> ChannelInboundInvoker<span style="color:#f92672">,</span> 
 				ChannelOutboundInvoker<span style="color:#f92672">,</span> Iterable<span style="color:#f92672">&lt;</span>Entry<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> ChannelHandler<span style="color:#f92672">&gt;&gt;</span> <span style="color:#f92672">{</span>
     ChannelPipeline <span style="color:#a6e22e">addFirst</span><span style="color:#f92672">(</span>ChannelHandler<span style="color:#f92672">...</span> handlers<span style="color:#f92672">);</span>
@@ -1648,7 +1648,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>ByteToMessageDecoder</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf in<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 如果可读字节数多于4个，那么将其添加到解码消息的list中
@@ -1663,7 +1663,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>ReplayingDecoder<T></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder2</span> <span style="color:#66d9ef">extends</span> ReplayingDecoder<span style="color:#f92672">&lt;</span>Void<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ToIntegerDecoder2</span> <span style="color:#66d9ef">extends</span> ReplayingDecoder<span style="color:#f92672">&lt;</span>Void<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> ByteBuf in<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 相比实现ByteToMessageDecoder，不需要判断是否存在可读字节，由父类实现
@@ -1677,7 +1677,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>MessageToMessageDecoder<T></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringDecoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageDecoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringDecoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageDecoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
@@ -1691,7 +1691,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>MessageToByteEncoder</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ShortToByteEncoder</span> <span style="color:#66d9ef">extends</span> MessageToByteEncoder<span style="color:#f92672">&lt;</span>Short<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ShortToByteEncoder</span> <span style="color:#66d9ef">extends</span> MessageToByteEncoder<span style="color:#f92672">&lt;</span>Short<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Short msg<span style="color:#f92672">,</span> ByteBuf out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         out<span style="color:#f92672">.</span><span style="color:#a6e22e">writeShort</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">);</span>
@@ -1703,7 +1703,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>MessageToMessageEncoder<T></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringEncoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageEncoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IntegerToStringEncoder</span> <span style="color:#66d9ef">extends</span> MessageToMessageEncoder<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         out<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span>msg<span style="color:#f92672">));</span>
@@ -1717,7 +1717,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>ByteToMessageCodec<T></li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyByteToMessageCodec</span> <span style="color:#66d9ef">extends</span> ByteToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyByteToMessageCodec</span> <span style="color:#66d9ef">extends</span> ByteToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> Integer msg<span style="color:#f92672">,</span> ByteBuf out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
@@ -1738,7 +1738,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>MessageToMessageCodec&lt;IN, OUT&gt;</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyMessageToMessageCodec</span> <span style="color:#66d9ef">extends</span> MessageToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> String<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyMessageToMessageCodec</span> <span style="color:#66d9ef">extends</span> MessageToMessageCodec<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">,</span> String<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>ChannelHandlerContext ctx<span style="color:#f92672">,</span> String msg<span style="color:#f92672">,</span> List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> out<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
@@ -1756,7 +1756,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>CombinedChannelDuplexHandler</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyCombinedChannelDuplexHandler</span> <span style="color:#66d9ef">extends</span> CombinedChannelDuplexHandler<span style="color:#f92672">&lt;</span>ToIntegerDecoder<span style="color:#f92672">,</span> ShortToByteEncoder<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyCombinedChannelDuplexHandler</span> <span style="color:#66d9ef">extends</span> CombinedChannelDuplexHandler<span style="color:#f92672">&lt;</span>ToIntegerDecoder<span style="color:#f92672">,</span> ShortToByteEncoder<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
     <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">MyCombinedChannelDuplexHandler</span><span style="color:#f92672">(</span>ToIntegerDecoder inboundHandler<span style="color:#f92672">,</span> ShortToByteEncoder outboundHandler<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>inboundHandler<span style="color:#f92672">,</span> outboundHandler<span style="color:#f92672">);</span>
@@ -1770,7 +1770,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>Ssl加密解密</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SslChannelInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SslChannelInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> SslContext context<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> startTls<span style="color:#f92672">;</span>
 
@@ -1792,7 +1792,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>Http/Https</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpPipelineInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpPipelineInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">;</span>
 
     <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HttpPipelineInitializer</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -1819,7 +1819,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>Http/Https聚合</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpAggregatorInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpAggregatorInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">;</span>
 
     <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">HttpAggregatorInitializer</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> isClient<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -1846,7 +1846,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>WebSocket</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketServerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSocketServerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
@@ -1892,7 +1892,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>IdleStateHandler</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IdleStateHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">IdleStateHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         ChannelPipeline pipeline <span style="color:#f92672">=</span> ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">();</span>
@@ -1923,7 +1923,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <li>Read/WriteTimeoutHandler</li>
 </ul>
 <p>除了<code>IdleStateHandler</code>的空闲连接处理，还可以处理<code>Read/Write</code>超时问题，需要交给下游的<code>ChannelHandler</code>中的<code>exeptionCaught</code>方法来处理。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReadTimeoutHandler</span> <span style="color:#66d9ef">extends</span> IdleStateHandler <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReadTimeoutHandler</span> <span style="color:#66d9ef">extends</span> IdleStateHandler <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 指定读取超时时间
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ReadTimeoutHandler</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> timeoutSeconds<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>timeoutSeconds<span style="color:#f92672">,</span> TimeUnit<span style="color:#f92672">.</span><span style="color:#a6e22e">SECONDS</span><span style="color:#f92672">);</span>
@@ -1939,7 +1939,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <ul>
 <li>LineBasedFrameDecoder</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LineBasedHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LineBasedHandlerInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 行尾符分割并限制最大长度
@@ -1961,7 +1961,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 <li>FixedLengthFrameDecoder</li>
 </ul>
 <p>每次解码都按照一定的长度进行解码，长度是在创建的时候通过构造函数指定的。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FixedLengthFrameDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FixedLengthFrameDecoder</span> <span style="color:#66d9ef">extends</span> ByteToMessageDecoder <span style="color:#f92672">{</span>
 	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">FixedLengthFrameDecoder</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> frameLength<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
         checkPositive<span style="color:#f92672">(</span>frameLength<span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;frameLength&#34;</span><span style="color:#f92672">);</span>
         <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">frameLength</span> <span style="color:#f92672">=</span> frameLength<span style="color:#f92672">;</span>
@@ -1970,7 +1970,7 @@ future<span style="color:#f92672">.</span><span style="color:#a6e22e">channel</s
 </code></pre></div><ul>
 <li>LengthFieldBasedFrameDecoder</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LengthBasedInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LengthBasedInitializer</span> <span style="color:#66d9ef">extends</span> ChannelInitializer<span style="color:#f92672">&lt;</span>Channel<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initChannel</span><span style="color:#f92672">(</span>Channel ch<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         ch<span style="color:#f92672">.</span><span style="color:#a6e22e">pipeline</span><span style="color:#f92672">().</span><span style="color:#a6e22e">addLast</span><span style="color:#f92672">(</span>

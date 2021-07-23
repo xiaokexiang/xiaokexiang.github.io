@@ -570,7 +570,7 @@
 <h3 id="只追加文件">只追加文件<a href="#只追加文件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>AOF持久化会将被执行的<code>写命令</code>写到AOF文件的末尾，以此来记录数据发生的变化。只需要从头执行一次AOF文件包含的所有写命令，就可以恢复AOF文件所记录的数据集。</p>
 <h4 id="开启aof">开启AOF<a href="#开启aof" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">appendonly yes <span style="color:#75715e"># 开启AOF</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">appendonly yes <span style="color:#75715e"># 开启AOF</span>
 appendfsync always/everysec/no
 </code></pre></div><blockquote>
 <p>AOF模式是默认关闭的，需要手动开启</p>
@@ -609,7 +609,7 @@ appendfsync always/everysec/no
 <p>对于多台机器之间的数据同步可以通过<code>复制</code>实现：一台主服务器（master）处理<code>写命令</code>，并向多台从服务器（slave）发送更新，从服务器处理<code>读请求</code>。</p>
 <h4 id="配置">配置<a href="#配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>默认情况下快照开启，当从服务器连接主服务器的时候，主服务器会自动执行<code>BGSAVE</code>命令，此时需要保证已经设置了如下参数：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
 <span style="color:#75715e"># 快照的文件名</span>
 dbfilename dump.rdb
 
@@ -633,7 +633,7 @@ dir ./
 <li>如果一台从服务器C连接时，恰好有一台从服务器B正在复制，那么会等B执行完上图步骤后再由C执行上图步骤。</li>
 </ul>
 <h3 id="验证工具">验证工具<a href="#验证工具" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 验证/修复AOF文件</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 验证/修复AOF文件</span>
 redis-check-aof <span style="color:#f92672">[</span>--fix<span style="color:#f92672">]</span> &lt;file.aof&gt;
 
 <span style="color:#75715e"># 验证快照文件</span>

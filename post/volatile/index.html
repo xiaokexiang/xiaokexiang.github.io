@@ -275,7 +275,7 @@ class Test { // 这里的flag就可以不用锁同步  private static volatile b
 <h3 id="与synchronized关键字的异同">与synchronized关键字的异同<a href="#与synchronized关键字的异同" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>多线程会产生三大问题：原子性、有序性和可见性。</p>
 <p>synchronized和volatile在共享变量的操作上具有相同的内存语义(<code>从主内存读取，立即写入主内存</code>)，保证了变量的可见性。但是synchronized相比volatile还具有<code>原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)</code>，所以<code>volatile是弱化版的synchronized</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 这里的flag就可以不用锁同步
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">boolean</span> flag <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
     <span style="color:#75715e">// 模拟AtomicInteger
@@ -308,7 +308,7 @@ class Test { // 这里的flag就可以不用锁同步  private static volatile b
 </blockquote>
 <h3 id="dcldouble-check-lock">DCL(Double Check Lock)<a href="#dcldouble-check-lock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>双重检查加锁问题简称DCL</code>，用于懒汉式单例的一种写法，问题如下所示：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DoubleCheckSingleton</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DoubleCheckSingleton</span> <span style="color:#f92672">{</span>
 
     <span style="color:#75715e">/**
 </span><span style="color:#75715e">     * 为什么这个地方要使用volatile修饰?

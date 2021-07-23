@@ -408,7 +408,7 @@
 <li>内部的并发操作通过<code>自旋 + CAS</code>实现。与<code>LinkedBlockingQueue</code>独占锁不同。</li>
 </ul>
 <h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
         <span style="color:#66d9ef">implements</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// head头节点
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> head<span style="color:#f92672">;</span>
@@ -478,7 +478,7 @@
 </blockquote>
 <hr>
 <h3 id="offer">offer<a href="#offer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 添加节点到队列中
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 添加节点到队列中
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 老一套，判断是否为空，为空抛出NPE
 </span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
@@ -535,7 +535,7 @@
 <p><img src="https://image.leejay.top/image/20200710/XWBJx3hhhzX3.jpg?imageslim" alt=""></p>
 <hr>
 <h3 id="poll">poll<a href="#poll" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 删除链表的头节点并返回该节点的item
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 删除链表的头节点并返回该节点的item
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     restartFromHead<span style="color:#f92672">:</span>
     <span style="color:#75715e">// 自旋

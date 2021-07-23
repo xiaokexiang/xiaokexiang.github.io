@@ -1676,7 +1676,7 @@
         <h2 id="spring-security入门">Spring Security入门<a href="#spring-security入门" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="依赖与配置">依赖与配置<a href="#依赖与配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="maven依赖">maven依赖<a href="#maven依赖" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
     <span style="color:#f92672">&lt;groupId&gt;</span>org.springframework.boot<span style="color:#f92672">&lt;/groupId&gt;</span>
     <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-security<span style="color:#f92672">&lt;/artifactId&gt;</span>
 <span style="color:#f92672">&lt;/dependency&gt;</span>
@@ -1685,7 +1685,7 @@
     <span style="color:#f92672">&lt;artifactId&gt;</span>spring-boot-starter-web<span style="color:#f92672">&lt;/artifactId&gt;</span>
 <span style="color:#f92672">&lt;/dependency&gt;</span>
 </code></pre></div><h4 id="spring-security配置">Spring Security配置<a href="#spring-security配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
     
     <span style="color:#75715e">/**
@@ -1789,7 +1789,7 @@
 <p><code>InMemoryUserDetailsManager</code>默认是由<code>UserDetailsServiceAutoConfiguration</code>类构造并注入IOC容器。</p>
 </blockquote>
 <h3 id="passwordencoder编码器">PasswordEncoder编码器<a href="#passwordencoder编码器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PasswordEncoder</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">PasswordEncoder</span> <span style="color:#f92672">{</span>
     
     String <span style="color:#a6e22e">encode</span><span style="color:#f92672">(</span>CharSequence rawPassword<span style="color:#f92672">);</span>
     
@@ -1838,7 +1838,7 @@
 <hr>
 <h2 id="自动配置">自动配置<a href="#自动配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="securityautoconfiguration">SecurityAutoConfiguration<a href="#securityautoconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnClass</span><span style="color:#f92672">(</span>DefaultAuthenticationEventPublisher<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@EnableConfigurationProperties</span><span style="color:#f92672">(</span>SecurityProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@Import</span><span style="color:#f92672">({</span> SpringBootWebSecurityConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> WebSecurityEnablerConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
@@ -1860,7 +1860,7 @@
 </ol>
 </blockquote>
 <h4 id="springbootwebsecurityconfiguration">SpringBootWebSecurityConfiguration<a href="#springbootwebsecurityconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnClass</span><span style="color:#f92672">(</span>WebSecurityConfigurerAdapter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnMissingBean</span><span style="color:#f92672">(</span>WebSecurityConfigurerAdapter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnWebApplication</span><span style="color:#f92672">(</span>type <span style="color:#f92672">=</span> Type<span style="color:#f92672">.</span><span style="color:#a6e22e">SERVLET</span><span style="color:#f92672">)</span>
@@ -1878,7 +1878,7 @@
 </ol>
 </blockquote>
 <h4 id="websecurityenablerconfiguration">WebSecurityEnablerConfiguration<a href="#websecurityenablerconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnBean</span><span style="color:#f92672">(</span>WebSecurityConfigurerAdapter<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnMissingBean</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> BeanIds<span style="color:#f92672">.</span><span style="color:#a6e22e">SPRING_SECURITY_FILTER_CHAIN</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnWebApplication</span><span style="color:#f92672">(</span>type <span style="color:#f92672">=</span> ConditionalOnWebApplication<span style="color:#f92672">.</span><span style="color:#a6e22e">Type</span><span style="color:#f92672">.</span><span style="color:#a6e22e">SERVLET</span><span style="color:#f92672">)</span>
@@ -1891,7 +1891,7 @@
 </ol>
 </blockquote>
 <h5 id="enablewebsecurity">@EnableWebSecurity<a href="#enablewebsecurity" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RetentionPolicy</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RetentionPolicy</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@Target</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#f92672">{</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ElementType</span><span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span> <span style="color:#f92672">})</span>
 <span style="color:#a6e22e">@Documented</span>
 <span style="color:#a6e22e">@Import</span><span style="color:#f92672">({</span> WebSecurityConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span>
@@ -1925,7 +1925,7 @@
 <p>自动添加Spring Security与Spring Data的集成。</p>
 <h3 id="securityfilterautoconfiguration">SecurityFilterAutoConfiguration<a href="#securityfilterautoconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>用于自动注入Spring Security的Filter过滤器类。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnWebApplication</span><span style="color:#f92672">(</span>type <span style="color:#f92672">=</span> Type<span style="color:#f92672">.</span><span style="color:#a6e22e">SERVLET</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@EnableConfigurationProperties</span><span style="color:#f92672">(</span>SecurityProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@ConditionalOnClass</span><span style="color:#f92672">({</span> AbstractSecurityWebApplicationInitializer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> SessionCreationPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span> <span style="color:#f92672">})</span>
@@ -1958,7 +1958,7 @@
 </ol>
 </blockquote>
 <h4 id="delegatingfilterproxyregistrationbean">DelegatingFilterProxyRegistrationBean<a href="#delegatingfilterproxyregistrationbean" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DelegatingFilterProxyRegistrationBean</span> <span style="color:#66d9ef">extends</span> AbstractFilterRegistrationBean<span style="color:#f92672">&lt;</span>DelegatingFilterProxy<span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">DelegatingFilterProxyRegistrationBean</span> <span style="color:#66d9ef">extends</span> AbstractFilterRegistrationBean<span style="color:#f92672">&lt;</span>DelegatingFilterProxy<span style="color:#f92672">&gt;</span>
 		<span style="color:#66d9ef">implements</span> ApplicationContextAware <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
 	<span style="color:#66d9ef">public</span> DelegatingFilterProxy <span style="color:#a6e22e">getFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -1983,7 +1983,7 @@
 <hr>
 <h2 id="自定义配置">自定义配置<a href="#自定义配置" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>主要通过继承<code>WebSecurityConfigurerAdapter</code>抽象类来实现的。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
 
 	<span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span><span style="color:#f92672">(</span>HttpSecurity http<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
@@ -2001,7 +2001,7 @@
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><h3 id="httpsecurity入门">HttpSecurity入门<a href="#httpsecurity入门" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CommonSecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Resource</span>
@@ -2045,7 +2045,7 @@
 <h2 id="authenticationmanager源码解析">AuthenticationManager源码解析<a href="#authenticationmanager源码解析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="usernamepasswordauthenticationfilter">UsernamePasswordAuthenticationFilter<a href="#usernamepasswordauthenticationfilter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>结合前文所示，用户的账户和密码认证是由<code>UsernamePasswordAuthenticationFilter</code>处理，所以我们以此切入。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UsernamePasswordAuthenticationFilter</span> <span style="color:#66d9ef">extends</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UsernamePasswordAuthenticationFilter</span> <span style="color:#66d9ef">extends</span>
 		AbstractAuthenticationProcessingFilter <span style="color:#f92672">{</span>
 
 	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">UsernamePasswordAuthenticationFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -2086,7 +2086,7 @@
 <p>该类的主要作用就是拦截request请求并获取账号和密码，再将其封装到<code>UsernamePasswordAuthenticationToken</code>中。再交给<code>AuthenticationManager</code>去认证。</p>
 </blockquote>
 <h3 id="abstractauthenticationprocessingfilter">AbstractAuthenticationProcessingFilter<a href="#abstractauthenticationprocessingfilter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractAuthenticationProcessingFilter</span> <span style="color:#66d9ef">extends</span> GenericFilterBean
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractAuthenticationProcessingFilter</span> <span style="color:#66d9ef">extends</span> GenericFilterBean
 		<span style="color:#66d9ef">implements</span> ApplicationEventPublisherAware<span style="color:#f92672">,</span> MessageSourceAware <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> AuthenticationSuccessHandler 
         successHandler <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SavedRequestAwareAuthenticationSuccessHandler<span style="color:#f92672">();</span> <span style="color:#75715e">// success处理器
@@ -2148,7 +2148,7 @@
 </ol>
 </blockquote>
 <h3 id="authenticationmanager初始化流程">AuthenticationManager初始化流程🔒<a href="#authenticationmanager初始化流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationManager</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationManager</span> <span style="color:#f92672">{</span>
     Authentication <span style="color:#a6e22e">authenticate</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">)</span>
 			<span style="color:#66d9ef">throws</span> AuthenticationException<span style="color:#f92672">;</span>
 <span style="color:#f92672">}</span>
@@ -2159,7 +2159,7 @@
 <blockquote>
 <p>请注意：下述的流程展示省略了大部分与<code>AuthenticationManager</code>初始化无关的代码！！</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// // 通过自动装配注入了`SecurityAutoConfiguration`类，继而注入了`WebSecurityEnablerConfiguration`
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// // 通过自动装配注入了`SecurityAutoConfiguration`类，继而注入了`WebSecurityEnablerConfiguration`
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">@Import</span><span style="color:#f92672">({</span>WebSecurityEnablerConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">})</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityAutoConfiguration</span> <span style="color:#f92672">{</span>
 <span style="color:#f92672">}</span>
@@ -2179,7 +2179,7 @@
 </ol>
 </blockquote>
 <h4 id="2-websecurityconfiguration">2. WebSecurityConfiguration<a href="#2-websecurityconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfiguration</span> <span style="color:#66d9ef">implements</span> ImportAware<span style="color:#f92672">,</span> BeanClassLoaderAware <span style="color:#f92672">{</span>
     
     <span style="color:#66d9ef">private</span> WebSecurity webSecurity<span style="color:#f92672">;</span>
@@ -2243,7 +2243,7 @@
 </ol>
 </blockquote>
 <h5 id="21-abstractsecuritybuilderbuild">2.1 AbstractSecurityBuilder.build()🔒<a href="#21-abstractsecuritybuilderbuild" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractSecurityBuilder</span><span style="color:#f92672">&lt;</span>O<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> SecurityBuilder<span style="color:#f92672">&lt;</span>O<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractSecurityBuilder</span><span style="color:#f92672">&lt;</span>O<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> SecurityBuilder<span style="color:#f92672">&lt;</span>O<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     
     <span style="color:#66d9ef">private</span> AtomicBoolean building <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicBoolean<span style="color:#f92672">();</span>
 	<span style="color:#66d9ef">private</span> O object<span style="color:#f92672">;</span>
@@ -2301,7 +2301,7 @@
 </ol>
 </blockquote>
 <h4 id="3--enableglobalauthentication">3.  @EnableGlobalAuthentication🎈<a href="#3--enableglobalauthentication" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
 </span><span style="color:#75715e"> * 此注解可用于配置`AuthenticationManagerBuilder`实例，而`AuthenticationManagerBuilder`则
 </span><span style="color:#75715e"> * 用于创建`AuthenticationManager`实例
 </span><span style="color:#75715e"> */</span>
@@ -2335,7 +2335,7 @@
 </ol>
 </blockquote>
 <h5 id="31-objectpostprocessorconfiguration">3.1 ObjectPostProcessorConfiguration<a href="#31-objectpostprocessorconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@Role</span><span style="color:#f92672">(</span>BeanDefinition<span style="color:#f92672">.</span><span style="color:#a6e22e">ROLE_INFRASTRUCTURE</span><span style="color:#f92672">)</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ObjectPostProcessorConfiguration</span> <span style="color:#f92672">{</span>
 
@@ -2384,7 +2384,7 @@
 </ol>
 </blockquote>
 <h5 id="32-authenticationconfiguration">3.2 AuthenticationConfiguration🔒<a href="#32-authenticationconfiguration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span><span style="color:#f92672">(</span>proxyBeanMethods <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@Import</span><span style="color:#f92672">(</span>ObjectPostProcessorConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span> <span style="color:#75715e">// 上文已解析
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthenticationConfiguration</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// IOC容器上下文，BeanFactory的实现
@@ -2518,7 +2518,7 @@
 </ol>
 </blockquote>
 <h4 id="4-websecurityconfigureradapter">4. WebSecurityConfigurerAdapter<a href="#4-websecurityconfigureradapter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfigurerAdapter</span> <span style="color:#66d9ef">implements</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebSecurityConfigurerAdapter</span> <span style="color:#66d9ef">implements</span>
 		WebSecurityConfigurer<span style="color:#f92672">&lt;</span>WebSecurity<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">boolean</span> disableLocalConfigureAuthenticationBldr<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">boolean</span> disableDefaults<span style="color:#f92672">;</span> <span style="color:#75715e">// 初始化是否需要默认配置
@@ -2633,7 +2633,7 @@
 </blockquote>
 <h4 id="5-providemanager">5. ProvideManager<a href="#5-providemanager" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>此处主要解释<code>ProvideManager</code>、<code>AuthenticationManager</code>、<code>AuthenticationProvider</code>三者之间的联系。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationManager</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AuthenticationManager</span> <span style="color:#f92672">{</span>
     Authentication <span style="color:#a6e22e">authenticate</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> AuthenticationException<span style="color:#f92672">;</span>
 <span style="color:#f92672">}</span>
 
@@ -2690,7 +2690,7 @@
 </li>
 <li>
 <p>容器中可以存在多个<code>AuthenticationProvider</code>的实现类和一个<code>AuthenticationManager</code>实现类。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Override</span>
 <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">configure</span><span style="color:#f92672">(</span>AuthenticationManagerBuilder auth<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 可以配置多个AuthenticationProvider的实现类
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">// 但是建议一个UserDetailService对应一个AuthenticationProvider
@@ -2715,7 +2715,7 @@
 <p>SpringSecurity中内置了一些Filter过滤器，可以通过<code>HttpSecurity</code>进行内置和自定义过滤器配置。</p>
 <h4 id="filter执行顺序">Filter执行顺序<a href="#filter执行顺序" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <h5 id="filtercomparator">FilterComparator<a href="#filtercomparator" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FilterComparator</span> <span style="color:#66d9ef">implements</span> Comparator<span style="color:#f92672">&lt;</span>Filter<span style="color:#f92672">&gt;,</span> Serializable <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FilterComparator</span> <span style="color:#66d9ef">implements</span> Comparator<span style="color:#f92672">&lt;</span>Filter<span style="color:#f92672">&gt;,</span> Serializable <span style="color:#f92672">{</span>
     FilterComparator<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 从100开始，依次叠加100，数组越小越靠前
 </span><span style="color:#75715e"></span>		Step order <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Step<span style="color:#f92672">(</span>INITIAL_ORDER<span style="color:#f92672">,</span> ORDER_STEP<span style="color:#f92672">);</span>
@@ -2787,7 +2787,7 @@
 </ol>
 </blockquote>
 <h5 id="httpsecurity">HttpSecurity<a href="#httpsecurity" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpSecurity</span> <span style="color:#66d9ef">extends</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HttpSecurity</span> <span style="color:#66d9ef">extends</span>
 		AbstractConfiguredSecurityBuilder<span style="color:#f92672">&lt;</span>DefaultSecurityFilterChain<span style="color:#f92672">,</span> HttpSecurity<span style="color:#f92672">&gt;</span>
 		<span style="color:#66d9ef">implements</span> SecurityBuilder<span style="color:#f92672">&lt;</span>DefaultSecurityFilterChain<span style="color:#f92672">&gt;,</span>
 		HttpSecurityBuilder<span style="color:#f92672">&lt;</span>HttpSecurity<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
@@ -2918,7 +2918,7 @@
 <h3 id="spring-security过滤器链">Spring Security过滤器链<a href="#spring-security过滤器链" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>在Spring Security Filter中是通过<code>FilterChainProxy</code>来管理多个代理不同路径的<code>SecurityFilterChain</code>过滤器链，同时<code>FilterChainProxy</code>是通过<code>DelegatingFilterProxy</code>加入到过滤器链中的一部分。如下图所示：</p>
 <p><img src="https://image.leejay.top/Fn262VRuzsxESP1x-K4XBoie2rsC" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SecurityFilterChain</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SecurityFilterChain</span> <span style="color:#f92672">{</span>
 	<span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">matches</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">);</span>
     <span style="color:#75715e">// 路径对应的过滤器链
 </span><span style="color:#75715e"></span>	List<span style="color:#f92672">&lt;</span>Filter<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getFilters</span><span style="color:#f92672">();</span>
@@ -2981,7 +2981,7 @@
 </ul>
 <p>粒度最小的权限单位。一般体现在接口的控制上，同一个权限可以属于不同的角色。</p>
 <h3 id="基于配置的权限">基于配置的权限<a href="#基于配置的权限" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">http<span style="color:#f92672">.</span><span style="color:#a6e22e">authorizeRequests</span><span style="color:#f92672">()</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">http<span style="color:#f92672">.</span><span style="color:#a6e22e">authorizeRequests</span><span style="color:#f92672">()</span>
     <span style="color:#75715e">// 要求/admin/**路径的请求必须有ADMIN和USER权限
 </span><span style="color:#75715e"></span>    <span style="color:#f92672">.</span><span style="color:#a6e22e">antMatchers</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/admin/**&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">access</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hasAuthority(&#39;ADMIN&#39;) and hasAuthority(&#39;USER&#39;)&#34;</span><span style="color:#f92672">)</span> 
     <span style="color:#75715e">// 只要用户有ADMIN，USER其中一个权限即可
@@ -3014,7 +3014,7 @@
 </blockquote>
 <h3 id="基于注解的权限">基于注解的权限<a href="#基于注解的权限" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="启动全局权限注解">启动全局权限注解<a href="#启动全局权限注解" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RetentionPolicy</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RetentionPolicy</span><span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
 <span style="color:#a6e22e">@Target</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#f92672">{</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">lang</span><span style="color:#f92672">.</span><span style="color:#a6e22e">annotation</span><span style="color:#f92672">.</span><span style="color:#a6e22e">ElementType</span><span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span> <span style="color:#f92672">})</span>
 <span style="color:#a6e22e">@Documented</span>
 <span style="color:#a6e22e">@Import</span><span style="color:#f92672">({</span> GlobalMethodSecuritySelector<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span> <span style="color:#f92672">})</span>
@@ -3038,17 +3038,17 @@
 </ol>
 </blockquote>
 <h4 id="preauthorize">@PreAuthorize<a href="#preauthorize" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PreAuthorize</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hasAuthority(&#39;QUERY&#39;)&#34;</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PreAuthorize</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hasAuthority(&#39;QUERY&#39;)&#34;</span><span style="color:#f92672">)</span>
 </code></pre></div><blockquote>
 <p>此方法要求用户具有<code>QUERY</code>权限才能访问，即使配置文件中没有对此路径的访问有权限要求。</p>
 </blockquote>
 <h4 id="postauthorize">@PostAuthorize<a href="#postauthorize" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PostAuthorize</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;returnObject.name == &#39;test&#39;&#34;</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PostAuthorize</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;returnObject.name == &#39;test&#39;&#34;</span><span style="color:#f92672">)</span>
 </code></pre></div><blockquote>
 <p>判断当前返回的用户名是否为test，只有条件满足才会返回，否则抛出异常。</p>
 </blockquote>
 <h4 id="prefilter">@PreFilter<a href="#prefilter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PreFilter</span><span style="color:#f92672">(</span>filterTarget <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ids&#34;</span><span style="color:#f92672">,</span> value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;filterObject%2==0&#34;</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PreFilter</span><span style="color:#f92672">(</span>filterTarget <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ids&#34;</span><span style="color:#f92672">,</span> value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;filterObject%2==0&#34;</span><span style="color:#f92672">)</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delete</span><span style="color:#f92672">(</span>List<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> ids<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 只保留偶数的id
 </span><span style="color:#75715e"></span>    Stream<span style="color:#f92672">.</span><span style="color:#a6e22e">of</span><span style="color:#f92672">(</span>ids<span style="color:#f92672">).</span><span style="color:#a6e22e">forEach</span><span style="color:#f92672">(</span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">::</span>println<span style="color:#f92672">);</span>
@@ -3057,7 +3057,7 @@
 <p>将传入的参数按照条件进行过滤</p>
 </blockquote>
 <h4 id="postfilter">@PostFilter<a href="#postfilter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PostFilter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;filterObject.name == authentication.name&#34;</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@PostFilter</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;filterObject.name == authentication.name&#34;</span><span style="color:#f92672">)</span>
 <span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">findOne</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     List<span style="color:#f92672">&lt;</span>Person<span style="color:#f92672">&gt;</span> persons <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
     persons<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Person<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;zhangsan&#34;</span><span style="color:#f92672">));</span>
@@ -3070,9 +3070,9 @@
 <hr>
 <h2 id="securitycontext安全上下文">SecurityContext安全上下文<a href="#securitycontext安全上下文" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>与<code>当前线程</code>绑定的安全上下文。可以获取用户的相关信息。我们通过</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">User user <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>User<span style="color:#f92672">)</span>SecurityContextHolder<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getAuthentication</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getPrincipal</span><span style="color:#f92672">();</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">User user <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>User<span style="color:#f92672">)</span>SecurityContextHolder<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getAuthentication</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getPrincipal</span><span style="color:#f92672">();</span>
 </code></pre></div><p>来获取当前登录用户（匿名用户就是<code>anonymousUser</code>字符串）的相关信息。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SecurityContext</span> <span style="color:#66d9ef">extends</span> Serializable <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">SecurityContext</span> <span style="color:#66d9ef">extends</span> Serializable <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 获取当前的认证信息，有可能为null
 </span><span style="color:#75715e"></span>    Authentication <span style="color:#a6e22e">getAuthentication</span><span style="color:#f92672">();</span>
     <span style="color:#75715e">// 用于修改或删除当前的认证信息
@@ -3086,7 +3086,7 @@
 	SecurityContext <span style="color:#a6e22e">createEmptyContext</span><span style="color:#f92672">();</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><h3 id="securitycontextholder源码解析">SecurityContextHolder源码解析<a href="#securitycontextholder源码解析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityContextHolder</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityContextHolder</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 上下文策略类
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> SecurityContextHolderStrategy strategy<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String SYSTEM_PROPERTY <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;spring.security.strategy&#34;</span><span style="color:#f92672">;</span>
@@ -3122,7 +3122,7 @@
 	<span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><h3 id="threadlocalsecuritycontextholderstrategy">ThreadLocalSecurityContextHolderStrategy<a href="#threadlocalsecuritycontextholderstrategy" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 默认的实现类，基于ThreadLocal实现线程隔离，不清楚可以查看ThreadLocal源码
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 默认的实现类，基于ThreadLocal实现线程隔离，不清楚可以查看ThreadLocal源码
 </span><span style="color:#75715e">// 详见：https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocalSecurityContextHolderStrategy</span> <span style="color:#66d9ef">implements</span> SecurityContextHolderStrategy <span style="color:#f92672">{</span>
 	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ThreadLocal<span style="color:#f92672">&lt;</span>SecurityContext<span style="color:#f92672">&gt;</span> contextHolder <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ThreadLocal<span style="color:#f92672">&lt;&gt;();</span>
@@ -3152,7 +3152,7 @@
 </span><span style="color:#75715e"></span>	<span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><h3 id="securitycontextimpl">SecurityContextImpl<a href="#securitycontextimpl" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityContextImpl</span> <span style="color:#66d9ef">implements</span> SecurityContext <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SecurityContextImpl</span> <span style="color:#66d9ef">implements</span> SecurityContext <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> Authentication authentication<span style="color:#f92672">;</span>
 
 	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">SecurityContextImpl</span><span style="color:#f92672">()</span> <span style="color:#f92672">{}</span>
@@ -3171,7 +3171,7 @@
 <hr>
 <h2 id="动态权限">动态权限<a href="#动态权限" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p><code>FilterSecurityInterceptor </code>负责Spring Security中的权限控制。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FilterSecurityInterceptor</span> <span style="color:#66d9ef">extends</span> AbstractSecurityInterceptor <span style="color:#66d9ef">implements</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">FilterSecurityInterceptor</span> <span style="color:#66d9ef">extends</span> AbstractSecurityInterceptor <span style="color:#66d9ef">implements</span>
 		Filter <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> FilterInvocationSecurityMetadataSource securityMetadataSource<span style="color:#f92672">;</span>
 
@@ -3234,7 +3234,7 @@
 </blockquote>
 <h3 id="安全权限数据源">安全权限数据源<a href="#安全权限数据源" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="自定义权限数据源">自定义权限数据源<a href="#自定义权限数据源" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UrlFilterInvocationSecurityMetadataSource</span> <span style="color:#66d9ef">implements</span> FilterInvocationSecurityMetadataSource <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UrlFilterInvocationSecurityMetadataSource</span> <span style="color:#66d9ef">implements</span> FilterInvocationSecurityMetadataSource <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">public</span> Collection<span style="color:#f92672">&lt;</span>ConfigAttribute<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">getAttributes</span><span style="color:#f92672">(</span>Object object<span style="color:#f92672">)</span> 
@@ -3264,7 +3264,7 @@
 </blockquote>
 <h3 id="投票模型">投票模型<a href="#投票模型" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="自定义accessdecisionmanager">自定义AccessDecisionManager<a href="#自定义accessdecisionmanager" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AccessDecisionManager</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AccessDecisionManager</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 决策的核心方法
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">decide</span><span style="color:#f92672">(</span>Authentication authentication<span style="color:#f92672">,</span> Object object<span style="color:#f92672">,</span>
 			Collection<span style="color:#f92672">&lt;</span>ConfigAttribute<span style="color:#f92672">&gt;</span> configAttributes<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> AccessDeniedException<span style="color:#f92672">,</span>
@@ -3306,7 +3306,7 @@
 </blockquote>
 <h4 id="自定义accessdecisionvoter">自定义AccessDecisionVoter<a href="#自定义accessdecisionvoter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>AccessDecisionManager</code>的实现类中支持<code>List&lt;AccessDecisionVoter&lt;?&gt;&gt; decisionVoters</code>作为参数传入，所以我们也可以通过创建<code>AccessDecisionVoter</code>的实现类创建自定义投票器。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AccessDecisionVoter</span><span style="color:#f92672">&lt;</span>S<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">AccessDecisionVoter</span><span style="color:#f92672">&lt;</span>S<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
 	<span style="color:#66d9ef">int</span> ACCESS_GRANTED <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
 	<span style="color:#66d9ef">int</span> ACCESS_ABSTAIN <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
 	<span style="color:#66d9ef">int</span> ACCESS_DENIED <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
@@ -3318,7 +3318,7 @@
 <span style="color:#f92672">}</span>
 </code></pre></div><h3 id="异常控制器">异常控制器<a href="#异常控制器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="未登录异常控制器">未登录异常控制器<a href="#未登录异常控制器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AdminAuthenticationEntryPoint</span> <span style="color:#66d9ef">implements</span> AuthenticationEntryPoint <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AdminAuthenticationEntryPoint</span> <span style="color:#66d9ef">implements</span> AuthenticationEntryPoint <span style="color:#f92672">{</span>
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">commence</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">,</span> 
                          HttpServletResponse response<span style="color:#f92672">,</span> 
@@ -3333,7 +3333,7 @@
 <p>处理未登录情况下所有访问的接口（放行除外）</p>
 </blockquote>
 <h4 id="无权限异常控制器">无权限异常控制器<a href="#无权限异常控制器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UrlAccessDeniedHandler</span> <span style="color:#66d9ef">implements</span> AccessDeniedHandler <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">UrlAccessDeniedHandler</span> <span style="color:#66d9ef">implements</span> AccessDeniedHandler <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">handle</span><span style="color:#f92672">(</span>HttpServletRequest request<span style="color:#f92672">,</span> 
@@ -3349,7 +3349,7 @@
 <p>处理登录后没有权限访问的路径</p>
 </blockquote>
 <h3 id="spring-security-config">Spring Security config<a href="#spring-security-config" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PermissionSecurityConfig</span> <span style="color:#66d9ef">extends</span> WebSecurityConfigurerAdapter <span style="color:#f92672">{</span>
     
     <span style="color:#a6e22e">@Override</span>

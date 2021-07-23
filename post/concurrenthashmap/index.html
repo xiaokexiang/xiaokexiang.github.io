@@ -375,7 +375,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
         <h3 id="concurrenthashmap">ConcurrentHashMap<a href="#concurrenthashmap" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>JDK1.8</code>之后采用的是<code>数组 + 链表 + 红黑树</code>的结构，通过<code>Synchronized + CAS</code>实现线程安全，而<code>JDK1.7</code>采用的是<code>将一个HashMap分成多个Segment</code>的方式，通过<code>继承ReentrentLock的Segment分段锁</code>实现线程安全。</p>
 <h4 id="node">Node<a href="#node" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// Node数组，组成ConcurrentHashMap的主要结构
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// Node数组，组成ConcurrentHashMap的主要结构
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> table<span style="color:#f92672">;</span>
 <span style="color:#75715e">// 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nextTable<span style="color:#f92672">;</span>
@@ -447,7 +447,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 </ol>
 </blockquote>
 <h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 负数时表示为正在初始化或扩容：-1表示初始化或-(1+活动resize线程数量)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 负数时表示为正在初始化或扩容：-1表示初始化或-(1+活动resize线程数量)
 </span><span style="color:#75715e">// 当table为null时，持有初始table size直到table创建(默认为0)
 </span><span style="color:#75715e">// 初始化后持有下个大小直到扩容table
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> sizeCtl<span style="color:#f92672">;</span>
@@ -473,7 +473,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 </blockquote>
 <hr>
 <h3 id="put">put<a href="#put" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">return</span> putVal<span style="color:#f92672">(</span>key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
 
@@ -674,7 +674,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 </blockquote>
 <hr>
 <h3 id="resize">resize<a href="#resize" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TRANSFER_STRIDE <span style="color:#f92672">=</span> 16<span style="color:#f92672">;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TRANSFER_STRIDE <span style="color:#f92672">=</span> 16<span style="color:#f92672">;</span>
 <span style="color:#75715e">// 扩容期间表示下一个数组的index
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> transferIndex<span style="color:#f92672">;</span>
 <span style="color:#75715e">// 扩容的核心方法，参数原有的table和扩容后的table
@@ -925,7 +925,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
 </blockquote>
 <hr>
 <h3 id="get">get<a href="#get" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>Object key<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>Object key<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">;</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e<span style="color:#f92672">,</span> p<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">,</span> eh<span style="color:#f92672">;</span> K ek<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 计算key的hashcode
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> h <span style="color:#f92672">=</span> spread<span style="color:#f92672">(</span>key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">());</span>

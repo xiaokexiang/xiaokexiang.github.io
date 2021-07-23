@@ -465,7 +465,7 @@
   <div class="post-content"><div>
         <p><code>JDK1.8</code>新增的并发工具，回顾之前的<code>ReentrentReadWriteLock</code>，它是悲观锁的实现：<code>只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）</code>。</p>
 <p>而<code>StampedLock</code>是<code>乐观锁</code>的实现，<code>乐观读</code>的时候不加锁，读取后<code>发现数据改变了再升级为悲观读，此时与写互斥</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StampedLockTest</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> StampedLock LOCK <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> StampedLock<span style="color:#f92672">();</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> x<span style="color:#f92672">,</span> y<span style="color:#f92672">;</span>
@@ -515,7 +515,7 @@
 </ol>
 </blockquote>
 <h3 id="stampedlock">StampedLock<a href="#stampedlock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 移位基数
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 移位基数
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> LG_READERS <span style="color:#f92672">=</span> 7<span style="color:#f92672">;</span>
 <span style="color:#75715e">// 读锁个数每次增加的单位
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> RUNIT <span style="color:#f92672">=</span> 1L<span style="color:#f92672">;</span>
@@ -586,7 +586,7 @@
 </tbody>
 </table>
 <h3 id="wait-node">Wait Node<a href="#wait-node" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WNode</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WNode</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 前驱节点
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> WNode prev<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 后继节点
@@ -612,7 +612,7 @@
 </blockquote>
 <p><img src="https://image.leejay.top/image/20200707/oyfmhKphdfR2.png?imageslim" alt=""></p>
 <h3 id="writelock">writeLock<a href="#writelock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">writeLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">writeLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">long</span> s<span style="color:#f92672">,</span> next<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">((((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L <span style="color:#f92672">&amp;&amp;</span>
              U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">))</span> <span style="color:#f92672">?</span>
@@ -620,14 +620,14 @@
 <span style="color:#f92672">}</span>
 </code></pre></div><blockquote>
 <p>我们将return拆分成三个部分来看：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> <span style="color:#f92672">((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> <span style="color:#f92672">((</span>s <span style="color:#f92672">=</span> state<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> 0L
 <span style="color:#960050;background-color:#1e0010">②</span> U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> WBIT<span style="color:#f92672">)</span>
 <span style="color:#960050;background-color:#1e0010">③</span> <span style="color:#f92672">?</span> next <span style="color:#f92672">:</span> acquireWrite<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">)</span>
 </code></pre></div><ol>
 <li>① 与 ② 同时成立时，返回<code>next</code>。若有一个不成立，返回<code>acquireWrite(false, 0L)</code>。</li>
 <li>默认情况下<code>state第9位是1，其余位都是0</code>，而``ABIT低8位都是1(final)<code>。所以进行</code>&amp;<code>运算，可以推导出</code>只要&amp;运算的结果不为0，说明此时有写锁或者读锁。<code>若结果不为0，执行</code>acquireWrite`。</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  1 0000 0000
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">  1 0000 0000
 <span style="color:#f92672">&amp;</span> 0 1111 1111
 <span style="color:#960050;background-color:#1e0010">——————————————</span>  <span style="color:#f92672">==</span> 0 成立<span style="color:#960050;background-color:#1e0010">，</span>state的低8位中有一位不为0<span style="color:#960050;background-color:#1e0010">，</span>那么这个公式的结果肯定不为0
   0 0000 0000     
@@ -637,7 +637,7 @@
 </ol>
 </blockquote>
 <h4 id="acquirewrite">acquireWrite<a href="#acquirewrite" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 获取CPU核心数
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 获取CPU核心数
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> NCPU <span style="color:#f92672">=</span> Runtime<span style="color:#f92672">.</span><span style="color:#a6e22e">getRuntime</span><span style="color:#f92672">().</span><span style="color:#a6e22e">availableProcessors</span><span style="color:#f92672">();</span>
 <span style="color:#75715e">// 加入队列前的最大自旋次数 64次
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SPINS <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>NCPU <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">&lt;&lt;</span> 6 <span style="color:#f92672">:</span> 0<span style="color:#f92672">;</span>
@@ -803,7 +803,7 @@
 <p>获取写锁的标志：将变量<code>state</code>的第8位设为1。反之为0表示没有获取写锁。</p>
 </blockquote>
 <h4 id="unlockwrite">unlockWrite<a href="#unlockwrite" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockWrite</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockWrite</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     WNode h<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 若state != stamp 说明当前传入的版本号不对
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">// 若stamp &amp; WBIT = 0L说明写锁没被获取，那就无需释放
@@ -837,7 +837,7 @@
 <ol>
 <li>
 <p><code>state = (stamp += WBIT) == 0L ? ORIGIN : stamp</code>：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">已知代码执行到此<span style="color:#960050;background-color:#1e0010">，</span>当前线程必有写锁<span style="color:#960050;background-color:#1e0010">，</span>那么当前stamp必符合如下个规则<span style="color:#960050;background-color:#1e0010">：</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">已知代码执行到此<span style="color:#960050;background-color:#1e0010">，</span>当前线程必有写锁<span style="color:#960050;background-color:#1e0010">，</span>那么当前stamp必符合如下个规则<span style="color:#960050;background-color:#1e0010">：</span>
 xxxx <span style="color:#f92672">...</span> xxxx 1xxx xxxx 第8位是1
 那么加上WBIT<span style="color:#960050;background-color:#1e0010">：</span> 1000 0000 变为
 xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#960050;background-color:#1e0010">，</span>即会向高位进1<span style="color:#960050;background-color:#1e0010">，</span>也就是将版本号 <span style="color:#f92672">+</span> 1
@@ -853,7 +853,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 </blockquote>
 <hr>
 <h3 id="readlock">readLock<a href="#readlock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">readLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">readLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">long</span> s <span style="color:#f92672">=</span> state<span style="color:#f92672">,</span> next<span style="color:#f92672">;</span>  <span style="color:#75715e">// bypass acquireRead on common uncontended case
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">((</span>whead <span style="color:#f92672">==</span> wtail <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL <span style="color:#f92672">&amp;&amp;</span>
         U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">))</span> <span style="color:#f92672">?</span>
@@ -861,7 +861,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 <span style="color:#f92672">}</span>
 </code></pre></div><blockquote>
 <p>又称为<code>悲观读</code>，和写锁互斥，流程分成三个部分：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> whead <span style="color:#f92672">==</span> wtail
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#960050;background-color:#1e0010">①</span> whead <span style="color:#f92672">==</span> wtail
 <span style="color:#960050;background-color:#1e0010">②</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">&amp;</span> ABITS<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> RFULL 
 <span style="color:#960050;background-color:#1e0010">③</span> U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapLong</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> STATE<span style="color:#f92672">,</span> s<span style="color:#f92672">,</span> next <span style="color:#f92672">=</span> s <span style="color:#f92672">+</span> RUNIT<span style="color:#f92672">)</span>
 </code></pre></div><ol>
@@ -872,7 +872,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 </ol>
 </blockquote>
 <h4 id="acquireread">acquireRead<a href="#acquireread" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">acquireRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> interruptible<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> deadline<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">acquireRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> interruptible<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> deadline<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     WNode node <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> p<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 第一个自旋
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> spins <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
@@ -1084,7 +1084,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 </ol>
 </blockquote>
 <h4 id="unlockread">unlockRead<a href="#unlockread" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlockRead</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">long</span> s<span style="color:#f92672">,</span> m<span style="color:#f92672">;</span> WNode h<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 循环执行
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
@@ -1114,7 +1114,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 </blockquote>
 <hr>
 <h3 id="tryoptimisticread">tryOptimisticRead<a href="#tryoptimisticread" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 锁的乐观读
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 锁的乐观读
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">long</span> <span style="color:#a6e22e">tryOptimisticRead</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">long</span> s<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 判断是否存在写锁，存在就返回0L，不存在就返回 state的高56位
@@ -1125,7 +1125,7 @@ xxxx <span style="color:#f92672">...</span> xxx1 0000 0000<span style="color:#96
 </blockquote>
 <hr>
 <h3 id="validate">validate<a href="#validate" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 校验版本号
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 校验版本号
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">validate</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> stamp<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// Unsafe的内存屏障api 
 </span><span style="color:#75715e"></span>    <span style="color:#75715e">// 为什么使用内存屏障，因为tamp变量没有被volatile修饰

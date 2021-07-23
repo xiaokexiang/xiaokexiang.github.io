@@ -1143,10 +1143,10 @@ Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程  
 </blockquote>
 <h2 id="docker">Docker<a href="#docker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="command">Command<a href="#command" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 运行容器并输出hello world</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 运行容器并输出hello world</span>
 docker run busybox echo hello world
 </code></pre></div><h3 id="dockerfile">Dockerfile<a href="#dockerfile" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">http</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;http&#39;</span>); 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-js" data-lang="js"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">http</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;http&#39;</span>); 
 <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">os</span>  <span style="color:#f92672">=</span> <span style="color:#a6e22e">require</span>(<span style="color:#e6db74">&#39;os&#39;</span>);
 
 <span style="color:#a6e22e">console</span> .<span style="color:#a6e22e">log</span> (<span style="color:#e6db74">&#34;Kub i a server starting ... &#34;</span>); 
@@ -1161,17 +1161,17 @@ docker run busybox echo hello world
 </span></code></pre></div><ul>
 <li>编写Dockerfile</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> node:7 # 基于什么镜像制作</span><span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> node:7 # 基于什么镜像制作</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> app.js /app.js <span style="color:#75715e"># 将当前目录下的app.js移到容器根目录</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;node&#34;</span>, <span style="color:#e6db74">&#34;app.js&#34;</span>] <span style="color:#75715e"># 启动容器时的执行命令</span><span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><ul>
 <li>镜像打包</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile">docker build -t <span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span> .<span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile">docker build -t <span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span> .<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><ul>
 <li>进入容器内部</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker exec -it <span style="color:#e6db74">${</span>docker name<span style="color:#e6db74">}</span> bash
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker exec -it <span style="color:#e6db74">${</span>docker name<span style="color:#e6db74">}</span> bash
 </code></pre></div><blockquote>
 <ol>
 <li><code>-i</code>表明标准输入流保持开放</li>
@@ -1179,7 +1179,7 @@ docker run busybox echo hello world
 </ol>
 </blockquote>
 <h3 id="docker镜像推送">Docker镜像推送<a href="#docker镜像推送" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker <span style="color:#e6db74">${</span>local_image<span style="color:#e6db74">}</span> <span style="color:#e6db74">${</span>your account name<span style="color:#e6db74">}</span>/<span style="color:#e6db74">${</span>remote_image<span style="color:#e6db74">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker <span style="color:#e6db74">${</span>local_image<span style="color:#e6db74">}</span> <span style="color:#e6db74">${</span>your account name<span style="color:#e6db74">}</span>/<span style="color:#e6db74">${</span>remote_image<span style="color:#e6db74">}</span>
 docker busybox xiaokexiang/busy <span style="color:#75715e"># 将本地镜像加自己账户名前缀的tag</span>
 docker login <span style="color:#75715e"># docker 账户登录</span>
 docker push xiaokexiang/busybox <span style="color:#75715e"># 推送到远端</span>
@@ -1189,12 +1189,12 @@ docker push xiaokexiang/busybox <span style="color:#75715e"># 推送到远端</s
 <ul>
 <li>kubectl</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">export REGISTRY_MIRROR<span style="color:#f92672">=</span>https://registry.cn-hangzhou.aliyuncs.com
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">export REGISTRY_MIRROR<span style="color:#f92672">=</span>https://registry.cn-hangzhou.aliyuncs.com
 curl -sSL https://kuboard.cn/install-script/v1.19.x/install_kubelet.sh | sh -s 1.19.2
 </code></pre></div><ul>
 <li>MiniKube</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 拉取二进制包（基于阿里云镜像）</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 拉取二进制包（基于阿里云镜像）</span>
 <span style="color:#75715e"># https://developer.aliyun.com/article/221687</span>
 curl -Lo minikube https://kubernetes.oss-cn-hangzhou.aliyuncs.com/minikube/releases/v1.17.1/minikube-linux-amd64 <span style="color:#f92672">&amp;&amp;</span> chmod +x minikube <span style="color:#f92672">&amp;&amp;</span> sudo mv minikube /usr/local/bin/
 
@@ -1211,7 +1211,7 @@ newgrp docker
 minikube start
 </code></pre></div><h4 id="基于kubeadm部署">基于kubeadm部署<a href="#基于kubeadm部署" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><a href="./kubeadm部署.md">kubeadm部署</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看node状态</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看node状态</span>
 kubectl get nodes
 <span style="color:#75715e"># 赋予node 角色信息</span>
 kubectl label nodes k8s-node1 node-role.kubernetes.io/node<span style="color:#f92672">=</span>
@@ -1228,7 +1228,7 @@ kubectl label nodes k8s-node1 node-role.kubernetes.io/node-
 <li>默认情况下容器间的目录互相隔离，但是可以通过<code>Volume</code>实现文件目录共享。</li>
 </ol>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建名为kubia的pod</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建名为kubia的pod</span>
 kubectl run kubia --image<span style="color:#f92672">=</span>xiaokexiang/kubia --port <span style="color:#ae81ff">8080</span>
 <span style="color:#75715e"># 获取default的pods列表（显示更详细信息）</span>
 kubectl get pods -o wide 
@@ -1245,13 +1245,13 @@ kubectl get pods -o wide
 </ol>
 </blockquote>
 <h5 id="基于yaml构建pod">基于Yaml构建Pod<a href="#基于yaml构建pod" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看已有pod的yaml</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看已有pod的yaml</span>
 kubectl get pod kubia -o yaml
 <span style="color:#75715e"># 查看yaml中字段含义</span>
 kubectl explain pods
 kubectl explain pod.spec
 ...
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span> <span style="color:#75715e"># 描述一个pod</span>
 <span style="color:#f92672">metadata</span>: <span style="color:#75715e"># 用于描述名称、命令空间、标签等其他容器信息</span>
    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia </span> <span style="color:#75715e"># pod的名称</span>
@@ -1263,7 +1263,7 @@ kubectl explain pod.spec
     - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8080</span> <span style="color:#75715e"># 应用监听的端口号</span>
       <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span> <span style="color:#75715e"># 应用监听的协议</span>
 </code></pre></div><h5 id="pod基本命令">Pod基本命令<a href="#pod基本命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 基于yaml创建pod，无法更新</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 基于yaml创建pod，无法更新</span>
 kubectl create -f kubia.yaml
 <span style="color:#75715e"># 当yaml修改时，apply可以更新</span>
 kubectl apply -f kubia.yaml
@@ -1285,7 +1285,7 @@ kubectl delete pod kubia,kubia-gpu
 </ul>
 <p>可以为<code>pod内的每个容器都单独指定存活探针</code>，如果探测失败，那么k8s会定期执行探针并重新启动容器。</p>
 <p>可以通过<code>HTTP（状态码）</code>、<code>TCP（建立连接）</code>、<code>EXEC探针（容器内执行命令）</code>进行容器探测。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-liveness</span>
@@ -1312,7 +1312,7 @@ kubectl delete pod kubia,kubia-gpu
 <p>A：就绪探针下，如果容器未通过准备检查，那么<code>不会被终止或重新启动</code>。存活探针会杀死异常的容器并启动新的正常容器来保证Pod正常工作。就绪探针确保只有准备好处理请求的Pod才可以接受请求。如果就绪探测失败，就会<code>从服务中移除该Pod</code>。</p>
 </blockquote>
 <p><img src="https://image.leejay.top/FpNh6aOeUA7J0hwUml8gEwWPcbP2" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ReplicationController</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-replication</span>
@@ -1342,7 +1342,7 @@ kubectl delete pod kubia,kubia-gpu
 <li>Headless</li>
 </ul>
 <p>将服务spec中的clusterIP字段设置为None的服务被称为headless服务。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">annotation</span>:
@@ -1377,7 +1377,7 @@ kubectl delete pod kubia,kubia-gpu
 <ul>
 <li>ReplicationController的创建</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ReplicationController</span> <span style="color:#75715e"># 指定类型</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-replication</span>
@@ -1395,7 +1395,7 @@ kubectl delete pod kubia,kubia-gpu
 			  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">xiaokexiang/kubia</span>
 			  <span style="color:#f92672">ports</span>:
 			  - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8080</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建replicationController</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建replicationController</span>
 kubectl apply -f kubia-replication.yaml
 <span style="color:#75715e"># 获取replicationController信息</span>
 kubectl get rc
@@ -1422,7 +1422,7 @@ kubectl delete rc kubia-replication --cascade<span style="color:#f92672">=</span
 <ul>
 <li>可以匹配多个标签（env=dev，app=kubia），可以使用通配符进行匹配（env=*）</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ReplicaSet</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-replicaset</span>
@@ -1444,7 +1444,7 @@ kubectl delete rc kubia-replication --cascade<span style="color:#f92672">=</span
 </code></pre></div><blockquote>
 <p>如果节点上已经存在三个<code>app=kubia</code>的Pod，那么创建ReplicaSet后会将这个三个Pod纳入管理。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建replicaSet</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建replicaSet</span>
 kubectl apply -f kubia-replicaset.yaml
 <span style="color:#75715e"># 默认情况下如果存在label标签相同的pod会被加入rs的管理</span>
 kubectl get pods
@@ -1457,7 +1457,7 @@ kubectl delete rs kubia-replicaset --cascade<span style="color:#f92672">=</span>
 </code></pre></div><ul>
 <li>标签选择器</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ReplicaSet</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-replicaset</span>
@@ -1475,7 +1475,7 @@ kubectl delete rs kubia-replicaset --cascade<span style="color:#f92672">=</span>
 <blockquote>
 <p>DaemonSet一般用于<code>管理系统服务</code>，即使节点配置了不可调度，DaemonSet也会部署Pod到此节点。需要注意的是：<code>DaemonSet不会将Pod部署在master节点上</code>。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">DaemonSet</span> <span style="color:#75715e"># 设置DaemonSet类型</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">ssd-monitor</span>
@@ -1494,7 +1494,7 @@ kubectl delete rs kubia-replicaset --cascade<span style="color:#f92672">=</span>
 			- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">main</span>
 			  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">luksa/ssd-monitor</span>
 </code></pre></div><p><img src="https://image.leejay.top/FkbSlaZKNoTvabGr9GyCuGNAwi0Z" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 先将节点设置label： disk=ssd</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 先将节点设置label： disk=ssd</span>
 kubectl label node k8s-node1 disk<span style="color:#f92672">=</span>ssd
 <span style="color:#75715e"># 创建daemonset</span>
 kubectl apply -f ssd-monitor-daemonset.yaml
@@ -1503,7 +1503,7 @@ kubectl label nodes k8s-node1 disk<span style="color:#f92672">=</span>hdd --over
 </code></pre></div><p><img src="https://image.leejay.top/FvaUT7VzitLYrU55lEbuWJNAyFrv" alt=""><img src="https://image.leejay.top/FrNtnq91RiC-7jf0h33lVbICYBtz" alt=""></p>
 <h5 id="job">Job<a href="#job" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>相比之前的ReplicationController、ReplicaSet、DaemonSet持续运行任务，永远达不到完成态。<code>Job</code>提供了Pod在内部进程成功结束时，不重启容器。在发生节点故障时，由Job管理的Pod按照ReplicaSet的Pod方式重新安排到其他节点或<code>进程本身异常退出则重新启动容器</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Job</span> <span style="color:#75715e"># 类型为Job</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">batch-job</span>
@@ -1521,7 +1521,7 @@ kubectl label nodes k8s-node1 disk<span style="color:#f92672">=</span>hdd --over
 			<span style="color:#f92672">containers</span>:
 			- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">main</span>
 			  <span style="color:#f92672">image</span>: <span style="color:#ae81ff">luksa/batch-job</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建job</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建job</span>
 kubectl apply -f job.yaml
 <span style="color:#75715e"># 查看job</span>
 kubectl get job
@@ -1534,7 +1534,7 @@ kubectl edit job
 </blockquote>
 <h5 id="cronjob">CronJob<a href="#cronjob" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>相比Job，CronJob是基于Cron表达式的定时Job任务。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1beta1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1beta1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">CronJob</span> <span style="color:#75715e"># 类型为CronJob</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">batch-cron-job</span>
@@ -1557,7 +1557,7 @@ kubectl edit job
 <p>Cron表达式不清楚的查看这篇文章<a href="https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/">Cron表达式</a>。</p>
 </blockquote>
 <h4 id="标签label">标签（label）<a href="#标签label" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span> <span style="color:#75715e"># 描述一个pod</span>
 <span style="color:#f92672">metadata</span>: <span style="color:#75715e"># 用于描述名称、命令空间、标签等其他容器信息</span>
    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia </span> <span style="color:#75715e"># pod的名称</span>
@@ -1571,7 +1571,7 @@ kubectl edit job
     <span style="color:#f92672">ports</span>:
     - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">8080</span> <span style="color:#75715e"># 应用监听的端口号</span>
       <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span> <span style="color:#75715e"># 应用监听的协议</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看label标签</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看label标签</span>
 kubectl get pods --show-labels
 <span style="color:#75715e"># 查看creation_mode,env两个标签页</span>
 kubectl get pods -L creation_mode,env
@@ -1598,11 +1598,11 @@ kubectl delete pod -l env<span style="color:#f92672">=</span>dev
 </code></pre></div><ul>
 <li>
 <p>基于label的Pod调度</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 给node添加label -&gt; gpu=true</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 给node添加label -&gt; gpu=true</span>
 kubectl label node k8s-node1 gpu<span style="color:#f92672">=</span>true
 <span style="color:#75715e"># 查看gpu=true的node</span>
 kubectl get node -L gpu -l gpu<span style="color:#f92672">=</span>true
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span> <span style="color:#75715e"># 描述遵循V1版本的Api</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span> <span style="color:#75715e"># 描述一个pod</span>
 <span style="color:#f92672">metadata</span>: <span style="color:#75715e"># 用于描述名称、命令空间、标签等其他容器信息</span>
    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-gpu </span> <span style="color:#75715e"># pod的名称</span>
@@ -1622,7 +1622,7 @@ kubectl get node -L gpu -l gpu<span style="color:#f92672">=</span>true
 </ul>
 <h4 id="注解annotation">注解（annotation）<a href="#注解annotation" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>相比label而言，annotation不是为了保存标识信息而存在的，不能像label一样进行分组。主要是为了给api或者pod添加说明，且可以容纳更多的信息。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 给pod添加注解</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 给pod添加注解</span>
 kubectl annotate pod kubia test/annotation<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;hello world&#34;</span>
 <span style="color:#75715e"># 查看pod的注解</span>
 kubectl describe pod kubia
@@ -1631,7 +1631,7 @@ kubectl describe pod kubia
 <blockquote>
 <p>命名空间提供了<code>隔离</code>的概念，但网络隔离取决于k8s集群的网络方案。如果网络不隔离的话，通过ip不同命名空间的资源是可以互相访问的。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 获取所有的命名空间</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 获取所有的命名空间</span>
 kubectl get ns
 <span style="color:#75715e"># 查询指定命名空间下的pod</span>
 kubectl get pods -n kube-system
@@ -1649,11 +1649,11 @@ kubectl delete all --all
 <ul>
 <li>查看当前的namespace</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl config view
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl config view
 </code></pre></div><ul>
 <li>添加alias用于快速切换namespace</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 基于alias的命名空间切换,写入别名到.bashrc配置</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 基于alias的命名空间切换,写入别名到.bashrc配置</span>
 cat <span style="color:#e6db74">&lt;&lt; EOF &gt;&gt; ~/.bashrc
 </span><span style="color:#e6db74">alias kcd=&#39;kubectl config set-context $(kubectl config current-context) --namespace&#39;
 </span><span style="color:#e6db74">EOF</span>
@@ -1663,13 +1663,13 @@ kcd custom
 </code></pre></div><ul>
 <li>不使用alias切换</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将当前context的namespace修改为default</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将当前context的namespace修改为default</span>
 kubectl config set-context --n defaultkubectl config set-context --current --namespace<span style="color:#f92672">=</span>default
 </code></pre></div><h4 id="service">Service<a href="#service" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>Kubernetes服务是为一组功能相同的Pod<code>提供单一不变的接入点的资源</code>。到达服务IP和端口的请求将被转发到属于该服务内的的容器的IP和端口。</p>
 <p>Pod的存在是短暂的，一个Pod可能在任何时候消失，新生成的Pod和原有的Pod具有不同的IP地址，当服务被创建时，会得到一个静态的IP，客户端通过这个IP连接到服务，而不是直接连接Pod。</p>
 <p><img src="https://image.leejay.top/FvuVqEyEl5Hy5Ng_cWUcMV3RW7QQ" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia</span>
@@ -1679,7 +1679,7 @@ kubectl config set-context --n defaultkubectl config set-context --current --nam
 	  <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8080</span> <span style="color:#75715e"># 服务转发到容器的端口</span>
 	<span style="color:#f92672">selector</span>:
 		<span style="color:#f92672">app</span>: <span style="color:#ae81ff">kubia</span> <span style="color:#75715e"># app=kubia的pod都属于该服务</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将pod暴露成服务，po即pod的缩写</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将pod暴露成服务，po即pod的缩写</span>
 kubectl expose po kubia --type<span style="color:#f92672">=</span>LoadBalancer --name kubia-http
 <span style="color:#75715e"># 基于yaml创建service</span>
 kubectl apply -f kubia
@@ -1694,7 +1694,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 </blockquote>
 <h5 id="服务亲和性">服务亲和性<a href="#服务亲和性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>默认情况下服务代理通常将每个连接随机指向选中的后端Pod中的一个。如果我们希望客户端的所有请求都指向同一个客户端，配置服务<code>亲和性</code>可以实现该功能。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia</span>
@@ -1709,7 +1709,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <p>请求该Service，都会指向同一个Pod。</p>
 </blockquote>
 <h5 id="服务暴露多个端口">服务暴露多个端口<a href="#服务暴露多个端口" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 直接在yaml中配置Service的多port</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 直接在yaml中配置Service的多port</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
@@ -1727,7 +1727,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 </code></pre></div><blockquote>
 <p><code>不同的端口在一个容器中只能适用于一个标签选择器</code>，若想分别对应不同的，需要多个容器。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于pod的yaml在service进行多port配置</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于pod的yaml在service进行多port配置</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">spec</span>:
 	<span style="color:#f92672">containers</span>:
@@ -1748,7 +1748,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 	  <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">https</span> <span style="color:#75715e"># Pod中的名称</span>
 </code></pre></div><h5 id="endpoint">EndPoint<a href="#endpoint" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <p>Pod与Service进行通讯是需要通过<code>EndPoint</code>来实现的，我们创建Service时可以不指定<code>标签选择器</code>，这样Service不知道我们需要管理哪些Pod，所以需要我们手动创建EndPoint</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 创建不带Pod选择器的服务</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 创建不带Pod选择器的服务</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
@@ -1771,7 +1771,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <h5 id="暴露服务给外部客户端">暴露服务给外部客户端<a href="#暴露服务给外部客户端" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <h6 id="nodeport">NodePort<a href="#nodeport" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h6>
 <p>将服务类型设置成NodePort（每个集群节点都会在节点上打开一个端口），该端口接受到的流量重定向到基础服务。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-nodeport</span>
@@ -1788,7 +1788,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 </blockquote>
 <h6 id="loadbalance">LoadBalance<a href="#loadbalance" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h6>
 <p>NodePort的一种扩展，服务可以通过一个负载均衡器来访问，负载均衡器将流量重定向到跨所有节点的节点端口，客户端通过负载均衡器的IP连接到服务。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-loadbalancer</span>
@@ -1822,7 +1822,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <ul>
 <li>创建Ingress资源（同一个主机同一个路径）</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span> <span style="color:#75715e"># 属于的版本号</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ReplicaSet</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-replicaset</span>
@@ -1885,7 +1885,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <ul>
 <li>创建Ingress资源（同一个主机不同路径）</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
 <span style="color:#f92672">metadata</span>:
     <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia</span>
@@ -1908,7 +1908,7 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <ul>
 <li>创建Ingress资源（不同主机不同路径）</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
 <span style="color:#f92672">metadata</span>:
     <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia</span>
@@ -1934,12 +1934,12 @@ kubectl exec kubia -- curl -s http://10.106.78.175
 <ul>
 <li>Ingress配置TLS认证</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 生成证书</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 生成证书</span>
 openssl genrsa -out tls.key <span style="color:#ae81ff">2048</span>
 openssl req -new -x509 -key tls.key -out tls.cert -days <span style="color:#ae81ff">360</span> -subj /CN<span style="color:#f92672">=</span>kubia.example.com
 <span style="color:#75715e"># 生成secret</span>
 kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>tls.cert --key<span style="color:#f92672">=</span>tls.key
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">extensions/v1beta1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Ingress</span>
 <span style="color:#f92672">metadata</span>:
         <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia</span>
@@ -1992,7 +1992,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <ul>
 <li>emptyDir</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
 	<span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune</span>
@@ -2024,7 +2024,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <li>gitRepo</li>
 </ul>
 <p>相比emptyDir，gitRepo只是最初用Git仓库的内容填充了emptyDir。但是并不能和对应的仓库进行同步，卷重的文件不会被更新，但如果Pod是基于ReplicationController（或ReplicaSet）进行管理，那么通过删除Pod，重新创建时卷则会包含最新的内容。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">gitrepo-volume-pod</span>
@@ -2057,7 +2057,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <p><code>hostPath</code>卷是<code>持久性</code>存储，之前的<code>emptyDir</code>和<code>gitRepo</code>都会随着Pod被删除时删除。</p>
 <p>通常用于单节点集群中的持久化部署。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-hostpath</span>
@@ -2090,7 +2090,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <li>持久卷</li>
 </ul>
 <p><code>Persistent Volume（pv）</code>持久卷，相对于<code>Volumes</code>存储一些有必要保存的数据，它主要是为了管理集群的存储。且它相对于Pod独立创建。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 持久化卷</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 持久化卷</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
 <span style="color:#f92672">metadata</span>:
@@ -2118,7 +2118,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 </code></pre></div><ul>
 <li>持久卷声明</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mongodb-pvc</span>
@@ -2143,7 +2143,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <ul>
 <li>Pod中使用持久卷声明</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">mongodb</span>
@@ -2168,7 +2168,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 </blockquote>
 <h4 id="configmap--secret">ConfigMap &amp; Secret<a href="#configmap--secret" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <h5 id="在容器中指定环境变量">在容器中指定环境变量<a href="#在容器中指定环境变量" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">env-pod</span>
@@ -2189,7 +2189,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
       <span style="color:#f92672">type</span>: <span style="color:#ae81ff">FileOrCreate</span>
 </code></pre></div><blockquote>
 <p>参数在Pod的yaml中指定。一旦创建不能修改。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">env</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">env</span>:
 - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">name1</span>
   <span style="color:#f92672">value</span>: <span style="color:#ae81ff">hello</span>
 - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">name2</span>
@@ -2200,7 +2200,7 @@ kubectl create secret tls tls-secret --cert<span style="color:#f92672">=</span>t
 <ul>
 <li>基于命令创建</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建configMap key-value为 sleep-interval: 25</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建configMap key-value为 sleep-interval: 25</span>
 kubectl create configmap fortune-config --from-literal<span style="color:#f92672">=</span>sleep-interval<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span> --from-literal<span style="color:#f92672">=</span>hello<span style="color:#f92672">=</span>world
 
 <span style="color:#75715e"># 从配置文件中读取value[]</span>
@@ -2208,7 +2208,7 @@ kubectl create configmap fortune-config-v2 --from-file<span style="color:#f92672
 </code></pre></div><ul>
 <li>基于yaml创建</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-config</span>
@@ -2217,7 +2217,7 @@ kubectl create configmap fortune-config-v2 --from-file<span style="color:#f92672
 </code></pre></div><ul>
 <li>ConfigMap中某个条目作为环境变量</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-env-configmap</span>
@@ -2237,7 +2237,7 @@ kubectl create configmap fortune-config-v2 --from-file<span style="color:#f92672
 <ul>
 <li>ConfigMap的所有条目作为环境变量</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-env-all-pod</span>
@@ -2254,7 +2254,7 @@ kubectl create configmap fortune-config-v2 --from-file<span style="color:#f92672
 <ul>
 <li>ConfigMap中的某个条目作为命令行参数</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-arg-configmap</span>
@@ -2271,7 +2271,7 @@ kubectl create configmap fortune-config-v2 --from-file<span style="color:#f92672
 </code></pre></div><ul>
 <li>基于文件传递大配置文件</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建nginx配置文件</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建nginx配置文件</span>
 cat &gt;&gt; ./nginx-config.conf <span style="color:#e6db74">&lt;&lt;EOF 
 </span><span style="color:#e6db74">  server {
 </span><span style="color:#e6db74">   listen    80;
@@ -2292,7 +2292,7 @@ kubectl create configmap fortune-config --from-file<span style="color:#f92672">=
 </code></pre></div><ul>
 <li>基于yaml传递大配置文件</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># configMap</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># configMap</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
 <span style="color:#f92672">metadata</span>:
@@ -2316,7 +2316,7 @@ kubectl create configmap fortune-config --from-file<span style="color:#f92672">=
 </code></pre></div><blockquote>
 <p>configMap的namespace必须与pod的相同，且创建早于Pod。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-configmap-volume</span>
@@ -2335,7 +2335,7 @@ kubectl create configmap fortune-config --from-file<span style="color:#f92672">=
       <span style="color:#f92672">defaultMode</span>: <span style="color:#ae81ff">0777</span> <span style="color:#75715e"># 设置权限</span>
 </code></pre></div><blockquote>
 <p>如果我们不想挂载整个卷，只想挂载某个文件，可以进行如下配置：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">volumes</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">volumes</span>:
   - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">config</span>
     <span style="color:#f92672">configMap</span>:
       <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-config</span> <span style="color:#75715e"># 引用上文创建的CM</span>
@@ -2343,7 +2343,7 @@ kubectl create configmap fortune-config --from-file<span style="color:#f92672">=
       - <span style="color:#f92672">key</span>: <span style="color:#ae81ff">my-nginx-config</span> <span style="color:#75715e"># 指定对应的key</span>
         <span style="color:#f92672">path</span>: <span style="color:#ae81ff">gzip.conf</span> <span style="color:#75715e"># 将值存储在这个文件中</span>
 </code></pre></div><p><code>默认情况下挂载文件夹内的原有文件会被隐藏。</code>如果我们想原有的文件不被隐藏，需要使用<code>subPath</code>参数。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">volumeMounts</span>:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">volumeMounts</span>:
   - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">config</span>
     <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/etc/something.conf</span> <span style="color:#75715e"># 挂载至某一文件</span>
     <span style="color:#f92672">subPath</span>: <span style="color:#ae81ff">myconfig.conf</span> <span style="color:#75715e"># 挂载指定cm：config中的条目</span>
@@ -2354,12 +2354,12 @@ kubectl create configmap fortune-config --from-file<span style="color:#f92672">=
 <li>默认令牌Secret</li>
 </ul>
 <p>每个Pod都会被自动挂载上一个Secret卷，包含三个条目：<code>ca.crt</code>、<code>namespace</code>、<code>token</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看secret下的文件</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看secret下的文件</span>
 kubectl exec pod ls /var/run/secrets/kubernetes.io/serviceaccount/
 </code></pre></div><ul>
 <li>创建secret</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 生成证书</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 生成证书</span>
 openssl genrsa -out https.key <span style="color:#ae81ff">2048</span>
 openssl req -new -x509 -key https.key -out https.cert -days <span style="color:#ae81ff">360</span> -subj /CN<span style="color:#f92672">=</span>www.kubia-example.com
 <span style="color:#75715e"># 生成secret</span>
@@ -2377,7 +2377,7 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
 <ul>
 <li>Pod中使用secret</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># configMap</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># configMap</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ConfigMap</span>
 <span style="color:#f92672">metadata</span>:
@@ -2403,7 +2403,7 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
 </code></pre></div><blockquote>
 <p>配置文件的当前目录是<code>/etc/nginx</code>。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">fortune-https</span>
@@ -2447,7 +2447,7 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
   - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">certs</span>
     <span style="color:#f92672">secret</span>: <span style="color:#75715e"># 将secret挂载，需要和https.conf</span>
       <span style="color:#f92672">secretName</span>: <span style="color:#ae81ff">fortune-https</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于环境变量使用secret</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于环境变量使用secret</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
@@ -2475,7 +2475,7 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
 <ul>
 <li>基于环境变量暴露</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">downward</span>
@@ -2524,13 +2524,13 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
           <span style="color:#f92672">divisor</span>: <span style="color:#ae81ff">1Ki</span> <span style="color:#75715e"># 定义基数单位 </span>
 </code></pre></div><blockquote>
 <p>通过查看Pod的环境变量，确定DownwardAPI是否生效</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl exec downward -- env
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl exec downward -- env
 </code></pre></div><p><img src="https://image.leejay.top/Fghh0IPjOfaMPgd-7nAAiQGeGkz4" alt=""></p>
 </blockquote>
 <ul>
 <li>基于卷暴露</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">downward2</span>
@@ -2588,7 +2588,7 @@ kubectl create secret generic fortune-https --from-file<span style="color:#f9267
 <p><img src="https://image.leejay.top/FjwibRAMwynGFzv_weiLA1htDV4l" alt=""></p>
 </blockquote>
 <h4 id="kubernetes-api">Kubernetes API<a href="#kubernetes-api" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看集群信息</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看集群信息</span>
 kubectl cluster-info
 <span style="color:#75715e"># 开启代理</span>
 kubectl proxy
@@ -2605,7 +2605,7 @@ export CURL_CA_BUNDLE<span style="color:#f92672">=</span>/var/run/secrets/kubern
 TOKEN<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>cat /var/run/secrets/kubernetes.io/serviceaccount/token<span style="color:#66d9ef">)</span>
 <span style="color:#75715e"># 2. curl访问</span>
 curl -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$TOKEN<span style="color:#e6db74">&#34;</span> https://kubernetes
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于ambassador容器简化与API服务器的交互</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 基于ambassador容器简化与API服务器的交互</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
 <span style="color:#f92672">metadata</span>:
@@ -2628,7 +2628,7 @@ curl -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$TOKEN<spa
 <blockquote>
 <p>Deployment可以用于协调多个RC来管理Pod，实现Pod的升级、扩容等功能。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Deployment</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Deployment</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
 <span style="color:#f92672">metadata</span>:
@@ -2669,7 +2669,7 @@ curl -H <span style="color:#e6db74">&#34;Authorization: Bearer </span>$TOKEN<spa
 </blockquote>
 <h4 id="deployment升级">Deployment升级<a href="#deployment升级" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>默认情况下是执行<code>滚动升级（RollingUpdate）</code>策略。还有<code>删除再创建（Recreate）</code>策略，一次删除全部旧的Pod再创建新的Pod。需要注意的是，只有我们<code>修改了Pod模板</code>才会导致Deployment的更新。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 减缓滚动升级速度,patch命令修改Deployment的自有属性，不会触发Pod的任何更新</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 减缓滚动升级速度,patch命令修改Deployment的自有属性，不会触发Pod的任何更新</span>
 kubectl patch deployment kubia-deployment-v1 -p <span style="color:#e6db74">&#39;{&#34;spec&#34;: {&#34;minReadySeconds&#34;: 10}}&#39;</span>
 <span style="color:#75715e"># 更新镜像为luksa:v2</span>
 kubectl set image deployment kubia-deployment-v1 nodejs<span style="color:#f92672">=</span>luksa/kubia:v2
@@ -2713,7 +2713,7 @@ kubectl set image deployment kubia-deployment-v1 nodejs<span style="color:#f9267
 </tbody>
 </table>
 <h4 id="deployment回滚">Deployment回滚<a href="#deployment回滚" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 升级到v3版本用于后面回滚</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 升级到v3版本用于后面回滚</span>
 kubectl set image deployment kubia-deployment-v1 nodejs<span style="color:#f92672">=</span>luksa/kubia:v3
 <span style="color:#75715e"># 回滚当前版本到上一个版本</span>
 kubectl rollout undo deployment kubia-deployment-v1
@@ -2729,7 +2729,7 @@ kubectl rollout resume deployment kubia-deployment-v1
 <p>如果在升级过程中运行回滚，那么会直接停止滚动升级。已创建的Pod会被老Pod替代。</p>
 </blockquote>
 <h4 id="deployment升级策略">Deployment升级策略<a href="#deployment升级策略" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-deployment-v1</span>
@@ -2756,7 +2756,7 @@ kubectl rollout resume deployment kubia-deployment-v1
         <span style="color:#f92672">image</span>: <span style="color:#ae81ff">luksa/kubia:v1</span>
 </code></pre></div><p><img src="https://image.leejay.top/Fk9PDjz3r31aO1q4uPLMF9Qx34Fa" alt=""></p>
 <h4 id="deployment配置就绪探针">Deployment配置就绪探针<a href="#deployment配置就绪探针" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
 <span style="color:#f92672">metadata</span>:
   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubia-deployment-v1</span>
@@ -2798,7 +2798,7 @@ kubectl rollout resume deployment kubia-deployment-v1
 <p>相比于ReplicaSet、ReplicaController，StatefulSet创建的<code>Pod应用都可以拥有一组独立的数据卷</code>，且创建的Pod名字都是规律的，不是随机的。StatefulSet在某个节点失效时，创建与之前<code>一模一样</code>的Pod，而其他的则是使用一个不相干的新的Pod替换。并且<code>修改StatefulSet的配置后并不会重新启动Pod（删除Pod可以触发）</code>，这点和RS相同。</p>
 <p><img src="https://image.leejay.top/Fs_BdvUPHXrdxCft8aWwrDpEx21F" alt=""></p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 需要创建持久卷,statefulset里面几个副本就创建几个持久卷</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 需要创建持久卷,statefulset里面几个副本就创建几个持久卷</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
 <span style="color:#f92672">metadata</span>:
@@ -2822,7 +2822,7 @@ kubectl rollout resume deployment kubia-deployment-v1
           <span style="color:#f92672">operator</span>: <span style="color:#ae81ff">In</span>
           <span style="color:#f92672">values</span>:
           - <span style="color:#ae81ff">k8s-node1</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 需要先创建用于有状态Pod之间提供网络标识的headless service</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># 需要先创建用于有状态Pod之间提供网络标识的headless service</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
 <span style="color:#f92672">metadata</span>:
@@ -2834,7 +2834,7 @@ kubectl rollout resume deployment kubia-deployment-v1
   <span style="color:#f92672">ports</span>:
   - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
     <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># statefulSet</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># statefulSet</span>
 <span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1beta1</span>
 <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">StatefulSet</span>
 <span style="color:#f92672">metadata</span>:

@@ -358,17 +358,17 @@
 
   <div class="post-content"><div>
         <h2 id="docker-cp">Docker cp<a href="#docker-cp" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下</span>
 docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
 
 <span style="color:#75715e"># 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下</span>
 docker cp nginx:/etc/nginx/conf.d  /opt/nginx/
 </code></pre></div><h2 id="docker-mysql">Docker mysql<a href="#docker-mysql" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="不挂载启动">不挂载启动<a href="#不挂载启动" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 不使用挂载创建mysql</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 不使用挂载创建mysql</span>
 docker run -itd -p 3306:3306 -e MYSQL_ROOT_PASSWORD<span style="color:#f92672">=</span><span style="color:#ae81ff">123456</span> --name mysql5.7 mysql:5.7
 </code></pre></div><h3 id="挂载宿主机目录启动">挂载宿主机目录启动<a href="#挂载宿主机目录启动" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建宿主机目录</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建宿主机目录</span>
 mkdir -p /opt/mysql/<span style="color:#f92672">{</span>logs,conf.d,data<span style="color:#f92672">}</span>
 
 <span style="color:#75715e"># 拷贝默认配置文件到宿主机（借助上文的不挂在启动的mysql容器）</span>
@@ -389,7 +389,7 @@ docker run -p 3306:3306 --name mysql <span style="color:#ae81ff">\
 <p><code>mysql5.7或8.0版本</code>都可以使用该命令。</p>
 </blockquote>
 <h3 id="mysql相关命令">Mysql相关命令<a href="#mysql相关命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 进入mysql控制台 root/123456，指定端口3316和host 127.0.0.1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 进入mysql控制台 root/123456，指定端口3316和host 127.0.0.1</span>
 mysql -uroot -P <span style="color:#ae81ff">3316</span> -h 127.0.0.1 -p123456
 
 <span style="color:#75715e"># 创建远程用户 test/abcdefg</span>
@@ -408,9 +408,9 @@ source /root/select.sq
 mysqldump -u root -P <span style="color:#ae81ff">3316</span> -p dbname &gt; /root/backup.sql
 </code></pre></div><h2 id="docker-nginx">Docker nginx<a href="#docker-nginx" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="不挂载启动-1">不挂载启动<a href="#不挂载启动-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -itd --name nginx -p 80:80 -p 443:443 nginx
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">docker run -itd --name nginx -p 80:80 -p 443:443 nginx
 </code></pre></div><h3 id="挂载宿主机目录启动-1">挂载宿主机目录启动<a href="#挂载宿主机目录启动-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建宿主机目录</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建宿主机目录</span>
 mkdir -p /opt/nginx/<span style="color:#f92672">{</span>logs,conf.d,html<span style="color:#f92672">}</span>
 
 <span style="color:#75715e"># 拷贝默认配置文件到宿主机（借助上文的不挂在启动的nginx容器）</span>

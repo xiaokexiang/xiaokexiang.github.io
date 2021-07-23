@@ -538,7 +538,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <li>如果有写线程正在执行写操作，那么禁止其他读线程读取变量。</li>
 </ol>
 <p>ReadWriteLock的默认实现类<code>ReentrantReadWriteLock</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReentrantReadWriteLock</span>  <span style="color:#66d9ef">implements</span> ReadWriteLock <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReentrantReadWriteLock</span>  <span style="color:#66d9ef">implements</span> ReadWriteLock <span style="color:#f92672">{</span>
 	<span style="color:#75715e">// 读锁和写锁都是ReentrantReadWriteLock的内部类
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantReadWriteLock<span style="color:#f92672">.</span><span style="color:#a6e22e">ReadLock</span> readerLock<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantReadWriteLock<span style="color:#f92672">.</span><span style="color:#a6e22e">WriteLock</span> writerLock<span style="color:#f92672">;</span>
@@ -562,7 +562,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <h4 id="state">state<a href="#state" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>与独占锁、共享锁的state的使用不同，因为需要表示两种状态，所以对<code>int型state</code>做了<code>高低位切割</code>，分别表示不同的状态。已知<code>int=4byte= 32bit</code>，所以<code>高16位表示读，低16位表示写</code>。他们的取值范围在<code>[0 ~ 2^16 - 1]</code>，进而我们可以得出，最多有<code>2^16 -1</code>个线程可以获取读锁。</p>
 <p><img src="https://image.leejay.top/image/20200630/iU956J9I2D6U.png?imageslim" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
       
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SHARED_SHIFT   <span style="color:#f92672">=</span> 16<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> SHARED_UNIT    <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>1 <span style="color:#f92672">&lt;&lt;</span> SHARED_SHIFT<span style="color:#f92672">);</span>
@@ -589,7 +589,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </li>
 <li>
 <p>int 型 state 与 <code>1111 1111 1111 1111</code>做<code>与运算</code>，它的结果也不会超过<code>1111 1111 1111 1111</code>，因为<code>与运算</code>的规则是<code>都1为1，否则为0</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">如int state <span style="color:#f92672">=</span> 3<span style="color:#960050;background-color:#1e0010">，</span>那么它的二进制如下
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">如int state <span style="color:#f92672">=</span> 3<span style="color:#960050;background-color:#1e0010">，</span>那么它的二进制如下
 
   0000 0000 0000 0000 0000 0000 0000 0011
 <span style="color:#f92672">&amp;</span>                     1111 1111 1111 1111
@@ -606,7 +606,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </blockquote>
 <h4 id="threadlocalholdcounter">ThreadLocalHoldCounter<a href="#threadlocalholdcounter" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>除了需要记录锁被拿取的总次数，还需要记录每个线程分别拿走多少，所以我们使用<code>ThreadLocal</code>，将记录的工作交给线程自己。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Sync</span> <span style="color:#66d9ef">extends</span> AbstractQueuedSynchronizer <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 当前线程持有的读锁数量，当为0的时候置为null
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> ThreadLocalHoldCounter readHolds<span style="color:#f92672">;</span>
     
@@ -646,7 +646,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <ul>
 <li>
 <p>tryLock</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 写锁入口
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 写锁入口
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquire</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
@@ -727,7 +727,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </ol>
 </blockquote>
 <h4 id="trywritelock">tryWriteLock<a href="#trywritelock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryWriteLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryWriteLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
     <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
     <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">!=</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -749,7 +749,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </blockquote>
 <h4 id="release">release<a href="#release" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>写锁的释放流程与独占锁释放类似，只是tryRelease不同，我们只需要关注AQS的子类实现即可</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// ReentrentReadWriteLock
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// ReentrentReadWriteLock
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
   sync<span style="color:#f92672">.</span><span style="color:#a6e22e">release</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
@@ -789,7 +789,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <ul>
 <li>
 <p>tryAcquireShared</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 首先我们知道int返回值的不同代表了共享锁获取的不同情况(和semaphore一致)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 首先我们知道int返回值的不同代表了共享锁获取的不同情况(和semaphore一致)
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> unused<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 <span style="color:#75715e">// 获取当前线程
 </span><span style="color:#75715e"></span>    Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
@@ -881,7 +881,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </li>
 <li>
 <p>step5 中比较疑惑的是何时<code>else if(rh.count == 0)</code>成立？这里需要涉及到读锁释放的代码来帮助理解。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java">HoldCounter rh <span style="color:#f92672">=</span> cachedHoldCounter<span style="color:#f92672">;</span>
 <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>rh <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">tid</span> <span style="color:#f92672">!=</span> getThreadId<span style="color:#f92672">(</span>current<span style="color:#f92672">))</span>
     rh <span style="color:#f92672">=</span> readHolds<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
 <span style="color:#66d9ef">int</span> count <span style="color:#f92672">=</span> rh<span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
@@ -912,7 +912,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </li>
 </ul>
 <h4 id="apparentlyfirstqueuedisexclusive">apparentlyFirstQueuedIsExclusive<a href="#apparentlyfirstqueuedisexclusive" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 一定概率防止读锁非公平获取锁，让它去排队，让写锁不要无限等待。
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 一定概率防止读锁非公平获取锁，让它去排队，让写锁不要无限等待。
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">apparentlyFirstQueuedIsExclusive</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     Node h<span style="color:#f92672">,</span> s<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span>
@@ -929,7 +929,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </ol>
 </blockquote>
 <h4 id="fulltryacquireshared">fullTryAcquireShared<a href="#fulltryacquireshared" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 第一次尝试获取共享锁失败就会进入此方法
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 第一次尝试获取共享锁失败就会进入此方法
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">fullTryAcquireShared</span><span style="color:#f92672">(</span>Thread current<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 定义局部变量rh
 </span><span style="color:#75715e"></span>    HoldCounter rh <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
@@ -1024,7 +1024,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </blockquote>
 <hr>
 <h3 id="trylock">tryLock<a href="#trylock" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReadLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReadLock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     Thread current <span style="color:#f92672">=</span> Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">();</span>
     <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
         <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
@@ -1056,7 +1056,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 <p>tryLock和我们分析的tryAcquireShared类似，返回值不同tryLock是boolean值，同时tryLock采用的是<code>自旋</code>直到成功获取，或者<code>写锁被其他线程获取则返回false，获取失败。</code></p>
 </blockquote>
 <h3 id="tryreleaseshared">tryReleaseShared<a href="#tryreleaseshared" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// AQS.unlock
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// AQS.unlock
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     sync<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
@@ -1144,7 +1144,7 @@ public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写�
 </li>
 <li>
 <p>如果有一线程持有写锁，（除非是持有写锁线程本身）否则其他线程都不能获取读锁/写锁。写读/写写互斥。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CachedDate</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CachedDate</span> <span style="color:#f92672">{</span>
     Object data<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">boolean</span> cacheValid<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">final</span> ReentrantReadWriteLock rwl <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantReadWriteLock<span style="color:#f92672">();</span>

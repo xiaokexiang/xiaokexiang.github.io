@@ -593,7 +593,7 @@ public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T re
 <h3 id="java中的引用">Java中的引用<a href="#java中的引用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>传统的引用概念：若<code>reference</code>类型的数据中存储的数值是另一块内存的起始地址，就说明该<code>reference</code>数据是某个内存、某个对象的引用。</p>
 <p>从<code>JDK1.2</code>开始，Java对引用的概念进行补充，将引用分为了：<code>强引用、软引用、弱引用和虚引用</code>四种。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Reference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Reference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 引用本身
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> T referent<span style="color:#f92672">;</span>  
     <span style="color:#75715e">// 存储reference本身的链表队列
@@ -615,7 +615,7 @@ public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T re
 <li>弱引用</li>
 </ul>
 <p>相比<code>软引用</code>，只被<code>弱引用关联（指向）</code>的对象只能生存到下一次垃圾收集，只要垃圾回收器工作，<code>弱引用</code>就会被回收。Java中用<code>WeakReference</code>实现。<code>ThreadLocal.ThreadLocalMap&lt;k,v&gt;中key就继承了弱引用</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Weak</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Weak</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> WeakReference<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> weakReference<span style="color:#f92672">;</span>
 
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -640,7 +640,7 @@ public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T re
 <li>虚引用</li>
 </ul>
 <p>引用中最弱的一种，一个对象是否有<code>虚引用</code>的存在，对其生存时间不会产生影响，并且<code>无法通过虚引用获取对象实例</code>。唯一的作用就是为了在<code>该对象被回收时收到通知</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Phantom</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Phantom</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 实现 包含虚引用的对象在回收时接受通知
 </span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
         String hello <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
@@ -673,7 +673,7 @@ public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T re
 <span style="color:#f92672">}</span>
 </code></pre></div><blockquote>
 <p>对于虚引用，它的get()方法只会返回null，因为<code>虚引用是不可达的</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
  <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
 <span style="color:#f92672">}</span>
 </code></pre></div></blockquote>
@@ -688,7 +688,7 @@ public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T re
 <li>若该对象的finalize方法不能<code>将对象与引用链建立连接</code>，该对象会被垃圾回收器清理。</li>
 </ol>
 <p><img src="https://image.leejay.top/image/20200814/1LKD8vwaOJzB.png?imageslim" alt=""></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReachabilityAnalysis</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReachabilityAnalysis</span> <span style="color:#f92672">{</span>
     
     <span style="color:#75715e">// 创建GC Roots
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ReachabilityAnalysis REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>

@@ -356,7 +356,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <blockquote>
 <p>相比<code>CountDownLatch</code>只使用一次，<code>CyclicBarrier</code>更强调循环使用。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CyclicBarrierTest</span> <span style="color:#f92672">{</span>
 
     <span style="color:#75715e">// 传入每次屏障之前需要等待的线程数量
@@ -400,7 +400,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </span></code></pre></div><blockquote>
 <p>为什么结果不是随机打印日志，而是先打印完<code>doSomething</code>，再打印<code>continue exec</code>?</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 使用ReentrantLock和Condition
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 使用ReentrantLock和Condition
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
 <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition trip <span style="color:#f92672">=</span> lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
 
@@ -439,7 +439,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </ol>
 </blockquote>
 <h3 id="nextgeneration">nextGeneration<a href="#nextgeneration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">nextGeneration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">nextGeneration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 唤醒上一代的线程（表明此时是有锁的）
 </span><span style="color:#75715e"></span>    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">signalAll</span><span style="color:#f92672">();</span>
     <span style="color:#75715e">// 将count重置为parties
@@ -451,7 +451,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <p>该方法的目的是为了<code>唤醒上一代的线程，并重置count及通过创建对象开启下一代</code>。</p>
 </blockquote>
 <h3 id="breakbarrier">breakBarrier<a href="#breakbarrier" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">breakBarrier</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">breakBarrier</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 修改Generation对象参数
 </span><span style="color:#75715e"></span>    generation<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
     <span style="color:#75715e">// 重置计数器
@@ -463,7 +463,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <p>与<code>nextGeneration</code>不同点在于：修改<code>Generation对象</code>参数，以及<code>没有创建下一代Generation</code>。</p>
 </blockquote>
 <h3 id="reset">reset<a href="#reset" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">reset</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">reset</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
     lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
     <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
@@ -478,7 +478,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </blockquote>
 <hr>
 <h3 id="await">await<a href="#await" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 同一个线程可能多次调用await方法
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 同一个线程可能多次调用await方法
 </span><span style="color:#75715e">// 返回值表明还需要多少个线程到达屏障处
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
@@ -590,7 +590,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </blockquote>
 <hr>
 <h3 id="awaittime">await(time)<a href="#awaittime" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
 <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException<span style="color:#f92672">,</span>TimeoutException <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> unit<span style="color:#f92672">.</span><span style="color:#a6e22e">toNanos</span><span style="color:#f92672">(</span>timeout<span style="color:#f92672">));</span>
 <span style="color:#f92672">}</span>

@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://leejay.top/post/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
     <loc>https://leejay.top/post/%E5%85%B3%E4%BA%8Eenableaspectjautoproxy%E6%B3%A8%E8%A7%A3%E5%BC%95%E5%87%BA%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</loc>
     <lastmod>2021-05-12T16:18:28+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -108,17 +113,32 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2021-05-12T16:18:28+08:00</lastmod>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2021-05-12T16:18:28+08:00</lastmod>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/mysql/</loc>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/categories/mysql/</loc>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/post/</loc>
-    <lastmod>2021-05-12T16:18:28+08:00</lastmod>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2021-07-23T09:51:37+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -133,11 +153,6 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/spring-aop/</loc>
-    <lastmod>2021-05-12T16:18:28+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2021-05-12T16:18:28+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -158,11 +173,6 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/linux/</loc>
-    <lastmod>2021-04-16T11:02:51+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/mysql/</loc>
     <lastmod>2021-04-16T11:02:51+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

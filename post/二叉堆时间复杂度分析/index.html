@@ -321,7 +321,7 @@
 <ul>
 <li>我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 计算当前index的父节点index
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 计算当前index的父节点index
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> 2 <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> 2<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">;</span>
 <span style="color:#f92672">}</span>
@@ -354,7 +354,7 @@
 <ul>
 <li>从非叶子节点<code>(倒数第二层)</code>最后一个节点开始倒序遍历，让当前节点依次和它下面的子节点比较，最小元素作为父节点，直到堆顶。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">buildFast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">buildFast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">int</span> size<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 从非叶子节点开始遍历，从后往前遍历
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1<span style="color:#f92672">)</span> <span style="color:#f92672">-</span> 1<span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span> <span style="color:#f92672">{</span>
@@ -403,7 +403,7 @@ $sum(n) = n - log2n - 1$</li>
 <hr>
 <h4 id="添加">添加<a href="#添加" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>二叉堆的添加，都是将<code>元素添加到队尾</code>，因为此时数组已经是符合二叉堆要求的最小二叉堆，所以只需要处理新添加的元素，和新加元素的所有父节点比较替换。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 我们先使用System.arraycopy复制原有数据并将新元素加入
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
     <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">+</span> 1<span style="color:#f92672">];</span>
@@ -445,7 +445,7 @@ $sum(n) = n - log2n - 1$</li>
 <hr>
 <h4 id="移除">移除<a href="#移除" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>因为二叉堆的特性：<code>堆顶是整个树最大或最小的元素</code>。所以移除元素都直接<code>移除堆顶</code>，然后将<code>队尾元素直接移到堆顶</code>，此时我们需要从<code>堆顶开始往下</code>比较交换。和添加不一样，添加是从<code>堆底往上</code>比较交换。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
 </span><span style="color:#75715e">  * 移除队首元素，将队尾元素移到队首，再重新构建
 </span><span style="color:#75715e">  */</span>
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">delete</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>

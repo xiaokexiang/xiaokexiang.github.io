@@ -327,7 +327,7 @@
 <blockquote>
 <p><code>crontab</code>是linux下的定时任务服务，是基于<code>cron表达式</code>实现定时任务操作。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看定时器状态、开启、关闭</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看定时器状态、开启、关闭</span>
 service crond status/start/stop
 
 <span style="color:#75715e"># 查看定时任务列表</span>
@@ -435,7 +435,7 @@ crontab -r
 </tbody>
 </table>
 <h4 id="crontab使用示例">crontab使用示例<a href="#crontab使用示例" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 编辑定时任务</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 编辑定时任务</span>
 crontab -e
 <span style="color:#75715e"># 每隔一分钟写入hello到cron.txt文件中</span>
 */1 * * * * echo <span style="color:#e6db74">&#39;hello&#39;</span> &gt;&gt; /opt/software/cron.txt

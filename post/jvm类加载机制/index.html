@@ -569,12 +569,12 @@
 <ul>
 <li>使用<code>new</code>关键字实例化对象。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 会初始化A
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 会初始化A
 </span><span style="color:#75715e"></span>A a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
 </code></pre></div><ul>
 <li>读取或设置一个类型的<code>静态字段(final修饰、编译器进入常量池的静态字段除外)</code>。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 会导致A类被初始化  
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> A a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -591,7 +591,7 @@
 <ul>
 <li>调用一个类型的静态方法</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
     <span style="color:#f92672">}</span>
@@ -610,7 +610,7 @@
 <p>初始化类时发现其<code>父类</code>还没有初始化。</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SuperClass</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SuperClass</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Super class init&#34;</span><span style="color:#f92672">);</span>
     <span style="color:#f92672">}</span>
@@ -633,7 +633,7 @@
 </code></pre></div><ul>
 <li>接口中定义的<code>default</code>方法，若该接口的实现类发生初始化，<code>default</code>方法在此之前要被初始化。</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Father</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Father</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
     <span style="color:#f92672">}</span>
@@ -691,11 +691,11 @@
 <li>符号引用验证</li>
 </ul>
 <p>目的是确保将<code>符号引用转为直接引用</code>的<code>解析</code>阶段能够顺利执行，对类自身以外的类信息进行匹配性校验。包括：<code>符号引用中通过字符串描述的权限定名能够找到对应的类</code>、<code>符号引用中的类、字段、方法的可访问性</code>等验证点。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 关闭大部分的类验证以缩短虚拟机加载类时间</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 关闭大部分的类验证以缩短虚拟机加载类时间</span>
 -Xverify:none
 </code></pre></div><h4 id="准备">准备<a href="#准备" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>为类中定义的<code>静态变量</code>分配内存并设置<code>类变量初始值</code>的阶段。这些变量所使用的内存都会在<code>方法区</code>进行分配。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#75715e">// 类变量(静态变量)，初始值为0
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> value1 <span style="color:#f92672">=</span> 123<span style="color:#f92672">;</span>
     <span style="color:#75715e">// 类变量，初始值为123
@@ -718,7 +718,7 @@
 <li>类或接口解析</li>
 </ul>
 <p>基于以下代码，将从未解析过的<code>符号引用x</code>解析为类或接口的<code>直接引用</code>。包括三个步骤：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     A x <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
 <span style="color:#f92672">}</span>
 </code></pre></div><blockquote>
@@ -771,7 +771,7 @@
 <p><code>&lt;clinit&gt;</code>方法是由编译器自动收集类中的所有<code>类变量的赋值动作</code>与<code>静态语句块(static {})</code>中的语句合并产生的。编译器的收集顺序由语句在<code>源文件</code>中出现的顺序决定的。
 <code>&lt;clinit&gt;</code>不包含<code>静态方法</code>，<code>静态方法</code>在被调用的时候才会加载。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
         <span style="color:#75715e">// i=1执行先于i=0，但并不能修改成功
 </span><span style="color:#75715e"></span>        i <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span>
@@ -805,7 +805,7 @@
 <p>Java虚拟机必须要保证一个类的<code>&lt;clinit&gt;</code>方法在多线程环境中，如果多个线程同时初始化一个类，那么只会有一个线程去执行<code>&lt;clinit&gt;</code>方法，其他线程都要阻塞等待，直到活动线程执行完<code>&lt;clinit&gt;</code>。若一个类的<code>&lt;clinit&gt;</code>方法存在耗时很长的操作，那么可能造成多线程阻塞（活动线程执行完，其他线程不会再进入<code>&lt;clinit&gt;</code>方法）。</p>
 </li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> A <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
         A <span style="color:#f92672">=</span> 2<span style="color:#f92672">;</span>
@@ -830,7 +830,7 @@
 <blockquote>
 <p>判断两个类是否相等，前提是由<code>同一个类加载器</code>加载。不同类加载器加载同一个.class文件也是不相等的。</p>
 </blockquote>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassLoaderTest</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassLoaderTest</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 自定义类加载器,匿名内部类
 </span><span style="color:#75715e"></span>        ClassLoader classLoader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ClassLoader<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
@@ -887,7 +887,7 @@
 </ul>
 <p>因为是<code>ClassLoader.getSystemClassLoader</code>的返回值，又被称为系统类加载器。负责加载用户类路径(ClassPath)上所有的类库。</p>
 <h5 id="不同类加载器加载同一个class文件">不同类加载器加载同一个.class文件<a href="#不同类加载器加载同一个class文件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> loadClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> resolve<span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> loadClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> resolve<span style="color:#f92672">)</span>
         						<span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>getClassLoadingLock<span style="color:#f92672">(</span>name<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
         <span style="color:#75715e">// 判断类是否被加载
@@ -942,7 +942,7 @@
 <p>解决办法：引入线程上下文类加载器，如果创建线程时还未设置，它会从父线程中继承一个，如果在应用程序的全局范围内都没有设置的话，那么这个类加载器默认是<code>应用程序类加载器</code>。</p>
 <h4 id="正确编写自定义类加载器">正确编写自定义类加载器<a href="#正确编写自定义类加载器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>在前面我们编写了<code>&quot;糟糕&quot;</code>的自定义类加载器代码来验证<code>不同的类加载器加载同一个.class文件是不相等的</code>。那么这节我们按照<code>JDK1.2</code>后建议我们使用的<code>findClass</code>来编写自定义类加载器。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClassLoader</span> <span style="color:#66d9ef">extends</span> ClassLoader <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClassLoader</span> <span style="color:#66d9ef">extends</span> ClassLoader <span style="color:#f92672">{</span>
 
     <span style="color:#a6e22e">@Override</span>
     <span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> findClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
@@ -993,7 +993,7 @@
 <li><code>forName</code>除了<code>加载.class文件</code>外，还会执行该类的<code>初始化</code>，即执行类的<code>&lt;clinit&gt;</code>方法，所以<code>类的静态代码块</code>和<code>静态变量赋值操作</code>都会执行。</li>
 <li><code>loadClass</code>只会将<code>.class文件</code>加载到虚拟机中，不会执行初始化操作。</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@CallerSensitive</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@CallerSensitive</span>
 <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Class<span style="color:#f92672">&lt;?&gt;</span> forName<span style="color:#f92672">(</span>String className<span style="color:#f92672">)</span>
     	<span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
     Class<span style="color:#f92672">&lt;?&gt;</span> caller <span style="color:#f92672">=</span> Reflection<span style="color:#f92672">.</span><span style="color:#a6e22e">getCallerClass</span><span style="color:#f92672">();</span>
@@ -1005,7 +1005,7 @@
 </span><span style="color:#75715e">      */</span> 
     <span style="color:#66d9ef">return</span> forName0<span style="color:#f92672">(</span>className<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> ClassLoader<span style="color:#f92672">.</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">(</span>caller<span style="color:#f92672">),</span> caller<span style="color:#f92672">);</span>
 <span style="color:#f92672">}</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassDemo</span> <span style="color:#f92672">{</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassDemo</span> <span style="color:#f92672">{</span>
     <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> value <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
     <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
         System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;static ...&#34;</span><span style="color:#f92672">);</span>
