@@ -1182,6 +1182,154 @@
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%88%90%e6%9c%ac%e7%9a%84%e5%ae%9a%e4%b9%89">
+                    成本的定义
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%8d%95%e8%a1%a8%e6%9f%a5%e8%af%a2%e7%9a%84%e6%88%90%e6%9c%ac">
+                    单表查询的成本
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9f%ba%e4%ba%8e%e6%88%90%e6%9c%ac%e7%9a%84%e4%bc%98%e5%8c%96%e6%ad%a5%e9%aa%a4">
+                    基于成本的优化步骤
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9f%ba%e4%ba%8e%e7%b4%a2%e5%bc%95%e7%bb%9f%e8%ae%a1%e6%95%b0%e6%8d%ae%e7%9a%84%e6%88%90%e6%9c%ac%e8%ae%a1%e7%ae%97">
+                    基于索引统计数据的成本计算
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%9a%e8%a1%a8%e8%bf%9e%e6%8e%a5%e7%9a%84%e6%88%90%e6%9c%ac">
+                    多表连接的成本
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -1564,6 +1712,22 @@
 <p><code>join buffer</code>通过参数<code>join_buffer_size</code>设置，默认<code>262144字节（256k）</code>。需要注意的是<code>驱动表的记录并不是所有列</code>都会被放到<code>join buffer</code>中，只有<code>查询列表中的列和过滤条件中的列</code>才会被放到<code>join buffer</code>中，所以连接查询中我们不要用<code>*</code>作为查询列，这样可以将更多的表记录放到<code>join buffer</code>中。</p>
 <hr>
 <h2 id="mysql基于成本的优化">Mysql基于成本的优化<a href="#mysql基于成本的优化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="成本的定义">成本的定义<a href="#成本的定义" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<ul>
+<li>I/O成本：数据从磁盘加载到内存中,基于InnoDB存储引擎，页是交互的基本单位，成本常数为1.0。</li>
+<li>CPU成本：读取以及检测记录是否满足对应的搜索条件，对结果集进行排序.成本常数为0.2。</li>
+</ul>
+<h3 id="单表查询的成本">单表查询的成本<a href="#单表查询的成本" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="基于成本的优化步骤">基于成本的优化步骤<a href="#基于成本的优化步骤" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/FjnYzl9paMRg3ikoAe8c1KitfQgO" alt=""></p>
+<h4 id="基于索引统计数据的成本计算">基于索引统计数据的成本计算<a href="#基于索引统计数据的成本计算" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/Fr9WBjq_vmiWXxIa7y5xoXqSEQay" alt=""></p>
+<h3 id="多表连接的成本">多表连接的成本<a href="#多表连接的成本" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><img src="https://image.leejay.top/FoM8ItkUI26AxAhNrgCF0GKj7bYh" alt=""></p>
+<blockquote>
+<p>多表连接的成本计算<code>依托于单表查询的成本计算</code>，且<code>多表连接的顺序不同导致不同的成本（n!种顺序，n&gt;1）</code>。</p>
+</blockquote>
+<hr>
 
       </div></div>
 
