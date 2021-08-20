@@ -1330,6 +1330,114 @@
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#mysql%e5%9f%ba%e4%ba%8e%e8%a7%84%e5%88%99%e7%9a%84%e4%bc%98%e5%8c%96">
+                    Mysql基于规则的优化
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9d%a1%e4%bb%b6%e5%8c%96%e7%ae%80">
+                    条件化简
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%96%e8%bf%9e%e6%8e%a5%e6%b6%88%e9%99%a4">
+                    外连接消除
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ad%90%e6%9f%a5%e8%af%a2%e4%bc%98%e5%8c%96">
+                    子查询优化
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -1639,7 +1747,7 @@
 <li>二级索引列都是等值匹配的情况，对于联合索引来说，在联合索引中的<code>每个列都必须等值匹配</code>，不能出现只匹配部分列的情况。</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span>;
-</code></pre></div><ol>
+</code></pre></div><ol start="2">
 <li>主键列可以是范围匹配。因为二级索引的列相同时会按照主键的顺序进行排序，有序的主键有助于提升取交集速度。</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 可能会用到聚簇索引和二级索引合并，因为key1作为二级索引叶子节点中是包含主键的，可以直接二级索引查询后再
@@ -1728,6 +1836,16 @@
 <p>多表连接的成本计算<code>依托于单表查询的成本计算</code>，且<code>多表连接的顺序不同导致不同的成本（n!种顺序，n&gt;1）</code>。</p>
 </blockquote>
 <hr>
+<h2 id="mysql基于规则的优化">Mysql基于规则的优化<a href="#mysql基于规则的优化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="条件化简">条件化简<a href="#条件化简" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><img src="https://image.leejay.top/FrMLiZwyvlTu1ehOMCowMU7H5cOE" alt=""></p>
+<h3 id="外连接消除">外连接消除<a href="#外连接消除" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>外连查询中的被驱动表的 IS NOT NULL等同于两表内联查询。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1 <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> S2 <span style="color:#66d9ef">ON</span> S1.id <span style="color:#f92672">=</span> S2.id <span style="color:#66d9ef">WHERE</span> S2 <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>;
+<span style="color:#960050;background-color:#1e0010">转换为</span>
+<span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1,S2 <span style="color:#66d9ef">WHERE</span> S1.id <span style="color:#f92672">=</span> S2.id
+</code></pre></div><h3 id="子查询优化">子查询优化<a href="#子查询优化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><img src="https://image.leejay.top/Fqla9zqISkoC9etH3NDWb0KAZMdP" alt=""></p>
 
       </div></div>
 
