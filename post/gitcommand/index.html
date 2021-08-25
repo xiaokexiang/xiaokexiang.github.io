@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Git Command :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Git Command 本地仓库提交 # 本地提交 git commit -m &amp;#34;message&amp;#34; 分支 分支的创建基于``基于某个提交及它的父提交，当前所在的分支会用*`标识
+# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
+# 将${branch_name}分支提交记录覆盖到当前分支 git merge ${branch_name} rebase 相比于merge，rebase会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。
+# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。
+分离HEAD 一般HEAD和分支是一起前进的，通过checkout命令修改HEAD的指针，此时HEAD的状态是detached。又称为detached head，即分离HEAD。
+# 会将HEAD指针指向这个commitid或branch git checkout ${commit_id}/${branch_name} HEAD -&amp;gt; branch -&amp;gt; commid_a =&amp;gt; HEAD -&amp;gt; commit_id &amp;amp; branch -&amp;gt; commit_id 相对引用 # 将HEAD切换到main的父提交记录 git checkout main^ # 将HEAD切换到main的爷提交记录 git checkout main^^ # 向上移动num次 git checkout ~&amp;lt;num&amp;gt; # 将分支main移动到当前HEAD的相对位置上的第3个提交记录  git branch -f main ~3 撤销变更 git restore（适合回滚本地未提交的改动） 撤销未提交到本地仓库的改动。" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/gitcommand/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Git Command">
+<meta property="og:description" content="基于https://learngitbranching.js.org的Git学习笔记" />
+<meta property="og:url" content="https://leejay.top/post/gitcommand/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="git" />
+
+
+  <meta property="article:published_time" content="2021-08-25 16:39:56 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#git-command">
+                    Git Command
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9c%ac%e5%9c%b0%e4%bb%93%e5%ba%93%e6%8f%90%e4%ba%a4">
+                    本地仓库提交
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%86%e6%94%af">
+                    分支
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%90%88%e5%b9%b6">
+                    合并
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#merge">
+                    merge
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#rebase">
+                    rebase
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#head">
+                    HEAD
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%86%e7%a6%bbhead">
+                    分离HEAD
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%9b%b8%e5%af%b9%e5%bc%95%e7%94%a8">
+                    相对引用
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%92%a4%e9%94%80%e5%8f%98%e6%9b%b4">
+                    撤销变更
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#git-restore%e9%80%82%e5%90%88%e5%9b%9e%e6%bb%9a%e6%9c%ac%e5%9c%b0%e6%9c%aa%e6%8f%90%e4%ba%a4%e7%9a%84%e6%94%b9%e5%8a%a8">
+                    git restore（适合回滚本地未提交的改动）
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#git-commit---amend%e9%80%82%e5%90%88%e6%8f%90%e4%ba%a4%e7%9a%84%e6%94%b9%e5%8a%a8%e4%b8%ad%e9%94%99%e8%af%af%e9%83%a8%e5%88%86">
+                    git commit –amend（适合提交的改动中错误部分）
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#git-reset%e9%80%82%e7%94%a8%e6%9c%ac%e5%9c%b0%e5%b7%b2%e6%8f%90%e4%ba%a4%e6%92%a4%e9%94%80">
+                    git reset（适用本地已提交撤销）
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#git-revert%e4%bd%bf%e7%94%a8%e8%bf%9c%e7%ab%af%e6%92%a4%e9%94%80">
+                    git revert（使用远端撤销）
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cherry-pick">
+                    cherry-pick
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%ba%a4%e4%ba%92%e7%9a%84rebase">
+                    交互的rebase
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/gitcommand/">Git Command</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-08-25 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/git/">git</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="git-command">Git Command<a href="#git-command" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="本地仓库提交">本地仓库提交<a href="#本地仓库提交" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 本地提交</span>
+git commit -m <span style="color:#e6db74">&#34;message&#34;</span>
+</code></pre></div><h3 id="分支">分支<a href="#分支" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>分支的创建基于``基于某个提交及它的父提交<code>，当前所在的分支会用</code>*`标识</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 创建分支（分支的创建基于某个提交）</span>
+git branch <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+<span style="color:#75715e"># 切换到这个分支</span>
+git checkout <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+<span style="color:#75715e"># 创建并切换到这个分支</span>
+git checkout -b <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+</code></pre></div><h3 id="合并">合并<a href="#合并" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="merge">merge<a href="#merge" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>将某个分支A上<code>不被当前分支B包含的提交记录</code>合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将${branch_name}分支提交记录覆盖到当前分支</span>
+git merge <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+</code></pre></div><h4 id="rebase">rebase<a href="#rebase" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>相比于<code>merge</code>，<code>rebase</code>会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将当前分支合并到${branch_name}上</span>
+<span style="color:#75715e"># git rebase a 会将当前分支的提交记录复制到分支a后面</span>
+git rebase <span style="color:#f92672">[</span>-i<span style="color:#f92672">]</span> <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+</code></pre></div><h3 id="head">HEAD<a href="#head" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>HEAD 是一个对当前检出记录的符号引用，指向你<code>正在其基础上进行工作的提交记录</code>。HEAD 总是指向当前分支上最近一次提交记录。</p>
+<h4 id="分离head">分离HEAD<a href="#分离head" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>一般HEAD和分支是一起前进的，通过checkout命令修改HEAD的指针，此时HEAD的状态是<code>detached</code>。又称为<code>detached head</code>，即分离HEAD。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 会将HEAD指针指向这个commitid或branch</span>
+git checkout <span style="color:#e6db74">${</span>commit_id<span style="color:#e6db74">}</span>/<span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+HEAD -&gt; branch -&gt; commid_a <span style="color:#f92672">=</span>&gt; HEAD -&gt; commit_id &amp; branch -&gt; commit_id
+</code></pre></div><h4 id="相对引用">相对引用<a href="#相对引用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将HEAD切换到main的父提交记录</span>
+git checkout main^
+<span style="color:#75715e"># 将HEAD切换到main的爷提交记录</span>
+git checkout main^^
+<span style="color:#75715e"># 向上移动num次</span>
+git checkout ~&lt;num&gt;
+<span style="color:#75715e"># 将分支main移动到当前HEAD的相对位置上的第3个提交记录 </span>
+git branch -f main ~3
+</code></pre></div><h3 id="撤销变更">撤销变更<a href="#撤销变更" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="git-restore适合回滚本地未提交的改动">git restore（适合回滚本地未提交的改动）<a href="#git-restore适合回滚本地未提交的改动" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>撤销未提交到本地仓库的改动。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 回滚所有的改动</span>
+git restore .
+<span style="color:#75715e"># 使用checkout也可以实现</span>
+git checkout .
+</code></pre></div><h4 id="git-commit---amend适合提交的改动中错误部分">git commit &ndash;amend（适合提交的改动中错误部分）<a href="#git-commit---amend适合提交的改动中错误部分" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>如果上次提交的改动，有部分改错了，但是不想再多一次提交记录，那么可以使用<code>git commit -m &quot;msg&quot; --amend</code>命令提交当前改动，那么改动会被提交到本地仓库的同时，且只保留提交信息为&quot;msg&quot;的提交记录</p>
+<h4 id="git-reset适用本地已提交撤销">git reset（适用本地已提交撤销）<a href="#git-reset适用本地已提交撤销" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>通过把分支记录回退几个提交记录来实现撤销改动。你可以将这想象成“改写历史”。原先的修改内容仍然存在，处于<code>未加入暂存区状态</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将本地分支记录回退一个版本实现撤销</span>
+git reset HEAD~1
+</code></pre></div><h4 id="git-revert使用远端撤销">git revert（使用远端撤销）<a href="#git-revert使用远端撤销" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>使用<code>git revert</code>命令，在当前提交记录A后多个一个新的提交记录 B，这个<code>新的提交记录B引入了更改</code>（这更改是用来撤销A的更改内容），也就是恢复到提交记录B的父记录状态。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 撤销更改</span>
+git revert HEAD
+A -&gt; B <span style="color:#f92672">=</span>&gt; A -&gt; B -&gt; B<span style="color:#e6db74">&#39; (A = B&#39;</span><span style="color:#f92672">)</span>
+</code></pre></div><h3 id="cherry-pick">cherry-pick<a href="#cherry-pick" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>将一些提交记录复制到当前所在位置（HEAD）后。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将多个提交复制到HEAD后</span>
+git cherry-pick &lt;commit_id ...&gt;
+</code></pre></div><blockquote>
+<p>相比rebase，更加灵活，可以<code>指定某个分支上的特定几个提交记录</code>，而不是类似<code>git rebase  -i</code>的图形化操作界面。</p>
+</blockquote>
+<h4 id="交互的rebase">交互的rebase<a href="#交互的rebase" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>相比<code>cherry-pick</code>基于提交记录的hash值进行工作，通过<code>--interactive（简写为-i）</code>操作图形化界面。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 通过图形化界面将当前分支的记录移到${branch_name}后</span>
+git rebase -i <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+</code></pre></div>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+                <span class="button__text">Mysql学习笔记</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
