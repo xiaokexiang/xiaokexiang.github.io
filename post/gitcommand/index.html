@@ -7,11 +7,9 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="本地仓库的操作 本地仓库提交 # 本地提交 git commit -m &amp;#34;message&amp;#34; 分支 分支的创建基于``基于某个提交及它的父提交，当前所在的分支会用*`标识
-# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
+# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} # 将source分支指向目标分支或目标版本 git branch -f &amp;lt;source_branch_name&amp;gt; &amp;lt;dest_branch_name|version num&amp;gt; # 删除指定分支 git branch [-D|-d] &amp;lt;branch_name&amp;gt; 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
 # 将${branch_name}分支提交记录覆盖到当前分支 git merge ${branch_name} rebase 相比于merge，rebase会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。
-# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} # 将child分支的提交记录移到parent的提交记录后 git rebase ${parent_branch} ${child_branch} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。
-分离HEAD 一般HEAD和分支是一起前进的，通过checkout命令修改HEAD的指针，此时HEAD的状态是detached。又称为detached head，即分离HEAD。
-# 会将HEAD指针指向这个commitid或branch git checkout ${commit_id}/${branch_name} HEAD -&amp;gt; branch -&amp;gt; commid_a =&amp;gt; HEAD -&amp;gt; commit_id &amp;amp; branch -&amp;gt; commit_id HEAD移动 ~ 和^ 都可以移动HEAD的位置，区别在于前者是往上移动几个位置，后者是当前HEAD拥有多个父节点时，HEAD^ 是当前分支的父节点，HEAD ^ 2是另一个父节点。" />
+# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} # 将child分支的提交记录移到parent的提交记录后 git rebase ${parent_branch} ${child_branch} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/gitcommand/" />
@@ -822,6 +820,10 @@ git branch <span style="color:#e6db74">${</span>branch_name<span style="color:#e
 git checkout <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
 <span style="color:#75715e"># 创建并切换到这个分支</span>
 git checkout -b <span style="color:#e6db74">${</span>branch_name<span style="color:#e6db74">}</span>
+<span style="color:#75715e"># 将source分支指向目标分支或目标版本</span>
+git branch -f &lt;source_branch_name&gt; &lt;dest_branch_name|version num&gt;
+<span style="color:#75715e"># 删除指定分支</span>
+git branch <span style="color:#f92672">[</span>-D|-d<span style="color:#f92672">]</span> &lt;branch_name&gt;
 </code></pre></div><h3 id="合并">合并<a href="#合并" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="merge">merge<a href="#merge" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>将某个分支A上<code>不被当前分支B包含的提交记录</code>合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。</p>
@@ -867,6 +869,8 @@ git checkout .
 <p><code>适用本地已提交撤销</code>。通过把分支记录回退几个提交记录来实现撤销改动。你可以将这想象成“改写历史”。原先的修改内容仍然存在，处于<code>未加入暂存区状态</code>。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 将本地分支记录回退一个版本实现撤销</span>
 git reset HEAD~1
+<span style="color:#75715e"># 将本地仓库的提交恢复到指定的版本号，--hard表示改动不保留，--soft表示改动保留（默认）</span>
+git reset <span style="color:#f92672">[</span>--hard|--soft<span style="color:#f92672">]</span> &lt;version num&gt;
 </code></pre></div><h4 id="git-revert">git revert<a href="#git-revert" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>用于撤销远端已提交的更改（会产生回滚记录）</code>。使用<code>git revert</code>命令，在当前提交记录A后多个一个新的提交记录 B，这个<code>新的提交记录B引入了更改</code>（这更改是用来撤销A的更改内容），也就是恢复到提交记录B的父记录状态。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 撤销更改</span>
@@ -940,6 +944,15 @@ git remote set-url origin <span style="color:#e6db74">${</span>new_url<span styl
 
 <span style="color:#75715e"># 修改当前分支名称</span>
 git branch -M <span style="color:#e6db74">${</span>new_branch_name<span style="color:#e6db74">}</span>
+
+<span style="color:#75715e"># 根据tag拉取代码</span>
+git clone -b &lt;tag name&gt; &lt;url&gt;
+
+<span style="color:#75715e"># 推送tag到远端</span>
+git push origin &lt;tag name&gt;
+
+<span style="color:#75715e"># 删除远端tag标签</span>
+git push origin :&lt;tag name&gt;
 </code></pre></div>
       </div></div>
 

@@ -15,11 +15,9 @@
       
       <guid>https://leejay.top/post/gitcommand/</guid>
       <description>本地仓库的操作 本地仓库提交 # 本地提交 git commit -m &amp;#34;message&amp;#34; 分支 分支的创建基于``基于某个提交及它的父提交，当前所在的分支会用*`标识
-# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
+# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} # 将source分支指向目标分支或目标版本 git branch -f &amp;lt;source_branch_name&amp;gt; &amp;lt;dest_branch_name|version num&amp;gt; # 删除指定分支 git branch [-D|-d] &amp;lt;branch_name&amp;gt; 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
 # 将${branch_name}分支提交记录覆盖到当前分支 git merge ${branch_name} rebase 相比于merge，rebase会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。
-# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} # 将child分支的提交记录移到parent的提交记录后 git rebase ${parent_branch} ${child_branch} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。
-分离HEAD 一般HEAD和分支是一起前进的，通过checkout命令修改HEAD的指针，此时HEAD的状态是detached。又称为detached head，即分离HEAD。
-# 会将HEAD指针指向这个commitid或branch git checkout ${commit_id}/${branch_name} HEAD -&amp;gt; branch -&amp;gt; commid_a =&amp;gt; HEAD -&amp;gt; commit_id &amp;amp; branch -&amp;gt; commit_id HEAD移动 ~ 和^ 都可以移动HEAD的位置，区别在于前者是往上移动几个位置，后者是当前HEAD拥有多个父节点时，HEAD^ 是当前分支的父节点，HEAD ^ 2是另一个父节点。</description>
+# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} # 将child分支的提交记录移到parent的提交记录后 git rebase ${parent_branch} ${child_branch} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。</description>
     </item>
     
     <item>
