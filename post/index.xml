@@ -7,7 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Wed, 25 Aug 2021 16:39:56 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 06 Sep 2021 16:06:48 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>事务的处理机制</title>
+      <link>https://leejay.top/post/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Mon, 06 Sep 2021 16:06:48 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/</guid>
+      <description>本地事务 本地事务是指仅操作单一事务资源的、不需要全局事务管理器进行协调的事务。
+从应用角度看，它是直接依赖于数据源本身提供的事务能力来工作的，在程序代码层面，最多只能对事务接口做一层标准化的包装（如 JDBC 接口），并不能深入参与到事务的运作过程当中，事务的操作都要依赖底层数据源的支持才能工作。
+ 例如MySQL的Innodb引擎支持事务操作。
+  全局事务 被限定为一种适用于单个服务使用多个数据源场景的事务解决方案。
+ X/A协议，其核心内容是定义了全局的事务管理器（Transaction Manager，用于协调全局事务）和局部的资源管理器（Resource Manager，用于驱动本地事务）之间的通信接口。通过协调多个数据源的一致动作，实现全局事务的统一提交或者统一回滚。
+X/A是规范，JTA是X/A规范的Java实现。
+ 两段式提交（2PC） 准备阶段 协调者询问事务的所有参与者是否准备好提交，参与者如果已经准备好提交（它与本地事务中真正提交的区别只是暂不写入最后一条 Commit Record ）则回复 Prepared，否则回复 Non-Prepared。
+提交阶段 协调者如果在上一阶段收到所有事务参与者回复的 Prepared 消息，则先自己在本地持久化事务状态为 Commit，在此操作完成后向所有参与者发送 Commit 指令，所有参与者立即执行提交操作；否则，任意一个参与者回复了 Non-Prepared 消息，或任意一个参与者超时未回复，协调者将将自己的事务状态持久化为 Abort 之后，向所有参与者发送 Abort 指令，参与者立即执行回滚操作。
+ 如果节点因为网络或其他原因处于临时失联状态，由于在准备阶段已经写入了完整的重做日志，所以当失联机器一旦恢复，就能够从日志中找出已准备妥当但并未提交的事务数据，再而向协调者查询该事务的状态，确定下一步应该进行提交还是回滚操作。
+ 缺点  单点问题：如果协调者宕机一直没有恢复，没有正常发送 Commit 或者 Rollback 的指令，那所有参与者都必须一直等待。 性能问题：所有参与者相当于被绑定成为一个统一调度的整体，根据木桶效应，需要等待集群中最慢的那一个处理操作结束为止，导致性能较差。 一致性风险：在协调者会持久化事务状态，并提交自己的事务后，如果这时候网络忽然被断开，无法再通过网络向所有参与者发出 Commit 指令的话，就会导致部分数据（协调者的）已提交，但部分数据（参与者的）既未提交，也没有办法回滚，产生了数据不一致的问题。  三段式提交（3PC） 三段式提交把原本的两段式提交的准备阶段再细分为两个阶段，分别称为 CanCommit、PreCommit，把提交阶段改称为 DoCommit 阶段。新增的 CanCommit 是一个询问阶段，协调者让每个参与的数据库根据自身状态，评估该事务是否有可能顺利完成。
+在三段式提交中，如果在 PreCommit 阶段之后发生了协调者宕机，即参与者没有能等到 DoCommit 的消息的话，默认的操作策略将是提交事务而不是回滚事务或者持续等待，这就相当于避免了协调者单点问题的风险。
+缺点 相比两段式提交的一致性风险更高了，因为默认无法接收到协调者的指令时，会自动提交事务，如果因为网络延时导致Abort指令被接受前就提交了事务，反而产生更严重的后果。
+ 分布式事务 在分布式服务环境下的事务处理机制（相比全局事务单个服务的多个服务同时访问多个数据源的事务处理机制）。</description>
+    </item>
+    
     <item>
       <title>Git Command</title>
       <link>https://leejay.top/post/gitcommand/</link>
