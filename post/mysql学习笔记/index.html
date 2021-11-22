@@ -2885,27 +2885,27 @@
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">EXPLAIN</span> FORMAT<span style="color:#f92672">=</span>JSON <span style="color:#66d9ef">SELECT</span> common_field <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> common_field;
 </code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
   <span style="color:#f92672">&#34;query_block&#34;</span>: {
-    <span style="color:#f92672">&#34;select_id&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">查询id（一个select一个id）</span>
-    <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">成本</span>
-      <span style="color:#f92672">&#34;query_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>
+    <span style="color:#f92672">&#34;select_id&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询id（一个select一个id）
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;query_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>
     },
-    <span style="color:#f92672">&#34;grouping_operation&#34;</span>: { <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">group</span> <span style="color:#960050;background-color:#1e0010">by操作</span>
-      <span style="color:#f92672">&#34;using_temporary_table&#34;</span>: <span style="color:#66d9ef">true</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">是否使用了临时表</span>
-      <span style="color:#f92672">&#34;using_filesort&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">是否使用了文件排序</span>
-      <span style="color:#f92672">&#34;table&#34;</span>: {
-        <span style="color:#f92672">&#34;table_name&#34;</span>: <span style="color:#e6db74">&#34;single_table&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">查询的表名</span>
-        <span style="color:#f92672">&#34;access_type&#34;</span>: <span style="color:#e6db74">&#34;ALL&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">查询类型</span>
-        <span style="color:#f92672">&#34;rows_examined_per_scan&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">查询表一次大概查询多少数据</span> <span style="color:#960050;background-color:#1e0010">=</span> <span style="color:#960050;background-color:#1e0010">rows</span>
-        <span style="color:#f92672">&#34;rows_produced_per_join&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">扇出的数据量</span>
-        <span style="color:#f92672">&#34;filtered&#34;</span>: <span style="color:#e6db74">&#34;100.00&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">filtered</span>
-        <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">成本</span>
-          <span style="color:#f92672">&#34;read_cost&#34;</span>: <span style="color:#e6db74">&#34;0.25&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">IO成本</span> <span style="color:#960050;background-color:#1e0010">+</span> <span style="color:#960050;background-color:#1e0010">rows*(1-filtered)成本</span>
-          <span style="color:#f92672">&#34;eval_cost&#34;</span>: <span style="color:#e6db74">&#34;0.10&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">rows</span> <span style="color:#960050;background-color:#1e0010">×</span> <span style="color:#960050;background-color:#1e0010">filter的成本</span>
-          <span style="color:#f92672">&#34;prefix_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>, <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">单独查询表的成本（read_cost+eval_cost）</span>
-          <span style="color:#f92672">&#34;data_read_per_join&#34;</span>: <span style="color:#e6db74">&#34;1K&#34;</span> <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">此次查询中需要读取的数据量</span>
-        },
-        <span style="color:#f92672">&#34;used_columns&#34;</span>: [ <span style="color:#960050;background-color:#1e0010">//</span> <span style="color:#960050;background-color:#1e0010">使用到的列</span> 
-          <span style="color:#e6db74">&#34;id&#34;</span>,
+    <span style="color:#f92672">&#34;grouping_operation&#34;</span>: { <span style="color:#75715e">// group by操作
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_temporary_table&#34;</span>: <span style="color:#66d9ef">true</span>, <span style="color:#75715e">// 是否使用了临时表
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_filesort&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#75715e">// 是否使用了文件排序
+</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;table&#34;</span>: {
+        <span style="color:#f92672">&#34;table_name&#34;</span>: <span style="color:#e6db74">&#34;single_table&#34;</span>, <span style="color:#75715e">// 查询的表名
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;access_type&#34;</span>: <span style="color:#e6db74">&#34;ALL&#34;</span>, <span style="color:#75715e">// 查询类型
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_examined_per_scan&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询表一次大概查询多少数据 = rows
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_produced_per_join&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 扇出的数据量
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;filtered&#34;</span>: <span style="color:#e6db74">&#34;100.00&#34;</span>, <span style="color:#75715e">// filtered
+</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
+</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;read_cost&#34;</span>: <span style="color:#e6db74">&#34;0.25&#34;</span>, <span style="color:#75715e">// IO成本 + rows*(1-filtered)成本
+</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;eval_cost&#34;</span>: <span style="color:#e6db74">&#34;0.10&#34;</span>, <span style="color:#75715e">// rows × filter的成本
+</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;prefix_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>, <span style="color:#75715e">// 单独查询表的成本（read_cost+eval_cost）
+</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;data_read_per_join&#34;</span>: <span style="color:#e6db74">&#34;1K&#34;</span> <span style="color:#75715e">// 此次查询中需要读取的数据量
+</span><span style="color:#75715e"></span>        },
+        <span style="color:#f92672">&#34;used_columns&#34;</span>: [ <span style="color:#75715e">// 使用到的列 
+</span><span style="color:#75715e"></span>          <span style="color:#e6db74">&#34;id&#34;</span>,
           <span style="color:#e6db74">&#34;common_field&#34;</span>
         ]
       }

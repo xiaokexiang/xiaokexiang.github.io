@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSO  on Keep Improving</title>
+    <link>https://leejay.top/tags/sso/</link>
+    <description>Recent content in SSO  on Keep Improving</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>苏ICP备18050258号</copyright>
+    <lastBuildDate>Mon, 22 Nov 2021 15:30:48 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/sso/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ApereoCas安装与使用教程</title>
+      <link>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Mon, 22 Nov 2021 15:30:48 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+&lt;h3 id=&#34;sso&#34;&gt;SSO&lt;/h3&gt;
+&lt;p&gt;Q: 在学习Cas之前需要了解什么是单点登陆?
+A: &lt;code&gt;SS0: Single Sign-On，是目前比较流行的服务于企业业务整合的解决方案之一。SSO 使得在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。&lt;/code&gt;&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Mon, 06 Sep 2021 16:06:48 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 22 Nov 2021 15:30:48 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>事务的处理机制</title>
       <link>https://leejay.top/post/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/</link>
@@ -133,6 +133,21 @@ EventLoop Netty的核心抽象，用于处理连接的生命周期中所发生�
  同属于一个channel的操作都会被保证以它们被调用的顺序来执行。
  ChannelHandler 用于处理所有进出站的数据的事件处理器。实现类包括ChannelInboundHandler、ChannelOutboundHandler。
 public interface ChannelHandler {} public interface ChannelInboundHandler extends ChannelHandler {} public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implements ChannelInboundHandler {} public abstract class SimpleChannelInboundHandler&amp;lt;I&amp;gt; extends ChannelInboundHandlerAdapter {} ChannelPipeline 用于存储ChannelHandler链的容器。在应用程序初始化时（BootStrap引导）通过ChannelInitializer将自定义的ChannelHandler注册到ChannelPipeline中。</description>
+    </item>
+    
+    <item>
+      <title>ApereoCas安装与使用教程</title>
+      <link>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <pubDate>Mon, 22 Nov 2021 15:30:48 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;概念&#34;&gt;概念&lt;/h2&gt;
+&lt;h3 id=&#34;sso&#34;&gt;SSO&lt;/h3&gt;
+&lt;p&gt;Q: 在学习Cas之前需要了解什么是单点登陆?
+A: &lt;code&gt;SS0: Single Sign-On，是目前比较流行的服务于企业业务整合的解决方案之一。SSO 使得在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。&lt;/code&gt;&lt;/p&gt;</description>
     </item>
     
     <item>

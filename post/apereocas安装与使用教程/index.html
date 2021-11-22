@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>ApereoCas安装与使用教程 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="前言 正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。
+ 概念 SSO Q: 在学习Cas之前需要了解什么是单点登陆? A: SS0: Single Sign-On，是目前比较流行的服务于企业业务整合的解决方案之一。SSO 使得在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="ApereoCas安装与使用教程">
+<meta property="og:description" content="前言 正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。
+ 概念 SSO Q: 在学习Cas之前需要了解什么是单点登陆? A: SS0: Single Sign-On，是目前比较流行的服务于企业业务整合的解决方案之一。SSO 使得在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。
+" />
+<meta property="og:url" content="https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="新瓶装旧酒 " />
+
+
+  <meta property="article:published_time" content="2021-11-22 15:30:48 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    无边落木萧萧下，不尽长江滚滚来
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong>- CATALOG -</strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%89%8d%e8%a8%80">
+                    前言
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a6%82%e5%bf%b5">
+                    概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#sso">
+                    SSO
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cas">
+                    CAS
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ae%89%e8%a3%85">
+                    安装
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cas-server%e7%ab%af%e9%83%a8%e7%bd%b2">
+                    CAS Server端部署
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%8b%e8%bd%bdcas-overlay-template">
+                    下载cas-overlay-template
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%a7%a3%e5%8e%8b%e4%b8%8e%e6%89%93%e5%8c%85">
+                    解压与打包
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%96%b0%e5%bb%ba%e7%9b%ae%e5%bd%95">
+                    新建目录
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%96%87%e4%bb%b6%e4%bf%ae%e6%94%b9">
+                    文件修改
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%89%a7%e8%a1%8c%e5%91%bd%e4%bb%a4">
+                    执行命令
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cas-client%e7%ab%af%e9%83%a8%e7%bd%b2">
+                    CAS Client端部署
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%86%e6%9e%90">
+                    分析
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%99%bb%e9%99%86">
+                    登陆
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%b6%85%e6%97%b6%e5%88%86%e6%9e%90">
+                    超时分析
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%8d%e5%90%8c%e6%83%85%e5%86%b5%e8%b6%85%e6%97%b6%e7%99%bb%e5%87%ba%e6%b5%81%e7%a8%8b%e5%9b%be">
+                    不同情况超时登出流程图
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%99%bb%e5%87%ba">
+                    登出
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">ApereoCas安装与使用教程</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-11-22 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/cas-/">CAS </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/sso-/">SSO </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="前言">前言<a href="#前言" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p><code>正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。</code></p>
+<hr>
+<h2 id="概念">概念<a href="#概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="sso">SSO<a href="#sso" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>Q: 在学习Cas之前需要了解什么是单点登陆?
+A: <code>SS0: Single Sign-On，是目前比较流行的服务于企业业务整合的解决方案之一。SSO 使得在多个应用系统中，用户只需要登录一次就可以访问所有相互信任的应用系统。</code></p>
+<h3 id="cas">CAS<a href="#cas" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>CAS从结构上包含两部分：CAS Server 和 CAS Client
+<code>Server端负责完成对用户的认证工作、处理用户名和密码等凭证，需要独立部署。</code>
+<code>Client端负责处理对客户端受保护资源的访问请求，需要对请求方进行身份认证时，重定向到Server端进行认证(原则上，客户端应用不再接受任何的用户名密码等)。</code></p>
+<hr>
+<h2 id="安装">安装<a href="#安装" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>因为我是Client端提供者，Server端由客户提供，所以搭建Server端的时候只保留主要功能。至于JDK加密和配置数据库之类的文章，网上一搜一大把，在此不做记录。</p>
+<h3 id="cas-server端部署">CAS Server端部署<a href="#cas-server端部署" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="下载cas-overlay-template">下载cas-overlay-template<a href="#下载cas-overlay-template" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 客户方是5.3分支</span>
+git clone -b 5.3 https://github.com/apereo/cas-overlay-template
+</code></pre></div><h4 id="解压与打包">解压与打包<a href="#解压与打包" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>解压cas-overlay-template文件夹(下称作根目录/)，并进入打开cmd窗口，执行<code>mvn clean package命令(需要提前配置好全局maven命令，并且设置好阿里云仓库代理)。建议将根目录下的pom.xml文件中的&lt;repository&gt;相关的注释即可。</code></p>
+<h4 id="新建目录">新建目录<a href="#新建目录" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>新建src/main/java &amp; src/main/resources文件夹。</li>
+<li>复制cas-overlay-template/target/cas/WEB-INF/classes目录下的<code>services</code>文件夹和<code>application.properties</code>文件到src/main/resources文件夹中。</li>
+</ul>
+<h4 id="文件修改">文件修改<a href="#文件修改" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>修改src/main/resources/services/HTTPSandIMAPS-10000001.json文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#e6db74">&#34;serviceId&#34;</span> : <span style="color:#e6db74">&#34;^(https|imaps)://.*&#34;</span>
+变成
+<span style="color:#e6db74">&#34;serviceId&#34;</span> : <span style="color:#e6db74">&#34;^(https|imaps|http)://.*&#34;</span>
+</code></pre></div><ul>
+<li>修改src/main/resources/application.properties文件</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 注释</span>
+server.ssl.key-store<span style="color:#f92672">=</span>file:/etc/cas/thekeystore
+server.ssl.key-store-password<span style="color:#f92672">=</span>changeit
+server.ssl.key-password<span style="color:#f92672">=</span>changeit
+
+<span style="color:#75715e"># 添加</span>
+cas.tgc.secure<span style="color:#f92672">=</span>false
+cas.serviceRegistry.initFromJson<span style="color:#f92672">=</span>true
+<span style="color:#75715e"># 用于登出后重定向到指定地址</span>
+cas.logout.followServiceRedirects<span style="color:#f92672">=</span>true
+
+<span style="color:#75715e"># 修改</span>
+<span style="color:#75715e"># 登陆的用户名密码</span>
+cas.authn.accept.users<span style="color:#f92672">=</span>admin123456::admin123456
+</code></pre></div><h4 id="执行命令">执行命令<a href="#执行命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 根目录下执行</span>
+build.cmd debug
+</code></pre></div><h3 id="cas-client端部署">CAS Client端部署<a href="#cas-client端部署" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>我用的是注解+SpringBoot的方式搭建Cas Client客户端。需要先引入jar包并添加相应注解。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">&lt;</span>dependency<span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;</span>groupId<span style="color:#f92672">&gt;</span>net<span style="color:#f92672">.</span><span style="color:#a6e22e">unicon</span><span style="color:#f92672">.</span><span style="color:#a6e22e">cas</span><span style="color:#f92672">&lt;/</span>groupId<span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;</span>artifactId<span style="color:#f92672">&gt;</span>cas<span style="color:#f92672">-</span>client<span style="color:#f92672">-</span>autoconfig<span style="color:#f92672">-</span>support<span style="color:#f92672">&lt;/</span>artifactId<span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;</span>version<span style="color:#f92672">&gt;</span>2<span style="color:#f92672">.</span><span style="color:#a6e22e">3</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span><span style="color:#f92672">-</span>GA<span style="color:#f92672">&lt;/</span>version<span style="color:#f92672">&gt;</span>
+<span style="color:#f92672">&lt;/</span>dependency<span style="color:#f92672">&gt;</span>
+</code></pre></div><p>在启动类上添加注解</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@EnableCasClient</span>
+</code></pre></div><p>@EnableCasClient是Cas Client的入口，核心在于<code>@Import(CasClientConfigurations.class)</code>，在CasClientConfigurations中注册Filter用于执行校验，登陆等逻辑操作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Configuration</span>
+<span style="color:#a6e22e">@EnableConfigurationProperties</span><span style="color:#f92672">(</span>CasClientConfigurationProperties<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CasClientConfigurations</span> <span style="color:#f92672">{</span>
+    <span style="color:#a6e22e">@Bean</span>
+    <span style="color:#66d9ef">public</span> FilterRegistrationBean <span style="color:#a6e22e">casAuthenticationFilter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+        <span style="color:#66d9ef">final</span> FilterRegistrationBean authnFilter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> FilterRegistrationBean<span style="color:#f92672">();</span>
+        <span style="color:#66d9ef">final</span> Filter targetCasAuthnFilter <span style="color:#f92672">=</span>
+                <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getValidationType</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> CAS <span style="color:#f92672">||</span> configProps<span style="color:#f92672">.</span><span style="color:#a6e22e">getValidationType</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> CAS3<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> AuthenticationFilter<span style="color:#f92672">()</span>
+                        <span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Saml11AuthenticationFilter<span style="color:#f92672">();</span>
+
+        initFilter<span style="color:#f92672">(</span>authnFilter<span style="color:#f92672">,</span>
+                targetCasAuthnFilter<span style="color:#f92672">,</span>
+                2<span style="color:#f92672">,</span>
+                constructInitParams<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;casServerLoginUrl&#34;</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getServerLoginUrl</span><span style="color:#f92672">(),</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClientHostUrl</span><span style="color:#f92672">()),</span>
+                <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getAuthenticationUrlPatterns</span><span style="color:#f92672">());</span>
+
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getGateway</span><span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            authnFilter<span style="color:#f92672">.</span><span style="color:#a6e22e">getInitParameters</span><span style="color:#f92672">().</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;gateway&#34;</span><span style="color:#f92672">,</span> String<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configProps</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getGateway</span><span style="color:#f92672">()));</span>
+        <span style="color:#f92672">}</span>
+
+        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">casClientConfigurer</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+            <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">casClientConfigurer</span><span style="color:#f92672">.</span><span style="color:#a6e22e">configureAuthenticationFilter</span><span style="color:#f92672">(</span>authnFilter<span style="color:#f92672">);</span>
+        <span style="color:#f92672">}</span>
+        <span style="color:#66d9ef">return</span> authnFilter<span style="color:#f92672">;</span>
+    <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><blockquote>
+<p>上述代码是CasClientConfigurations代码中的一部分，是用于校验用户请求是否携带session，不携带则重定向到Cas Server进行验证。</p>
+</blockquote>
+<hr>
+<h2 id="分析">分析<a href="#分析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="登陆">登陆<a href="#登陆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>其实官网的一张图就解释的非常清楚了，很形象。在此贴出该图: </code></p>
+<img src="https://image.leejay.top/image/20200221/KyGhVgyNo5nG.png"/>
+<h3 id="超时分析">超时分析<a href="#超时分析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>目前存在三种控制超时时间的参数，分别是Client Session timeout，TGT timeout和ST timeout。</code></p>
+<ul>
+<li>
+<p>Client Session
+控制Web浏览器访问Cas Client的关键参数，如果session未过期，不管TGT是否过期，此时Web都可以访问Cas Client的资源。默认session的timeout是60s</p>
+</li>
+<li>
+<p>TGT
+当Cas登录成功后，Cas Server会生成一个TGT，后面所有的登录判断都基于TGT。当Cas Client访问Cas Server会首先判断cookie中是否存在TGT且有效，TGT的timeout默认2h，也就是2小时内不会再要求登录，每一次携带TGT请求Cas Server都会刷新该时长(和session类似)，当总时长不能超过8h。</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># TGT timeout默认2h，每请求一次自动刷新时长</span>
+<span style="color:#ae81ff">cas.ticket.tgt.timeToKillInSeconds=7200</span>
+<span style="color:#75715e"># TGT最多存在8h，超过必须重新登录</span>
+<span style="color:#ae81ff">cas.ticket.tgt.maxTimeToLiveInSeconds=28800</span>
+</code></pre></div><ul>
+<li>ST
+Cas Server为子系统(也就是Cas Client)生成的ticket，当请求地址为<code>http://cas.server.com/cas/login?service=http://cas.clienta.com:8081/cas/client/index</code>时，Cas Server会判断TGT是否存在且有效，如果存在且有效，那么Cas Server会生成一个ST，携带ST并重定向请求Cas Client，用于Cas Client和Server通讯验证，如果验证通过，则会返回用户信息给Cas Client，通过session返回给Web端，ST是有存活时间的，默认10s并且只能验证一次。过期无效需要重新生成并重复验证流程。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># ST长度</span>
+<span style="color:#ae81ff">cas.ticket.st.maxLength=20</span>
+<span style="color:#75715e"># ST使用1次后过期</span>
+<span style="color:#ae81ff">cas.ticket.st.numberOfUses=1</span>
+<span style="color:#75715e"># ST票据30s过期</span>
+<span style="color:#ae81ff">cas.ticket.st.timeToKillInSeconds=30</span>
+</code></pre></div><h4 id="不同情况超时登出流程图">不同情况超时登出流程图<a href="#不同情况超时登出流程图" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/image/20200220/sdQaLO2GIUqi.png" alt=""></p>
+<blockquote>
+<p>推荐Cas Client的session timeout &lt;= TGT timeout</p>
+</blockquote>
+<h3 id="登出">登出<a href="#登出" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<ol>
+<li>登出首先需要清除Cas Client的session，这样在校验的时候因为不存在session，需要重定向校验。</li>
+<li>其次需要调用Cas Server logout接口，用于清除保存在Cas Server中Client 凭证，这样在Client请求时，Server不会重新生成TGT导致不会重新校验。</li>
+</ol>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://leejay.top/post/netty/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Netty框架入门</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/">
+                <span class="button__text">Docker命令汇总</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>苏ICP备18050258号</span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
