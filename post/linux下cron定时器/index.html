@@ -327,18 +327,18 @@
 <blockquote>
 <p><code>crontab</code>是linux下的定时任务服务，是基于<code>cron表达式</code>实现定时任务操作。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 查看定时器状态、开启、关闭</span>
-service crond status/start/stop
-
-<span style="color:#75715e"># 查看定时任务列表</span>
-crontab -l
-
-<span style="color:#75715e"># 编辑定时任务</span>
-crontab -e
-
-<span style="color:#75715e"># 删除定时任务</span>
-crontab -r
-</code></pre></div><h3 id="cron表达式语法">cron表达式语法<a href="#cron表达式语法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 查看定时器状态、开启、关闭</span>
+</span></span><span style="display:flex;"><span>service crond status/start/stop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看定时任务列表</span>
+</span></span><span style="display:flex;"><span>crontab -l
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 编辑定时任务</span>
+</span></span><span style="display:flex;"><span>crontab -e
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除定时任务</span>
+</span></span><span style="display:flex;"><span>crontab -r
+</span></span></code></pre></div><h3 id="cron表达式语法">cron表达式语法<a href="#cron表达式语法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="基本格式">基本格式<a href="#基本格式" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <table>
 <thead>
@@ -435,13 +435,13 @@ crontab -r
 </tbody>
 </table>
 <h4 id="crontab使用示例">crontab使用示例<a href="#crontab使用示例" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 编辑定时任务</span>
-crontab -e
-<span style="color:#75715e"># 每隔一分钟写入hello到cron.txt文件中</span>
-*/1 * * * * echo <span style="color:#e6db74">&#39;hello&#39;</span> &gt;&gt; /opt/software/cron.txt
-<span style="color:#75715e"># 查看文件</span>
-tail -f /opt/software/cron.txt
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 编辑定时任务</span>
+</span></span><span style="display:flex;"><span>crontab -e
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 每隔一分钟写入hello到cron.txt文件中</span>
+</span></span><span style="display:flex;"><span>*/1 * * * * echo <span style="color:#e6db74">&#39;hello&#39;</span> &gt;&gt; /opt/software/cron.txt
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看文件</span>
+</span></span><span style="display:flex;"><span>tail -f /opt/software/cron.txt
+</span></span></code></pre></div><blockquote>
 <p><img src="https://image.leejay.top/FuIQOERPfkcxtA57UfN_uTm8dhYj" alt=""></p>
 </blockquote>
       </div></div>

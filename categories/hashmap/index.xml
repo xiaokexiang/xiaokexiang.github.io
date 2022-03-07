@@ -14,7 +14,7 @@
       <pubDate>Wed, 07 Apr 2021 11:03:14 +0800</pubDate>
       
       <guid>https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
-      <description>HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) { Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i; if ((tab = table) == null || (n = tab.length) == 0) n = (tab = resize()).length; // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() { // 省略代码 	else { // 初始容量16  newCap = DEFAULT_INITIAL_CAPACITY; newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY); } Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap]; // 省略代码  return newTab; } static final float DEFAULT_LOAD_FACTOR = 0.</description>
+      <description>HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent,  boolean evict) {  Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i;  if ((tab = table) == null || (n = tab.length) == 0)  n = (tab = resize()).length;  // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() {  // 省略代码 	else {  // 初始容量16  newCap = DEFAULT_INITIAL_CAPACITY;  newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);  }  Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap];  // 省略代码  return newTab; }  static final float DEFAULT_LOAD_FACTOR = 0.</description>
     </item>
     
   </channel>

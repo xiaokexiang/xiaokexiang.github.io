@@ -29,7 +29,7 @@ GC Roots包括但不限于以下：
 原始快照  基于问题2，当正在被标记的对象直接或间接删除了未被收集器访问的对象的引用时，将这些正在被标记的对象记录下来，等并发标记结束后，以这些正在被标记的对象为根重新扫描。G1收集器采用此策略实现并发标记。
  Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
 从JDK1.2开始，Java对引用的概念进行补充，将引用分为了：强引用、软引用、弱引用和虚引用四种。
-public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T referent; // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。</description>
+public abstract class Reference&amp;lt;T&amp;gt; {  // 引用本身 	private T referent;  // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。</description>
     </item>
     
   </channel>

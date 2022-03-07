@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量  public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; // 构造  Node(E item) { // CAS添加item  UNSAFE." />
+<meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt;  implements Queue&amp;lt;E&amp;gt;, java.io.Serializable {  // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; 	// tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; 	// 不用传递初始容量  public ConcurrentLinkedQueue() {  // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null);  }  // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; {  volatile E item;  // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; 	// 构造  Node(E item) {  // CAS添加item  UNSAFE." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/concurrentlinkedqueue/" />
@@ -408,63 +408,63 @@
 <li>内部的并发操作通过<code>自旋 + CAS</code>实现。与<code>LinkedBlockingQueue</code>独占锁不同。</li>
 </ul>
 <h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
-        <span style="color:#66d9ef">implements</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// head头节点
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> head<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// tail尾节点
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> tail<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 不用传递初始容量
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 初始化head和tail，哨兵节点
-</span><span style="color:#75715e"></span>        head <span style="color:#f92672">=</span> tail <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 私有静态内部类，用于构成链表的节点（单向链表）
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 核心是通过CAS来实现并发操作
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">volatile</span> E item<span style="color:#f92672">;</span>
-        <span style="color:#75715e">// 标记next节点 volatile修饰的
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
-		<span style="color:#75715e">// 构造
-</span><span style="color:#75715e"></span>        Node<span style="color:#f92672">(</span>E item<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// CAS添加item
-</span><span style="color:#75715e"></span>            UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> itemOffset<span style="color:#f92672">,</span> item<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-		<span style="color:#75715e">// CAS修改item（把cmp设置成val）
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">casItem</span><span style="color:#f92672">(</span>E cmp<span style="color:#f92672">,</span> E val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">return</span> UNSAFE<span style="color:#f92672">.</span>
-                <span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> itemOffset<span style="color:#f92672">,</span> cmp<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-		<span style="color:#75715e">// CAS设置next指针
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lazySetNext</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">putOrderedObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> nextOffset<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-		<span style="color:#75715e">// CAS修改next节点
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">casNext</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> cmp<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">return</span> UNSAFE
-                <span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> nextOffset<span style="color:#f92672">,</span> cmp<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Unsafe</span> UNSAFE<span style="color:#f92672">;</span>
-        <span style="color:#75715e">// Node节点中item偏移量
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> itemOffset<span style="color:#f92672">;</span>
-        <span style="color:#75715e">// Node节点中next的偏移量
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> nextOffset<span style="color:#f92672">;</span>
-
-        <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                UNSAFE <span style="color:#f92672">=</span> sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Unsafe</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getUnsafe</span><span style="color:#f92672">();</span>
-                Class<span style="color:#f92672">&lt;?&gt;</span> k <span style="color:#f92672">=</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">;</span>
-                itemOffset <span style="color:#f92672">=</span> UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">objectFieldOffset</span>
-                    <span style="color:#f92672">(</span>k<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;item&#34;</span><span style="color:#f92672">));</span>
-                nextOffset <span style="color:#f92672">=</span> UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">objectFieldOffset</span>
-                    <span style="color:#f92672">(</span>k<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;next&#34;</span><span style="color:#f92672">));</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">implements</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// head头节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> head<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// tail尾节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> tail<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 不用传递初始容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ConcurrentLinkedQueue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 初始化head和tail，哨兵节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        head <span style="color:#f92672">=</span> tail <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 私有静态内部类，用于构成链表的节点（单向链表）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 核心是通过CAS来实现并发操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">volatile</span> E item<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 标记next节点 volatile修饰的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 构造
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Node<span style="color:#f92672">(</span>E item<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// CAS添加item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">putObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> itemOffset<span style="color:#f92672">,</span> item<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// CAS修改item（把cmp设置成val）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">casItem</span><span style="color:#f92672">(</span>E cmp<span style="color:#f92672">,</span> E val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> UNSAFE<span style="color:#f92672">.</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> itemOffset<span style="color:#f92672">,</span> cmp<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// CAS设置next指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lazySetNext</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">putOrderedObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> nextOffset<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// CAS修改next节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">casNext</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> cmp<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> val<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> UNSAFE
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapObject</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> nextOffset<span style="color:#f92672">,</span> cmp<span style="color:#f92672">,</span> val<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Unsafe</span> UNSAFE<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Node节点中item偏移量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> itemOffset<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Node节点中next的偏移量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> nextOffset<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                UNSAFE <span style="color:#f92672">=</span> sun<span style="color:#f92672">.</span><span style="color:#a6e22e">misc</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Unsafe</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getUnsafe</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                Class<span style="color:#f92672">&lt;?&gt;</span> k <span style="color:#f92672">=</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                itemOffset <span style="color:#f92672">=</span> UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">objectFieldOffset</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">(</span>k<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;item&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>                nextOffset <span style="color:#f92672">=</span> UNSAFE<span style="color:#f92672">.</span><span style="color:#a6e22e">objectFieldOffset</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">(</span>k<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;next&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>Node是私有静态内部类，其中定义了<code>item和next的CAS方法</code>。</li>
 <li>因为不是阻塞队列，所以<code>不存在容量字段</code>，也<code>不需要指定大小</code>。</li>
@@ -478,49 +478,49 @@
 </blockquote>
 <hr>
 <h3 id="offer">offer<a href="#offer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 添加节点到队列中
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 老一套，判断是否为空，为空抛出NPE
-</span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 初始化节点
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> newNode <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
-	<span style="color:#75715e">// 自旋从队尾开始,这里只有初始化条件，没有循环结束条件
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> t <span style="color:#f92672">=</span> tail<span style="color:#f92672">,</span> p <span style="color:#f92672">=</span> t<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// p被认为是真正的尾节点,获取p.next节点
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 因为此时有可能有其他线程成为tail
-</span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
-        <span style="color:#75715e">// q = null 说明此刻p就是tail尾节点
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>q <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// CAS将newNode设为p的next节点，失败就继续自旋
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">casNext</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> newNode<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// p = t = tail = Node(next = newNode)
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> t<span style="color:#f92672">)</span>
-                    <span style="color:#75715e">// CAS设置tail尾节点，即使失败了，
-</span><span style="color:#75715e"></span>                    casTail<span style="color:#f92672">(</span>t<span style="color:#f92672">,</span> newNode<span style="color:#f92672">);</span>
-                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> q<span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 如果tail此时被其他线程改变了，那么p = t成立
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 没改变 t = head
-</span><span style="color:#75715e"></span>            p <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">=</span> tail<span style="color:#f92672">))</span> <span style="color:#f92672">?</span> t <span style="color:#f92672">:</span> head<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">else</span>
-            <span style="color:#75715e">// 此行代码用于找到真正的尾节点，赋予p，
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 因为tail更新不及时，每添加两个才会更新tail
-</span><span style="color:#75715e"></span>            p <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> t <span style="color:#f92672">&amp;&amp;</span> t <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">=</span> tail<span style="color:#f92672">))</span> <span style="color:#f92672">?</span> t <span style="color:#f92672">:</span> q<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 测试代码
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> QUEUE <span style="color:#f92672">=</span> 
-        						<span style="color:#66d9ef">new</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;&gt;();</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>11<span style="color:#f92672">);</span>
-        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>22<span style="color:#f92672">);</span>
-        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>33<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 添加节点到队列中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 老一套，判断是否为空，为空抛出NPE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 初始化节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> newNode <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 自旋从队尾开始,这里只有初始化条件，没有循环结束条件
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> t <span style="color:#f92672">=</span> tail<span style="color:#f92672">,</span> p <span style="color:#f92672">=</span> t<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// p被认为是真正的尾节点,获取p.next节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 因为此时有可能有其他线程成为tail
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// q = null 说明此刻p就是tail尾节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>q <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// CAS将newNode设为p的next节点，失败就继续自旋
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">casNext</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> newNode<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// p = t = tail = Node(next = newNode)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> t<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// CAS设置tail尾节点，即使失败了，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    casTail<span style="color:#f92672">(</span>t<span style="color:#f92672">,</span> newNode<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> q<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果tail此时被其他线程改变了，那么p = t成立
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 没改变 t = head
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            p <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">=</span> tail<span style="color:#f92672">))</span> <span style="color:#f92672">?</span> t <span style="color:#f92672">:</span> head<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 此行代码用于找到真正的尾节点，赋予p，
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 因为tail更新不及时，每添加两个才会更新tail
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            p <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> t <span style="color:#f92672">&amp;&amp;</span> t <span style="color:#f92672">!=</span> <span style="color:#f92672">(</span>t <span style="color:#f92672">=</span> tail<span style="color:#f92672">))</span> <span style="color:#f92672">?</span> t <span style="color:#f92672">:</span> q<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 测试代码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;</span>Integer<span style="color:#f92672">&gt;</span> QUEUE <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>        						<span style="color:#66d9ef">new</span> ConcurrentLinkedQueue<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>11<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>22<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        QUEUE<span style="color:#f92672">.</span><span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>33<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>推论：<code>每插入两个节点，tail指针才会移动，指向第二个插入的节点</code>。</p>
 <ol>
 <li><code>t表示刚进入代码时的尾节点，p用来表示队列真正的尾节点</code>，当<code>p.next = null</code>成立时说明p此时指向真正的尾节点，如果不成立说明p此时不是真正的尾节点，需要查找真正的尾节点并将它赋予p，保证每次新增的节点都在队尾。</li>
@@ -535,45 +535,45 @@
 <p><img src="https://image.leejay.top/image/20200710/XWBJx3hhhzX3.jpg?imageslim" alt=""></p>
 <hr>
 <h3 id="poll">poll<a href="#poll" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 删除链表的头节点并返回该节点的item
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    restartFromHead<span style="color:#f92672">:</span>
-    <span style="color:#75715e">// 自旋
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// head = h = p
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h <span style="color:#f92672">=</span> head<span style="color:#f92672">,</span> p <span style="color:#f92672">=</span> h<span style="color:#f92672">,</span> q<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
-            E item <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
-			<span style="color:#75715e">// 如果item不为null，那么CAS修改为null
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>item <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">casItem</span><span style="color:#f92672">(</span>item<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// CAS成功后会执行到这里
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// head也是每两个节点更新一次
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> h<span style="color:#f92672">)</span> 
-                    <span style="color:#75715e">// p != h 说明此时需要更新head标识
-</span><span style="color:#75715e"></span>                    updateHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> <span style="color:#f92672">((</span>q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> q <span style="color:#f92672">:</span> p<span style="color:#f92672">);</span>
-                <span style="color:#75715e">// 直接返回item
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> item<span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#75715e">// 如果p.item = null 且 p.next= null
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 更新head节点
-</span><span style="color:#75715e"></span>                updateHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> p<span style="color:#f92672">);</span>
-                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> q<span style="color:#f92672">)</span>
-                <span style="color:#66d9ef">continue</span> restartFromHead<span style="color:#f92672">;</span>
-            <span style="color:#66d9ef">else</span>
-                p <span style="color:#f92672">=</span> q<span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateHead</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 如果要更新的节点和当前节点不同，那么尝试更新head头节点，注意h节点不会变
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> p <span style="color:#f92672">&amp;&amp;</span> casHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> p<span style="color:#f92672">))</span>
-        <span style="color:#75715e">// 将原head的节点next指针指向自己，便于GC
-</span><span style="color:#75715e"></span>        h<span style="color:#f92672">.</span><span style="color:#a6e22e">lazySetNext</span><span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 删除链表的头节点并返回该节点的item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    restartFromHead<span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 自旋
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// head = h = p
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h <span style="color:#f92672">=</span> head<span style="color:#f92672">,</span> p <span style="color:#f92672">=</span> h<span style="color:#f92672">,</span> q<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            E item <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 如果item不为null，那么CAS修改为null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>item <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">casItem</span><span style="color:#f92672">(</span>item<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// CAS成功后会执行到这里
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// head也是每两个节点更新一次
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">!=</span> h<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// p != h 说明此时需要更新head标识
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    updateHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> <span style="color:#f92672">((</span>q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> q <span style="color:#f92672">:</span> p<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 直接返回item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> item<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果p.item = null 且 p.next= null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>q <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 更新head节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                updateHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> p<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> q<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span> restartFromHead<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>                p <span style="color:#f92672">=</span> q<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">updateHead</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> p<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果要更新的节点和当前节点不同，那么尝试更新head头节点，注意h节点不会变
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> p <span style="color:#f92672">&amp;&amp;</span> casHead<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> p<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将原head的节点next指针指向自己，便于GC
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        h<span style="color:#f92672">.</span><span style="color:#a6e22e">lazySetNext</span><span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>推论：<code>每移除两个节点，head指针会移动一次</code>。</p>
 <ol>
 <li>

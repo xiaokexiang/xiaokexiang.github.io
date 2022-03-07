@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数  usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2." />
+<meta name="description" content="__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;)  # 使用说明，用来提示输入参数  usage() {  echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34;  exit 1 }  pull() {  cd $__dir__  git pull  echo &amp;#34;git pull code success&amp;#34; }  build_parent() {  mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml }  build_module() {  mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml  echo &amp;#34;############# $1Build success #############&amp;#34; }  is_exist() {  pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;)  #如果不存在返回1，存在返回0  if [ -z &amp;#34;${pid}&amp;#34; ]; then  return 1  else  return 0  fi }  backup() {  __jar__=$1-$2." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/" />
@@ -120,115 +120,115 @@
   
 
   <div class="post-content"><div>
-        <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">__dir__<span style="color:#f92672">=</span>/www/server/code/service-platform
-__web__<span style="color:#f92672">=</span>ruoyi-web
-__admin__<span style="color:#f92672">=</span>ruoyi-admin
-__app__<span style="color:#f92672">=(</span><span style="color:#e6db74">&#34;</span>$__web__<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$__admin__<span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
-
-<span style="color:#75715e"># 使用说明，用来提示输入参数 </span>
-usage<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    echo <span style="color:#e6db74">&#34;Usage: sh deploy.sh [start|stop|restart|status]&#34;</span>
-    exit <span style="color:#ae81ff">1</span>
-<span style="color:#f92672">}</span>
-
-pull<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    cd $__dir__
-    git pull
-    echo <span style="color:#e6db74">&#34;git pull code success&#34;</span>
-<span style="color:#f92672">}</span>
-
-build_parent<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    mvn clean install -Dmaven.test.skip<span style="color:#f92672">=</span>true -f $__dir__/pom.xml
-<span style="color:#f92672">}</span>
-
-build_module<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    mvn clean package -Dmaven.test.skip<span style="color:#f92672">=</span>true -f $__dir__/$1/pom.xml
-    echo <span style="color:#e6db74">&#34;############# </span>$1<span style="color:#e6db74"> Build success #############&#34;</span>
-<span style="color:#f92672">}</span>
-
-is_exist<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    pid<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>ps -ef | grep $1 | grep -v grep | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span><span style="color:#66d9ef">)</span>
-    <span style="color:#75715e">#如果不存在返回1，存在返回0</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
-    <span style="color:#66d9ef">else</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">fi</span>
-<span style="color:#f92672">}</span>
-
-backup<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    __jar__<span style="color:#f92672">=</span>$1-$2.jar
-    mv $__dir__/$1/target/$1.jar $__dir__/backup/$__jar__
-    echo <span style="color:#e6db74">&#34;############# </span>$1<span style="color:#e6db74"> backup to </span>$__dir__<span style="color:#e6db74">/backup/</span>$__jar__<span style="color:#e6db74"> #############&#34;</span>
-<span style="color:#f92672">}</span>
-
-start<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    pull
-    mkdir -p $__dir__/<span style="color:#f92672">{</span>logs,backup<span style="color:#f92672">}</span>
-    build_parent
-    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
-    <span style="color:#66d9ef">do</span>
-        __date__<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>date +<span style="color:#e6db74">&#34;%Y%m%d%H%M%S&#34;</span><span style="color:#e6db74">`</span>
-        backup $name $__date__
-        build_module $name
-        is_exist $name
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is already running. pid=</span><span style="color:#e6db74">${</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74"> .&#34;</span>
-        <span style="color:#66d9ef">else</span>
-            nohup java -jar $__dir__/$name/target/$name.jar --spring.profiles.active<span style="color:#f92672">=</span>druid&gt;$__dir__/logs/$name$__date__.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;
-            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> start success&#34;</span>
-        <span style="color:#66d9ef">fi</span>
-    <span style="color:#66d9ef">done</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">#停止方法</span>
-stop<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
-    <span style="color:#66d9ef">do</span>
-    	is_exist $name
-    	<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-            kill -9 $pid
-	    echo <span style="color:#e6db74">&#34;kill </span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> success&#34;</span>
-    	<span style="color:#66d9ef">else</span>
-            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is not running&#34;</span>
-    	<span style="color:#66d9ef">fi</span>
-    <span style="color:#66d9ef">done</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">#输出运行状态</span>
-status<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
-    <span style="color:#66d9ef">do</span>
-        is_exist $name
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-	    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is running&#34;</span>
-        <span style="color:#66d9ef">else</span>
-            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is not running&#34;</span>
-        <span style="color:#66d9ef">fi</span>
-    <span style="color:#66d9ef">done</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">#重启</span>
-restart<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    stop
-    start
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">#根据输入参数，选择执行对应方法，不输入则执行使用说明</span>
-<span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
-<span style="color:#e6db74">&#34;start&#34;</span><span style="color:#f92672">)</span>
-    start
-    ;;
-<span style="color:#e6db74">&#34;stop&#34;</span><span style="color:#f92672">)</span>
-    stop
-    ;;
-<span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">)</span>
-    status
-    ;;
-<span style="color:#e6db74">&#34;restart&#34;</span><span style="color:#f92672">)</span>
-    restart
-    ;;
-*<span style="color:#f92672">)</span>
-    usage
-    ;;
-<span style="color:#66d9ef">esac</span>
-</code></pre></div>
+        <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>__dir__<span style="color:#f92672">=</span>/www/server/code/service-platform
+</span></span><span style="display:flex;"><span>__web__<span style="color:#f92672">=</span>ruoyi-web
+</span></span><span style="display:flex;"><span>__admin__<span style="color:#f92672">=</span>ruoyi-admin
+</span></span><span style="display:flex;"><span>__app__<span style="color:#f92672">=(</span><span style="color:#e6db74">&#34;</span>$__web__<span style="color:#e6db74">&#34;</span> <span style="color:#e6db74">&#34;</span>$__admin__<span style="color:#e6db74">&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用说明，用来提示输入参数 </span>
+</span></span><span style="display:flex;"><span>usage<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;Usage: sh deploy.sh [start|stop|restart|status]&#34;</span>
+</span></span><span style="display:flex;"><span>    exit <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>pull<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    cd $__dir__
+</span></span><span style="display:flex;"><span>    git pull
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;git pull code success&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>build_parent<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    mvn clean install -Dmaven.test.skip<span style="color:#f92672">=</span>true -f $__dir__/pom.xml
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>build_module<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    mvn clean package -Dmaven.test.skip<span style="color:#f92672">=</span>true -f $__dir__/$1/pom.xml
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;############# </span>$1<span style="color:#e6db74"> Build success #############&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>is_exist<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    pid<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>ps -ef | grep $1 | grep -v grep | awk <span style="color:#e6db74">&#39;{print $2}&#39;</span><span style="color:#66d9ef">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">#如果不存在返回1，存在返回0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -z <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>backup<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    __jar__<span style="color:#f92672">=</span>$1-$2.jar
+</span></span><span style="display:flex;"><span>    mv $__dir__/$1/target/$1.jar $__dir__/backup/$__jar__
+</span></span><span style="display:flex;"><span>    echo <span style="color:#e6db74">&#34;############# </span>$1<span style="color:#e6db74"> backup to </span>$__dir__<span style="color:#e6db74">/backup/</span>$__jar__<span style="color:#e6db74"> #############&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>start<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    pull
+</span></span><span style="display:flex;"><span>    mkdir -p $__dir__/<span style="color:#f92672">{</span>logs,backup<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    build_parent
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>        __date__<span style="color:#f92672">=</span><span style="color:#e6db74">`</span>date +<span style="color:#e6db74">&#34;%Y%m%d%H%M%S&#34;</span><span style="color:#e6db74">`</span>
+</span></span><span style="display:flex;"><span>        backup $name $__date__
+</span></span><span style="display:flex;"><span>        build_module $name
+</span></span><span style="display:flex;"><span>        is_exist $name
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is already running. pid=</span><span style="color:#e6db74">${</span>pid<span style="color:#e6db74">}</span><span style="color:#e6db74"> .&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            nohup java -jar $__dir__/$name/target/$name.jar --spring.profiles.active<span style="color:#f92672">=</span>druid&gt;$__dir__/logs/$name$__date__.log 2&gt;&amp;<span style="color:#ae81ff">1</span> &amp;
+</span></span><span style="display:flex;"><span>            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> start success&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#停止方法</span>
+</span></span><span style="display:flex;"><span>stop<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>    	is_exist $name
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>            kill -9 $pid
+</span></span><span style="display:flex;"><span>	    echo <span style="color:#e6db74">&#34;kill </span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> success&#34;</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is not running&#34;</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#输出运行状态</span>
+</span></span><span style="display:flex;"><span>status<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> name in <span style="color:#e6db74">${</span>__app__[@]<span style="color:#e6db74">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">do</span>
+</span></span><span style="display:flex;"><span>        is_exist $name
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> $? -eq <span style="color:#e6db74">&#34;0&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+</span></span><span style="display:flex;"><span>	    echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is running&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            echo <span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>name<span style="color:#e6db74">}</span><span style="color:#e6db74"> is not running&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">fi</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">done</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#重启</span>
+</span></span><span style="display:flex;"><span>restart<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    stop
+</span></span><span style="display:flex;"><span>    start
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#根据输入参数，选择执行对应方法，不输入则执行使用说明</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">case</span> <span style="color:#e6db74">&#34;</span>$1<span style="color:#e6db74">&#34;</span> in
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;start&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    start
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;stop&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    stop
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;status&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    status
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;restart&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    restart
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span>*<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    usage
+</span></span><span style="display:flex;"><span>    ;;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">esac</span>
+</span></span></code></pre></div>
       </div></div>
 
   

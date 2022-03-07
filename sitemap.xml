@@ -52,6 +52,11 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
+    <loc>https://leejay.top/post/mirai%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
     <loc>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2021-11-22T15:30:48+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -127,32 +132,42 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
+    <loc>https://leejay.top/categories/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/mirai/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/categories/mirai/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/post/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2022-03-07T10:21:01+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
     <loc>https://leejay.top/tags/cas/</loc>
     <lastmod>2021-11-22T15:30:48+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://leejay.top/categories/</loc>
-    <lastmod>2021-11-22T15:30:48+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/</loc>
-    <lastmod>2021-11-22T15:30:48+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/post/</loc>
-    <lastmod>2021-11-22T15:30:48+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://leejay.top/tags/sso/</loc>
-    <lastmod>2021-11-22T15:30:48+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/</loc>
     <lastmod>2021-11-22T15:30:48+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

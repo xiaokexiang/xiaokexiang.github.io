@@ -12,7 +12,7 @@
 重排序规则： as-if-serial 不管怎么重排序，单线程程序的执行结果不能被改变。只要操作之间没有数据依赖性，那么编译器和CPU都可以任意重排序。
 happen-before(JVM层面) 为了明确多线程场景下那么可以重排序，哪些不可以重排序，引入了JMM内存模型，而JMM提供了happen-before规范，用于在开发者编写程序和系统运行之间效率找到平衡点，它描述了两个操作之间的内存可见性，若A happen before B，如果A在B之前执行，则A的执行结果必须对B可见。
  单线程的每个操作，happen-before 于该线程中任意后续操作。 对volatile变量的写入，happen-before 于后续对这个变量的读取。 对于synchronized的解锁，happen-before于后续对这个锁的加锁。 对final域的写(构造函数中)，happen-before于对final域所在对象的读。  happen-before传递性 假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。
-class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1  c = 1;// step 2  } int get() { int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。" />
+class Test {  private int a = 0;  private volatile int c = 0;   void set() {  a = 5;// step 1  c = 1;// step 2  }   int get() {  int d = c;// step 3  return a;// step 4  } }  因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/" />
@@ -317,21 +317,21 @@ class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;/
 </ul>
 <h4 id="happen-before传递性">happen-before传递性<a href="#happen-before传递性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        a <span style="color:#f92672">=</span> 5<span style="color:#f92672">;</span><span style="color:#75715e">// step 1
-</span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span><span style="color:#75715e">// step 2
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-
-    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">int</span> d <span style="color:#f92672">=</span> c<span style="color:#f92672">;</span><span style="color:#75715e">// step 3
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> a<span style="color:#f92672">;</span><span style="color:#75715e">// step 4
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        a <span style="color:#f92672">=</span> 5<span style="color:#f92672">;</span><span style="color:#75715e">// step 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span><span style="color:#75715e">// step 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> d <span style="color:#f92672">=</span> c<span style="color:#f92672">;</span><span style="color:#75715e">// step 3
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> a<span style="color:#f92672">;</span><span style="color:#75715e">// step 4
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，<code>根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性</code>，step1 的结果一定对step4可见。</p>
 </blockquote>
 

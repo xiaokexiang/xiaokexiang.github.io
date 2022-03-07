@@ -555,26 +555,26 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ SET hello world
-<span style="color:#e6db74">&#34;OK&#34;</span>
-$ GET hello
-<span style="color:#e6db74">&#34;world&#34;</span>
-<span style="color:#75715e"># 删除指定key的value，返回删除成功的数量</span>
-$ DEL hello
-<span style="color:#e6db74">&#34;1&#34;</span>
-<span style="color:#75715e"># 获取key的值不存在返回null</span>
-$ GET hello
-<span style="color:#f92672">(</span>niL<span style="color:#f92672">)</span>
-<span style="color:#75715e"># 将hello追加到旧值后</span>
-$ APPEND hello hello
-<span style="color:#e6db74">&#34;10&#34;</span>
-<span style="color:#75715e"># 获取字符串[0,4]</span>
-$ GETRANGE hello <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span>
-<span style="color:#e6db74">&#34;hello&#34;</span>
-<span style="color:#75715e"># 换成hello world</span>
-$ SETRANGE <span style="color:#ae81ff">5</span> world
-<span style="color:#e6db74">&#34;10&#34;</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ SET hello world
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;OK&#34;</span>
+</span></span><span style="display:flex;"><span>$ GET hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除指定key的value，返回删除成功的数量</span>
+</span></span><span style="display:flex;"><span>$ DEL hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取key的值不存在返回null</span>
+</span></span><span style="display:flex;"><span>$ GET hello
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>niL<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将hello追加到旧值后</span>
+</span></span><span style="display:flex;"><span>$ APPEND hello hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取字符串[0,4]</span>
+</span></span><span style="display:flex;"><span>$ GETRANGE hello <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 换成hello world</span>
+</span></span><span style="display:flex;"><span>$ SETRANGE <span style="color:#ae81ff">5</span> world
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span></code></pre></div><blockquote>
 <p>Redis中key<code>大小写敏感</code>，<code>GET HELLO</code> 不同于 <code>GET hello</code>。</p>
 <p><code>keys *</code>可以查看全部的keys</p>
 </blockquote>
@@ -622,26 +622,26 @@ $ SETRANGE <span style="color:#ae81ff">5</span> world
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 左端推入一个值，并返回该key对应的列表数量</span>
-$ LPUSH list hello
-<span style="color:#e6db74">&#34;1&#34;</span>
-$ RPUSH list world
-<span style="color:#e6db74">&#34;2&#34;</span>
-$ LINDEX list <span style="color:#ae81ff">0</span>
-<span style="color:#e6db74">&#34;hello&#34;</span>
-$ LPUSH list say
-<span style="color:#75715e"># 查询列表的全部值</span>
-$ LRANGE list <span style="color:#ae81ff">0</span> -1
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;say&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;world&#34;</span>
-<span style="color:#75715e"># 移除列表左端值并返回</span>
-$ LPOP list
-<span style="color:#e6db74">&#34;say&#34;</span>
-<span style="color:#75715e"># 移除列表右端值并返回</span>
-$ RPOP list
-<span style="color:#e6db74">&#34;world&#34;</span>
-</code></pre></div><h5 id="阻塞式列表操作">阻塞式列表操作<a href="#阻塞式列表操作" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 左端推入一个值，并返回该key对应的列表数量</span>
+</span></span><span style="display:flex;"><span>$ LPUSH list hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>$ RPUSH list world
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>$ LINDEX list <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>$ LPUSH list say
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询列表的全部值</span>
+</span></span><span style="display:flex;"><span>$ LRANGE list <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;say&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 移除列表左端值并返回</span>
+</span></span><span style="display:flex;"><span>$ LPOP list
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;say&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 移除列表右端值并返回</span>
+</span></span><span style="display:flex;"><span>$ RPOP list
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span>
+</span></span></code></pre></div><h5 id="阻塞式列表操作">阻塞式列表操作<a href="#阻塞式列表操作" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <table>
 <thead>
 <tr>
@@ -671,17 +671,17 @@ $ RPOP list
 <blockquote>
 <p>以上四个command常用于<code>redis队列</code>。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 弹出list最左端的元素(only one)，直到5s后超时</span>
-$ BLPOP list <span style="color:#ae81ff">5</span>
- 1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;list&#34;</span>
- 2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
-<span style="color:#75715e"># 弹出source最右侧元素，推入dest最左侧</span>
-$ RPOPLPUSH source dest
-null
-<span style="color:#75715e"># 弹出source最右侧元素，推入dest最左侧，阻塞直到timeout</span>
-$ BRPOPLPUSH source dest
-&lt;空&gt;
-</code></pre></div><h4 id="set">SET<a href="#set" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 弹出list最左端的元素(only one)，直到5s后超时</span>
+</span></span><span style="display:flex;"><span>$ BLPOP list <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span> 1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;list&#34;</span>
+</span></span><span style="display:flex;"><span> 2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 弹出source最右侧元素，推入dest最左侧</span>
+</span></span><span style="display:flex;"><span>$ RPOPLPUSH source dest
+</span></span><span style="display:flex;"><span>null
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 弹出source最右侧元素，推入dest最左侧，阻塞直到timeout</span>
+</span></span><span style="display:flex;"><span>$ BRPOPLPUSH source dest
+</span></span><span style="display:flex;"><span>&lt;空&gt;
+</span></span></code></pre></div><h4 id="set">SET<a href="#set" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>SET</code>集合结构可以<code>无序</code>、<code>不重复</code>的存储<code>多个字符串</code>。类比Java中的<code>Map&lt;key, Set&lt;String&gt;&gt;</code>结构。</p>
 <table>
 <thead>
@@ -725,25 +725,25 @@ $ BRPOPLPUSH source dest
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 添加元素到指定key的值集合中，返回添加的数量</span>
-$ SADD set hello world ya
-<span style="color:#e6db74">&#34;3&#34;</span>
-<span style="color:#75715e"># 获取集合中的全部元素</span>
-$ SMEMBERS set
-1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;world&#34;</span>
-2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;ya&#34;</span>
-3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;hello&#34;</span>
-<span style="color:#75715e"># 查询hello是否存在key为set的值集合中</span>
-$ SISMEMBER set hello
-<span style="color:#e6db74">&#34;1&#34;</span>
-$ SISMEMBER set hello1
-<span style="color:#e6db74">&#34;0&#34;</span>
-<span style="color:#75715e"># 如果hello存在key为set的值集合中，那么移除该元素</span>
-$ SREM set hello
-<span style="color:#e6db74">&#34;1&#34;</span>
-$ SREM set hello
-<span style="color:#e6db74">&#34;0&#34;</span>
-</code></pre></div><h5 id="多个集合的处理命令">多个集合的处理命令<a href="#多个集合的处理命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 添加元素到指定key的值集合中，返回添加的数量</span>
+</span></span><span style="display:flex;"><span>$ SADD set hello world ya
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取集合中的全部元素</span>
+</span></span><span style="display:flex;"><span>$ SMEMBERS set
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;ya&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询hello是否存在key为set的值集合中</span>
+</span></span><span style="display:flex;"><span>$ SISMEMBER set hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>$ SISMEMBER set hello1
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 如果hello存在key为set的值集合中，那么移除该元素</span>
+</span></span><span style="display:flex;"><span>$ SREM set hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>$ SREM set hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0&#34;</span>
+</span></span></code></pre></div><h5 id="多个集合的处理命令">多个集合的处理命令<a href="#多个集合的处理命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <table>
 <thead>
 <tr>
@@ -778,22 +778,22 @@ $ SREM set hello
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ SADD set1 hello
-$ SADD set2 world
-<span style="color:#75715e"># 返回set1与set2的差集</span>
-$ SDIFF set1 set2
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
-<span style="color:#75715e"># 将差集结果存入res</span>
-$ SDIFFSTORE res set1 set2
-<span style="color:#e6db74">&#34;1&#34;</span>
-<span style="color:#75715e"># 取交集</span>
-$ SINTER set1 set2
-&lt;空&gt;
-<span style="color:#75715e"># 取并集</span>
-$ SUNION set1 set2
-<span style="color:#e6db74">&#34;world&#34;</span>
-<span style="color:#e6db74">&#34;hello&#34;</span>
-</code></pre></div><h4 id="hash">HASH<a href="#hash" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>$ SADD set1 hello
+</span></span><span style="display:flex;"><span>$ SADD set2 world
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 返回set1与set2的差集</span>
+</span></span><span style="display:flex;"><span>$ SDIFF set1 set2
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将差集结果存入res</span>
+</span></span><span style="display:flex;"><span>$ SDIFFSTORE res set1 set2
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 取交集</span>
+</span></span><span style="display:flex;"><span>$ SINTER set1 set2
+</span></span><span style="display:flex;"><span>&lt;空&gt;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 取并集</span>
+</span></span><span style="display:flex;"><span>$ SUNION set1 set2
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span></code></pre></div><h4 id="hash">HASH<a href="#hash" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>HASH</code>散列结构可以<code>无序</code>、<code>不重复</code>的存储多个<code>字符串或数值</code>类型的键值对。类比Java中<code>Map&lt;key, HashMap&lt;v1,v2&gt;&gt;</code>。</p>
 <table>
 <thead>
@@ -853,29 +853,29 @@ $ SUNION set1 set2
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 给key为hash的设置键值对，如果键值对中的键存在，那么返回0，否则返回1</span>
-$ HSET hash hello world
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
-$ HSET hash hello world
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">0</span>
-$ HSET hash ni hao
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
-<span style="color:#75715e"># 获取指定key的键值对中指定键的值</span>
-$ HGET hash hello
-<span style="color:#e6db74">&#34;world&#34;</span>
-<span style="color:#75715e"># 获取指定key的全部键值对</span>
-$ HGETALL hash
-<span style="color:#e6db74">&#34;hello&#34;</span>
-<span style="color:#e6db74">&#34;world&#34;</span>
-<span style="color:#e6db74">&#34;ni&#34;</span>
-<span style="color:#e6db74">&#34;hao&#34;</span>
-<span style="color:#75715e"># 若键值对中存在指定键hello和ni，那么移除它们</span>
-<span style="color:#75715e"># 与DEL不同。后者删除全部的值</span>
-$ HDEL hash hello ni
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">2</span>
-$ HGETALL hash
-<span style="color:#f92672">(</span>empty list or set<span style="color:#f92672">)</span>
-</code></pre></div><h4 id="zset">ZSET<a href="#zset" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 给key为hash的设置键值对，如果键值对中的键存在，那么返回0，否则返回1</span>
+</span></span><span style="display:flex;"><span>$ HSET hash hello world
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>$ HSET hash hello world
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>$ HSET hash ni hao
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取指定key的键值对中指定键的值</span>
+</span></span><span style="display:flex;"><span>$ HGET hash hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取指定key的全部键值对</span>
+</span></span><span style="display:flex;"><span>$ HGETALL hash
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;world&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;ni&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;hao&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 若键值对中存在指定键hello和ni，那么移除它们</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 与DEL不同。后者删除全部的值</span>
+</span></span><span style="display:flex;"><span>$ HDEL hash hello ni
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>$ HGETALL hash
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>empty list or set<span style="color:#f92672">)</span>
+</span></span></code></pre></div><h4 id="zset">ZSET<a href="#zset" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>ZSET</code>结构是<code>有序</code>、<code>不重复</code>的存储多个键值对。其中有序集合的键被称为<code>成员(member)</code>，值被称为<code>分值(score)</code>，分值必须为浮点数。<code>ZSET</code>是redis中唯一一个既可以根据<code>成员</code>访问，也可以根据<code>分值及分值的排列顺序</code>来访问元素的结构。</p>
 <table>
 <thead>
@@ -923,35 +923,35 @@ $ HGETALL hash
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 添加元素到ZSET中，如果member存在，会返回0，否则为1</span>
-$ ZADD zset <span style="color:#ae81ff">100</span> first
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
-$ ZADD zset <span style="color:#ae81ff">200</span> second
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
-<span style="color:#75715e"># 输出键为second的分数</span>
-$ ZSCORE zset second
-<span style="color:#e6db74">&#34;200&#34;</span>
-<span style="color:#75715e"># 查询指定index的元素，不包括score</span>
-$ ZRANGE zset <span style="color:#ae81ff">0</span> -1
-<span style="color:#e6db74">&#34;first&#34;</span>
-<span style="color:#e6db74">&#34;second&#34;</span>
-<span style="color:#75715e"># 查询指定index的元素，包括score</span>
-$ ZRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES
-1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;first&#34;</span>
-2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;100&#34;</span>
-3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;second&#34;</span>
-4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;200&#34;</span>
-<span style="color:#75715e"># 获取给定分值范围[0,100]内的从0开始的1个元素</span>
-$ ZRANGEBYSCORE zset <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">100</span> WITHSCORES LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
-1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;first&#34;</span>
-2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;100&#34;</span>
-<span style="color:#75715e"># 若成员们存在ZSET，那么移除该成员们</span>
-$ ZREM zset first second
-<span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
-<span style="color:#75715e"># 将键为first的分数增加101</span>
-$ ZINCRBY zset <span style="color:#ae81ff">101</span> first
-<span style="color:#e6db74">&#34;201&#34;</span>
-</code></pre></div><h5 id="有序集合命令">有序集合命令<a href="#有序集合命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 添加元素到ZSET中，如果member存在，会返回0，否则为1</span>
+</span></span><span style="display:flex;"><span>$ ZADD zset <span style="color:#ae81ff">100</span> first
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>$ ZADD zset <span style="color:#ae81ff">200</span> second
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 输出键为second的分数</span>
+</span></span><span style="display:flex;"><span>$ ZSCORE zset second
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;200&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询指定index的元素，不包括score</span>
+</span></span><span style="display:flex;"><span>$ ZRANGE zset <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;first&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;second&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查询指定index的元素，包括score</span>
+</span></span><span style="display:flex;"><span>$ ZRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;first&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;100&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;second&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;200&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取给定分值范围[0,100]内的从0开始的1个元素</span>
+</span></span><span style="display:flex;"><span>$ ZRANGEBYSCORE zset <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">100</span> WITHSCORES LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;first&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span> <span style="color:#e6db74">&#34;100&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 若成员们存在ZSET，那么移除该成员们</span>
+</span></span><span style="display:flex;"><span>$ ZREM zset first second
+</span></span><span style="display:flex;"><span><span style="color:#f92672">(</span>integer<span style="color:#f92672">)</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将键为first的分数增加101</span>
+</span></span><span style="display:flex;"><span>$ ZINCRBY zset <span style="color:#ae81ff">101</span> first
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;201&#34;</span>
+</span></span></code></pre></div><h5 id="有序集合命令">有序集合命令<a href="#有序集合命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <table>
 <thead>
 <tr>
@@ -997,50 +997,50 @@ $ ZINCRBY zset <span style="color:#ae81ff">101</span> first
 <blockquote>
 <p><code>ZSET</code>默认按照<code>score升序</code>排序。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 定义如下zset集合</span>
-$ ZRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES	
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n2&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n1&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n3&#34;</span>
-6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;15&#34;</span>
-<span style="color:#75715e"># 获取n3的排名</span>
-$ ZREVRANK zset n3
-<span style="color:#e6db74">&#34;0&#34;</span>
-<span style="color:#75715e"># 降序获取范围内元素</span>
-$ ZREVRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n3&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;15&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n1&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n2&#34;</span>
-6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
-<span style="color:#75715e"># 返回分数在[6,10]内，index=0开始的第一个元素</span>
-$ ZRANGEBYSCORE zset <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">10</span> WITHSCORES LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
-
-<span style="color:#75715e"># 定义两个ZSET集合</span>
-$ ZRANGE zset-1 <span style="color:#ae81ff">0</span> -1 WITHSCORES
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;a&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;b&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;2&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;c&#34;</span>
-6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;3&#34;</span>
-$ ZRANGE zset-2 <span style="color:#ae81ff">0</span> -1 WITHSCORES
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;d&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;c&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;b&#34;</span>
-6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;4&#34;</span>
-<span style="color:#75715e"># 多个`ZSET`进行交集运算,取分值最大的哪个作为新的key中的score</span>
-$ ZINTERSTORE zinter <span style="color:#ae81ff">2</span> zset-1 zset-2 AGGREGATE MAX
-<span style="color:#e6db74">&#34;2&#34;</span>
-<span style="color:#75715e"># 多个`ZSET`进行并集运算,取分值综合作为新的key中的score</span>
-$ ZUNIONSTORE zunion <span style="color:#ae81ff">2</span> zset-1 zset-2 AGGREGATE SUM
-<span style="color:#e6db74">&#34;4&#34;</span>
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 定义如下zset集合</span>
+</span></span><span style="display:flex;"><span>$ ZRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES	
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n2&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n1&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n3&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;15&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 获取n3的排名</span>
+</span></span><span style="display:flex;"><span>$ ZREVRANK zset n3
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 降序获取范围内元素</span>
+</span></span><span style="display:flex;"><span>$ ZREVRANGE zset <span style="color:#ae81ff">0</span> -1 WITHSCORES
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n3&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;15&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n1&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;n2&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 返回分数在[6,10]内，index=0开始的第一个元素</span>
+</span></span><span style="display:flex;"><span>$ ZRANGEBYSCORE zset <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">10</span> WITHSCORES LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 定义两个ZSET集合</span>
+</span></span><span style="display:flex;"><span>$ ZRANGE zset-1 <span style="color:#ae81ff">0</span> -1 WITHSCORES
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;a&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;3&#34;</span>
+</span></span><span style="display:flex;"><span>$ ZRANGE zset-2 <span style="color:#ae81ff">0</span> -1 WITHSCORES
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;d&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;c&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;b&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;4&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 多个`ZSET`进行交集运算,取分值最大的哪个作为新的key中的score</span>
+</span></span><span style="display:flex;"><span>$ ZINTERSTORE zinter <span style="color:#ae81ff">2</span> zset-1 zset-2 AGGREGATE MAX
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 多个`ZSET`进行并集运算,取分值综合作为新的key中的score</span>
+</span></span><span style="display:flex;"><span>$ ZUNIONSTORE zunion <span style="color:#ae81ff">2</span> zset-1 zset-2 AGGREGATE SUM
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;4&#34;</span>
+</span></span></code></pre></div><hr>
 <h3 id="发布与订阅">发布与订阅<a href="#发布与订阅" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <blockquote>
 <p><code>发布与订阅(pub/sub)</code>的特点是<code>订阅者(subscribe)</code>负责订阅<code>频道(channel)</code>，<code>发布者(publisher)</code>负责向频道中发送<code>二进制字符串</code>消息。</p>
@@ -1076,41 +1076,41 @@ $ ZUNIONSTORE zunion <span style="color:#ae81ff">2</span> zset-1 zset-2 AGGREGAT
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 订阅channel</span>
-$ SUBSCRIBE channel
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;subscribe&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;channel&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
-<span style="color:#75715e"># 向频道发送消息</span>
-$ PUBLISH channel helloworld
- 1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;message&#34;</span>
- 2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;channel&#34;</span>
- 3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;helloworld&#34;</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">publish</span>():
-    <span style="color:#75715e"># 用于连接时长</span>
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>)
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>]:
-        connection<span style="color:#f92672">.</span>publish(<span style="color:#e6db74">&#39;channel&#39;</span>, i)
-
-
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">subscribe</span>(conn):
-    <span style="color:#75715e"># 启动线程发送消息</span>
-    threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>publish, args<span style="color:#f92672">=</span>())<span style="color:#f92672">.</span>start()
-    <span style="color:#75715e"># 获取发布/订阅对象</span>
-    pub_sub <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>pubsub()
-    <span style="color:#75715e"># 订阅频道,一开始会出现确认信息：data表示此频道被订阅数量</span>
-    <span style="color:#75715e"># {&#39;type&#39;: &#39;subscribe&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: 1}</span>
-    pub_sub<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">&#39;channel&#39;</span>)
-    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-    <span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> pub_sub<span style="color:#f92672">.</span>listen():
-        <span style="color:#75715e"># {&#39;type&#39;: &#39;message&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: b&#39;1&#39;}</span>
-        print(item)
-        count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
-        <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span>:
-         <span style="color:#75715e"># 取消订阅也会出现信息：data表示此频道被订阅数量</span>
-         <span style="color:#75715e">#{&#39;type&#39;: &#39;unsubscribe&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: 0}</span>
-            pub_sub<span style="color:#f92672">.</span>unsubscribe(<span style="color:#e6db74">&#39;channel&#39;</span>)
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 订阅channel</span>
+</span></span><span style="display:flex;"><span>$ SUBSCRIBE channel
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;subscribe&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;channel&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 向频道发送消息</span>
+</span></span><span style="display:flex;"><span>$ PUBLISH channel helloworld
+</span></span><span style="display:flex;"><span> 1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;message&#34;</span>
+</span></span><span style="display:flex;"><span> 2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;channel&#34;</span>
+</span></span><span style="display:flex;"><span> 3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;helloworld&#34;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">publish</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 用于连接时长</span>
+</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>]:
+</span></span><span style="display:flex;"><span>        connection<span style="color:#f92672">.</span>publish(<span style="color:#e6db74">&#39;channel&#39;</span>, i)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">subscribe</span>(conn):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 启动线程发送消息</span>
+</span></span><span style="display:flex;"><span>    threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>publish, args<span style="color:#f92672">=</span>())<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取发布/订阅对象</span>
+</span></span><span style="display:flex;"><span>    pub_sub <span style="color:#f92672">=</span> conn<span style="color:#f92672">.</span>pubsub()
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 订阅频道,一开始会出现确认信息：data表示此频道被订阅数量</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># {&#39;type&#39;: &#39;subscribe&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: 1}</span>
+</span></span><span style="display:flex;"><span>    pub_sub<span style="color:#f92672">.</span>subscribe(<span style="color:#e6db74">&#39;channel&#39;</span>)
+</span></span><span style="display:flex;"><span>    count <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> item <span style="color:#f92672">in</span> pub_sub<span style="color:#f92672">.</span>listen():
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># {&#39;type&#39;: &#39;message&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: b&#39;1&#39;}</span>
+</span></span><span style="display:flex;"><span>        print(item)
+</span></span><span style="display:flex;"><span>        count <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> count <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span>:
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e"># 取消订阅也会出现信息：data表示此频道被订阅数量</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">#{&#39;type&#39;: &#39;unsubscribe&#39;, &#39;pattern&#39;: None, &#39;channel&#39;: b&#39;channel&#39;, &#39;data&#39;: 0}</span>
+</span></span><span style="display:flex;"><span>            pub_sub<span style="color:#f92672">.</span>unsubscribe(<span style="color:#e6db74">&#39;channel&#39;</span>)
+</span></span></code></pre></div><blockquote>
 <p><code>发布/订阅</code>模式的两个缺点：</p>
 <ol>
 <li>如果客户端订阅了某些频道，但是它的消费速度不够快，带来的消息堆积会导致Redis速度变慢</li>
@@ -1135,33 +1135,33 @@ $ PUBLISH channel helloworld
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 模拟数据</span>
-$ RPUSH list <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">12</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">6</span>
-$ LRANGE list <span style="color:#ae81ff">0</span> -1
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;12&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
-6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
-7<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
-<span style="color:#75715e"># 倒序展示5个元素</span>
-$ SORT list LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">5</span> DESC
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;12&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
-<span style="color:#75715e"># 正序并将结果保存到dest</span>
-$ SORT list LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">5</span> ALPHA ASC STORE dest
-<span style="color:#e6db74">&#34;5&#34;</span>
-$ LRANGE dest <span style="color:#ae81ff">0</span> -1
-1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
-2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
-3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
-4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
-5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 模拟数据</span>
+</span></span><span style="display:flex;"><span>$ RPUSH list <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">12</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">9</span> <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>$ LRANGE list <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;12&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span>6<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
+</span></span><span style="display:flex;"><span>7<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 倒序展示5个元素</span>
+</span></span><span style="display:flex;"><span>$ SORT list LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">5</span> DESC
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;12&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 正序并将结果保存到dest</span>
+</span></span><span style="display:flex;"><span>$ SORT list LIMIT <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">5</span> ALPHA ASC STORE dest
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span>$ LRANGE dest <span style="color:#ae81ff">0</span> -1
+</span></span><span style="display:flex;"><span>1<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;0&#34;</span>
+</span></span><span style="display:flex;"><span>2<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;1&#34;</span>
+</span></span><span style="display:flex;"><span>3<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;5&#34;</span>
+</span></span><span style="display:flex;"><span>4<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;6&#34;</span>
+</span></span><span style="display:flex;"><span>5<span style="color:#f92672">)</span>  <span style="color:#e6db74">&#34;9&#34;</span>
+</span></span></code></pre></div><blockquote>
 <p><code>ALPHA</code>表示对元素进行<code>字母表顺序</code>排序。</p>
 <p><code>SORT</code>支持<code>LIST</code>、<code>HASH</code>、<code>SET</code>进行排序</p>
 </blockquote>
@@ -1171,26 +1171,26 @@ $ LRANGE dest <span style="color:#ae81ff">0</span> -1
 <p>Redis提供了5个命令用于不被打断的情况下对多键执行操作，它们分别是：<code>WATCH</code>、<code>MULTI</code>、<code>EXEC</code>、<code>UNWATCH</code>、<code>DISCARD</code></p>
 </blockquote>
 <p>Redis接受到<code>MULTI</code>命令时，会键之后收到的命令放入<code>队列</code>中，直到客户端发送<code>EXEC</code>。然后就会在不被打断的情况下一条一条的执行命令。python上的redis库是通过<code>pipeline</code>实现，将多个命令打包好再发送给redis，减少网络通信的往返次数。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">incr_decr</span>():
-    <span style="color:#75715e"># 获取队列</span>
-    pipeline <span style="color:#f92672">=</span> connection<span style="color:#f92672">.</span>pipeline()
-    pipeline<span style="color:#f92672">.</span>incr(<span style="color:#e6db74">&#39;tran&#39;</span>)
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
-    pipeline<span style="color:#f92672">.</span>decr(<span style="color:#e6db74">&#39;tran&#39;</span>)
-    print(pipeline<span style="color:#f92672">.</span>execute()[<span style="color:#ae81ff">0</span>])
-
-<span style="color:#e6db74">&#34;&#34;&#34;
-</span><span style="color:#e6db74">三个线程事务的执行加减法
-</span><span style="color:#e6db74">&#34;&#34;&#34;</span>
-<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">transaction</span>():
-    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
-        threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>incr_decr)<span style="color:#f92672">.</span>start()
-    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">.5</span>)
-    
-    
-<span style="color:#75715e"># result: 1 1 1</span>
-transaction()   
-</code></pre></div><h4 id="过期时间">过期时间<a href="#过期时间" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">incr_decr</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 获取队列</span>
+</span></span><span style="display:flex;"><span>    pipeline <span style="color:#f92672">=</span> connection<span style="color:#f92672">.</span>pipeline()
+</span></span><span style="display:flex;"><span>    pipeline<span style="color:#f92672">.</span>incr(<span style="color:#e6db74">&#39;tran&#39;</span>)
+</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>    pipeline<span style="color:#f92672">.</span>decr(<span style="color:#e6db74">&#39;tran&#39;</span>)
+</span></span><span style="display:flex;"><span>    print(pipeline<span style="color:#f92672">.</span>execute()[<span style="color:#ae81ff">0</span>])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">三个线程事务的执行加减法
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">transaction</span>():
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> i <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">3</span>):
+</span></span><span style="display:flex;"><span>        threading<span style="color:#f92672">.</span>Thread(target<span style="color:#f92672">=</span>incr_decr)<span style="color:#f92672">.</span>start()
+</span></span><span style="display:flex;"><span>    time<span style="color:#f92672">.</span>sleep(<span style="color:#ae81ff">.5</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># result: 1 1 1</span>
+</span></span><span style="display:flex;"><span>transaction()   
+</span></span></code></pre></div><h4 id="过期时间">过期时间<a href="#过期时间" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <blockquote>
 <p><code>Redis</code>中可以通过设置<code>Expire time</code>来让键在给定的时间后自动被删除。</p>
 </blockquote>
@@ -1235,23 +1235,23 @@ transaction()
 <blockquote>
 <p>对于<code>除了STRING</code>这样的结构来说，<code>EXPIRE</code>只会将<code>整个键过期</code>，而不会只过期其中的某条数据。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e"># 设置key-value</span>
-$ SET hello world
-<span style="color:#75715e"># 设置2s后过期,设为-1等于不过期</span>
-$ EXPIRE hello <span style="color:#ae81ff">2</span>
-<span style="color:#75715e"># 2s后获取key对应的value不村子</span>
-$ GET hello
-null
-<span style="color:#75715e"># 查看距离过期还有多久s</span>
-$ TTL hello
-<span style="color:#e6db74">&#34;10&#34;</span>
-<span style="color:#75715e">#如果已经过期返回-2</span>
-$ TTL hello
-<span style="color:#e6db74">&#34;-2&#34;</span>
-<span style="color:#75715e"># 如果未设置过期时间，返回-1</span>
-$ TTL demo
-<span style="color:#e6db74">&#34;-1&#34;</span>
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 设置key-value</span>
+</span></span><span style="display:flex;"><span>$ SET hello world
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置2s后过期,设为-1等于不过期</span>
+</span></span><span style="display:flex;"><span>$ EXPIRE hello <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 2s后获取key对应的value不村子</span>
+</span></span><span style="display:flex;"><span>$ GET hello
+</span></span><span style="display:flex;"><span>null
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看距离过期还有多久s</span>
+</span></span><span style="display:flex;"><span>$ TTL hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;10&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#如果已经过期返回-2</span>
+</span></span><span style="display:flex;"><span>$ TTL hello
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;-2&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 如果未设置过期时间，返回-1</span>
+</span></span><span style="display:flex;"><span>$ TTL demo
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#34;-1&#34;</span>
+</span></span></code></pre></div><hr>
       </div></div>
 
   

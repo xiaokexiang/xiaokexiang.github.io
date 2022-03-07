@@ -20,7 +20,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 而CyclicBarrier中只存在一种线程：调用await的线程扮演了上述两种角色，即先countDown后await。
  CyclicBarrier拆分成两部分来理解：
  Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，使其能够重用。 Barrier（屏障）：线程调用await方法就会阻塞，这个阻塞点就是屏障点，等到所有线程调用await方法后，线程就会穿过屏障继续往下执行。   相比CountDownLatch只使用一次，CyclicBarrier更强调循环使用。
- @Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await  log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER.</description>
+ @Slf4j public class CyclicBarrierTest {   // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; {  // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;)  });  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);   public static void main(String[] args) {  EXECUTOR.execute(() -&amp;gt; {  try {  //CyclicBarrier 保证await  log.</description>
     </item>
     
   </channel>

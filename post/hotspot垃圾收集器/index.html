@@ -765,21 +765,21 @@ Serial收集器 使用单线程工作的收集器，除了只会用一个处理�
 <p>客户端/服务端区别：client比server模式<code>启动速度更快</code>，当server比client模式<code>运行速度更快</code>。</p>
 </blockquote>
 <p>相比其他垃圾收集器，<code>Serial收集器</code>时所有垃圾回收器里面<code>额外内存消耗最小的</code>，但<code>STW耗时是最长的</code>；对于<code>单核处理器或处理器核心较少</code>环境来说，由于没有线程交互的开销，<code>Serial收集器</code>可以获得<code>最高的单线程收集效率</code>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-XX:+UseSerialGC 新生代 &amp; 老年代都使用串行收集器
-</code></pre></div><h4 id="parnew收集器">ParNew收集器<a href="#parnew收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-XX:+UseSerialGC 新生代 &amp; 老年代都使用串行收集器
+</span></span></code></pre></div><h4 id="parnew收集器">ParNew收集器<a href="#parnew收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>ParNew收集器</code>本质上是<code>Serial收集器</code>的<code>多线程并行</code>版本。除了<code>同时使用多条线程</code>进行垃圾收集外，其余的和<code>Serial收集器</code>一致。</p>
 <blockquote>
 <p>这里的并行指的是：<code>同一个时间有多个</code>这样的收集线程在协调工作，用户线程此时处于等待状态。</p>
 </blockquote>
 <p>除了<code>Serial收集器</code>外，只有<code>ParNew收集器</code>能与<code>CMS收集器</code>配合工作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 新生代ParNew &amp; 老年代CMS 是开启CMS下新生代默认收集器</span>
--XX:+UseConcMarkSweepGC
-<span style="color:#75715e"># 新生代ParNew &amp; 老年代SerialOld（JDK8后已过期）</span>
--XX:+UseParNewGC  
-</code></pre></div><p>因为线程交互的开销，在<code>单核处理器</code>下性能低于<code>Serial</code>，但是<code>多核心</code>下<code>ParNew</code>收集器还是很高效的。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 垃圾收集的线程数为8</span>
--XX:ParallelGCThreads<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 新生代ParNew &amp; 老年代CMS 是开启CMS下新生代默认收集器</span>
+</span></span><span style="display:flex;"><span>-XX:+UseConcMarkSweepGC
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 新生代ParNew &amp; 老年代SerialOld（JDK8后已过期）</span>
+</span></span><span style="display:flex;"><span>-XX:+UseParNewGC  
+</span></span></code></pre></div><p>因为线程交互的开销，在<code>单核处理器</code>下性能低于<code>Serial</code>，但是<code>多核心</code>下<code>ParNew</code>收集器还是很高效的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 垃圾收集的线程数为8</span>
+</span></span><span style="display:flex;"><span>-XX:ParallelGCThreads<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>
+</span></span></code></pre></div><blockquote>
 <p>不设置此参数时，当<code>Cpu Cores &lt; 8</code>时，<code>Threads=Cpu Cores</code>，否则 <code>Threads=3+(5*cores)/8）</code>。</p>
 </blockquote>
 <h4 id="parallel-scavenge收集器">Parallel Scavenge收集器<a href="#parallel-scavenge收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
@@ -792,14 +792,14 @@ $$</p>
 <p><code>低停顿时间</code>适合<code>用户交互或保证服务响应</code>的程序。<code>高吞吐量</code>适合<code>最高效率</code>利用处理器资源，<code>尽快</code>完成程序的<code>运算任务</code>。</p>
 <p><code>停顿时间</code>缩短是以牺牲<code>吞吐量和新生代空间</code>为代价的。如果我们将新生代设置的较小，虽然会减少每次回收的时间，但是会导致垃圾回收更加频繁，虽然停顿时间在减少，但是吞吐量在下降。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 允许设置一个大于0的毫秒数，收集器尽量保证内存回收时间不超过该值</span>
--XX:MaxGCPauseMillis
-<span style="color:#75715e"># 允许设置一个大于0小于100的整数n</span>
-<span style="color:#75715e"># 系统将花费不超过 1/(1+n)的时间进行回收 假设n=99，那么不超过1%时间进行回收。</span>
--XX:GCTimeRatio
-<span style="color:#75715e"># 自适应GC策略，自动调整新生代大小，老年代晋年龄等 区别于ParNew是Paraller独有</span>
--XX:+UseAdaptiveSizePolicy
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 允许设置一个大于0的毫秒数，收集器尽量保证内存回收时间不超过该值</span>
+</span></span><span style="display:flex;"><span>-XX:MaxGCPauseMillis
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 允许设置一个大于0小于100的整数n</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 系统将花费不超过 1/(1+n)的时间进行回收 假设n=99，那么不超过1%时间进行回收。</span>
+</span></span><span style="display:flex;"><span>-XX:GCTimeRatio
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 自适应GC策略，自动调整新生代大小，老年代晋年龄等 区别于ParNew是Paraller独有</span>
+</span></span><span style="display:flex;"><span>-XX:+UseAdaptiveSizePolicy
+</span></span></code></pre></div><hr>
 <h3 id="老年代收集器">老年代收集器<a href="#老年代收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="serial-old收集器">Serial Old收集器<a href="#serial-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>是<code>Serial</code>收集器的老年代版本，基于<code>标记-整理</code>的<code>单线程</code>收集器，用于<code>客户端</code>模式下的HotSpot虚拟机使用。</p>
@@ -807,9 +807,9 @@ $$</p>
 <h4 id="parallel-old收集器">Parallel Old收集器<a href="#parallel-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>JDK6推出，是<code>Parallel Scavenge</code>收集器的老年代版本，支持<code>多线程并发</code>收集，基于<code>标记-整理</code>算法实现。</p>
 <p><code>Parallel Old</code>配合<code>Parallel Scavenge</code>的组合，用于<code>注重吞吐量和处理器资源较为稀缺的</code>情况。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Parallel Scavenge + Parallel Old,JDK8默认组合</span>
--XX:+UseParallelGC
-</code></pre></div><h4 id="cms收集器">CMS收集器<a href="#cms收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Parallel Scavenge + Parallel Old,JDK8默认组合</span>
+</span></span><span style="display:flex;"><span>-XX:+UseParallelGC
+</span></span></code></pre></div><h4 id="cms收集器">CMS收集器<a href="#cms收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>CMS(<code>Concurrent Mark Sweep</code>)收集器是一种以获取<code>最短回收停顿时间</code>为目标的收集器。基于<code>标记-清除</code>算法。</p>
 <h5 id="收集流程">收集流程<a href="#收集流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
 <ul>
@@ -838,21 +838,21 @@ $$</p>
 </ul>
 <p>在CMS<code>并发标记和并发清理</code>阶段，用户线程还在继续执行，就会有<code>新的垃圾对象</code>不断产生，但这些对象出现在初始标记阶段后，只能在下次垃圾回收中再处理这部分垃圾。</p>
 <p>因为<code>CMS收集器</code>并发标记和并发清理的特性，必须<code>预留一些空间</code>提供给用户线程使用，不能等老年代满再工作。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 当老年代使用了68%后CMS开始工作</span>
-<span style="color:#75715e"># JDK5默认68%，JDK6默认92%</span>
--XX:CMSInitiatingOccupancyFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">68</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 当老年代使用了68%后CMS开始工作</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># JDK5默认68%，JDK6默认92%</span>
+</span></span><span style="display:flex;"><span>-XX:CMSInitiatingOccupancyFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">68</span>
+</span></span></code></pre></div><blockquote>
 <p>如果预留的内存不够用户线程分配新对象，会启用<code>Serial Old</code>进行<code>Major GC</code>。会带来较长的停顿时间。</p>
 </blockquote>
 <ul>
 <li>产生大量空间碎片</li>
 </ul>
 <p>因为CMS基于<code>比较-清除</code>算法，易产生大量的空间碎片，在无法给大对象分配内存时导致一次<code>Full Gc</code>。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 默认开启，当CMS进行Full GC时开启内存碎片合并整理的过程 JDK9废弃</span>
--XX:+UseCMSCompactAtFullCollection
-<span style="color:#75715e"># CMS在执行若干次不整理空间的Full GC后，下一次进行碎片整理 JDK9废弃</span>
--XX:CMSFullGCBeforeCompaction
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 默认开启，当CMS进行Full GC时开启内存碎片合并整理的过程 JDK9废弃</span>
+</span></span><span style="display:flex;"><span>-XX:+UseCMSCompactAtFullCollection
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># CMS在执行若干次不整理空间的Full GC后，下一次进行碎片整理 JDK9废弃</span>
+</span></span><span style="display:flex;"><span>-XX:CMSFullGCBeforeCompaction
+</span></span></code></pre></div><blockquote>
 <p>Full GC：对整个Java堆进行回收，包含新生代和老年代</p>
 <p>Minor GC：对新生代进行回收。</p>
 <p>Major GC：对老年代进行回收。</p>
@@ -866,10 +866,10 @@ $$</p>
 <p>相比于其他收集器要么面向新生代，要么面向老年代，而G1面向堆内存任何部分来组成<code>回收集(Collection Set)</code>进行回收。衡量标准由属于哪个分代变为哪块内存垃圾最多，回收收益最大。</p>
 <p>相比于之前的固定大小和数量的区域划分的收集器，G1将堆内存分为<code>多个大小相等的独立区域(Region，默认分成2048份)</code>，每个<code>Region</code>可以根据需要扮演<code>Eden、Survivor或老年代空间</code>。</p>
 <p><code>Region</code>中还存在一类特殊的<code>Humongous</code>区域，用于存储大对象，G1认为只要大小超过一个<code>Region</code>容量一半的对象即为大对象，对于超过<code>Region</code>大小的对象，将会被存放在N个连续的<code>Humongous</code>区域中。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 设置Region的大小(单位： B)，在[1MB,32MB]必须为2的幂次方</span>
-<span style="color:#75715e"># 设置Region的大小=2097152B=2MB，不设置默认是1MB</span>
--XX:G1HeapRegionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">2097152</span>
-</code></pre></div><p>G1仍然保留新生代、老年代的概念，当它们不再是固定的区域了，改为<code>一系列区域(不需要连续)的动态集合</code>。G1在后台维护一个<code>优先级列表</code>，每次根据用户通过<code>-XX:MaxGCPauseMillis</code>指定的停顿时长<code>(默认200ms)</code>，优先回收价值收益最大的<code>Region</code>，以达到最大的收集效率。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置Region的大小(单位： B)，在[1MB,32MB]必须为2的幂次方</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置Region的大小=2097152B=2MB，不设置默认是1MB</span>
+</span></span><span style="display:flex;"><span>-XX:G1HeapRegionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">2097152</span>
+</span></span></code></pre></div><p>G1仍然保留新生代、老年代的概念，当它们不再是固定的区域了，改为<code>一系列区域(不需要连续)的动态集合</code>。G1在后台维护一个<code>优先级列表</code>，每次根据用户通过<code>-XX:MaxGCPauseMillis</code>指定的停顿时长<code>(默认200ms)</code>，优先回收价值收益最大的<code>Region</code>，以达到最大的收集效率。</p>
 <h4 id="收集流程-1">收集流程<a href="#收集流程-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>初始标记</li>
@@ -907,18 +907,18 @@ $$</p>
 <p>前面我们了解到，<code>大部分</code>的对象都是在<code>堆中</code>进行内存分配，但堆中又存在多个逻辑区域(新生代、老年代)，所以这章我们就要讨论下，对象在堆中的进行内存分配的基本原则。</p>
 <h4 id="tlab">TLAB<a href="#tlab" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>在讨论对象分配前，我们需要对之前引入的<code>TLAB</code>的概念进一步解析。<code>TLAB(本地线程缓冲)</code>，其存在的目的是为了加速对象的分配，即每个线程都拥有自己的专属区域进行对象分配，来避免多线程冲突，默认是启动的。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 开/关TLAB</span>
--XX:+/-UseTLAB
-<span style="color:#75715e"># 设置TLAB大小</span>
--XX:TLABSize
-<span style="color:#75715e"># 查看TLAB信息</span>
--XX:+PrintTLAB
-<span style="color:#75715e"># 对象占TLAB空间的比例，大于此比例堆中分配，小于就废弃当前</span>
-<span style="color:#75715e">## TLAB区域，并新建一个TLAB存放，默认64</span>
--XX:TLABRefillWasteFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>
-<span style="color:#75715e"># 默认情况TLAB和refill_waste是动态的，关闭TLAB动态调整</span>
--XX:-ResizeTLAB
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 开/关TLAB</span>
+</span></span><span style="display:flex;"><span>-XX:+/-UseTLAB
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置TLAB大小</span>
+</span></span><span style="display:flex;"><span>-XX:TLABSize
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看TLAB信息</span>
+</span></span><span style="display:flex;"><span>-XX:+PrintTLAB
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 对象占TLAB空间的比例，大于此比例堆中分配，小于就废弃当前</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## TLAB区域，并新建一个TLAB存放，默认64</span>
+</span></span><span style="display:flex;"><span>-XX:TLABRefillWasteFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 默认情况TLAB和refill_waste是动态的，关闭TLAB动态调整</span>
+</span></span><span style="display:flex;"><span>-XX:-ResizeTLAB
+</span></span></code></pre></div><blockquote>
 <p>我们假设TLAB大小为100KB，第一次分配给对象80KB，此时还剩20KB，如果第二次有30KB大小的对象需要分配，此时有两种选择：</p>
 <ol>
 <li>废弃所剩的20KB区域，新建一个TLAB存放30KB的对象。</li>
@@ -930,16 +930,16 @@ $$</p>
 <p>大部分情况下，<code>对象在Eden区中进行分配</code>，如果<code>Eden区</code>空间不够，JVM会发起一次<code>Minor GC</code>。</p>
 <h4 id="大对象进入老年代">大对象进入老年代<a href="#大对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>大对象：需要大量连续内存空间的Java对象</code>或新生代已无足够空间分配的对象直接进入老年代。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 将大于此大小的对象直接分配到老年代</span>
--XX:PretenureSizeThreshold<span style="color:#f92672">=</span>5242880<span style="color:#f92672">(</span>5mb<span style="color:#f92672">)</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 将大于此大小的对象直接分配到老年代</span>
+</span></span><span style="display:flex;"><span>-XX:PretenureSizeThreshold<span style="color:#f92672">=</span>5242880<span style="color:#f92672">(</span>5mb<span style="color:#f92672">)</span>
+</span></span></code></pre></div><blockquote>
 <p>只适用于<code>Serial、Serial Old、ParNew</code>三种收集器。</p>
 </blockquote>
 <h4 id="长期存活对象进入老年代">长期存活对象进入老年代<a href="#长期存活对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>长期存活的对象将进入老年代。对象通常在eden区诞生，如果经历了一次<code>Minor Gc</code>后仍然存活，并能够被<code>s0</code>容纳，该对象会被移动到<code>s0</code>区并将其<code>对象头中的对象年龄 + 1</code>。当年龄达到阈值，就会进入老年代。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 对象晋升到老年代的年龄阈值</span>
--XX:MaxTenuringThreshold<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 对象晋升到老年代的年龄阈值</span>
+</span></span><span style="display:flex;"><span>-XX:MaxTenuringThreshold<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>
+</span></span></code></pre></div><blockquote>
 <p><code>动态对象年龄判断</code>：</p>
 <p>JVM不是永远要求对象年龄达到<code>-XX:MaxTenuringThreshold</code>指定的值才能晋升老年代：</p>
 <p>如果<code>s0中相同年龄的对象大小总</code>和大于s0区域的一半<code>(-XX:TargetSurvivorRatio决定，默认50)</code>，那么<code>大于等于该年龄的对象</code>就会进入老年代。</p>

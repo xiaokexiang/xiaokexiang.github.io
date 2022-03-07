@@ -12,7 +12,7 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 而CyclicBarrier中只存在一种线程：调用await的线程扮演了上述两种角色，即先countDown后await。
  CyclicBarrier拆分成两部分来理解：
  Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，使其能够重用。 Barrier（屏障）：线程调用await方法就会阻塞，这个阻塞点就是屏障点，等到所有线程调用await方法后，线程就会穿过屏障继续往下执行。   相比CountDownLatch只使用一次，CyclicBarrier更强调循环使用。
- @Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await  log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER." />
+ @Slf4j public class CyclicBarrierTest {   // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; {  // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;)  });  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);   public static void main(String[] args) {  EXECUTOR.execute(() -&amp;gt; {  try {  //CyclicBarrier 保证await  log." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/cycliebarrier/" />
@@ -356,80 +356,80 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 <blockquote>
 <p>相比<code>CountDownLatch</code>只使用一次，<code>CyclicBarrier</code>更强调循环使用。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Slf4j</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CyclicBarrierTest</span> <span style="color:#f92672">{</span>
-
-    <span style="color:#75715e">// 传入每次屏障之前需要等待的线程数量
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> CyclicBarrier BARRIER <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> CyclicBarrier<span style="color:#f92672">(</span>2<span style="color:#f92672">,</span> <span style="color:#f92672">()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 不能保证每代执行该语句的都是同一个线程
-</span><span style="color:#75715e"></span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomenthing before the last thread signal other threads&#34;</span><span style="color:#f92672">)</span>
-    <span style="color:#f92672">});</span>
-    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ExecutorService EXECUTOR <span style="color:#f92672">=</span> Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
-
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">//CyclicBarrier 保证await
-</span><span style="color:#75715e"></span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomething ... &#34;</span><span style="color:#f92672">);</span>
-                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;continue exec ...&#34;</span><span style="color:#f92672">);</span>
-                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">});</span>
-        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomething ... &#34;</span><span style="color:#f92672">);</span>
-                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;continue exec ...&#34;</span><span style="color:#f92672">);</span>
-                <span style="color:#75715e">// 如果中断线程，那么会抛出异常
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// Thread.currentThread().interrupt();
-</span><span style="color:#75715e"></span>                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">});</span>
-        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// doSomething
-</span><span style="color:#75715e">// doSomething
-</span><span style="color:#75715e">// continue exec
-</span><span style="color:#75715e">// continue exec
-</span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CyclicBarrierTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 传入每次屏障之前需要等待的线程数量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> CyclicBarrier BARRIER <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> CyclicBarrier<span style="color:#f92672">(</span>2<span style="color:#f92672">,</span> <span style="color:#f92672">()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不能保证每代执行该语句的都是同一个线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomenthing before the last thread signal other threads&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ExecutorService EXECUTOR <span style="color:#f92672">=</span> Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">//CyclicBarrier 保证await
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomething ... &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;continue exec ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;doSomething ... &#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;continue exec ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 如果中断线程，那么会抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// Thread.currentThread().interrupt();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                BARRIER<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Exception e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span>        EXECUTOR<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// doSomething
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// doSomething
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// continue exec
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// continue exec
+</span></span></span></code></pre></div><blockquote>
 <p>为什么结果不是随机打印日志，而是先打印完<code>doSomething</code>，再打印<code>continue exec</code>?</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 使用ReentrantLock和Condition
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition trip <span style="color:#f92672">=</span> lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
-
-<span style="color:#75715e">// 注意这里是final修饰，代表线程总数，当count=0时重置使用
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> parties<span style="color:#f92672">;</span>
-<span style="color:#75715e">// 表明还需要多少个线程到达屏障
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> count<span style="color:#f92672">;</span>
-
-<span style="color:#75715e">// 表明每一代线程通过屏障之前需要完成的事情（并不是通过新起线程来实现）
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Runnable barrierCommand<span style="color:#f92672">;</span>
-<span style="color:#75715e">// 每一组一起通过屏障的线程叫做一代Generation，不同代之间通过==比较
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Generation generation <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generation<span style="color:#f92672">();</span>
-
-<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CyclicBarrier</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> parties<span style="color:#f92672">,</span> Runnable barrierAction<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// paries的值必须大于0
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>parties <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">parties</span> <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">barrierCommand</span> <span style="color:#f92672">=</span> barrierAction<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#75715e">// Generation只有一个属性：broken
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Generation</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// false 表明线程是全部到达后一起穿过屏障
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// true表明线程没有全部到达前，就有线程穿过屏障了
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 线程监测到会抛出BrokenBarrierException
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> broken <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 使用ReentrantLock和Condition
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition trip <span style="color:#f92672">=</span> lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 注意这里是final修饰，代表线程总数，当count=0时重置使用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> parties<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 表明还需要多少个线程到达屏障
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> count<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 表明每一代线程通过屏障之前需要完成的事情（并不是通过新起线程来实现）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Runnable barrierCommand<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 每一组一起通过屏障的线程叫做一代Generation，不同代之间通过==比较
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> Generation generation <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generation<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CyclicBarrier</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> parties<span style="color:#f92672">,</span> Runnable barrierAction<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// paries的值必须大于0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>parties <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">parties</span> <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span> <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">barrierCommand</span> <span style="color:#f92672">=</span> barrierAction<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Generation只有一个属性：broken
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Generation</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// false 表明线程是全部到达后一起穿过屏障
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// true表明线程没有全部到达前，就有线程穿过屏障了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 线程监测到会抛出BrokenBarrierException
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> broken <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li><code>CyclicBarrier</code>的需要借助<code>Condition</code>来实现，执行<code>await的线程</code>需要加入条件队列等待唤醒。</li>
 <li><code>parties</code>是final修饰的变量，作用于count = 0时的<code>重新复位计数器</code>。</li>
@@ -439,148 +439,148 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </ol>
 </blockquote>
 <h3 id="nextgeneration">nextGeneration<a href="#nextgeneration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">nextGeneration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 唤醒上一代的线程（表明此时是有锁的）
-</span><span style="color:#75715e"></span>    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">signalAll</span><span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 将count重置为parties
-</span><span style="color:#75715e"></span>    count <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// new 生成新一代
-</span><span style="color:#75715e"></span>    generation <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generation<span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">nextGeneration</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 唤醒上一代的线程（表明此时是有锁的）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">signalAll</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将count重置为parties
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    count <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// new 生成新一代
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    generation <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Generation<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>该方法的目的是为了<code>唤醒上一代的线程，并重置count及通过创建对象开启下一代</code>。</p>
 </blockquote>
 <h3 id="breakbarrier">breakBarrier<a href="#breakbarrier" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">breakBarrier</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 修改Generation对象参数
-</span><span style="color:#75715e"></span>    generation<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 重置计数器
-</span><span style="color:#75715e"></span>    count <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 唤醒上一代等地的线程
-</span><span style="color:#75715e"></span>    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">signalAll</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">breakBarrier</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 修改Generation对象参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    generation<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 重置计数器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    count <span style="color:#f92672">=</span> parties<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 唤醒上一代等地的线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">signalAll</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>与<code>nextGeneration</code>不同点在于：修改<code>Generation对象</code>参数，以及<code>没有创建下一代Generation</code>。</p>
 </blockquote>
 <h3 id="reset">reset<a href="#reset" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">reset</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        breakBarrier<span style="color:#f92672">();</span>   <span style="color:#75715e">// break the current generation
-</span><span style="color:#75715e"></span>        nextGeneration<span style="color:#f92672">();</span> <span style="color:#75715e">// start a new generation
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">reset</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        breakBarrier<span style="color:#f92672">();</span>   <span style="color:#75715e">// break the current generation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        nextGeneration<span style="color:#f92672">();</span> <span style="color:#75715e">// start a new generation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>reset方法在获取锁的前提下调用了<code>breakBarrier 和 nextGeneration</code>方法，除了<code>修改这一代Generation的broken、重置计数器外，还创建了下一代Generation</code>（虽然代码有些重复）。</p>
 </blockquote>
 <hr>
 <h3 id="await">await<a href="#await" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 同一个线程可能多次调用await方法
-</span><span style="color:#75715e">// 返回值表明还需要多少个线程到达屏障处
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// false表明不需要判断超时
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>TimeoutException toe<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// await()中的dowait按道理不会抛出该异常
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>toe<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">dowait</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> timed<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanos<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> 										BrokenBarrierException<span style="color:#f92672">,</span> TimeoutException <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 获取独占锁
-</span><span style="color:#75715e"></span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 获取这一代的Generation
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">final</span> Generation g <span style="color:#f92672">=</span> generation<span style="color:#f92672">;</span>
-		<span style="color:#75715e">// 之前breakBarrier方法会修改broken参数为true，如果线程监测到会抛出异常
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span>
-            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> BrokenBarrierException<span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 该方法响应中断，抛出中断异常前会调用breakBarrier
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-            breakBarrier<span style="color:#f92672">();</span>
-            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-		<span style="color:#75715e">// 此中代码不需要考虑竞争
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 将count-1类似countDownLatch中的countDown
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> <span style="color:#f92672">--</span>count<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>index <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
-            <span style="color:#75715e">// index = 0说明除当前线程外的其他线程都执行了await方法
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 当前需要准备带领其他线程一起冲破屏障了
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">boolean</span> ranAction <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 执行冲破屏障前的任务
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">final</span> Runnable command <span style="color:#f92672">=</span> barrierCommand<span style="color:#f92672">;</span>
-                <span style="color:#75715e">// 这里可以看出，没有另起线程去执行，就是当前线程处理的
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>command <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-                    command<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">();</span>
-                <span style="color:#75715e">// 修改ranAction参数
-</span><span style="color:#75715e"></span>                ranAction <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-                <span style="color:#75715e">// 调用nextGeneration唤醒所有等待线程、重置count并创建下一代
-</span><span style="color:#75715e"></span>                nextGeneration<span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">return</span> 0<span style="color:#f92672">;</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 如果当前线程执行command任务失败
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>ranAction<span style="color:#f92672">)</span>
-                    <span style="color:#75715e">// 调用breakBarrier
-</span><span style="color:#75715e"></span>                    breakBarrier<span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-
-        <span style="color:#75715e">// 执行到此说明当前线程不是当代最后一个线程
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 自旋直到被中断、await超时、broken=true或count=0
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 进行await(time)方法的处理
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>timed<span style="color:#f92672">)</span>
-                    <span style="color:#75715e">// 当前count!=0，所以将当前线程放入条件队列等待唤醒
-</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 唤醒后从此处继续执行
-</span><span style="color:#75715e"></span>                    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> 0L<span style="color:#f92672">)</span>
-                    <span style="color:#75715e">// Condition.await(指定时长)
-</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 返回的是deadline - currentTime的差值
-</span><span style="color:#75715e"></span>                    nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException ie<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                <span style="color:#75715e">// 如果当前线程被中断执行此处逻辑
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 判断当前线程的generation是否改变，如果没有改变且g.broken的值是false
-</span><span style="color:#75715e"></span>                <span style="color:#75715e">// 执行breakBarrier方法并抛出中断异常
-</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g <span style="color:#f92672">==</span> generation <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span> g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                    breakBarrier<span style="color:#f92672">();</span>
-                    <span style="color:#66d9ef">throw</span> ie<span style="color:#f92672">;</span>
-                <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-                    <span style="color:#75715e">// 执行到此处
-</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 要么是Generation已经更新了，那么不能执行breakBarrier影响这一代
-</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 要么是g.broken = true，说明已经执行过breakBarrier，那就不再执行
-</span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 最终修改当前线程中断位位true
-</span><span style="color:#75715e"></span>                    Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
-                <span style="color:#f92672">}</span>
-            <span style="color:#f92672">}</span>
-			<span style="color:#75715e">// 此时还在循环中，继续判断broken
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span>
-                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> BrokenBarrierException<span style="color:#f92672">();</span>
-			<span style="color:#75715e">// 执行到此如果不是同一代，那么此时只有两种可能
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 1. 当前线程await后被唤醒，发现代已经更新，即最后一个线程已执行过。直接返回即可
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 2. reset方法被调用，它其中的nextGeneration创建了新一代。
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g <span style="color:#f92672">!=</span> generation<span style="color:#f92672">)</span>
-                <span style="color:#66d9ef">return</span> index<span style="color:#f92672">;</span>
-			
-            <span style="color:#75715e">// 执行到此说明broken = false 且 代没有更新，最后一个线程还没来
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 继续判断是否超时，如果超时调用breakBarrier并抛出异常
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                breakBarrier<span style="color:#f92672">();</span>
-                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 最终释放锁
-</span><span style="color:#75715e"></span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 同一个线程可能多次调用await方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 返回值表明还需要多少个线程到达屏障处
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// false表明不需要判断超时
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> 0L<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>TimeoutException toe<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// await()中的dowait按道理不会抛出该异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>toe<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">dowait</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> timed<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanos<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> 										BrokenBarrierException<span style="color:#f92672">,</span> TimeoutException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取独占锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取这一代的Generation
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">final</span> Generation g <span style="color:#f92672">=</span> generation<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 之前breakBarrier方法会修改broken参数为true，如果线程监测到会抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> BrokenBarrierException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 该方法响应中断，抛出中断异常前会调用breakBarrier
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            breakBarrier<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 此中代码不需要考虑竞争
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 将count-1类似countDownLatch中的countDown
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> index <span style="color:#f92672">=</span> <span style="color:#f92672">--</span>count<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>index <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> 
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// index = 0说明除当前线程外的其他线程都执行了await方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 当前需要准备带领其他线程一起冲破屏障了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">boolean</span> ranAction <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 执行冲破屏障前的任务
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">final</span> Runnable command <span style="color:#f92672">=</span> barrierCommand<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 这里可以看出，没有另起线程去执行，就是当前线程处理的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>command <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                    command<span style="color:#f92672">.</span><span style="color:#a6e22e">run</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 修改ranAction参数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                ranAction <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 调用nextGeneration唤醒所有等待线程、重置count并创建下一代
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                nextGeneration<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 如果当前线程执行command任务失败
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>ranAction<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 调用breakBarrier
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    breakBarrier<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 执行到此说明当前线程不是当代最后一个线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 自旋直到被中断、await超时、broken=true或count=0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 进行await(time)方法的处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>timed<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 当前count!=0，所以将当前线程放入条件队列等待唤醒
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 唤醒后从此处继续执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> 0L<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// Condition.await(指定时长)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 返回的是deadline - currentTime的差值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException ie<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 如果当前线程被中断执行此处逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 判断当前线程的generation是否改变，如果没有改变且g.broken的值是false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 执行breakBarrier方法并抛出中断异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g <span style="color:#f92672">==</span> generation <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span> g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    breakBarrier<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">throw</span> ie<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 执行到此处
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 要么是Generation已经更新了，那么不能执行breakBarrier影响这一代
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 要么是g.broken = true，说明已经执行过breakBarrier，那就不再执行
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 最终修改当前线程中断位位true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">currentThread</span><span style="color:#f92672">().</span><span style="color:#a6e22e">interrupt</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 此时还在循环中，继续判断broken
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g<span style="color:#f92672">.</span><span style="color:#a6e22e">broken</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> BrokenBarrierException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 执行到此如果不是同一代，那么此时只有两种可能
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 1. 当前线程await后被唤醒，发现代已经更新，即最后一个线程已执行过。直接返回即可
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 2. reset方法被调用，它其中的nextGeneration创建了新一代。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>g <span style="color:#f92672">!=</span> generation<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> index<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>			
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 执行到此说明broken = false 且 代没有更新，最后一个线程还没来
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 继续判断是否超时，如果超时调用breakBarrier并抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                breakBarrier<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最终释放锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>await方法是响应中断的，并且如果<code>Generation.broken = true</code>则会抛出指定异常。</li>
 <li>若当前线程恰好是执行<code>当前代执行await方法的最后一个线程</code>，那么它会执行<code>barrierCommand</code>。</li>
@@ -590,30 +590,30 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 </blockquote>
 <hr>
 <h3 id="awaittime">await(time)<a href="#awaittime" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
-<span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException<span style="color:#f92672">,</span>TimeoutException <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> unit<span style="color:#f92672">.</span><span style="color:#a6e22e">toNanos</span><span style="color:#f92672">(</span>timeout<span style="color:#f92672">));</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#75715e">// 下面是与await方法唯二不同的地方
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">dowait</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> timed<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanos<span style="color:#f92672">){</span>
-    <span style="color:#f92672">...</span>
-    <span style="color:#66d9ef">for</span><span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>timed<span style="color:#f92672">)</span>
-            trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> 0L<span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 执行的是Condition.await(time)方法
-</span><span style="color:#75715e"></span>            nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
-        <span style="color:#f92672">...</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#f92672">...</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-       breakBarrier<span style="color:#f92672">();</span>
-        <span style="color:#75715e">// await并不会抛出此异常
-</span><span style="color:#75715e"></span>       <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException<span style="color:#f92672">,</span>TimeoutException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> unit<span style="color:#f92672">.</span><span style="color:#a6e22e">toNanos</span><span style="color:#f92672">(</span>timeout<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 下面是与await方法唯二不同的地方
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">dowait</span><span style="color:#f92672">(</span><span style="color:#66d9ef">boolean</span> timed<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanos<span style="color:#f92672">){</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span><span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>timed<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> 0L<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 执行的是Condition.await(time)方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> 0L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>       breakBarrier<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// await并不会抛出此异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>await(time)方法与await大部分是相同的，区别在于：</p>
 <ol>
 <li>await(time)执行的是Condition.await(time)方法，到时<code>自动唤醒（底层LockSupprt.parkNanos）</code>来实现的。</li>

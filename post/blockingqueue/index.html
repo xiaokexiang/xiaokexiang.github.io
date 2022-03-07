@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="BlockingQueue 概念 BlockingQueue带阻塞功能的线程安全队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。
-接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer.max_value  int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较)  // 若元素存在（或队列改变）返回true  boolean remove(Object o); // 判断队列是否至少包含一个某元素  public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在  // 移除前和添加后的集合中  int drainTo(Collection&amp;lt;?" />
+接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; {  // 添加元素到队列中返回boolean，队列满抛出异常  boolean add(E e);  // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞  void put(E e) throws InterruptedException;  // 添加元素返回boolea 队列满就返回false，非阻塞  boolean offer(E e);  // 添加元素返回boolean，等待指定时间直到队列有空间可插入  boolean offer(E e, long timeout, TimeUnit unit)  throws InterruptedException; 	// 从队首获取元素并删除，阻塞，支持等待时中断异常  E take() throws InterruptedException; 	// 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null  E poll(long timeout, TimeUnit unit)  throws InterruptedException;  // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回  // Integer." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/blockingqueue/" />
@@ -965,37 +965,36 @@
 <p><code>BlockingQueue</code>带<code>阻塞</code>功能的<code>线程安全</code>队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。</p>
 <p><img src="https://image.leejay.top/image/20200707/w6jIy7hJTtxv.png?imageslim" alt=""></p>
 <h4 id="接口方法">接口方法<a href="#接口方法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">BlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 添加元素到队列中返回boolean，队列满抛出异常
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 添加元素返回boolea 队列满就返回false，非阻塞
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 添加元素返回boolean，等待指定时间直到队列有空间可插入
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
-        <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 从队首获取元素并删除，阻塞，支持等待时中断异常
-</span><span style="color:#75715e"></span>    E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null
-</span><span style="color:#75715e"></span>    E <span style="color:#a6e22e">poll</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span> 
-        					<span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Integer.max_value
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">remainingCapacity</span><span style="color:#f92672">();</span>
-	<span style="color:#75715e">// 移除指定元素（1个或多个）若它存在(equals比较)
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 若元素存在（或队列改变）返回true
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">);</span>
-	<span style="color:#75715e">// 判断队列是否至少包含一个某元素
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">);</span>
-	<span style="color:#75715e">// 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 移除前和添加后的集合中
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">drainTo</span><span style="color:#f92672">(</span>Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> E<span style="color:#f92672">&gt;</span> c<span style="color:#f92672">);</span>
-	<span style="color:#75715e">// 移除指定数量元素并添加到集合中
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">drainTo</span><span style="color:#f92672">(</span>Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> E<span style="color:#f92672">&gt;</span> c<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> maxElements<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-
-</code></pre></div><h4 id="方法对比">方法对比<a href="#方法对比" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">BlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Queue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加元素到队列中返回boolean，队列满抛出异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加元素返回boolea 队列满就返回false，非阻塞
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 添加元素返回boolean，等待指定时间直到队列有空间可插入
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 从队首获取元素并删除，阻塞，支持等待时中断异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    E <span style="color:#a6e22e">poll</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>        					<span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// Integer.max_value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">remainingCapacity</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 移除指定元素（1个或多个）若它存在(equals比较)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 若元素存在（或队列改变）返回true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 判断队列是否至少包含一个某元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">contains</span><span style="color:#f92672">(</span>Object o<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 移除前和添加后的集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">drainTo</span><span style="color:#f92672">(</span>Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> E<span style="color:#f92672">&gt;</span> c<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 移除指定数量元素并添加到集合中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">drainTo</span><span style="color:#f92672">(</span>Collection<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> E<span style="color:#f92672">&gt;</span> c<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> maxElements<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="方法对比">方法对比<a href="#方法对比" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <table>
 <thead>
 <tr>
@@ -1078,40 +1077,40 @@
 <h3 id="arrayblockingqueue">ArrayBlockingQueue<a href="#arrayblockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>有界阻塞队列</code>，我们将从类变量、构造函数、添加与获取角度来解析<code>ArrayBlockingQueue</code>的实现。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
-        <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 底层使用数组实现
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 元素获取的所以
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> takeIndex<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 元素添加的索引
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> putIndex<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 队列中元素个数
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> count<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 采用独占锁
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock lock<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 等待获取的条件队列(不为空就可以获取)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notEmpty<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 等待添加的队列(不满就可以添加)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notFull<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 默认实现 需要指定队列大小，默认非公平锁
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>capacity<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-
-    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> fair<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 容量小于0抛异常
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>capacity <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
-            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 初始化数组（堆中）
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[</span>capacity<span style="color:#f92672">];</span>
-        <span style="color:#75715e">// 初始化独占锁和它的两个条件队列
-</span><span style="color:#75715e"></span>        lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">(</span>fair<span style="color:#f92672">);</span>
-        notEmpty <span style="color:#f92672">=</span> lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
-        notFull <span style="color:#f92672">=</span>  lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>  
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 底层使用数组实现
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 元素获取的所以
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> takeIndex<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 元素添加的索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> putIndex<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 队列中元素个数
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> count<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 采用独占锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock lock<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 等待获取的条件队列(不为空就可以获取)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notEmpty<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 等待添加的队列(不满就可以添加)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notFull<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 默认实现 需要指定队列大小，默认非公平锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>capacity<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ArrayBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> fair<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 容量小于0抛异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>capacity <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 初始化数组（堆中）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Object<span style="color:#f92672">[</span>capacity<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 初始化独占锁和它的两个条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">(</span>fair<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        notEmpty <span style="color:#f92672">=</span> lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        notFull <span style="color:#f92672">=</span>  lock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>  
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>ArrayBlockingQueue创建时需要指定<code>容量大小（因为是int，最大2^31-1）</code>。</li>
 <li>使用<code>一个独占锁和它的两个Condition队列</code>实现同步，默认<code>非公平锁</code>实现。</li>
@@ -1121,41 +1120,41 @@
 <hr>
 <h3 id="添加">添加<a href="#添加" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="put">put<a href="#put" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 元素不能为null否则报NPE
-</span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 获取独占锁
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 可中断的获取锁
-</span><span style="color:#75715e"></span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 判断队列是否满了
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 若已满 将当前线程加入 等待添加的条件队列
-</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 等待被下次唤醒
-</span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 将元素加入队列
-</span><span style="color:#75715e"></span>        enqueue<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enqueue</span><span style="color:#f92672">(</span>E x<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 获取数组
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 将元素添加到指定index
-</span><span style="color:#75715e"></span>    items<span style="color:#f92672">[</span>putIndex<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// putIndex + 1的同时判断队列是否满了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(++</span>putIndex <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 如果满了就将put的index置为0，防止指针溢出
-</span><span style="color:#75715e"></span>        putIndex <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 将队列的大小+1
-</span><span style="color:#75715e"></span>    count<span style="color:#f92672">++;</span>
-    <span style="color:#75715e">// 唤醒获取条件队列的节点
-</span><span style="color:#75715e"></span>    notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 元素不能为null否则报NPE
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取独占锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 可中断的获取锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断队列是否满了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 若已满 将当前线程加入 等待添加的条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 等待被下次唤醒
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将元素加入队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        enqueue<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enqueue</span><span style="color:#f92672">(</span>E x<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取数组
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将元素添加到指定index
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    items<span style="color:#f92672">[</span>putIndex<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// putIndex + 1的同时判断队列是否满了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(++</span>putIndex <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果满了就将put的index置为0，防止指针溢出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        putIndex <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将队列的大小+1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    count<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 唤醒获取条件队列的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>put方法<code>获取独占锁的时候可以响应中断</code>。</li>
 <li>获取独占锁后，如果队列已满，会将当前线程加入<code>notFull等待添加条件队列</code>。</li>
@@ -1163,117 +1162,117 @@
 </ol>
 </blockquote>
 <h4 id="offer">offer<a href="#offer" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 区别在此，队列满返回false
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-            enqueue<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    checkNotNull<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 区别在此，队列满返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            enqueue<span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>offer()方法在队列满的时候直接返回<code>false</code>，而put则是调用<code>await阻塞等待</code>。</p>
 <p>offer(time)方法区别在于<code>awaitNanos阻塞一定时间，超时了队列仍满再返回false</code>。</p>
 </blockquote>
 <h4 id="add">add<a href="#add" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 抽象类AbstractQueue
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 本质还是调用offer方法，只是如果队列满就返回异常
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>offer<span style="color:#f92672">(</span>e<span style="color:#f92672">))</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">else</span>
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Queue full&#34;</span><span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 抽象类AbstractQueue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 本质还是调用offer方法，只是如果队列满就返回异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>offer<span style="color:#f92672">(</span>e<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalStateException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Queue full&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>add()底层是调用的offer()，只是处理队列满的手段不同，<code>add在队列满时会抛出异常</code>。</p>
 </blockquote>
 <hr>
 <h3 id="获取">获取<a href="#获取" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="take">take<a href="#take" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 与take方法类似
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 当队列为空的时候
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 将当前线程加入 等待获取条件队列
-</span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 不为空时调用dequeue获取数据
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dequeue<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">private</span> E <span style="color:#a6e22e">dequeue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span><span style="color:#f92672">;</span>
-    <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
-    <span style="color:#75715e">// 获取数组中指定index数据并清除该数据
-</span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>E<span style="color:#f92672">)</span> items<span style="color:#f92672">[</span>takeIndex<span style="color:#f92672">];</span>
-    items<span style="color:#f92672">[</span>takeIndex<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 如果takeIndex+1超过数组长度
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(++</span>takeIndex <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 将takeIndex重置
-</span><span style="color:#75715e"></span>        takeIndex <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 将数组数量减1
-</span><span style="color:#75715e"></span>    count<span style="color:#f92672">--;</span>
-    <span style="color:#75715e">// 若迭代器不为null
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>itrs <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 需要处理迭代器
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 若队列为空就清空所有迭代器，不为空就清空takeIndex的迭代器
-</span><span style="color:#75715e"></span>        itrs<span style="color:#f92672">.</span><span style="color:#a6e22e">elementDequeued</span><span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 唤醒等待添加的条件队列
-</span><span style="color:#75715e"></span>    notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 与take方法类似
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 当队列为空的时候
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 将当前线程加入 等待获取条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不为空时调用dequeue获取数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dequeue<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> E <span style="color:#a6e22e">dequeue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> Object<span style="color:#f92672">[]</span> items <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">items</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取数组中指定index数据并清除该数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>E<span style="color:#f92672">)</span> items<span style="color:#f92672">[</span>takeIndex<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>    items<span style="color:#f92672">[</span>takeIndex<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果takeIndex+1超过数组长度
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(++</span>takeIndex <span style="color:#f92672">==</span> items<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将takeIndex重置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        takeIndex <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将数组数量减1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    count<span style="color:#f92672">--;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 若迭代器不为null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>itrs <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 需要处理迭代器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 若队列为空就清空所有迭代器，不为空就清空takeIndex的迭代器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        itrs<span style="color:#f92672">.</span><span style="color:#a6e22e">elementDequeued</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 唤醒等待添加的条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>take()整体流程与put类似，当队列没有元素时，会添加到<code>notEmpty</code>条件队列。</li>
 <li>如果队列有元素就调用<code>dequeue</code>获取元素、唤醒<code>等待添加条件队列</code>的节点。</li>
 </ol>
 </blockquote>
 <h4 id="poll">poll<a href="#poll" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">:</span> dequeue<span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">:</span> dequeue<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>poll()与take()区别在于队列为空时，<code>前者返回null</code>，后者阻塞等待。</p>
 <p>poll(time)与take()区别在于<code>awaitNanos</code>阻塞等待指定时长，<code>若队列仍为空返回null</code>。</p>
 </blockquote>
 <h4 id="peek">peek<a href="#peek" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
-    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 直接返回指定索引的数据，队列为空时返回null
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> itemAt<span style="color:#f92672">(</span>takeIndex<span style="color:#f92672">);</span> <span style="color:#75715e">// null when queue is empty
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">final</span> E <span style="color:#a6e22e">itemAt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>E<span style="color:#f92672">)</span> items<span style="color:#f92672">[</span>i<span style="color:#f92672">];</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock lock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    lock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 直接返回指定索引的数据，队列为空时返回null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> itemAt<span style="color:#f92672">(</span>takeIndex<span style="color:#f92672">);</span> <span style="color:#75715e">// null when queue is empty
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        lock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">final</span> E <span style="color:#a6e22e">itemAt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>E<span style="color:#f92672">)</span> items<span style="color:#f92672">[</span>i<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>peek()与take()区别在于<code>返回数据时并不删除数据</code>，peek()<code>在队列为空时返回null</code>。</p>
 </blockquote>
 <hr>
@@ -1287,45 +1286,45 @@
 <hr>
 <h3 id="linkedblockingqueue">LinkedBlockingQueue<a href="#linkedblockingqueue" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="构造-1">构造<a href="#构造-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
-        <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 内部维护了Node对象，加入队列的元素被封装成node对象通过链表的形式链接
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 节点的data
-</span><span style="color:#75715e"></span>        E item<span style="color:#f92672">;</span>
-        <span style="color:#75715e">// 节点的next指针
-</span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
-        Node<span style="color:#f92672">(</span>E x<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> item <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 队列容量
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 因为是两把锁，所以共享count需要同步，使用atmoicInteger
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 链表的队首，它的item = null(不变)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">transient</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> head<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// 链表的队尾，它的next = null(不变)
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> last<span style="color:#f92672">;</span>
-	<span style="color:#75715e">// take、poll之类获取元素的锁（注意是非公平锁）
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
-	<span style="color:#75715e">// takeLock的等待获取的条件队列
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notEmpty <span style="color:#f92672">=</span> takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
-	<span style="color:#75715e">// put offer之类的获取元素的锁（注意是非公平锁）
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
-	<span style="color:#75715e">// putLock的等待添加的条件队列
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notFull <span style="color:#f92672">=</span> putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 默认构造函数，默认队列大小是2^31-1
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">MAX_VALUE</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 指定队列的大小
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>capacity <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">capacity</span> <span style="color:#f92672">=</span> capacity<span style="color:#f92672">;</span>
-         <span style="color:#75715e">// 初始化链表队首和队尾 = 空的node节点
-</span><span style="color:#75715e"></span>        last <span style="color:#f92672">=</span> head <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>  
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> AbstractQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">implements</span> BlockingQueue<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;,</span> java<span style="color:#f92672">.</span><span style="color:#a6e22e">io</span><span style="color:#f92672">.</span><span style="color:#a6e22e">Serializable</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 内部维护了Node对象，加入队列的元素被封装成node对象通过链表的形式链接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 节点的data
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        E item<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 节点的next指针
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">(</span>E x<span style="color:#f92672">)</span> <span style="color:#f92672">{</span> item <span style="color:#f92672">=</span> x<span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 队列容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 因为是两把锁，所以共享count需要同步，使用atmoicInteger
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AtomicInteger<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 链表的队首，它的item = null(不变)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">transient</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> head<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 链表的队尾，它的next = null(不变)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> last<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// take、poll之类获取元素的锁（注意是非公平锁）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// takeLock的等待获取的条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notEmpty <span style="color:#f92672">=</span> takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// put offer之类的获取元素的锁（注意是非公平锁）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReentrantLock<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// putLock的等待添加的条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Condition notFull <span style="color:#f92672">=</span> putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">newCondition</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 默认构造函数，默认队列大小是2^31-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">(</span>Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">MAX_VALUE</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 指定队列的大小
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">LinkedBlockingQueue</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>capacity <span style="color:#f92672">&lt;=</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">capacity</span> <span style="color:#f92672">=</span> capacity<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>         <span style="color:#75715e">// 初始化链表队首和队尾 = 空的node节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        last <span style="color:#f92672">=</span> head <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>  
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>和ArrayBlockingQueue相比，<code>LinkedBlockingQueue</code>有三处不同：</p>
 <ol>
 <li>底层实现：前者是数组，后者是通过<code>静态内部类构建的节点组成的链表</code>。</li>
@@ -1336,59 +1335,59 @@
 <hr>
 <h3 id="添加-1">添加<a href="#添加-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="put-1">put<a href="#put-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 判断是否为null
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 这里为什么创建局部变量c=-1？如果是0，那么每次都会
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 将当前元素构建成node对象
-</span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">putLock</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 可中断的获取put锁
-</span><span style="color:#75715e"></span>    putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 判断队列是否已满
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 如果已满，添加到等待添加条件队列
-</span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#75715e">// 将node入队
-</span><span style="color:#75715e"></span>        enqueue<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
-        <span style="color:#75715e">// 将队列容量count+1的同时将count赋值给c
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 第一次put时: c = 0,count = 1
-</span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndIncrement</span><span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 判断是否超过最大容量
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">+</span> 1 <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 没有超过就唤醒添加元素队列继续添加
-</span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 释放put锁
-</span><span style="color:#75715e"></span>        putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 如果c = 0那么唤醒等待获取的条件队列中的节点
-</span><span style="color:#75715e"></span>    <span style="color:#75715e">// 当队列中只有一个node节点时c=0成立
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-        signalNotEmpty<span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enqueue</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 将node加入队列，并成为新队尾，老队尾的next指针指向node
-</span><span style="color:#75715e"></span>    last <span style="color:#f92672">=</span> last<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 只能由put/offer调用
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">signalNotEmpty</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 获取take锁
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
-    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 唤醒等待获取的条件队列的节点
-</span><span style="color:#75715e"></span>        notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 判断是否为null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 这里为什么创建局部变量c=-1？如果是0，那么每次都会
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将当前元素构建成node对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">putLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 可中断的获取put锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断队列是否已满
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果已满，添加到等待添加条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将node入队
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        enqueue<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将队列容量count+1的同时将count赋值给c
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 第一次put时: c = 0,count = 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndIncrement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断是否超过最大容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">+</span> 1 <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 没有超过就唤醒添加元素队列继续添加
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 释放put锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果c = 0那么唤醒等待获取的条件队列中的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 当队列中只有一个node节点时c=0成立
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        signalNotEmpty<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enqueue</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将node加入队列，并成为新队尾，老队尾的next指针指向node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    last <span style="color:#f92672">=</span> last<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> node<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 只能由put/offer调用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">signalNotEmpty</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取take锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 唤醒等待获取的条件队列的节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p><code>LinkedBlockingQueue</code>put的流程与<code>ArrayBlockingQueue</code>有些不同：</p>
 <ol>
 <li>当前线程获取<code>put锁</code>后，如果队列已满，那么会加入<code>等待添加的条件队列</code>，如果队列未满，那么会封装node加入队尾。</li>
@@ -1397,42 +1396,42 @@
 </ol>
 </blockquote>
 <h4 id="offer-1">offer<a href="#offer-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 判断是否为null
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 如果队列已满，那么直接返回false
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 构建新node
-</span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">putLock</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 获取put锁
-</span><span style="color:#75715e"></span>    putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 如果count小于队列容量
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 加入队列
-</span><span style="color:#75715e"></span>            enqueue<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
-            <span style="color:#75715e">// c = count, count = count+1
-</span><span style="color:#75715e"></span>            c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndIncrement</span><span style="color:#f92672">();</span>
-            <span style="color:#75715e">// 继续判断是否超过队列容量
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">+</span> 1 <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span>
-                <span style="color:#75715e">// 没超过就唤醒等待添加元素条件队列中的线程
-</span><span style="color:#75715e"></span>                notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// c = 0说明此时队列中恰好一个节点
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 唤醒 等待获取元素条件队列中的线程
-</span><span style="color:#75715e"></span>        signalNotEmpty<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 如果c&lt;0说明队列已满无法添加了
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">offer</span><span style="color:#f92672">(</span>E e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 判断是否为null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果队列已满，那么直接返回false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 构建新node
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> node <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock putLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">putLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取put锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果count小于队列容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 加入队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            enqueue<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// c = count, count = count+1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndIncrement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 继续判断是否超过队列容量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">+</span> 1 <span style="color:#f92672">&lt;</span> capacity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 没超过就唤醒等待添加元素条件队列中的线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                notFull<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        putLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// c = 0说明此时队列中恰好一个节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 唤醒 等待获取元素条件队列中的线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        signalNotEmpty<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果c&lt;0说明队列已满无法添加了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">&gt;=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>与put()不同点在于返回值，offer()返回boolean值，当<code>队列满的时候返回false</code>。</p>
 <p>offer(time)在队列满的时候<code>等待指定时长</code>，如果<code>唤醒后队列还没有空间就返回false</code>。</p>
 </blockquote>
@@ -1440,54 +1439,54 @@
 <ul>
 <li>take</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    E x<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 获取take锁
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 可中断获取take锁
-</span><span style="color:#75715e"></span>    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 判断队列是否为空
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 为空就加入 等待获取元素条件队列
-</span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-        <span style="color:#75715e">// 队列不为空获取链表中的头节点中元素
-</span><span style="color:#75715e"></span>        x <span style="color:#f92672">=</span> dequeue<span style="color:#f92672">();</span>
-        <span style="color:#75715e">// c = count, count = count - 1
-</span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndDecrement</span><span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 如果c &gt; 1说明此时数据堆积
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span>
-            <span style="color:#75715e">// 唤醒 等待获取元素条件队列中的线程
-</span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#75715e">// 如果 c = capacity时，count 肯定是小于capacity的
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 唤醒 等待添加元素条件队列
-</span><span style="color:#75715e"></span>        signalNotFull<span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#75715e">// 获取链表中node节点中元素并返回
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> E <span style="color:#a6e22e">dequeue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 获取头节点
-</span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 获取头节点的next节点
-</span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> first <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 将头节点的next设为自己方便gc
-</span><span style="color:#75715e"></span>    h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> h<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 设置first为head节点
-</span><span style="color:#75715e"></span>    head <span style="color:#f92672">=</span> first<span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 返回first中的元素并将其置为null
-</span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
-    first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">take</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    E x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取take锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 可中断获取take锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lockInterruptibly</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断队列是否为空
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 为空就加入 等待获取元素条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 队列不为空获取链表中的头节点中元素
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        x <span style="color:#f92672">=</span> dequeue<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// c = count, count = count - 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndDecrement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果c &gt; 1说明此时数据堆积
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 唤醒 等待获取元素条件队列中的线程
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果 c = capacity时，count 肯定是小于capacity的
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 唤醒 等待添加元素条件队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        signalNotFull<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取链表中node节点中元素并返回
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> E <span style="color:#a6e22e">dequeue</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取头节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取头节点的next节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> first <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将头节点的next设为自己方便gc
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    h<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> h<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 设置first为head节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    head <span style="color:#f92672">=</span> first<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 返回first中的元素并将其置为null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>如果队列为空，那么就将当前线程加入<code>等待获取元素条件队列</code>。</li>
 <li><code>dequeue()</code>会将head的next节点设为新的head，<code>返回并清空新head的item属性</code>。</li>
@@ -1496,59 +1495,59 @@
 </ol>
 </blockquote>
 <h4 id="poll-1">poll<a href="#poll-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#75715e">// 赋值null 与take不同
-</span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
-    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 与take的区别之处
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            x <span style="color:#f92672">=</span> dequeue<span style="color:#f92672">();</span>
-            c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndDecrement</span><span style="color:#f92672">();</span>
-            <span style="color:#75715e">// 如果 c &gt; 1说明队列存在很多数据需要take
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span>
-                <span style="color:#75715e">// 继续唤醒线程获取
-</span><span style="color:#75715e"></span>                notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
-        signalNotFull<span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">poll</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> AtomicInteger count <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">count</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 赋值null 与take不同
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    E x <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 与take的区别之处
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">&gt;</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            x <span style="color:#f92672">=</span> dequeue<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            c <span style="color:#f92672">=</span> count<span style="color:#f92672">.</span><span style="color:#a6e22e">getAndDecrement</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果 c &gt; 1说明队列存在很多数据需要take
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">&gt;</span> 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 继续唤醒线程获取
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                notEmpty<span style="color:#f92672">.</span><span style="color:#a6e22e">signal</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> capacity<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        signalNotFull<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> x<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>和take()明显的区别在于：<code>poll()在队列满的时候返回null，并且不会阻塞</code>。</p>
 <p>poll(time)：<code>阻塞指定时长，唤醒后如果队列仍为空，那么返回null</code>。</p>
 </blockquote>
 <h4 id="peek-1">peek<a href="#peek-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 如果队列为空返回null
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
-    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 返回head的next节点，并不会删除next节点
-</span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> first <span style="color:#f92672">=</span> head<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
-        <span style="color:#75715e">// 如果队列刚初始化那么head = last = new Node(null)
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// head.next = null
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// 此时也返回null
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>first <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">else</span>
-            <span style="color:#75715e">// 不为null就返回item
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> E <span style="color:#a6e22e">peek</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果队列为空返回null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> ReentrantLock takeLock <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">takeLock</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">lock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 返回head的next节点，并不会删除next节点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Node<span style="color:#f92672">&lt;</span>E<span style="color:#f92672">&gt;</span> first <span style="color:#f92672">=</span> head<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果队列刚初始化那么head = last = new Node(null)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// head.next = null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 此时也返回null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>first <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 不为null就返回item
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> first<span style="color:#f92672">.</span><span style="color:#a6e22e">item</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        takeLock<span style="color:#f92672">.</span><span style="color:#a6e22e">unlock</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>peek()相比take()：除了队列为空时返回null外，还不会阻塞等待。</p>
 </blockquote>
 <hr>
@@ -1570,8 +1569,8 @@
 </li>
 <li>
 <p>当队列大小不够时会扩容（不超过MAX_SIZE），扩容规则如下</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">int</span> newCap<span style="color:#f92672">=</span>oldCap<span style="color:#f92672">+((</span>oldCap <span style="color:#f92672">&lt;</span> 64<span style="color:#f92672">)?(</span>oldCap <span style="color:#f92672">+</span> 2<span style="color:#f92672">):(</span>oldCap <span style="color:#f92672">&gt;&gt;</span> 1<span style="color:#f92672">));</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> newCap<span style="color:#f92672">=</span>oldCap<span style="color:#f92672">+((</span>oldCap <span style="color:#f92672">&lt;</span> 64<span style="color:#f92672">)?(</span>oldCap <span style="color:#f92672">+</span> 2<span style="color:#f92672">):(</span>oldCap <span style="color:#f92672">&gt;&gt;</span> 1<span style="color:#f92672">));</span>
+</span></span></code></pre></div></li>
 <li>
 <p>底层是数组，但是用<code>数组实现了二叉堆</code>，排在<code>堆顶</code>的就是要出队的元素。</p>
 </li>

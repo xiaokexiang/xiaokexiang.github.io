@@ -2296,8 +2296,8 @@
   <div class="post-content"><div>
         <h2 id="mysql中的字符集和比较规则">MySQL中的字符集和比较规则<a href="#mysql中的字符集和比较规则" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="字符集">字符集<a href="#字符集" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">CHARSET</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;utf8_%&#39;</span>;
-</code></pre></div><table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">CHARSET</span> <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;utf8_%&#39;</span>;
+</span></span></code></pre></div><table>
 <thead>
 <tr>
 <th>字符集</th>
@@ -2331,8 +2331,8 @@
 <p>MySQL中的<code>utf8</code>和<code>utf8mb4</code>字符集区别在于前者是1-3字符（阉割），后者是1-4字符。</p>
 </blockquote>
 <h3 id="比较规则">比较规则<a href="#比较规则" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SHOW</span> COLLATION <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;utf8_%&#39;</span>;
-</code></pre></div><table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> COLLATION <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;utf8_%&#39;</span>;
+</span></span></code></pre></div><table>
 <thead>
 <tr>
 <th style="text-align:center">后缀</th>
@@ -2372,27 +2372,27 @@
 <p>MySQL中utf8默认的比较规则就是<code>utf8_general_ci</code>。</p>
 </blockquote>
 <h3 id="字符集与比较规则的级别">字符集与比较规则的级别<a href="#字符集与比较规则的级别" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># [服务器级别]
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;character_set_server&#39;</span>;
-<span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;collation_server&#39;</span>;
-<span style="color:#75715e"># [创建或修改数据库比较规则]
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span>[<span style="color:#66d9ef">ALTER</span>] <span style="color:#66d9ef">DATABASE</span> [database_name] <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci;
-<span style="color:#75715e"># [数据库级别]
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">USE</span> [database_name];
-<span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;character_set_database&#39;</span>;
-<span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;collation_database&#39;</span>;
-<span style="color:#75715e"># [表级别] 如果表不设置字符集和比较规则，默认继承数据库的配置
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span>[<span style="color:#66d9ef">ALTER</span>] <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">unicode</span>(name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>)) <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci;
-<span style="color:#75715e"># [表级别] 查看表的字符集和编码规则
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">TABLE</span> STATUS <span style="color:#66d9ef">FROM</span> unicode;
-
-<span style="color:#75715e"># [创建列的字符集和比较规则] 不设置默认读取表的配置
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">line</span>(
-	name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>) <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci,
-    age <span style="color:#66d9ef">INT</span>(<span style="color:#ae81ff">16</span>)
-)
-<span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> [table_name] MODIFY [<span style="color:#66d9ef">column</span>] <span style="color:#66d9ef">VARCHAR</span> <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> latin1 <span style="color:#66d9ef">COLLATE</span> latin1_general_cs;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># [服务器级别]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;character_set_server&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;collation_server&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [创建或修改数据库比较规则]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span>[<span style="color:#66d9ef">ALTER</span>] <span style="color:#66d9ef">DATABASE</span> [database_name] <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [数据库级别]
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">USE</span> [database_name];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;character_set_database&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;collation_database&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [表级别] 如果表不设置字符集和比较规则，默认继承数据库的配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span>[<span style="color:#66d9ef">ALTER</span>] <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">unicode</span>(name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>)) <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [表级别] 查看表的字符集和编码规则
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> <span style="color:#66d9ef">TABLE</span> STATUS <span style="color:#66d9ef">FROM</span> unicode;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [创建列的字符集和比较规则] 不设置默认读取表的配置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">line</span>(
+</span></span><span style="display:flex;"><span>	name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>) <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> utf8 <span style="color:#66d9ef">COLLATE</span> utf8_general_ci,
+</span></span><span style="display:flex;"><span>    age <span style="color:#66d9ef">INT</span>(<span style="color:#ae81ff">16</span>)
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> [table_name] MODIFY [<span style="color:#66d9ef">column</span>] <span style="color:#66d9ef">VARCHAR</span> <span style="color:#66d9ef">CHARACTER</span> <span style="color:#66d9ef">SET</span> latin1 <span style="color:#66d9ef">COLLATE</span> latin1_general_cs;
+</span></span></code></pre></div><blockquote>
 <p>无论是只修改字符集或比较规则，未设置的一方都会自动的改为与修改一方对应的配置。</p>
 </blockquote>
 <h3 id="mysql中字符集的转换">MySQL中字符集的转换<a href="#mysql中字符集的转换" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
@@ -2417,9 +2417,9 @@
 <p>二级索引在目录页中存放的记录是<code>指定列 + 主键值 + 目录页码（保证唯一性）</code>，这样能够在指定列出现相同值时定位到目录页（叶子节点）。</p>
 <p>回表还是全表扫描，这个是由回表的代价决定的，如果第一次查询二级索引（顺序IO）有90%的数据需要回表查询(随机IO)，那么不如直接进行全表扫描（这个是由<code>查询优化器</code>决定的）。</p>
 <p>所以更推荐<code>覆盖索引</code>，即查询的列表中只包含索引列。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 这样就不需要回表查询了，因为查询的字段在二级索引的叶子节点中都存在
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, birthday, phone_number <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number;
-</code></pre></div></blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 这样就不需要回表查询了，因为查询的字段在二级索引的叶子节点中都存在
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> name, birthday, phone_number <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number;
+</span></span></code></pre></div></blockquote>
 <h4 id="联合索引">联合索引<a href="#联合索引" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>本质上也是一个二级索引，现根据A列的大小进行排序，在A列的值相等的情况下根据B列的值进行排序。非叶子节点（目录页）由<code>A列 + B列 + 主键 + 页码</code>组成，同时叶子节点的用户记录由<code>A列 + B列 + 主键列</code>组成。</p>
 <h4 id="注意事项">注意事项<a href="#注意事项" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
@@ -2428,17 +2428,17 @@
 <li>一个页面至少存储两条数据。</li>
 </ul>
 <h4 id="索引的查询">索引的查询<a href="#索引的查询" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 创建表时添加索引
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">demo</span>(
-  id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AUTO_INCREMENT</span>,
-  name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>),
-  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>(id),
-  <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">idx_name</span>(name) <span style="color:#75715e"># 创建唯一索引
-</span><span style="color:#75715e"></span>)
-<span style="color:#75715e"># 修改表添加索引
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> demo <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">INDEX</span> idx_name;
-<span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> demo <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">FULLTEXT</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">f_name_idx</span>(name); 
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 创建表时添加索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#a6e22e">demo</span>(
+</span></span><span style="display:flex;"><span>  id <span style="color:#66d9ef">INT</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">AUTO_INCREMENT</span>,
+</span></span><span style="display:flex;"><span>  name <span style="color:#66d9ef">VARCHAR</span>(<span style="color:#ae81ff">10</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span>(id),
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">idx_name</span>(name) <span style="color:#75715e"># 创建唯一索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>)
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 修改表添加索引
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> demo <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">INDEX</span> idx_name;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> demo <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">FULLTEXT</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">f_name_idx</span>(name); 
+</span></span></code></pre></div><hr>
 <h3 id="索引适用条件">索引适用条件<a href="#索引适用条件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="全值匹配">全值匹配<a href="#全值匹配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>搜索条件中的列和索引列一致的话，这种情况就称为全值匹配。即使我们不按照联合索引创建的列的顺序查询，也是会走联合索引的（查询优化器）。</p>
@@ -2449,33 +2449,33 @@
 </blockquote>
 <h4 id="前缀匹配">前缀匹配<a href="#前缀匹配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>查询的字符串列的前缀都是排好序的，那么只匹配它的前缀也是可以快速定位记录。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;As%&#39;</span>; <span style="color:#960050;background-color:#1e0010">√</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%As%&#39;</span>; <span style="color:#960050;background-color:#1e0010">×</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;As%&#39;</span>; <span style="color:#960050;background-color:#1e0010">√</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%As%&#39;</span>; <span style="color:#960050;background-color:#1e0010">×</span>
+</span></span></code></pre></div><blockquote>
 <p>针对一些无法使用前缀匹配的字段，比如<code>xxx.com</code>的搜索，我们可以反转字符串然后基于<code>com%</code>进行前缀匹配。</p>
 </blockquote>
 <h4 id="范围匹配">范围匹配<a href="#范围匹配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Asa&#39;</span> <span style="color:#66d9ef">AND</span> name <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;Barlow&#39;</span>;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Asa&#39;</span> <span style="color:#66d9ef">AND</span> name <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;Barlow&#39;</span>;
+</span></span></code></pre></div><blockquote>
 <p>基于联合索引（此处只用到了<code>name</code>）找到第一个大于<code>Asa</code>的数据返回主键，回表查询返回给客户端。然后沿着上一步记录所在的链表继续查找，下一条二级索引记录，并判断是否符合小于<code>Barlow</code>，符合就回表查询并返回数据，重复步骤直到条件不符合。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Asa&#39;</span> <span style="color:#66d9ef">AND</span> name <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;Barlow&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span>;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;Asa&#39;</span> <span style="color:#66d9ef">AND</span> name <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;Barlow&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span>;
+</span></span></code></pre></div><blockquote>
 <p>基于上步的范围匹配流程得到的结果集，进行<code>birthday &gt; '1980-01-01'</code>再匹配（但不会走联合索引）。</p>
 </blockquote>
 <h4 id="精确匹配某一列与范围匹配另一列">精确匹配某一列与范围匹配另一列<a href="#精确匹配某一列与范围匹配另一列" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Ashburn&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;2000-12-31&#39;</span> <span style="color:#66d9ef">AND</span> phone_number <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;15100000000&#39;</span>; <span style="color:#960050;background-color:#1e0010">×</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Ashburn&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span> <span style="color:#66d9ef">AND</span> phone_number <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;15100000000&#39;</span>; <span style="color:#960050;background-color:#1e0010">√</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Ashburn&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#39;2000-12-31&#39;</span> <span style="color:#66d9ef">AND</span> phone_number <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;15100000000&#39;</span>; <span style="color:#960050;background-color:#1e0010">×</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Ashburn&#39;</span> <span style="color:#66d9ef">AND</span> birthday <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;1980-01-01&#39;</span> <span style="color:#66d9ef">AND</span> phone_number <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#39;15100000000&#39;</span>; <span style="color:#960050;background-color:#1e0010">√</span>
+</span></span></code></pre></div><blockquote>
 <p><code>name</code>等值匹配可以走联合索引，当<code>name相同时</code>都是按照<code>birthday</code>从小到大的进行排序，所以可以进行<code>birthday</code>的范围匹配，但<code>birthday</code>的范围匹配就无法保证<code>phone_number</code>从小到大排序，所以<code>phone_number</code>只能遍历结果进行筛选，无法走联合索引。</p>
 </blockquote>
 <h4 id="排序">排序<a href="#排序" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">√</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name <span style="color:#66d9ef">asc</span>, birthday <span style="color:#66d9ef">desc</span>, phone_number <span style="color:#66d9ef">asc</span>; <span style="color:#960050;background-color:#1e0010">×</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> birthday, phone_number <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">√</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, country <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">×</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#a6e22e">UPPER</span>(name) <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">×</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">√</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name <span style="color:#66d9ef">asc</span>, birthday <span style="color:#66d9ef">desc</span>, phone_number <span style="color:#66d9ef">asc</span>; <span style="color:#960050;background-color:#1e0010">×</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">WHERE</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;A&#39;</span> <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> birthday, phone_number <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">√</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> name, country <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">×</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">ORDER</span> <span style="color:#66d9ef">BY</span> <span style="color:#a6e22e">UPPER</span>(name) <span style="color:#66d9ef">LIMIT</span> <span style="color:#ae81ff">10</span>; <span style="color:#960050;background-color:#1e0010">×</span>
+</span></span></code></pre></div><blockquote>
 <p>按照联合索引的顺序进行排序（默认联合索引的B+树就按照这个顺序创建）。</p>
 <ol>
 <li>如果联合索引中的每个列的查询顺序不一致，那么不能使用索引进行排序。</li>
@@ -2484,8 +2484,8 @@
 </ol>
 </blockquote>
 <h4 id="分组">分组<a href="#分组" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> name, birthday, phone_number, <span style="color:#a6e22e">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number; <span style="color:#960050;background-color:#1e0010">√</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> name, birthday, phone_number, <span style="color:#a6e22e">COUNT</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">FROM</span> person_info <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> name, birthday, phone_number; <span style="color:#960050;background-color:#1e0010">√</span>
+</span></span></code></pre></div><blockquote>
 <p><code>group by</code>按照联合索引的顺序，索引也是生效的。</p>
 </blockquote>
 <h3 id="如何使用索引">如何使用索引<a href="#如何使用索引" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
@@ -2501,9 +2501,9 @@
 </li>
 <li>
 <p>索引字符串值的前缀，针对列的值特别长的情况（但是基于<code>此列的排序会走文件排序</code>：在内存或磁盘中排序）。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 添加字符串前缀索引，只索引前10个字符的编码
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> person_info <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">idx_name</span>(<span style="color:#a6e22e">name</span>(<span style="color:#ae81ff">10</span>));
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 添加字符串前缀索引，只索引前10个字符的编码
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">ALTER</span> <span style="color:#66d9ef">TABLE</span> person_info <span style="color:#66d9ef">ADD</span> <span style="color:#66d9ef">INDEX</span> <span style="color:#a6e22e">idx_name</span>(<span style="color:#a6e22e">name</span>(<span style="color:#ae81ff">10</span>));
+</span></span></code></pre></div><blockquote>
 <p>通过前缀索引然后定位到相应前缀所在的位置，然后回表匹配完成的字符串。</p>
 </blockquote>
 </li>
@@ -2523,9 +2523,9 @@
 <hr>
 <h2 id="mysql的数据目录">MySQL的数据目录<a href="#mysql的数据目录" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="数据目录的组成">数据目录的组成<a href="#数据目录的组成" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 查看mysql的数据目录（不是安装目录，安装目录包含bin文件夹）
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;datadir&#39;</span>;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 查看mysql的数据目录（不是安装目录，安装目录包含bin文件夹）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;datadir&#39;</span>;
+</span></span></code></pre></div><blockquote>
 <p>MySQL的数据目录下存在与<code>创建的数据库同名</code>的文件夹，文件夹内会存在<code>表名.frm</code>和<code>表名.ibd</code>两种类型的文件。</p>
 <p>其中<code>表名.frm</code>是表结构的描述文件，<code>表名.ibd</code>存放的是表的数据（MySQL5.6.6以前的版本中所有的表记录都存放到名为ibdata1的文件中（系统表空间），之后的版本中每个表都对应着一个<code>表名.ibd</code>的文件（独立表空间）。</p>
 <p>除此之外，数据目录下还存在MySQL服务进程文件、日志文件、SSL和RSA密钥文件等。</p>
@@ -2557,8 +2557,8 @@
 <h3 id="单表访问的注意事项">单表访问的注意事项<a href="#单表访问的注意事项" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="单个二级索引">单个二级索引<a href="#单个二级索引" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>一般情况</code>下只能利用<code>单个二级索引</code>执行查询。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;abc&#39;</span> <span style="color:#66d9ef">AND</span> key2 <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1000</span>;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;abc&#39;</span> <span style="color:#66d9ef">AND</span> key2 <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1000</span>;
+</span></span></code></pre></div><blockquote>
 <p>MySQL查询优化器会判断使用哪个二级索引查询扫描的行数更少，选择较少的那个二级索引查询主键，回表查询后将得到的结果再根据其他的条件进行过滤。</p>
 </blockquote>
 <h4 id="索引合并">索引合并<a href="#索引合并" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
@@ -2570,14 +2570,14 @@
 <ol>
 <li>二级索引列都是等值匹配的情况，对于联合索引来说，在联合索引中的<code>每个列都必须等值匹配</code>，不能出现只匹配部分列的情况。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span>;
-</code></pre></div><ol start="2">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span>;
+</span></span></code></pre></div><ol start="2">
 <li>主键列可以是范围匹配。因为二级索引的列相同时会按照主键的顺序进行排序，有序的主键有助于提升取交集速度。</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 可能会用到聚簇索引和二级索引合并，因为key1作为二级索引叶子节点中是包含主键的，可以直接二级索引查询后再
-</span><span style="color:#75715e"># 进行主键匹配，然后回表。这里主键的搜索条件只是从别的二级索引得到的结果集中过滤记录。是不是等值不重要
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">100</span> <span style="color:#66d9ef">AND</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span>; 
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 可能会用到聚簇索引和二级索引合并，因为key1作为二级索引叶子节点中是包含主键的，可以直接二级索引查询后再
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"># 进行主键匹配，然后回表。这里主键的搜索条件只是从别的二级索引得到的结果集中过滤记录。是不是等值不重要
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">100</span> <span style="color:#66d9ef">AND</span> key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span>; 
+</span></span></code></pre></div><blockquote>
 <p>按照有序的主键回表取记录有个专有名词叫：Rowid Ordered Retrieval，简称ROR。</p>
 </blockquote>
 <p>上述的条件一二是发生Intersection合并的必要条件，但不是充分条件，也就是说即使情况一、情况二成立，也不一定发生<code>Intersection</code>索引合并，这得看优化器的心情。优化器只有在单独根据搜索条件从某个二级索引中获取的记录数太多，导致回表开销太大，而通过<code>Intersection</code>索引合并后需要回表的记录数大大减少时才会使用<code>Intersection</code>索引合并。</p>
@@ -2591,8 +2591,8 @@
 <li>主键列可以是范围匹配</li>
 <li>使用<code>Intersection</code>索引合并的搜索条件</li>
 </ol>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key_part1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key_part2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span> <span style="color:#66d9ef">AND</span> key_part3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;c&#39;</span> <span style="color:#66d9ef">OR</span> (key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span>);
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> single_table <span style="color:#66d9ef">WHERE</span> key_part1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key_part2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span> <span style="color:#66d9ef">AND</span> key_part3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;c&#39;</span> <span style="color:#66d9ef">OR</span> (key1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;a&#39;</span> <span style="color:#66d9ef">AND</span> key3 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;b&#39;</span>);
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>先按照<code>key1 = 'a' AND key3 = 'b'</code>使用<code>Intersection索引合并</code>的方式得到一个主键集合。</li>
 <li>再通过ref的访问方法获取<code>key_part1 = 'a' AND key_part2 = 'b' AND key_part3 = 'c'</code>的主键集合。</li>
@@ -2615,13 +2615,13 @@
 </ol>
 <h3 id="连接的类型">连接的类型<a href="#连接的类型" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/Fi6x8i1-tA_70KPt3y3JTYAVBwJ8" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 内连接
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A,B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> B.id;
-<span style="color:#75715e"># 左外连接
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> B <span style="color:#66d9ef">ON</span> A.id <span style="color:#f92672">=</span> B.id <span style="color:#66d9ef">WHERE</span> A.age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
-<span style="color:#75715e"># 右外连接
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A <span style="color:#66d9ef">RIGHT</span> <span style="color:#66d9ef">JOIN</span> B <span style="color:#66d9ef">ON</span> A.id <span style="color:#f92672">=</span> B.id <span style="color:#66d9ef">WHERE</span> A.age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 内连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A,B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> B.id;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 左外连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> B <span style="color:#66d9ef">ON</span> A.id <span style="color:#f92672">=</span> B.id <span style="color:#66d9ef">WHERE</span> A.age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 右外连接
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> A.<span style="color:#f92672">*</span>, B.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> A <span style="color:#66d9ef">RIGHT</span> <span style="color:#66d9ef">JOIN</span> B <span style="color:#66d9ef">ON</span> A.id <span style="color:#f92672">=</span> B.id <span style="color:#66d9ef">WHERE</span> A.age <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">10</span>;
+</span></span></code></pre></div><blockquote>
 <p>如果是超过两张表的连接，那么先连接两张表，再将两张表的结果作为新的驱动表执行连接操作。</p>
 </blockquote>
 <h3 id="连接的原理">连接的原理<a href="#连接的原理" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
@@ -2665,17 +2665,17 @@
 <p><img src="https://image.leejay.top/FrMLiZwyvlTu1ehOMCowMU7H5cOE" alt=""></p>
 <h3 id="外连接消除">外连接消除<a href="#外连接消除" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>外连查询中的被驱动表的 IS NOT NULL等同于两表内联查询。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1 <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> S2 <span style="color:#66d9ef">ON</span> S1.id <span style="color:#f92672">=</span> S2.id <span style="color:#66d9ef">WHERE</span> S2 <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>;
-<span style="color:#960050;background-color:#1e0010">转换为</span>
-<span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1,S2 <span style="color:#66d9ef">WHERE</span> S1.id <span style="color:#f92672">=</span> S2.id
-</code></pre></div><h3 id="子查询优化">子查询优化<a href="#子查询优化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1 <span style="color:#66d9ef">LEFT</span> <span style="color:#66d9ef">JOIN</span> S2 <span style="color:#66d9ef">ON</span> S1.id <span style="color:#f92672">=</span> S2.id <span style="color:#66d9ef">WHERE</span> S2 <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span>;
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">转换为</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> S1.<span style="color:#f92672">*</span>, S2.<span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> S1,S2 <span style="color:#66d9ef">WHERE</span> S1.id <span style="color:#f92672">=</span> S2.id
+</span></span></code></pre></div><h3 id="子查询优化">子查询优化<a href="#子查询优化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/Fqla9zqISkoC9etH3NDWb0KAZMdP" alt=""></p>
 <hr>
 <h2 id="explain">Explain<a href="#explain" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>一条查询语句在经过MySQL查询优化器<code>基于成本和规则的优化</code>后会生成<code>执行计划</code>。执行计划可以展示具体的执行查询方式。而<code>EXPLAIN</code>可以帮助我们查询具体查询的执行计划。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 不限于SELECT,DELETE,UPDATE,REPLACE都可以
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">EXPLAIN</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
-</code></pre></div><h3 id="explain名词解释">Explain名词解释<a href="#explain名词解释" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 不限于SELECT,DELETE,UPDATE,REPLACE都可以
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">EXPLAIN</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">WHERE</span> id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><h3 id="explain名词解释">Explain名词解释<a href="#explain名词解释" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="id">id<a href="#id" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>在一个查询语句中每个<code>SELECT</code>关键字都对应一个唯一的<code>id</code>。</p>
 <ol>
@@ -2806,10 +2806,10 @@
 </blockquote>
 <h4 id="ref">ref<a href="#ref" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>当使用索引列等值匹配的条件去执行查询时，<code>ref</code>列展示的就是与索引列作等值匹配的对象，可能是一个常数，一个列或者一个函数。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">WHERE</span> a.id <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>; <span style="color:#75715e"># const
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> TABLE_A A, TABLE_B B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> B.id; <span style="color:#75715e"># TABLE_B.id
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> TABLE_A A, TABLE_B B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> <span style="color:#a6e22e">UPPER</span>(B.id); <span style="color:#75715e"># func
-</span></code></pre></div><h4 id="rows">rows<a href="#rows" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">WHERE</span> a.id <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>; <span style="color:#75715e"># const
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> TABLE_A A, TABLE_B B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> B.id; <span style="color:#75715e"># TABLE_B.id
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> TABLE_A A, TABLE_B B <span style="color:#66d9ef">WHERE</span> A.id <span style="color:#f92672">=</span> <span style="color:#a6e22e">UPPER</span>(B.id); <span style="color:#75715e"># func
+</span></span></span></code></pre></div><h4 id="rows">rows<a href="#rows" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>如果查询优化器决定使用全表扫描的方式对某个表执行查询时，执行计划的<code>rows</code>列就代表预计需要扫描的行数，如果使用索引来执行查询时，执行计划的<code>rows</code>列就代表预计扫描的索引记录行数。</p>
 <h4 id="filtered">filtered<a href="#filtered" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><code>MySQL</code>在计算驱动表扇出时采用的一个策略：</p>
@@ -2882,39 +2882,39 @@
 </tbody>
 </table>
 <h4 id="json格式查看成本">Json格式查看成本<a href="#json格式查看成本" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">EXPLAIN</span> FORMAT<span style="color:#f92672">=</span>JSON <span style="color:#66d9ef">SELECT</span> common_field <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> common_field;
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-  <span style="color:#f92672">&#34;query_block&#34;</span>: {
-    <span style="color:#f92672">&#34;select_id&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询id（一个select一个id）
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;query_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>
-    },
-    <span style="color:#f92672">&#34;grouping_operation&#34;</span>: { <span style="color:#75715e">// group by操作
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_temporary_table&#34;</span>: <span style="color:#66d9ef">true</span>, <span style="color:#75715e">// 是否使用了临时表
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_filesort&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#75715e">// 是否使用了文件排序
-</span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;table&#34;</span>: {
-        <span style="color:#f92672">&#34;table_name&#34;</span>: <span style="color:#e6db74">&#34;single_table&#34;</span>, <span style="color:#75715e">// 查询的表名
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;access_type&#34;</span>: <span style="color:#e6db74">&#34;ALL&#34;</span>, <span style="color:#75715e">// 查询类型
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_examined_per_scan&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询表一次大概查询多少数据 = rows
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_produced_per_join&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 扇出的数据量
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;filtered&#34;</span>: <span style="color:#e6db74">&#34;100.00&#34;</span>, <span style="color:#75715e">// filtered
-</span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
-</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;read_cost&#34;</span>: <span style="color:#e6db74">&#34;0.25&#34;</span>, <span style="color:#75715e">// IO成本 + rows*(1-filtered)成本
-</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;eval_cost&#34;</span>: <span style="color:#e6db74">&#34;0.10&#34;</span>, <span style="color:#75715e">// rows × filter的成本
-</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;prefix_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>, <span style="color:#75715e">// 单独查询表的成本（read_cost+eval_cost）
-</span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;data_read_per_join&#34;</span>: <span style="color:#e6db74">&#34;1K&#34;</span> <span style="color:#75715e">// 此次查询中需要读取的数据量
-</span><span style="color:#75715e"></span>        },
-        <span style="color:#f92672">&#34;used_columns&#34;</span>: [ <span style="color:#75715e">// 使用到的列 
-</span><span style="color:#75715e"></span>          <span style="color:#e6db74">&#34;id&#34;</span>,
-          <span style="color:#e6db74">&#34;common_field&#34;</span>
-        ]
-      }
-    }
-  }
-}
-</code></pre></div><h4 id="extended-explain">Extended EXPLAIN<a href="#extended-explain" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#66d9ef">SHOW</span> WARNINGS;
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">EXPLAIN</span> FORMAT<span style="color:#f92672">=</span>JSON <span style="color:#66d9ef">SELECT</span> common_field <span style="color:#66d9ef">FROM</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">GROUP</span> <span style="color:#66d9ef">BY</span> common_field;
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;query_block&#34;</span>: {
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;select_id&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询id（一个select一个id）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;query_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;grouping_operation&#34;</span>: { <span style="color:#75715e">// group by操作
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_temporary_table&#34;</span>: <span style="color:#66d9ef">true</span>, <span style="color:#75715e">// 是否使用了临时表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;using_filesort&#34;</span>: <span style="color:#66d9ef">false</span>, <span style="color:#75715e">// 是否使用了文件排序
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>      <span style="color:#f92672">&#34;table&#34;</span>: {
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;table_name&#34;</span>: <span style="color:#e6db74">&#34;single_table&#34;</span>, <span style="color:#75715e">// 查询的表名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;access_type&#34;</span>: <span style="color:#e6db74">&#34;ALL&#34;</span>, <span style="color:#75715e">// 查询类型
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_examined_per_scan&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 查询表一次大概查询多少数据 = rows
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;rows_produced_per_join&#34;</span>: <span style="color:#ae81ff">1</span>, <span style="color:#75715e">// 扇出的数据量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;filtered&#34;</span>: <span style="color:#e6db74">&#34;100.00&#34;</span>, <span style="color:#75715e">// filtered
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">&#34;cost_info&#34;</span>: { <span style="color:#75715e">// 成本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;read_cost&#34;</span>: <span style="color:#e6db74">&#34;0.25&#34;</span>, <span style="color:#75715e">// IO成本 + rows*(1-filtered)成本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;eval_cost&#34;</span>: <span style="color:#e6db74">&#34;0.10&#34;</span>, <span style="color:#75715e">// rows × filter的成本
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;prefix_cost&#34;</span>: <span style="color:#e6db74">&#34;0.35&#34;</span>, <span style="color:#75715e">// 单独查询表的成本（read_cost+eval_cost）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#f92672">&#34;data_read_per_join&#34;</span>: <span style="color:#e6db74">&#34;1K&#34;</span> <span style="color:#75715e">// 此次查询中需要读取的数据量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        },
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&#34;used_columns&#34;</span>: [ <span style="color:#75715e">// 使用到的列 
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#e6db74">&#34;id&#34;</span>,
+</span></span><span style="display:flex;"><span>          <span style="color:#e6db74">&#34;common_field&#34;</span>
+</span></span><span style="display:flex;"><span>        ]
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="extended-explain">Extended EXPLAIN<a href="#extended-explain" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> WARNINGS;
+</span></span></code></pre></div><blockquote>
 <p>在执行了EXPLAIN后执行该命令，会出现<code>Code</code>和<code>Message</code>，当<code>Code = 1003</code>时，<code>Message</code>展示的是优化器重写后的查询语句（不能直接作为查询语句）。</p>
 </blockquote>
 <hr>
@@ -2922,22 +2922,22 @@
 <h3 id="事务的属性">事务的属性<a href="#事务的属性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/FgHSE1SE423hCiFbkPdrEs5Ehuhp" alt=""></p>
 <h3 id="事务的基本命令">事务的基本命令<a href="#事务的基本命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql">BEGIN;
-START TRANSACTION [<span style="color:#66d9ef">READ</span> ONLY<span style="color:#f92672">|</span><span style="color:#66d9ef">READ</span> <span style="color:#66d9ef">WRITE</span><span style="color:#f92672">|</span><span style="color:#66d9ef">WITH</span> CONSISTENT SNAPSHOT];
-ROLLBACK;
-<span style="color:#75715e"># 手动提交
-</span><span style="color:#75715e"></span>COMMIT;
-<span style="color:#75715e"># 查看自动提交是否开启
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;AUTOCOMMIT&#39;</span>;
-<span style="color:#75715e"># 开启自动提交
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SET</span> AUTOCOMMIT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;ON&#39;</span>;
-<span style="color:#75715e"># 保存点savepoint
-</span><span style="color:#75715e"></span>SAVEPOINT [save name];
-<span style="color:#75715e"># 回滚到保存点
-</span><span style="color:#75715e"></span>ROLLBACK <span style="color:#66d9ef">TO</span> SAVEPOINT [save name];
-<span style="color:#75715e"># 删除保存点
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">RELEASE</span> SAVEPOINT [save name];
-</code></pre></div><h3 id="redo-log保证持久性">redo log（保证持久性）<a href="#redo-log保证持久性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span>BEGIN;
+</span></span><span style="display:flex;"><span>START TRANSACTION [<span style="color:#66d9ef">READ</span> ONLY<span style="color:#f92672">|</span><span style="color:#66d9ef">READ</span> <span style="color:#66d9ef">WRITE</span><span style="color:#f92672">|</span><span style="color:#66d9ef">WITH</span> CONSISTENT SNAPSHOT];
+</span></span><span style="display:flex;"><span>ROLLBACK;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 手动提交
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>COMMIT;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看自动提交是否开启
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;AUTOCOMMIT&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 开启自动提交
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SET</span> AUTOCOMMIT <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;ON&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 保存点savepoint
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>SAVEPOINT [save name];
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 回滚到保存点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>ROLLBACK <span style="color:#66d9ef">TO</span> SAVEPOINT [save name];
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 删除保存点
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">RELEASE</span> SAVEPOINT [save name];
+</span></span></code></pre></div><h3 id="redo-log保证持久性">redo log（保证持久性）<a href="#redo-log保证持久性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>InnoDB</code>存储引擎是以页为单位来管理存储空间的，每次都把磁盘的数据读到内存中<code>Buffer Pool</code>后才能使用，又因为事务需要具备<code>持久性</code>，如果我们只在内存的<code>Buffer Pool</code>中修改了页面，假设在事务提交后突然发生了某个故障，导致内存中的数据都失效了，那么这个已经提交了的事务对数据库中所做的更改也就跟着丢失了。所以引入了<code>redo log</code>，又称为<code>redo 日志</code>。</p>
 <blockquote>
 <p>将第0号表空间的100号页面的偏移量为1000处的值更新为<code>2</code></p>
@@ -2987,16 +2987,16 @@ ROLLBACK;
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 查看事务隔离级别
-</span><span style="color:#75715e"># mysql5.7.20前
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%tx_isolation%&#39;</span>
-<span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">@@</span>tx_isolation;
-<span style="color:#75715e"># mysql8
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">@@</span>transaction_isolation;
-
-<span style="color:#75715e"># 设置事务隔离级别
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SET</span> [SESSION<span style="color:#f92672">|</span>GLOBAL] TRANSACTION ISOLATION LEVEL [<span style="color:#66d9ef">READ</span> UNCOMMITTED<span style="color:#f92672">|</span><span style="color:#66d9ef">READ</span> COMMITTED<span style="color:#f92672">|</span>REPEATABLE <span style="color:#66d9ef">READ</span><span style="color:#f92672">|</span>SERIALIZABLE]
-</code></pre></div><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 查看事务隔离级别
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"># mysql5.7.20前
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> VARIABLES <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%tx_isolation%&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">@@</span>tx_isolation;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mysql8
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">@@</span>transaction_isolation;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置事务隔离级别
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SET</span> [SESSION<span style="color:#f92672">|</span>GLOBAL] TRANSACTION ISOLATION LEVEL [<span style="color:#66d9ef">READ</span> UNCOMMITTED<span style="color:#f92672">|</span><span style="color:#66d9ef">READ</span> COMMITTED<span style="color:#f92672">|</span>REPEATABLE <span style="color:#66d9ef">READ</span><span style="color:#f92672">|</span>SERIALIZABLE]
+</span></span></code></pre></div><hr>
 <h2 id="mvcc">MVCC<a href="#mvcc" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>MVCC（多版本并发控制）指的就是在使用READ COMMITTD、REPEATABLE READ这两种隔离级别的事务在执行普通的SELECT操作时访问记录的版本链的过程。使不同的事务读写、写读并发执行，提升系统性能。</p>
 <blockquote>
@@ -3085,21 +3085,21 @@ ROLLBACK;
 <h2 id="锁">锁<a href="#锁" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="表级">表级<a href="#表级" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/FiXjk26bZZfdbX2y-1NedMILfMlT" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 创建表级读写锁
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">LOCK</span> <span style="color:#66d9ef">TABLES</span> T1 <span style="color:#66d9ef">READ</span>, T2 <span style="color:#66d9ef">WRITE</span>;
-<span style="color:#75715e"># 解锁
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">UNLOCK</span> <span style="color:#66d9ef">TABLES</span>;
-<span style="color:#75715e"># 手动查看当前被锁的表并KILL
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> OPEN <span style="color:#66d9ef">TABLES</span> <span style="color:#66d9ef">where</span> In_use <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
-<span style="color:#66d9ef">SHOW</span> PROCESSLIST
-<span style="color:#66d9ef">KILL</span> <span style="color:#960050;background-color:#1e0010">${</span>ID<span style="color:#960050;background-color:#1e0010">}</span>
-</code></pre></div><h3 id="行级">行级<a href="#行级" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 创建表级读写锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">LOCK</span> <span style="color:#66d9ef">TABLES</span> T1 <span style="color:#66d9ef">READ</span>, T2 <span style="color:#66d9ef">WRITE</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 解锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">UNLOCK</span> <span style="color:#66d9ef">TABLES</span>;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 手动查看当前被锁的表并KILL
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SHOW</span> OPEN <span style="color:#66d9ef">TABLES</span> <span style="color:#66d9ef">where</span> In_use <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SHOW</span> PROCESSLIST
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">KILL</span> <span style="color:#960050;background-color:#1e0010">${</span>ID<span style="color:#960050;background-color:#1e0010">}</span>
+</span></span></code></pre></div><h3 id="行级">行级<a href="#行级" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/Fh1Nn1_6SmYIXXxb0_J91WJ7e77D" alt=""></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-mysql" data-lang="mysql"><span style="color:#75715e"># 共享锁
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">LOCK</span> <span style="color:#66d9ef">IN</span> SHARE MODE;
-<span style="color:#75715e"># 独占锁
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">UPDATE</span>;
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span><span style="color:#75715e"># 共享锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">LOCK</span> <span style="color:#66d9ef">IN</span> SHARE MODE;
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 独占锁
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">UPDATE</span>;
+</span></span></code></pre></div>
       </div></div>
 
   

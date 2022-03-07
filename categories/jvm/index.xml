@@ -20,8 +20,8 @@
 需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
  类初始化的六种情况 **《Java虚拟机规范》**中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
   遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
- 使用new关键字实例化对象。  // 会初始化A A a = new A();  读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。  class B { // 会导致A类被初始化  static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化  System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; }  引用静态字符串常量不会导致持有该常量的类初始化。
-  调用一个类型的静态方法  class A { static void print() { System.</description>
+ 使用new关键字实例化对象。  // 会初始化A A a = new A();  读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。  class B {  // 会导致A类被初始化  static A a = new A();  public static void main(String[] args) {  // 不会导致A类被初始化  System.out.print(A.HELLO_WORLD);  } } class A {  static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; }  引用静态字符串常量不会导致持有该常量的类初始化。
+  调用一个类型的静态方法  class A {  static void print() {  System.</description>
     </item>
     
     <item>
@@ -45,7 +45,7 @@ GC Roots包括但不限于以下：
 原始快照  基于问题2，当正在被标记的对象直接或间接删除了未被收集器访问的对象的引用时，将这些正在被标记的对象记录下来，等并发标记结束后，以这些正在被标记的对象为根重新扫描。G1收集器采用此策略实现并发标记。
  Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
 从JDK1.2开始，Java对引用的概念进行补充，将引用分为了：强引用、软引用、弱引用和虚引用四种。
-public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 	private T referent; // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。</description>
+public abstract class Reference&amp;lt;T&amp;gt; {  // 引用本身 	private T referent;  // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。</description>
     </item>
     
     <item>

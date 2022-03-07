@@ -823,139 +823,139 @@
 <hr>
 <h3 id="模拟各区域oom">模拟各区域OOM<a href="#模拟各区域oom" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="堆">堆<a href="#堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * -Xmx10m 模拟堆OOM
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Object<span style="color:#f92672">());</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><h4 id="栈">栈<a href="#栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xmx10m 模拟堆OOM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Object<span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="栈">栈<a href="#栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>stackOverFlow</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * -Xss1m
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// stackOverFlow
-</span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    stackOverFlow<span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xss1m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// stackOverFlow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    stackOverFlow<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
 <li>OOM</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * -Xss1m
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// oom
-</span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">oom</span><span style="color:#f92672">();</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">oom</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-
-            <span style="color:#f92672">}</span>
-        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xss1m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// oom
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">oom</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">oom</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>相比OOM，stackOverFlow更容易发生。</p>
 </blockquote>
 <h4 id="元数据区-1">元数据区<a href="#元数据区-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <ul>
 <li>字符串常量池OOM</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * 1.7前 -XX:MaxPermSize=10m
-</span><span style="color:#75715e">  * 1.7后 -Xmx10m
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">((</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">++).</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">());</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 1.7前 -XX:MaxPermSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 1.7后 -Xmx10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">((</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">++).</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>需要注意在JDK7及以上版本中不会抛出之前的<code>PemGen space</code>异常，因为字符串常量池被移到了<code>堆中</code>，如果我们限制堆的大小，会抛出<code>Java heap space</code>异常。</p>
 </blockquote>
 <ul>
 <li>元数据OOM</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * -XX:MaxMetaspaceSize=10m
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer<span style="color:#f92672">();</span>
-        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setSuperclass</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCache</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallback</span><span style="color:#f92672">((</span>MethodInterceptor<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> method<span style="color:#f92672">,</span> objects<span style="color:#f92672">,</span> methodProxy<span style="color:#f92672">)</span> 
-                             <span style="color:#f92672">-&gt;</span> methodProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> objects<span style="color:#f92672">));</span>
-        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">();</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -XX:MaxMetaspaceSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setSuperclass</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCache</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallback</span><span style="color:#f92672">((</span>MethodInterceptor<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> method<span style="color:#f92672">,</span> objects<span style="color:#f92672">,</span> methodProxy<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>                             <span style="color:#f92672">-&gt;</span> methodProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> objects<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>因为元数据区存放类型的相关信息：类名、方法描述等，通过大量创建cglib代理类实现<code>Metaspace OOM</code>。</p>
 </blockquote>
 <h4 id="直接内存-1">直接内存<a href="#直接内存-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
-</span><span style="color:#75715e">  * -XX：MaxDirectMemorySize=10m
-</span><span style="color:#75715e">  */</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IllegalAccessException <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 反射获取unsafe类
-</span><span style="color:#75715e"></span>    Field unsafeField <span style="color:#f92672">=</span> Unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredFields</span><span style="color:#f92672">()[</span>0<span style="color:#f92672">];</span>
-    unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
-    Unsafe unsafe <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Unsafe<span style="color:#f92672">)</span>unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 分配直接内存
-</span><span style="color:#75715e"></span>        unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">allocateMemory</span><span style="color:#f92672">(</span>1024 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -XX：MaxDirectMemorySize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IllegalAccessException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 反射获取unsafe类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Field unsafeField <span style="color:#f92672">=</span> Unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredFields</span><span style="color:#f92672">()[</span>0<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>    unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    Unsafe unsafe <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Unsafe<span style="color:#f92672">)</span>unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 分配直接内存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">allocateMemory</span><span style="color:#f92672">(</span>1024 <span style="color:#f92672">*</span> 1024<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>直接内存由：<code>-XX：MaxDirectMemorySize</code>指定，如果不指定则和<code>-Xmx</code>一致。</p>
 </blockquote>
 <hr>
 <h3 id="常量池实战">常量池实战<a href="#常量池实战" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>查看汇编指令</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">javac -encoding utf-8 StringTest.java
-javap -v StringTest.class
-</code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>javac -encoding utf-8 StringTest.java
+</span></span><span style="display:flex;"><span>javap -v StringTest.class
+</span></span></code></pre></div><ul>
 <li>字符串拼接（编译器优化）</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        String s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
-        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;he&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 编译器会自动转成 ldc &#34;hello&#34;指令
-</span><span style="color:#75715e"></span>        <span style="color:#75715e">// s1 == s2?
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;he&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 编译器会自动转成 ldc &#34;hello&#34;指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>因为编译器的优化，<code>s2会被编译成&quot;ldc hello&quot;(汇编指令可见)</code>，s1 和 s2 都指向<code>字符串常量池</code>中<code>&quot;hello&quot;</code>的引用，所以<code>s1 == s2</code>成立。</p>
 <p><img src="https://image.leejay.top/image/20200813/OB0vpDkBzHoV.png?imageslim" alt=""></p>
 </blockquote>
 <ul>
 <li>字符串拼接（编译器不优化）</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;he&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 编译器不会优化
-</span><span style="color:#75715e"></span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
-        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
-        <span style="color:#75715e">// s1 == s2?
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;he&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 编译器不会优化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>编译器不会优化<code>s1</code>，堆中会创建<code>&quot;he&quot;、&quot;llo&quot;</code>对象，并将两个对象的引用放入<code>字符串常量池</code>。继而通过<code>+ (底层StringBuilder)</code>创建<code>&quot;hello&quot;</code>对象，但不会放入<code>字符串常量池</code>。</li>
 <li>此时<code>字符串常量池</code>无<code>&quot;hello&quot;</code>的引用，<code>s1.intern()</code>会将堆中<code>&quot;hello&quot;</code>对象的引用放入<code>字符串常量池</code>并返回引用。</li>
@@ -967,14 +967,14 @@ javap -v StringTest.class
 <ul>
 <li>new String(&quot;&quot;)问题</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
-        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
-        <span style="color:#75715e">// s1 == s2?
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>基于<code>ldc</code>指令，若<code>字符串常量池不存在该字符串就会在堆中创建字符串实例，并将引用保存在字符串常量池中</code>。</p>
 <p>此时<code>s1 = new String(&quot;hello&quot;)</code>共创建两个对象：一个由<code>显示的new</code>创建，一个由<code>JVM</code>创建。s1指向堆中的<code>&quot;hello&quot;</code>对象，而s2指向的是<code>字符串常量池</code>中持有的实例。所以<code>s1 == s2</code>不成立。</p>
 <p><img src="https://image.leejay.top/image/20200813/f6u1Mzjxfpm7.png?imageslim" alt=""></p>
@@ -982,15 +982,15 @@ javap -v StringTest.class
 <ul>
 <li>intern()</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
-        s1 <span style="color:#f92672">=</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
-        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
-        <span style="color:#75715e">// s1 == s2?
-</span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        s1 <span style="color:#f92672">=</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p><code>String.intern()</code>方法会返回<code>该字符串在字符串常量池中的引用</code>，<code>s2 = &quot;hello&quot;</code>也会先去<code>字符串常量池</code>查看是否存在该字符串的引用，有就返回引用。最终<code>s1 &amp; s2</code>都指向<code>字符串常量池中的hello引用</code>。所以<code>s1 == s2</code>成立。</p>
 <p><img src="https://image.leejay.top/image/20200813/HQTMAz6X4cCl.png?imageslim" alt=""></p>
 </blockquote>

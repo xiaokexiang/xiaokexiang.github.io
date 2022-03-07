@@ -19,7 +19,7 @@
 容器内的进程是运行在宿主机的操作系统上的，而虚拟机内的进程是运行在不同的操作系统上的，但容器内的进程是与其他进程隔离的。、
   VM内的指令执行流程：VM程序指令 -&amp;gt; VM操作系统内核 -&amp;gt; 宿主机管理程序 -&amp;gt; 宿主机内核。  容器会完全指定运行在宿主机上的同一个内核的系统调用，容器间是共享操作系统内核。   容器的隔离机制实现 Linux命名空间 每个进程只能看到自己的系统视图（文件、进程、网络接口、主机名等）。进程不单单只属于一个命名空间，而是属于每个类型的一个命名空间。类型包括Mount(mnt)、Process ID(pid)、NetWork(net)、Inter-process communication(ipd)、UTS、User ID(user)。
 Linux控制组 基于cgroups实现，它是Linux内核功能，限制一个进程或一组进程的资源使用不超过被分配的量。
-Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程   在应用程序运行时，可以增加或减少副本数量。也可以交由kubernetes进行判断。 kubernetes可能需要在集群中迁移你的容器，比如运行的节点失败时、为其他容器腾空间从节点移除时。   Docker Command # 运行容器并输出hello world docker run busybox echo hello world Dockerfile const http = require(&amp;#39;http&amp;#39;); const os = require(&amp;#39;os&amp;#39;); console .log (&amp;#34;Kub i a server starting ... &amp;#34;); var handler = function(request, response){ console.</description>
+Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程   在应用程序运行时，可以增加或减少副本数量。也可以交由kubernetes进行判断。 kubernetes可能需要在集群中迁移你的容器，比如运行的节点失败时、为其他容器腾空间从节点移除时。   Docker Command # 运行容器并输出hello world docker run busybox echo hello world Dockerfile const http = require(&amp;#39;http&amp;#39;); const os = require(&amp;#39;os&amp;#39;);  console .log (&amp;#34;Kub i a server starting ... &amp;#34;); var handler = function(request, response){  console.</description>
     </item>
     
   </channel>

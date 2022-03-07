@@ -9,7 +9,7 @@
 <meta name="description" content="CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
 常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
 又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
-public class CountDownLatchTest { // 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法  LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0  LATCH.await(); } catch (InterruptedException e) { e." />
+public class CountDownLatchTest { 	// 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2);  public static void main(String[] args) {  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e.printStackTrace();  }  // 子线程执行完毕就需要显式调用该方法  LATCH.countDown();  }).start();  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/countdownlatch/" />
@@ -286,74 +286,74 @@ public class CountDownLatchTest { // 显示传入计数器值  private static fi
 <p>描述<code>一个或一组线程任务需要等到条件满足之后才能继续执行</code>的场景。</p>
 <p>常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。</p>
 <p>又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CountDownLatchTest</span> <span style="color:#f92672">{</span>
-	<span style="color:#75715e">// 显示传入计数器值
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> CountDownLatch LATCH <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> CountDownLatch<span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
-    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>2000L<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-            <span style="color:#75715e">// 子线程执行完毕就需要显式调用该方法
-</span><span style="color:#75715e"></span>            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">countDown</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
-            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-                Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>2000L<span style="color:#f92672">);</span>
-            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-            <span style="color:#f92672">}</span>
-            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">countDown</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;等待子线程结束任务 ...&#34;</span><span style="color:#f92672">);</span>
-        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-            <span style="color:#75715e">// 主线程阻塞直到计数器=0
-</span><span style="color:#75715e"></span>            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
-        <span style="color:#f92672">}</span>
-        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;主线程被唤醒继续执行 ...&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CountDownLatchTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#75715e">// 显示传入计数器值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> CountDownLatch LATCH <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> CountDownLatch<span style="color:#f92672">(</span>2<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>2000L<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 子线程执行完毕就需要显式调用该方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">countDown</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>2000L<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">countDown</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;等待子线程结束任务 ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 主线程阻塞直到计数器=0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            LATCH<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>InterruptedException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;主线程被唤醒继续执行 ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>CountDownLatch维护一个计数器值，由使用者传入<code>一个大于0的数值N</code>来指定。</li>
 <li>执行await()方法的线程A会阻塞，直到<code>N = 0</code>，线程A继续执行。</li>
 <li>执行子任务的线程B，执行完毕需要显示的<code>调用countDown()方法</code>。</li>
 </ol>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CountDownLatch</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> count<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 需要传入一个大于0的值
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;count &lt; 0&#34;</span><span style="color:#f92672">);</span>
-    <span style="color:#75715e">// 本质就是定义state的值
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sync</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Sync<span style="color:#f92672">(</span>count<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-
-Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> count<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    setState<span style="color:#f92672">(</span>count<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">CountDownLatch</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> count<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 需要传入一个大于0的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>count <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;count &lt; 0&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 本质就是定义state的值
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sync</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Sync<span style="color:#f92672">(</span>count<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> count<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    setState<span style="color:#f92672">(</span>count<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>CountDownLatch的构造函数，需要传入一个<code>大于0的值N</code>表明执行<code>countDown</code>线程数量。</p>
 <p>如果<code>N = 0</code>表明条件符合，表明子线程已经全部执行完毕，主线程可以继续执行。</p>
 </blockquote>
 <hr>
 <h3 id="await">await<a href="#await" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 响应线程中断，抛出终端异常
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
-    <span style="color:#75715e">// 根据tryAcquireShared返回值决定是否将当前线程加入队列。
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
-        <span style="color:#75715e">// 共享锁逻辑
-</span><span style="color:#75715e"></span>        doAcquireSharedInterruptibly<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 判断是否需要将线程加入队列
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 响应线程中断，抛出终端异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 根据tryAcquireShared返回值决定是否将当前线程加入队列。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 共享锁逻辑
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        doAcquireSharedInterruptibly<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 判断是否需要将线程加入队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>await方法是响应中断的。</li>
 <li>判断<code>共享变量state 是否等于 0</code>，等于说明子线程执行完毕，否则加入同步队列。</li>
@@ -362,55 +362,55 @@ Sync<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c
 </blockquote>
 <hr>
 <h3 id="countdown">countDown<a href="#countdown" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// countDown方法不支持传参，每次只能减1
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">countDown</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryReleaseShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-        <span style="color:#75715e">// 共享锁逻辑，唤醒后继等待的线程（唤醒主线程）
-</span><span style="color:#75715e"></span>        doReleaseShared<span style="color:#f92672">();</span>
-        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 只有当前方法返回true的时候才会执行doReleaseShared()
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-   <span style="color:#75715e">// 自旋CAS修改state
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-        <span style="color:#75715e">// 如果state已经是0直接返回，不然state为负数了
-</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
-            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> nextc<span style="color:#f92672">))</span>
-            <span style="color:#75715e">// 只有CAS修改stsate成功且state=0时才会返回true
-</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
-    <span style="color:#f92672">}</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// countDown方法不支持传参，每次只能减1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">countDown</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span>1<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryReleaseShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 共享锁逻辑，唤醒后继等待的线程（唤醒主线程）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        doReleaseShared<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 只有当前方法返回true的时候才会执行doReleaseShared()
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#75715e">// 自旋CAS修改state
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果state已经是0直接返回，不然state为负数了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>c<span style="color:#f92672">,</span> nextc<span style="color:#f92672">))</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 只有CAS修改stsate成功且state=0时才会返回true
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>countDown方法的本质就是将state变量减1，直到<code>state = 0</code>才会执行<code>doReleaseShared</code>唤醒阻塞在<code>await</code>处的线程。</p>
 </blockquote>
 <hr>
 <h3 id="awaittime">await(time)<a href="#awaittime" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">// 传入时间及时间单位
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
-    <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> sync<span style="color:#f92672">.</span><span style="color:#a6e22e">tryAcquireSharedNanos</span><span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> unit<span style="color:#f92672">.</span><span style="color:#a6e22e">toNanos</span><span style="color:#f92672">(</span>timeout<span style="color:#f92672">));</span>
-<span style="color:#f92672">}</span>
-<span style="color:#75715e">// 响应中断
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquireSharedNanos</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanosTimeout<span style="color:#f92672">)</span>
-            	<span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-    <span style="color:#75715e">// 线程被中断抛出中断异常
-</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
-        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
-    <span style="color:#66d9ef">return</span> tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;=</span> 0 <span style="color:#f92672">||</span>
-        doAcquireSharedNanos<span style="color:#f92672">(</span>arg<span style="color:#f92672">,</span> nanosTimeout<span style="color:#f92672">);</span>
-<span style="color:#f92672">}</span>
-<span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
-<span style="color:#f92672">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 传入时间及时间单位
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">(</span><span style="color:#66d9ef">long</span> timeout<span style="color:#f92672">,</span> TimeUnit unit<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sync<span style="color:#f92672">.</span><span style="color:#a6e22e">tryAcquireSharedNanos</span><span style="color:#f92672">(</span>1<span style="color:#f92672">,</span> unit<span style="color:#f92672">.</span><span style="color:#a6e22e">toNanos</span><span style="color:#f92672">(</span>timeout<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 响应中断
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryAcquireSharedNanos</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanosTimeout<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            	<span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 线程被中断抛出中断异常
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;=</span> 0 <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>        doAcquireSharedNanos<span style="color:#f92672">(</span>arg<span style="color:#f92672">,</span> nanosTimeout<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>getState<span style="color:#f92672">()</span> <span style="color:#f92672">==</span> 0<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> 1 <span style="color:#f92672">:</span> <span style="color:#f92672">-</span>1<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
 <p>await(long timeout, TimeUnit unit)：<code>方法返回boolean值，主线程阻塞指定时常后被唤醒，查看state = 0是否成立，成立返回true主线程继续执行，否则执行失败。</code></p>
 </blockquote>
 <h3 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
