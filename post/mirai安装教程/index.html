@@ -465,8 +465,6 @@
 <h3 id="程序读取qq信息">程序读取QQ信息<a href="#程序读取qq信息" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>上面的账户登录成功后，控制台就会打印QQ中收到的信息，如果我们需要实现程序监听，那么还需要读取mirai的程序，这边提供一个基于python和websocket模式的demo。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">async</span> <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">read_message</span>():
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 先校验cookie,而不是抢购时再校验</span>
-</span></span><span style="display:flex;"><span>    login<span style="color:#f92672">.</span>scan_login()
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">async</span> <span style="color:#66d9ef">with</span> websockets<span style="color:#f92672">.</span>connect(
 </span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#39;ws://</span><span style="color:#e6db74">{0}</span><span style="color:#e6db74">/message?verifyKey=</span><span style="color:#e6db74">{1}</span><span style="color:#e6db74">&amp;qq=</span><span style="color:#e6db74">{2}</span><span style="color:#e6db74">&#39;</span><span style="color:#f92672">.</span>format(host, verify_key, str(login_qq))) <span style="color:#66d9ef">as</span> websocket:
 </span></span><span style="display:flex;"><span>        log<span style="color:#f92672">.</span>info(<span style="color:#e6db74">&#39;mirai websocket 服务连接成功！&#39;</span>)
