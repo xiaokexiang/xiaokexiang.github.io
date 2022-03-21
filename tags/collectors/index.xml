@@ -9,6 +9,15 @@
     <copyright>苏ICP备18050258号</copyright>
     <lastBuildDate>Fri, 28 Aug 2020 16:36:54 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/collectors/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>HotSpot参数汇总</title>
+      <link>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</link>
+      <pubDate>Fri, 28 Aug 2020 16:36:54 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</guid>
+      <description>基本参数    参数 作用     -XX:+PrintGCDetails 打印详细的GC日志   -XX:+PrintGCTimeStamps GC开头的时间为虚拟机启动时间的偏移量   -XX:+PrintGCApplicationStoppedTime 打印引用程序由于GC而产生停顿的时间   -Xloggc:D://log.txt 输出GC日志到D盘下log.txt文件中   -XX:+PrintVMOptions 打印显示传递的参数   -XX:+PrintCommandLineFlags 打印传递给虚拟机的显式和隐式参数   -XX:+PrintFlagsFinal 打印全部参数(包括虚拟机自身的参数)   -Xss1m 指定栈大小为1m   -Xms10m 初始堆空间大小   -Xmx20m 最大堆空间大小   -Xmn2m 新生代大小   -XX:SurvivorRatio 新生代中eden/s0/s1比例，默认8:1:1   -XX:NewRatio 老年代/新生代的比例，默认2:1   -XX:NewSize 新生代初始大小   -XX:MaxNewSize 新生代大小最大值   -XX:+HeapDumpOnOutOfMemoryError 堆OOM时导出堆的信息   -XX:HeapDumpPath=D://log.</description>
+    </item>
+    
+    <item>
       <title>HotSpot垃圾收集器</title>
       <link>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</link>
       <pubDate>Thu, 20 Aug 2020 16:34:32 +0800</pubDate>
@@ -30,15 +39,6 @@ Serial收集器 使用单线程工作的收集器，除了只会用一个处理�
 # 新生代ParNew &amp;amp; 老年代CMS 是开启CMS下新生代默认收集器 -XX:+UseConcMarkSweepGC # 新生代ParNew &amp;amp; 老年代SerialOld（JDK8后已过期） -XX:+UseParNewGC 因为线程交互的开销，在单核处理器下性能低于Serial，但是多核心下ParNew收集器还是很高效的。
 # 垃圾收集的线程数为8 -XX:ParallelGCThreads=8  不设置此参数时，当Cpu Cores &amp;lt; 8时，Threads=Cpu Cores，否则 Threads=3+(5*cores)/8）。
  Parallel Scavenge收集器 相比ParNew收集器目标是减少用户线程的停顿时间，Paraller收集器关注则是可控制的吞吐量。 $$ 吞吐量 = 运行用户代码时间 / (运行用户代码时间 + 运行垃圾收集时间） $$</description>
-    </item>
-    
-    <item>
-      <title>HotSpot参数汇总</title>
-      <link>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</link>
-      <pubDate>Fri, 28 Aug 2020 16:36:54 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</guid>
-      <description>基本参数    参数 作用     -XX:+PrintGCDetails 打印详细的GC日志   -XX:+PrintGCTimeStamps GC开头的时间为虚拟机启动时间的偏移量   -XX:+PrintGCApplicationStoppedTime 打印引用程序由于GC而产生停顿的时间   -Xloggc:D://log.txt 输出GC日志到D盘下log.txt文件中   -XX:+PrintVMOptions 打印显示传递的参数   -XX:+PrintCommandLineFlags 打印传递给虚拟机的显式和隐式参数   -XX:+PrintFlagsFinal 打印全部参数(包括虚拟机自身的参数)   -Xss1m 指定栈大小为1m   -Xms10m 初始堆空间大小   -Xmx20m 最大堆空间大小   -Xmn2m 新生代大小   -XX:SurvivorRatio 新生代中eden/s0/s1比例，默认8:1:1   -XX:NewRatio 老年代/新生代的比例，默认2:1   -XX:NewSize 新生代初始大小   -XX:MaxNewSize 新生代大小最大值   -XX:+HeapDumpOnOutOfMemoryError 堆OOM时导出堆的信息   -XX:HeapDumpPath=D://log.</description>
     </item>
     
   </channel>

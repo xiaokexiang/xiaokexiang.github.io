@@ -9,17 +9,6 @@
     <copyright>苏ICP备18050258号</copyright>
     <lastBuildDate>Mon, 29 Jun 2020 13:27:36 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/aqs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>ReadWriteLock源码解析</title>
-      <link>https://leejay.top/post/readwritelock/</link>
-      <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/readwritelock/</guid>
-      <description>ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
- 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。  ReadWriteLock的默认实现类ReentrantReadWriteLock
-public class ReentrantReadWriteLock implements ReadWriteLock { 	// 读锁和写锁都是ReentrantReadWriteLock的内部类  private final ReentrantReadWriteLock.ReadLock readerLock;  private final ReentrantReadWriteLock.WriteLock writerLock;   final Sync sync;  // 读写锁默认是非公平锁  public ReentrantReadWriteLock() {  this(false);  }   // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列  public ReentrantReadWriteLock(boolean fair) {  sync = fair ? new FairSync() : new NonfairSync();  readerLock = new ReadLock(this);  writerLock = new WriteLock(this);  } }  相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。</description>
-    </item>
-    
-    <item>
       <title>ReentrantLock源码解析</title>
       <link>https://leejay.top/post/reentrantlock/</link>
       <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
@@ -32,16 +21,6 @@ state变量 内部维护了volatile修饰的state变量，state = 0时表明没�
  如果当前线程是非中断状态，调用park则线程阻塞，如果当前线程是中断状态，调用park()会立即返回也是为什么AQS要清空中断状态的原因。 park方法不会抛出中断异常（也不会清除中断状态），如果先调用unpark再调用park，那么park也会立马返回。 连续调用多次unpark方法，效果等同于调用一次unpark方法。 park方法和sleep方法相同，不会释放资源，而wait方法会释放资源。 park方法将Runnable -&amp;gt; WAITING/TIME_WAITING，unpark方法将WAITING/TIME_WAITING -&amp;gt; Runnable。  FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
  还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
  Node的waitStatus    Node状态 描述     INIT=0 Node初始创建时默认为0   CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。   SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。   CONDITION=-2 表示节点处于等待队列中，等待被唤醒。   PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。     ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。</description>
-    </item>
-    
-    <item>
-      <title>Semaphore共享锁源码解析</title>
-      <link>https://leejay.top/post/semaphore/</link>
-      <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/semaphore/</guid>
-      <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException {  sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg)  throws InterruptedException {  // 如果线程被中断立即抛出异常  if (Thread.interrupted())  throw new InterruptedException();  if (tryAcquireShared(arg) &amp;lt; 0)  doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
-   tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) {  return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) {  for (;;) {  int available = getState();  int remaining = available - acquires;  // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 ||  compareAndSetState(available, remaining))  return remaining;  } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
     </item>
     
     <item>
@@ -69,6 +48,27 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
 又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
 public class CountDownLatchTest { 	// 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2);  public static void main(String[] args) {  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e.printStackTrace();  }  // 子线程执行完毕就需要显式调用该方法  LATCH.countDown();  }).start();  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e.</description>
+    </item>
+    
+    <item>
+      <title>ReadWriteLock源码解析</title>
+      <link>https://leejay.top/post/readwritelock/</link>
+      <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/readwritelock/</guid>
+      <description>ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
+ 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。  ReadWriteLock的默认实现类ReentrantReadWriteLock
+public class ReentrantReadWriteLock implements ReadWriteLock { 	// 读锁和写锁都是ReentrantReadWriteLock的内部类  private final ReentrantReadWriteLock.ReadLock readerLock;  private final ReentrantReadWriteLock.WriteLock writerLock;   final Sync sync;  // 读写锁默认是非公平锁  public ReentrantReadWriteLock() {  this(false);  }   // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列  public ReentrantReadWriteLock(boolean fair) {  sync = fair ? new FairSync() : new NonfairSync();  readerLock = new ReadLock(this);  writerLock = new WriteLock(this);  } }  相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。</description>
+    </item>
+    
+    <item>
+      <title>Semaphore共享锁源码解析</title>
+      <link>https://leejay.top/post/semaphore/</link>
+      <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/semaphore/</guid>
+      <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException {  sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg)  throws InterruptedException {  // 如果线程被中断立即抛出异常  if (Thread.interrupted())  throw new InterruptedException();  if (tryAcquireShared(arg) &amp;lt; 0)  doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
+   tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) {  return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) {  for (;;) {  int available = getState();  int remaining = available - acquires;  // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 ||  compareAndSetState(available, remaining))  return remaining;  } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
     </item>
     
     <item>

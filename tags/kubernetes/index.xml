@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Kubernetes  on Keep Improving</title>
+    <title>kubernetes  on Keep Improving</title>
     <link>https://leejay.top/tags/kubernetes/</link>
-    <description>Recent content in Kubernetes  on Keep Improving</description>
+    <description>Recent content in kubernetes  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 09 Apr 2021 11:07:57 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 21 Mar 2022 15:03:59 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kube Eventer基于mysql的使用</title>
+      <link>https://leejay.top/post/kube-eventer%E5%9F%BA%E4%BA%8Emysql%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Mon, 21 Mar 2022 15:03:59 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/kube-eventer%E5%9F%BA%E4%BA%8Emysql%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <description>前言 工作上需要持久化Pod的事件信息，我们知道事件默认是由etcd来进行存储的，但是事件的信息存储具有时效性（默认1h，通过修改kube-apiserver的--event--ttl实现更长时间的存储），且将etcd这种内存级别的组件作为持久化数据库也是不合理的，所以使用了阿里开源的这款事件告警组件kube-eventer。
+使用方法  创建表  CREATE TABLE IF NOT EXISTS `kube_event` (  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &amp;#39;event primary key&amp;#39;,  `name` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event name&amp;#39;,  `namespace` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event namespace&amp;#39;,  `event_id` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event_id&amp;#39;,  `type` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event type Warning or Normal&amp;#39;,  `reason` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event reason&amp;#39;,  `message` text NOT NULL COMMENT &amp;#39;event message&amp;#39;,  `kind` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event kind&amp;#39;,  `first_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event first occurrence time&amp;#39;,  `last_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event last occurrence time&amp;#39;,  `cluster` varchar(64) DEFAULT NULL COMMENT &amp;#39;cluster&amp;#39;,  `source` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT &amp;#39;source&amp;#39;,  PRIMARY KEY (`id`),  UNIQUE KEY `event_id_index` (`event_id`) ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT=&amp;#39;Event info tables&amp;#39;;  执行yaml  apiVersion: apps/v1 kind: Deployment metadata:  labels:  name: kube-eventer  name: kube-eventer  namespace: kube-system spec:  replicas: 1  selector:  matchLabels:  app: kube-eventer  template:  metadata:  labels:  app: kube-eventer  annotations:	  scheduler.</description>
+    </item>
+    
     <item>
       <title>Kubernetes概念入门</title>
       <link>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</link>
