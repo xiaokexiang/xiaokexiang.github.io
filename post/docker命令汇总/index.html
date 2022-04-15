@@ -319,6 +319,114 @@
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#dockerfile%e7%9a%84%e6%8c%87%e4%bb%a4%e5%af%b9%e6%af%94">
+                    Dockerfile的指令对比
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#add--copy">
+                    ADD &amp; COPY
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cmd--entrypoint">
+                    CMD &amp; ENTRYPOINT
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#env--arg">
+                    ENV &amp; ARG
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -426,6 +534,40 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d nginx
 </span></span></code></pre></div><blockquote>
 <p>nginx的配置文件可以通过<code>nginx -t</code>来进行校验。</p>
+</blockquote>
+<h2 id="dockerfile的指令对比">Dockerfile的指令对比<a href="#dockerfile的指令对比" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="add--copy">ADD &amp; COPY<a href="#add--copy" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都可以将宿主机的文件到容器内，ADD具备自动解压的功能，而COPY只是复制功能。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> hello.tar /<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> hello.tar /<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>使用ADD命令，镜像build后，在/目录下就会存在解压后的文件（<code>不会存在压缩包！</code>）</li>
+<li>使用COPY命令，镜像build后，在/目录下会存在压缩包。</li>
+</ul>
+</blockquote>
+<h3 id="cmd--entrypoint">CMD &amp; ENTRYPOINT<a href="#cmd--entrypoint" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都用于指定容器启动程序及参数，当存在ENTRYPOINT时，CMD的内容会作为参数传递给ENTRYPOINT。</code>需要注意的是：我们执行<code>docker run busybox echo hello</code>指令中的<code>echo hello</code>就是CMD命令（默认覆盖Dockerfile中的CMD命令），只是它没有写在了Dockerfile中，而是显示的传入。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;ls&#34;</span>, <span style="color:#e6db74">&#34;-l&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ENTRYPOINT [&#34;ls&#34;, &#34;-l&#34;]</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>镜像build后，若执行docker run image -h,那么会提示错误信息。而将CMD换成ENTRYPOINT则不会。</li>
+</ul>
+</blockquote>
+<h3 id="env--arg">ENV &amp; ARG<a href="#env--arg" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都用于设置环境变量，区别在于ENV无论是镜像构建时还是容器运行时，都可以使用。ARG只是用于构建镜像时使用，容器运行时不会出现。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;helloworld&#34;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> touch $NAME <span style="color:#75715e"># 构建镜像时使用变量</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;sh&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;echo $NAME &amp;&amp; ls&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>如果此处不使用<code>sh -c</code>执行命令，那么并不会正确显示ENV变量。</li>
+</ul>
 </blockquote>
       </div></div>
 
