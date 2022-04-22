@@ -18,22 +18,37 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2022-04-15T10:40:36+08:00</lastmod>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/categories/grpc/</loc>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/grpc/</loc>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</loc>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/</loc>
-    <lastmod>2022-04-15T10:40:36+08:00</lastmod>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/post/</loc>
-    <lastmod>2022-04-15T10:40:36+08:00</lastmod>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/tags/</loc>
-    <lastmod>2022-04-15T10:40:36+08:00</lastmod>
+    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>

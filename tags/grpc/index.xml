@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>grpc  on Keep Improving</title>
+    <link>https://leejay.top/tags/grpc/</link>
+    <description>Recent content in grpc  on Keep Improving</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>苏ICP备18050258号</copyright>
+    <lastBuildDate>Fri, 22 Apr 2022 16:29:25 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Grpc快速入门</title>
+      <link>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 22 Apr 2022 16:29:25 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</guid>
+      <description>Grpc快速入门  grpc是一款高性能、开源的通用Rpc框架。由google开源，默认使用protobuf作为定义接口的语言(IDL)和底层的消息交换格式，使用Http/2作为传输协议。
+  Rpc简介 Rpc(remote procedure call)，即远程过程调用。服务器A上的服务想调用服务器B上的服务提供的方法，因为不存在于同一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。
+ Rpc像调用本地方法一样去调用远程方法。
+ Http与Rpc Rpc是一个完整的远程调用方法，通常包括通信协议（http和tcp）和序列化协议（json、xml、protobuf等）。
+Http与Tcp 为什么使用自定义tcp协议实现进程通信？
+http传输协议头中包含冗余的部分，且使用了文本编码（body仍是二进制编码），非常占用字节数。使用自定义tcp协议，能够有效提升传输效率，提升性能。
+Grpc与Restful     Grpc Restful     消息编码 protobuf json   传输协议 Http/2 Http   传输形式 支持流式传输 不支持流式传输     Grpc概述   使用protobuf作为IDL和底层消息的交换格式。 protobuf支持多种语言，所以Grpc也是跨语言的。 客户端持有存根(Stub)提供与服务器相同的方法。    Grpc-Java 使用Java语言作为客户端和服务端的语言来演示grpc的实现。
+pom配置 &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;grpc-netty-shaded&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;1.45.1&amp;lt;/version&amp;gt;  &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;grpc-protobuf&amp;lt;/artifactId&amp;gt;  &amp;lt;version&amp;gt;1.</description>
+    </item>
+    
+  </channel>
+</rss>
