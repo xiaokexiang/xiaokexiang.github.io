@@ -18,7 +18,37 @@
     <priority>0.5</priority>
   </url><url>
     <loc>https://leejay.top/categories/</loc>
-    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/categories/java/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/java/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/post/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url><url>
+    <loc>https://leejay.top/tags/</loc>
+    <lastmod>2022-05-12T17:55:10+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
@@ -37,21 +67,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>
-    <loc>https://leejay.top/</loc>
-    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/post/</loc>
-    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/</loc>
-    <lastmod>2022-04-22T16:29:25+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
     <loc>https://leejay.top/categories/tinyproxy/</loc>
     <lastmod>2022-04-15T10:40:36+08:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -64,16 +79,6 @@
   </url><url>
     <loc>https://leejay.top/post/tinyproxy%E8%BD%BB%E9%87%8F%E4%BB%A3%E7%90%86%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2022-04-15T10:40:36+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/categories/java/</loc>
-    <lastmod>2022-04-08T14:44:27+08:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url><url>
-    <loc>https://leejay.top/tags/java/</loc>
-    <lastmod>2022-04-08T14:44:27+08:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url><url>

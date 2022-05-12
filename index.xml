@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号</copyright>
-    <lastBuildDate>Fri, 22 Apr 2022 16:29:25 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 12 May 2022 17:55:10 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ReentrantLock源码解析</title>
       <link>https://leejay.top/post/reentrantlock/</link>
@@ -44,6 +44,17 @@ state变量 内部维护了volatile修饰的state变量，state = 0时表明没�
       <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
       <description>ThreadLocal概述 ThreadLocal类，底层由ThreadLocalMap实现，是Thread类的成员变量，因为类的每个实例的成员变量都是这个实例独有的，所以在不同的Thread中有不同的副本，每个线程的副本只能由当前线程使用，线程间互不影响。因为一个线程可以拥有多个ThreadLocal对象，所以其内部使用ThreadLocalMap&amp;lt;ThreadLocal&amp;lt;?&amp;gt;, Object&amp;gt;来实现。
 public class Thread implements Runnable {  ThreadLocal.ThreadLocalMap threadLocals = null; } public class ThreadLocal&amp;lt;T&amp;gt; {  	static class ThreadLocalMap {   // 需要注意的是这里的Entry key是ThreadLocal的弱引用  // 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理  static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;lt;?&amp;gt;&amp;gt; {  // value 与 ThreadLocal关联  Object value;   Entry(ThreadLocal&amp;lt;?&amp;gt; k, Object v) {  super(k);  value = v;  }  }  } }   当前线程执行时(currentThread已初始化)，会初始化ThreadLocal对象，存储在Heap堆中，ThreadLocal的引用，即ThreadLocalRef会存储在当前线程Stack栈中。 当执行ThreadLocal的get()/set()方法时，会通过当前线程的引用找到当前线程在堆中的实例，判断这个实例的成员变量：ThreadLocalMap是否已经创建(即初始化)，如果没有则初始化。 若一个Threa中存在多个ThreadLocal，那么ThreadLocalMap会存在多个Entry，Entry的key是弱引用的ThreadLocal。    内存泄漏触发条件 根据ThreadLocal堆栈示意图，我们可以推断处只要符合以下条件，ThreadLocal就会出现内存泄漏：</description>
+    </item>
+    
+    <item>
+      <title>Java中的小知识点</title>
+      <link>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/</link>
+      <pubDate>Thu, 12 May 2022 17:55:10 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/</guid>
+      <description>1. Java是值传递还是引用传递 结论： Java只有值传递没有引用传递。
+值传递与引用传递的区别：对形参的修改不会影响到实参被称为值传递。引用传递则相反。
+public static void change(Integer i) {  i = 3; }  public static void change(Person person) {  person.name = &amp;#34;李四&amp;#34;; }  public static void main(String.. args) {  Integer x = 1;  change(x); 	System.out.println(x); // x = 1;  	Person person = new Person(&amp;#34;张三&amp;#34;);  change(person);  System.out.println(person.getName()); // &amp;#34;李四&amp;#34; }   如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。 如果是对象做参数时，将堆中对象的引用复制一份传递给方法，引用的地址不会被修改（也是被称为值传递的根本原因)，但是地址的内容会被函数修改。    2. 包装类Integer中的缓存池 Integer x = 123; Integer y = 123; System.</description>
     </item>
     
     <item>
