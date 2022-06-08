@@ -8,11 +8,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="CyclicBarrier 基于CountDownLatch的特性：计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。
 CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势。
- CountDownLatch中存在两种类型的线程：分别是调用await方法和调用countDown方法的线程。
+CountDownLatch中存在两种类型的线程：分别是调用await方法和调用countDown方法的线程。
 而CyclicBarrier中只存在一种线程：调用await的线程扮演了上述两种角色，即先countDown后await。
- CyclicBarrier拆分成两部分来理解：
- Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，使其能够重用。 Barrier（屏障）：线程调用await方法就会阻塞，这个阻塞点就是屏障点，等到所有线程调用await方法后，线程就会穿过屏障继续往下执行。   相比CountDownLatch只使用一次，CyclicBarrier更强调循环使用。
- @Slf4j public class CyclicBarrierTest {   // 传入每次屏障之前需要等待的线程数量  private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; {  // 不能保证每代执行该语句的都是同一个线程  log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;)  });  private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2);   public static void main(String[] args) {  EXECUTOR.execute(() -&amp;gt; {  try {  //CyclicBarrier 保证await  log." />
+CyclicBarrier拆分成两部分来理解：
+Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，使其能够重用。 Barrier（屏障）：线程调用await方法就会阻塞，这个阻塞点就是屏障点，等到所有线程调用await方法后，线程就会穿过屏障继续往下执行。 相比CountDownLatch只使用一次，CyclicBarrier更强调循环使用。
+@Slf4j public class CyclicBarrierTest { // 传入每次屏障之前需要等待的线程数量 private static final CyclicBarrier BARRIER = new CyclicBarrier(2, () -&amp;gt; { // 不能保证每代执行该语句的都是同一个线程 log.info(&amp;#34;doSomenthing before the last thread signal other threads&amp;#34;) }); private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(2); public static void main(String[] args) { EXECUTOR.execute(() -&amp;gt; { try { //CyclicBarrier 保证await log.info(&amp;#34;doSomething ... &amp;#34;); BARRIER.await(); log.info(&amp;#34;continue exec ...&amp;#34;); BARRIER.await(); } catch (Exception e) { e." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/cycliebarrier/" />
@@ -86,6 +86,43 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -679,7 +716,6 @@ CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势�
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;)  # 使用说明，用来提示输入参数  usage() {  echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34;  exit 1 }  pull() {  cd $__dir__  git pull  echo &amp;#34;git pull code success&amp;#34; }  build_parent() {  mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml }  build_module() {  mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml  echo &amp;#34;############# $1Build success #############&amp;#34; }  is_exist() {  pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;)  #如果不存在返回1，存在返回0  if [ -z &amp;#34;${pid}&amp;#34; ]; then  return 1  else  return 0  fi }  backup() {  __jar__=$1-$2." />
+<meta name="description" content="__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数 usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1 Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/" />
@@ -80,6 +80,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -280,7 +317,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

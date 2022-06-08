@@ -6,8 +6,8 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException {  sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg)  throws InterruptedException {  // 如果线程被中断立即抛出异常  if (Thread.interrupted())  throw new InterruptedException();  if (tryAcquireShared(arg) &amp;lt; 0)  doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
-   tryAcquireShared 值 是否获取锁     0 获取共享锁成功，后续获取可能不成功   &amp;lt; 0 获取共享锁失败   &amp;gt; 0 获取共享锁成功，后续获取可能成功    tryAcquireShared protected int tryAcquireShared(int acquires) {  return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) {  for (;;) {  int available = getState();  int remaining = available - acquires;  // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态  if (remaining &amp;lt; 0 ||  compareAndSetState(available, remaining))  return remaining;  } }  为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。" />
+<meta name="description" content="acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常 if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
+tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可能不成功 &amp;lt; 0 获取共享锁失败 &amp;gt; 0 获取共享锁成功，后续获取可能成功 tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态 if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } } 为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/semaphore/" />
@@ -81,6 +81,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -604,7 +641,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

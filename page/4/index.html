@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta name="generator" content="Hugo 0.98.0" />
+	<meta name="generator" content="Hugo 0.100.1" />
   
     <title>Keep Improving</title>
   
@@ -79,6 +79,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -95,6 +132,43 @@
     
     
 
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://leejay.top/post/netty/">Netty框架入门</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2020-12-14
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://leejay.top/tags/netty-/">Netty </a>&nbsp;
+            
+            #<a href="https://leejay.top/tags/network/">NetWork</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          网络编程框架: Netty结构、组件知识点入门。
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/post/netty/">阅读更多 →</a>
+        </div>
+        
+      </div>
     
       <div class="post on-list">
         <h1 class="post-title">
@@ -353,43 +427,6 @@
         
       </div>
     
-      <div class="post on-list">
-        <h1 class="post-title">
-          <a href="https://leejay.top/post/future/">Future源码解析</a>
-        </h1>
-        <div class="post-meta">
-          <span class="post-date">
-            2020-07-19
-          </span>
-          
-        </div>
-
-        
-          <span class="post-tags">
-            
-            #<a href="https://leejay.top/tags/future-/">Future </a>&nbsp;
-            
-            #<a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
-            
-          </span>
-        
-
-        
-
-        <div class="post-content">
-          
-          因为原有的线程执行<code>无法获取到返回结果</code>，所以为了弥补线程无返回值的问题，才诞生了Future类。
-          
-        </div>
-
-        
-        <div>
-          <a class="read-more button"
-            href="/post/future/">阅读更多 →</a>
-        </div>
-        
-      </div>
-    
     <div class="pagination">
   <div class="pagination__buttons">
     
@@ -429,7 +466,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

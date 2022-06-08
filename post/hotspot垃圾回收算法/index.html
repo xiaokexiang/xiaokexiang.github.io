@@ -7,21 +7,25 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="垃圾回收概述 在JVM运行期间，会对内存中不再被使用的对象进行分配和管理。若不及时对内存中的垃圾进行清理，会导致被保留的空间无法被其他对象使用，从而导致内存溢出。
- 内存溢出：系统无法分配给程序所需要的指定大小内存。
+内存溢出：系统无法分配给程序所需要的指定大小内存。
 内存泄漏：当对象不再使用或无法继续使用时，因为强引用的存在导致本该会回收的内存无法被回收，常见于：Map用对象作为key不重写hashcode &amp;amp; equals &amp;amp; ThreadLocal内存泄漏。
- 对象是否存活 JVM垃圾回收器会对对象中不再使用(死去)的对象进行回收，那么垃圾回收器是如何进行判断的呢。
+对象是否存活 JVM垃圾回收器会对对象中不再使用(死去)的对象进行回收，那么垃圾回收器是如何进行判断的呢。
 1. 引用计数法 对于一个对象A，只要有一个对象引用了A，那么A的计数器增加1，当引用失效的时候就减1。该算法会产生对象之间循环引用问题，会导致内存泄漏。
 2. 可达性算法 通过一系列称为&amp;quot;GC Roots&amp;quot;的根对象作为起点，根据引用关系向下搜索，搜索过程走过的路称为&amp;quot;引用链&amp;quot;。如果某个对象到&amp;quot;GC Roots&amp;quot;没有任何引用链相连，就说明该对象需要被回收。
- 图中绿色为可达对象，灰色为不可达对象。
+图中绿色为可达对象，灰色为不可达对象。
 GC Roots包括但不限于以下：
- 栈帧中引用的对象（局部变量、临时变量等） 类中的引用型静态变量 字符串常量池中的引用。 被Synchronized锁持有的对象。   3.并发的可达性 我们知道大部分的收集器都是使用可达性算法判断标记对象是否要被回收，其中又被分为中断用户线程、与用户线程并发执行两种。
+栈帧中引用的对象（局部变量、临时变量等） 类中的引用型静态变量 字符串常量池中的引用。 被Synchronized锁持有的对象。 3.并发的可达性 我们知道大部分的收集器都是使用可达性算法判断标记对象是否要被回收，其中又被分为中断用户线程、与用户线程并发执行两种。
 中断用户线程进行标记时，对象图中的对象或引用不会被修改，但堆中存储的对象越多，带来的STW时间也会越长。因此为了减少STW时长，标记与用户线程同时运行能有效减少STW时长，但会带来并发可达性问题：
- 被标记完毕的对象又新引用了未被收集器访问的对象。 正在被标记的对象直接或间接删除了未被收集器访问的对象的引用。  基于上述两个问题产生了两种解决方案：
- 增量更新  基于问题1，当被标记完毕对象又引用了未被收集器访问的对象时，将这些被标记完毕对象记录下来，等并发标记阶段结束后，以这些被标记完毕对象为根再次进行扫描。CMS收集器采用此策略实现并发标记。
-原始快照  基于问题2，当正在被标记的对象直接或间接删除了未被收集器访问的对象的引用时，将这些正在被标记的对象记录下来，等并发标记结束后，以这些正在被标记的对象为根重新扫描。G1收集器采用此策略实现并发标记。
- Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
+被标记完毕的对象又新引用了未被收集器访问的对象。 正在被标记的对象直接或间接删除了未被收集器访问的对象的引用。 基于上述两个问题产生了两种解决方案：
+增量更新 基于问题1，当被标记完毕对象又引用了未被收集器访问的对象时，将这些被标记完毕对象记录下来，等并发标记阶段结束后，以这些被标记完毕对象为根再次进行扫描。CMS收集器采用此策略实现并发标记。
+原始快照 基于问题2，当正在被标记的对象直接或间接删除了未被收集器访问的对象的引用时，将这些正在被标记的对象记录下来，等并发标记结束后，以这些正在被标记的对象为根重新扫描。G1收集器采用此策略实现并发标记。
+Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
 从JDK1.2开始，Java对引用的概念进行补充，将引用分为了：强引用、软引用、弱引用和虚引用四种。
-public abstract class Reference&amp;lt;T&amp;gt; {  // 引用本身 	private T referent;  // 存储reference本身的链表队列  volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; }  当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。" />
+public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 private T referent; // 存储reference本身的链表队列 volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; } 当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。
+强引用 即最传统引用的体现，比如Object obj = new Object()，只要强引用关系存在，那么垃圾回收器永远不会回收掉被引用的对象。
+软引用 用于描述还有用、但非必须的对象，只被软引用关联（指向）的对象，在OOM之前，会将这些对象进行二次回收，如果回收后仍没有足够内存，才会抛出OOM。Java中用SoftReference实现。
+弱引用 相比软引用，只被弱引用关联（指向）的对象只能生存到下一次垃圾收集，只要垃圾回收器工作，弱引用就会被回收。Java中用WeakReference实现。ThreadLocal.ThreadLocalMap&amp;lt;k,v&amp;gt;中key就继承了弱引用。
+public class Weak { private static WeakReference&amp;lt;String&amp;gt; weakReference; public static void main(String[] args) { test(); System." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" />
@@ -95,6 +99,43 @@ public abstract class Reference&amp;lt;T&amp;gt; {  // 引用本身 	private T r
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -825,7 +866,6 @@ public abstract class Reference&amp;lt;T&amp;gt; {  // 引用本身 	private T r
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
-public class LoginInterceptor implements HandlerInterceptor {   private final Logger log = LoggerFactory.getLogger(this.getClass());   @Override  public boolean preHandle( HttpServletRequest request,  HttpServletResponse response,  Object handler) throws Exception {  log.info(&amp;#34;request is coming in ...&amp;#34;);  return false;  } }  public class SpringCloudEurekaServerApplication implements WebMvcConfigurer {   @Bean  public LoginInterceptor loginInterceptor() {  return new LoginInterceptor();  }   @Override  public void addInterceptors(InterceptorRegistry registry) {  registry." />
+public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } } WebMvcConfigurer 和 WebMvcConfigurationSupport 存在WebMvcConfigurationSupport则WebMvcConfigurer不生效 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class }) @ConditionalOnMissingBean(WebMvcConfigurationSupport." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/" />
@@ -81,6 +81,43 @@ public class LoginInterceptor implements HandlerInterceptor {   private final Lo
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -470,7 +507,6 @@ io.spring.server.event.MyListener3
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

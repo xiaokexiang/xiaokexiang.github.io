@@ -7,13 +7,13 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。
- 1.类加载时机 类加载的生命周期  类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
+1.类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
 其中验证、准备、解析统称为连接。
 需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
- 类初始化的六种情况 **《Java虚拟机规范》**中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
-  遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
- 使用new关键字实例化对象。  // 会初始化A A a = new A();  读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。  class B {  // 会导致A类被初始化  static A a = new A();  public static void main(String[] args) {  // 不会导致A类被初始化  System.out.print(A.HELLO_WORLD);  } } class A {  static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; }  引用静态字符串常量不会导致持有该常量的类初始化。
-  调用一个类型的静态方法  class A {  static void print() {  System." />
+类初始化的六种情况 **《Java虚拟机规范》**中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
+遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
+使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。
+调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A.print(); } } 我们可以用过-XX:&#43;TraceClassLoading来查看类是否被加载。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/" />
@@ -87,6 +87,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -1077,7 +1114,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

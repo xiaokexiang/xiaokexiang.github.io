@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt;  implements Queue&amp;lt;E&amp;gt;, java.io.Serializable {  // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; 	// tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; 	// 不用传递初始容量  public ConcurrentLinkedQueue() {  // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null);  }  // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; {  volatile E item;  // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; 	// 构造  Node(E item) {  // CAS添加item  UNSAFE." />
+<meta name="description" content="ConcurrentLinkedQueue 特性 基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 &#43; CAS实现。与LinkedBlockingQueue独占锁不同。 构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点 private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点 private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量 public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点 head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表） // 核心是通过CAS来实现并发操作 private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的 volatile Node&amp;lt;E&amp;gt; next; // 构造 Node(E item) { // CAS添加item UNSAFE." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/concurrentlinkedqueue/" />
@@ -82,6 +82,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -657,7 +694,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

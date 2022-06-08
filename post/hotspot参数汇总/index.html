@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="基本参数    参数 作用     -XX:&#43;PrintGCDetails 打印详细的GC日志   -XX:&#43;PrintGCTimeStamps GC开头的时间为虚拟机启动时间的偏移量   -XX:&#43;PrintGCApplicationStoppedTime 打印引用程序由于GC而产生停顿的时间   -Xloggc:D://log.txt 输出GC日志到D盘下log.txt文件中   -XX:&#43;PrintVMOptions 打印显示传递的参数   -XX:&#43;PrintCommandLineFlags 打印传递给虚拟机的显式和隐式参数   -XX:&#43;PrintFlagsFinal 打印全部参数(包括虚拟机自身的参数)   -Xss1m 指定栈大小为1m   -Xms10m 初始堆空间大小   -Xmx20m 最大堆空间大小   -Xmn2m 新生代大小   -XX:SurvivorRatio 新生代中eden/s0/s1比例，默认8:1:1   -XX:NewRatio 老年代/新生代的比例，默认2:1   -XX:NewSize 新生代初始大小   -XX:MaxNewSize 新生代大小最大值   -XX:&#43;HeapDumpOnOutOfMemoryError 堆OOM时导出堆的信息   -XX:HeapDumpPath=D://log." />
+<meta name="description" content="基本参数 参数 作用 -XX:&#43;PrintGCDetails 打印详细的GC日志 -XX:&#43;PrintGCTimeStamps GC开头的时间为虚拟机启动时间的偏移量 -XX:&#43;PrintGCApplicationStoppedTime 打印引用程序由于GC而产生停顿的时间 -Xloggc:D://log.txt 输出GC日志到D盘下log.txt文件中 -XX:&#43;PrintVMOptions 打印显示传递的参数 -XX:&#43;PrintCommandLineFlags 打印传递给虚拟机的显式和隐式参数 -XX:&#43;PrintFlagsFinal 打印全部参数(包括虚拟机自身的参数) -Xss1m 指定栈大小为1m -Xms10m 初始堆空间大小 -Xmx20m 最大堆空间大小 -Xmn2m 新生代大小 -XX:SurvivorRatio 新生代中eden/s0/s1比例，默认8:1:1 -XX:NewRatio 老年代/新生代的比例，默认2:1 -XX:NewSize 新生代初始大小 -XX:MaxNewSize 新生代大小最大值 -XX:&#43;HeapDumpOnOutOfMemoryError 堆OOM时导出堆的信息 -XX:HeapDumpPath=D://log.dump 将OOM信息导入到D盘下log.dump文件中 -XX:MetaspaceSize=1m 设置元数据区初始大小为1m -XX:MaxMetaspaceSize=2m 设置元数据区大小最大为2m -XX:MaxDirectMemorySize=2m 本机直接内存(堆外内存)最大2m，默认等于-Xmx -XX:&#43;UseTLAB 开启TLAB，默认开启 -XX:&#43;PrintTLAB 打印TLAB信息 -XX:TLABSize=1024 设置TLAB大小为1kb -XX:TLABRefillWasteFraction=64 允许TLAB空间浪费的比例 -XX:-ResizeTLAB 禁止TLAB自动调整大小和浪费比例 -XX:PretenureSizeThreshold=5242880 大于5m对象直接进入老年代，只对Serial、ParNew有用 -XX:MaxTenuringThreshold=15 晋升到老年代的年龄大小 -XX:TargetSurvivorRatio=50 用于动态对象年龄判断的s0的使用率参数，默认50 收集器选择参数 参数 新生代 老年代 -XX:&#43;UseSerialGC Serial Serial Old -XX:&#43;UseParallelGC Parallel Scavenge Parallel Old -XX:&#43;UseParNewGC ParNew Serial Old -XX:&#43;UseConcMarkSweepGC ParNew CMS -XX:UseG1GC G1 G1 收集相关参数 收集器 相关参数 注释 ParNew" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/" />
@@ -80,6 +80,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -470,7 +507,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

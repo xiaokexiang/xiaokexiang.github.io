@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="1. Java是值传递还是引用传递 结论： Java只有值传递没有引用传递。
 值传递与引用传递的区别：对形参的修改不会影响到实参被称为值传递。引用传递则相反。
-public static void change(Integer i) {  i = 3; }  public static void change(Person person) {  person.name = &amp;#34;李四&amp;#34;; }  public static void main(String.. args) {  Integer x = 1;  change(x); 	System.out.println(x); // x = 1;  	Person person = new Person(&amp;#34;张三&amp;#34;);  change(person);  System.out.println(person.getName()); // &amp;#34;李四&amp;#34; }   如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。 如果是对象做参数时，将堆中对象的引用复制一份传递给方法，引用的地址不会被修改（也是被称为值传递的根本原因)，但是地址的内容会被函数修改。    2. 包装类Integer中的缓存池 Integer x = 123; Integer y = 123; System." />
+public static void change(Integer i) { i = 3; } public static void change(Person person) { person.name = &amp;#34;李四&amp;#34;; } public static void main(String.. args) { Integer x = 1; change(x); System.out.println(x); // x = 1; Person person = new Person(&amp;#34;张三&amp;#34;); change(person); System.out.println(person.getName()); // &amp;#34;李四&amp;#34; } 如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。 如果是对象做参数时，将堆中对象的引用复制一份传递给方法，引用的地址不会被修改（也是被称为值传递的根本原因)，但是地址的内容会被函数修改。 2. 包装类Integer中的缓存池 Integer x = 123; Integer y = 123; System.out.println(x == y); // true Integer a = 128; Integer b = 128; System." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/" />
@@ -82,6 +82,43 @@ public static void change(Integer i) {  i = 3; }  public static void change(Pers
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -475,7 +512,6 @@ public static void change(Integer i) {  i = 3; }  public static void change(Pers
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

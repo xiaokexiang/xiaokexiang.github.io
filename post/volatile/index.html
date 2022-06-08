@@ -11,9 +11,9 @@
 编译器内存屏障 只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。
 CPU内存屏障 由CPU提供的指令(不同的CPU架构，提供的指令不同)，可以由开发者显示调用，volatile就是通过CPU内存屏障指令来实现的。
 实现流程：
- 在volatile写操作的前面插入一个StoreStore屏障。保证volatile写操作不会和之前的写操作重排序。 在volatile写操作的后面插入一个StoreLoad屏障。保证volatile写操作不会和之后读操作重排序。 在volatile读操作后面插入一个LoadLoad屏障 &#43; LoadStore屏障。保证volatile读操作不会和之前的读操作、写操作重排序。  与synchronized关键字的异同 多线程会产生三大问题：原子性、有序性和可见性。
+在volatile写操作的前面插入一个StoreStore屏障。保证volatile写操作不会和之前的写操作重排序。 在volatile写操作的后面插入一个StoreLoad屏障。保证volatile写操作不会和之后读操作重排序。 在volatile读操作后面插入一个LoadLoad屏障 &#43; LoadStore屏障。保证volatile读操作不会和之前的读操作、写操作重排序。 与synchronized关键字的异同 多线程会产生三大问题：原子性、有序性和可见性。
 synchronized和volatile在共享变量的操作上具有相同的内存语义(从主内存读取，立即写入主内存)，保证了变量的可见性。但是synchronized相比volatile还具有原子性(阻塞和排他性，同一时刻只能有一个线程执行，而volatile是非阻塞的)，所以volatile是弱化版的synchronized。
-class Test {  // 这里的flag就可以不用锁同步  private static volatile boolean flag = true;  // 模拟AtomicInteger  private static CasUnsafe UNSAFE = new CasUnsafe(0);   // 按照顺序打印1-100的奇偶数  public static void main(String[] args) {  THREAD_POOL.execute(() -&amp;gt; {  while (UNSAFE.getValue() &amp;lt; 100) {  if (flag) {  System." />
+class Test { // 这里的flag就可以不用锁同步 private static volatile boolean flag = true; // 模拟AtomicInteger private static CasUnsafe UNSAFE = new CasUnsafe(0); // 按照顺序打印1-100的奇偶数 public static void main(String[] args) { THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (flag) { System.out.println(UNSAFE.incrementAndGet()); flag = false; } } }); THREAD_POOL.execute(() -&amp;gt; { while (UNSAFE.getValue() &amp;lt; 100) { if (!" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/volatile/" />
@@ -87,6 +87,43 @@ class Test {  // 这里的flag就可以不用锁同步  private static volatile 
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -403,7 +440,6 @@ class Test {  // 这里的flag就可以不用锁同步  private static volatile 
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

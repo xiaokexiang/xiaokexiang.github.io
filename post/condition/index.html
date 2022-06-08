@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Condition是一个接口，其实现在Lock内，需要配合Lock锁使用。其内部构建了一个单向队列，操作时不需要使用CAS来保证同步。
-final ConditionObject newCondition() {  return new ConditionObject(); } public class ConditionObject implements Condition {  /** First node of condition queue. */  private transient Node firstWaiter;  /** Last node of condition queue. */  private transient Node lastWaiter;  public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException {  // 如果当前线程已中断就抛出中断异常  if (Thread.interrupted())  throw new InterruptedException();  // 将当前线程添加到等待队列  Node node = addConditionWaiter();  // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁  int savedState = fullyRelease(node);  int interruptMode = 0;  // 判断node是否在AQS同步队列里面，初始是在条件队列里面  while (!" />
+final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常 if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列 Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁 int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面 while (!" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/condition/" />
@@ -81,6 +81,43 @@ final ConditionObject newCondition() {  return new ConditionObject(); } public c
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -358,7 +395,6 @@ final ConditionObject newCondition() {  return new ConditionObject(); } public c
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

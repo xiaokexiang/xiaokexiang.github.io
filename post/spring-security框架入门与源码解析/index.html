@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Spring Security入门 依赖与配置 maven依赖 &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt;  &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt;  &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Security配置 @Configuration public class WebSecurityConfig extends WebSecurityConfigurerAdapter {   /** * 自定义用户管理系统 */  @Bean  public UserDetailsManager userDetailsManager() {  UserManager userManager = new UserManager();  userManager.createUser(innerUser());  return userManager;  }   private UserDetails innerUser() {  // load user by username 模拟从数据库获取用户权限等信息  List&amp;lt;GrantedAuthority&amp;gt; authorities = new ArrayList&amp;lt;&amp;gt;();  // 添加 ADMIN &amp;amp; USER 权限  authorities." />
+<meta name="description" content="Spring Security入门 依赖与配置 maven依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Security配置 @Configuration public class WebSecurityConfig extends WebSecurityConfigurerAdapter { /** * 自定义用户管理系统 */ @Bean public UserDetailsManager userDetailsManager() { UserManager userManager = new UserManager(); userManager.createUser(innerUser()); return userManager; } private UserDetails innerUser() { // load user by username 模拟从数据库获取用户权限等信息 List&amp;lt;GrantedAuthority&amp;gt; authorities = new ArrayList&amp;lt;&amp;gt;(); // 添加 ADMIN &amp;amp; USER 权限 authorities.add(new SimpleGrantedAuthority(&amp;#34;USER&amp;#34;)); authorities.add(new SimpleGrantedAuthority(&amp;#34;ADMIN&amp;#34;)); // 一般数据库用户密码存入时会先加密，此处只是模拟加密后的用户信息 // 使用UserDetails.User$UserBuilder构建user return User.withUsername(&amp;#34;jack&amp;#34;) ." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/spring-security%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" />
@@ -80,6 +80,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -3430,7 +3467,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

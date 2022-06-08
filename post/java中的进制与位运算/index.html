@@ -7,12 +7,13 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="进制详解 包括二进制、八进制、十进制和十六进制, 计算机由电路构成, 只有0/1两种状态, 所以采用的是二进制
- 二进制  由0 和 1组成, 计算机内部都是二进制的形式存储的。 进行加法运算的时候逢二进一, 减法运算的时候借一当二。在java中0b开头表示二进制值
- 十进制  由0~9的数字组成, 加法计算时逢十进一, 减法计算时借一当十。十进制是人类发展中自然形成的
- 八进制  由0~7的数字组成, 加法计算时逢八进一, 减法计算时借一当八。java中要求第一位是0开始
- 十六进制  由0~9,A(10),B(11),C(12),D(13),E(14),F(15)(不区分大小写)组成, 加法计算时逢十六进一, 减法计算时借一当十六。java中要求以0x开始
- 进制互相换算  二进制 -&amp;gt; 十进制  假设一个二进制是 1011(3210), 从右往左开始分别是 0、1、2、3 位, 那么它的十进制值为:
- 1*2^3 &#43; 0*2^2 &#43; 1*2^1 &#43; 1*2^0 =&amp;gt; 8 &#43; 0 &#43; 2 &#43; 1 =&amp;gt; 13  十进制 -&amp;gt; 二进制  假设一个十进制是 13, 一种方法是除二反序取余法, 计算如下:" />
+二进制 由0 和 1组成, 计算机内部都是二进制的形式存储的。 进行加法运算的时候逢二进一, 减法运算的时候借一当二。在java中0b开头表示二进制值
+十进制 由0~9的数字组成, 加法计算时逢十进一, 减法计算时借一当十。十进制是人类发展中自然形成的
+八进制 由0~7的数字组成, 加法计算时逢八进一, 减法计算时借一当八。java中要求第一位是0开始
+十六进制 由0~9,A(10),B(11),C(12),D(13),E(14),F(15)(不区分大小写)组成, 加法计算时逢十六进一, 减法计算时借一当十六。java中要求以0x开始
+进制互相换算 二进制 -&amp;gt; 十进制 假设一个二进制是 1011(3210), 从右往左开始分别是 0、1、2、3 位, 那么它的十进制值为:
+1*2^3 &#43; 0*2^2 &#43; 1*2^1 &#43; 1*2^0 =&amp;gt; 8 &#43; 0 &#43; 2 &#43; 1 =&amp;gt; 13 十进制 -&amp;gt; 二进制 假设一个十进制是 13, 一种方法是除二反序取余法, 计算如下:
+13/2 = 6 余 1 6/2 = 3 余 0 3/2 = 1 余 1 1/2 = 0 余 1 反序取余数值, 结果是: 1101 另一种计算如下:" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E8%BF%9B%E5%88%B6%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/" />
@@ -86,6 +87,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -881,7 +919,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

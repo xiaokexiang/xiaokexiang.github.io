@@ -9,7 +9,7 @@
 <meta name="description" content="CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
 常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
 又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
-public class CountDownLatchTest { 	// 显示传入计数器值  private static final CountDownLatch LATCH = new CountDownLatch(2);  public static void main(String[] args) {  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e.printStackTrace();  }  // 子线程执行完毕就需要显式调用该方法  LATCH.countDown();  }).start();  new Thread(() -&amp;gt; {  try {  Thread.sleep(2000L);  } catch (InterruptedException e) {  e." />
+public class CountDownLatchTest { // 显示传入计数器值 private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法 LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0 LATCH.await(); } catch (InterruptedException e) { e." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/countdownlatch/" />
@@ -83,6 +83,43 @@ public class CountDownLatchTest { 	// 显示传入计数器值  private static f
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -481,7 +518,6 @@ public class CountDownLatchTest { 	// 显示传入计数器值  private static f
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

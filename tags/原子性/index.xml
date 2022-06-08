@@ -16,7 +16,9 @@
       <guid>https://leejay.top/post/cas/</guid>
       <description>判断数据是否被修改，同时写回新值，这两个操作要合成一个原子操作，这就是CAS(compare and swap)。
 之前多线程环境下，我们对变量进行计算都是对其加锁来实现，但是现在我们可以用过Atomic相关的类来实现相同的效果且性能更好。而AtomicInteger就是其中的一员，其底层就是通过CAS来实现的。
-// 伪代码 class AtomicInteger { 	// 保证内存可见性 	private volatile int value; 		public final int getAndIncrement() { 	for(;;) {  int current = get();  int next = current + 1;  // cas替换  if (compareAndSwap(current, next)) {  return current;  } 	} 	} 		public int get() { 	return value; 	} }  乐观锁：读操作不上锁，等到写操作的时候，判断数据在此期间是否被修改，如果已被修改，则重复该流程，直到把值写回去。CAS就是乐观锁的体现。</description>
+// 伪代码 class AtomicInteger { // 保证内存可见性 private volatile int value; public final int getAndIncrement() { for(;;) { int current = get(); int next = current + 1; // cas替换 if (compareAndSwap(current, next)) { return current; } } } public int get() { return value; } } 乐观锁：读操作不上锁，等到写操作的时候，判断数据在此期间是否被修改，如果已被修改，则重复该流程，直到把值写回去。CAS就是乐观锁的体现。
+CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作compareAndSwapInt()为例。
+/** * var1: 这里就是AtomicInteger对象 * var2: AotmicInteger 中的成员变量，long型整数，变量在类中的内存偏移量 * 可以通过unsafe.objectFieldOffset(Field var1)来获得 * var4：变量的旧值 * var5: 变量的新值 */ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5) Unsafe类提供了三种类型的CAS操作：int、long、Object，分别对应compareAndSwapInt()、compareAndSwapLong()、compareAndSwapObject()。</description>
     </item>
     
   </channel>

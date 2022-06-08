@@ -15,7 +15,7 @@
       
       <guid>https://leejay.top/post/concurrenthashmap/</guid>
       <description>ConcurrentHashMap JDK1.8之后采用的是数组 + 链表 + 红黑树的结构，通过Synchronized + CAS实现线程安全，而JDK1.7采用的是将一个HashMap分成多个Segment的方式，通过继承ReentrentLock的Segment分段锁实现线程安全。
-Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; {  final int hash;  final K key;  volatile V val;  volatile Node&amp;lt;K,V&amp;gt; next;   Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) {  this.hash = hash;  this.key = key;  this.val = val;  this.next = next;  } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; {  final Node&amp;lt;K,V&amp;gt;[] nextTable;  ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) {  super(MOVED, null, null, null);  this.</description>
+Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this.</description>
     </item>
     
     <item>
@@ -24,7 +24,7 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
       <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
       
       <guid>https://leejay.top/post/concurrentlinkedqueue/</guid>
-      <description>ConcurrentLinkedQueue 特性  基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 + CAS实现。与LinkedBlockingQueue独占锁不同。  构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt;  implements Queue&amp;lt;E&amp;gt;, java.io.Serializable {  // head头节点  private transient volatile Node&amp;lt;E&amp;gt; head; 	// tail尾节点  private transient volatile Node&amp;lt;E&amp;gt; tail; 	// 不用传递初始容量  public ConcurrentLinkedQueue() {  // 初始化head和tail，哨兵节点  head = tail = new Node&amp;lt;E&amp;gt;(null);  }  // 私有静态内部类，用于构成链表的节点（单向链表）  // 核心是通过CAS来实现并发操作  private static class Node&amp;lt;E&amp;gt; {  volatile E item;  // 标记next节点 volatile修饰的  volatile Node&amp;lt;E&amp;gt; next; 	// 构造  Node(E item) {  // CAS添加item  UNSAFE.</description>
+      <description>ConcurrentLinkedQueue 特性 基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 + CAS实现。与LinkedBlockingQueue独占锁不同。 构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点 private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点 private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量 public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点 head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表） // 核心是通过CAS来实现并发操作 private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的 volatile Node&amp;lt;E&amp;gt; next; // 构造 Node(E item) { // CAS添加item UNSAFE.</description>
     </item>
     
     <item>
@@ -33,9 +33,10 @@ Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile N
       <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
       
       <guid>https://leejay.top/post/copyonwritearraylist/</guid>
-      <description>CopyOnWriteArrayList  CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
+      <description>CopyOnWriteArrayList CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
 CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本来实现。
- 构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt;  implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable {   // 内部独占锁  final transient ReentrantLock lock = new ReentrantLock(); 	// volatile 修饰的数组，只能getArray和setArray操作  private transient volatile Object[] array; 	// 返回当前数组  final Object[] getArray() {  return array;  } 	// 设置数组  final void setArray(Object[] a) {  array = a;  } 	// 构造函数 创建一个空数组  public CopyOnWriteArrayList() {  setArray(new Object[0]);  } }  底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。</description>
+构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt; implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable { // 内部独占锁 final transient ReentrantLock lock = new ReentrantLock(); // volatile 修饰的数组，只能getArray和setArray操作 private transient volatile Object[] array; // 返回当前数组 final Object[] getArray() { return array; } // 设置数组 final void setArray(Object[] a) { array = a; } // 构造函数 创建一个空数组 public CopyOnWriteArrayList() { setArray(new Object[0]); } } 底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。
+add public boolean add(E e) { // 获取独占锁 final ReentrantLock lock = this.</description>
     </item>
     
   </channel>

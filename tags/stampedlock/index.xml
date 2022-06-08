@@ -16,7 +16,7 @@
       <guid>https://leejay.top/post/stampedlock/</guid>
       <description>JDK1.8新增的并发工具，回顾之前的ReentrentReadWriteLock，它是悲观锁的实现：只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）。
 而StampedLock是乐观锁的实现，乐观读的时候不加锁，读取后发现数据改变了再升级为悲观读，此时与写互斥。
-@Slf4j public class StampedLockTest {  private static final StampedLock LOCK = new StampedLock();  private static int x, y;   static void add() {  long stamp = LOCK.writeLock();  try {  x += 1;  y += 1;  } finally {  LOCK.unlockWrite(stamp);  }  }   static void print() {  // 尝试乐观读  long stamp = LOCK.tryOptimisticRead();  int currentX = x， currentY = y;  // 如果stamp修改了，这时再加悲观读锁  if (!</description>
+@Slf4j public class StampedLockTest { private static final StampedLock LOCK = new StampedLock(); private static int x, y; static void add() { long stamp = LOCK.writeLock(); try { x += 1; y += 1; } finally { LOCK.unlockWrite(stamp); } } static void print() { // 尝试乐观读 long stamp = LOCK.tryOptimisticRead(); int currentX = x， currentY = y; // 如果stamp修改了，这时再加悲观读锁 if (!LOCK.validate(stamp)) { log.info(&amp;#34;value has changed ...&amp;#34;); stamp = LOCK.</description>
     </item>
     
   </channel>

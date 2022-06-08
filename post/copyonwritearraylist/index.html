@@ -6,9 +6,10 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="CopyOnWriteArrayList  CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
+<meta name="description" content="CopyOnWriteArrayList CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
 CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本来实现。
- 构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt;  implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable {   // 内部独占锁  final transient ReentrantLock lock = new ReentrantLock(); 	// volatile 修饰的数组，只能getArray和setArray操作  private transient volatile Object[] array; 	// 返回当前数组  final Object[] getArray() {  return array;  } 	// 设置数组  final void setArray(Object[] a) {  array = a;  } 	// 构造函数 创建一个空数组  public CopyOnWriteArrayList() {  setArray(new Object[0]);  } }  底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。" />
+构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt; implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable { // 内部独占锁 final transient ReentrantLock lock = new ReentrantLock(); // volatile 修饰的数组，只能getArray和setArray操作 private transient volatile Object[] array; // 返回当前数组 final Object[] getArray() { return array; } // 设置数组 final void setArray(Object[] a) { array = a; } // 构造函数 创建一个空数组 public CopyOnWriteArrayList() { setArray(new Object[0]); } } 底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。
+add public boolean add(E e) { // 获取独占锁 final ReentrantLock lock = this." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/copyonwritearraylist/" />
@@ -84,6 +85,43 @@ CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -565,7 +603,6 @@ CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 

@@ -6,7 +6,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent,  boolean evict) {  Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i;  if ((tab = table) == null || (n = tab.length) == 0)  n = (tab = resize()).length;  // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() {  // 省略代码 	else {  // 初始容量16  newCap = DEFAULT_INITIAL_CAPACITY;  newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);  }  Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap];  // 省略代码  return newTab; }  static final float DEFAULT_LOAD_FACTOR = 0." />
+<meta name="description" content="HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) { Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i; if ((tab = table) == null || (n = tab.length) == 0) n = (tab = resize()).length; // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() { // 省略代码 else { // 初始容量16 newCap = DEFAULT_INITIAL_CAPACITY; newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY); } Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap]; // 省略代码 return newTab; } static final float DEFAULT_LOAD_FACTOR = 0." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/" />
@@ -80,6 +80,43 @@
     
   </div>
   
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
 </header>
 
 
@@ -438,7 +475,6 @@
 
 <script src="https://leejay.top/assets/main.js"></script>
 <script src="https://leejay.top/assets/prism.js"></script>
-
 
 
 
