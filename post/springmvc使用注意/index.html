@@ -438,7 +438,7 @@ io.spring.server.event.MyListener3
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AsyncApplicationEventMulticaster</span> <span style="color:#66d9ef">extends</span> SimpleApplicationEventMulticaster <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">AsyncApplicationEventMulticaster</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setTaskExecutor</span><span style="color:#f92672">(</span>Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span>2<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setTaskExecutor</span><span style="color:#f92672">(</span>Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span><span style="color:#ae81ff">2</span><span style="color:#f92672">));</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
 </span></span></code></pre></div><blockquote>

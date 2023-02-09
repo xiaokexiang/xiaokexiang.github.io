@@ -355,12 +355,12 @@ code.has-jax {
 <h4 id="happen-before传递性">happen-before传递性<a href="#happen-before传递性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>假设线程A先调用了set()，设置了a=5，之后线程B调用了get()，返回一定是a=5。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> 0<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span> a <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">set</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        a <span style="color:#f92672">=</span> 5<span style="color:#f92672">;</span><span style="color:#75715e">// step 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> 1<span style="color:#f92672">;</span><span style="color:#75715e">// step 2
+</span></span><span style="display:flex;"><span>        a <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">;</span><span style="color:#75715e">// step 1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        c <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span><span style="color:#75715e">// step 2
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>

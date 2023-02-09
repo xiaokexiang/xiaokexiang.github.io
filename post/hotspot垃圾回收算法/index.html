@@ -755,7 +755,7 @@ code.has-jax {
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 因为finalizer线程的低优先级, 需要休眠一会。
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// JVM会先判断是否有必要执行finalizer方法, 并执行相应的finalize()方法
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1_000</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
@@ -766,7 +766,7 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 第二次自救 用于判断是否会执行finalize方法两次
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span>1_000<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1_000</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
