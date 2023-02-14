@@ -10,10 +10,10 @@
     <lastBuildDate>Sat, 01 Aug 2020 11:10:01 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/binarydump/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>二叉堆时间复杂度分析</title>
-      <link>https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</link>
+      <link>https://leejay.top/post/algorithm_binary_dump/</link>
       <pubDate>Sat, 01 Aug 2020 11:10:01 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</guid>
+      <guid>https://leejay.top/post/algorithm_binary_dump/</guid>
       <description>二叉堆概念 二叉堆本质上是一颗完全二叉树，它的根节点又叫做堆顶。二叉堆分为：
 最大堆：最大堆的任何一个父节点的值，都大于或等于它左、右节点的值。
 最小堆：最小堆的任何一个父节点的值，都小于或等于它左、右节点的值。

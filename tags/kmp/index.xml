@@ -10,10 +10,10 @@
     <lastBuildDate>Wed, 08 Jun 2022 15:52:15 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/kmp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kmp算法浅析</title>
-      <link>https://leejay.top/post/kmp%E7%AE%97%E6%B3%95%E6%B5%85%E6%9E%90/</link>
+      <link>https://leejay.top/post/algorithm_kmp/</link>
       <pubDate>Wed, 08 Jun 2022 15:52:15 +0800</pubDate>
       
-      <guid>https://leejay.top/post/kmp%E7%AE%97%E6%B3%95%E6%B5%85%E6%9E%90/</guid>
+      <guid>https://leejay.top/post/algorithm_kmp/</guid>
       <description>KMP算法：一种字符串搜索算法。是第一个用于字符串匹配的线性时间算法。
 暴力匹配 在字符串匹配中，若我们使用暴力破解对主串和子串进行匹配，当匹配失败就回退到主串的下一个字符重新开始匹配。在最坏的情况下，此种方式的时间复杂度为O(m*n)。匹配流程下图所示。
 KMP算法 基本概念 KMP算法（由Knuth、Morris、Pratt三人共同发表），其特点就是在一次字符串的遍历过程中就可以匹配出子串。其时间复杂度是O(m+n)。

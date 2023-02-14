@@ -7,13 +7,29 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Thu, 09 Feb 2023 14:17:55 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 14 Feb 2023 14:58:25 +0800</lastBuildDate><atom:link href="https://leejay.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java虚拟机基础入门</title>
+      <link>https://leejay.top/post/jvm_in_action/</link>
+      <pubDate>Tue, 14 Feb 2023 14:58:25 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/jvm_in_action/</guid>
+      <description>1. 类加载流程 Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。
+1.1 类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
+其中验证、准备、解析统称为连接。
+需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
+类初始化的六种情况 《Java虚拟机规范》中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
+遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
+使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。
+调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A.</description>
+    </item>
+    
     <item>
       <title>Kmp算法浅析</title>
-      <link>https://leejay.top/post/kmp%E7%AE%97%E6%B3%95%E6%B5%85%E6%9E%90/</link>
+      <link>https://leejay.top/post/algorithm_kmp/</link>
       <pubDate>Wed, 08 Jun 2022 15:52:15 +0800</pubDate>
       
-      <guid>https://leejay.top/post/kmp%E7%AE%97%E6%B3%95%E6%B5%85%E6%9E%90/</guid>
+      <guid>https://leejay.top/post/algorithm_kmp/</guid>
       <description>KMP算法：一种字符串搜索算法。是第一个用于字符串匹配的线性时间算法。
 暴力匹配 在字符串匹配中，若我们使用暴力破解对主串和子串进行匹配，当匹配失败就回退到主串的下一个字符重新开始匹配。在最坏的情况下，此种方式的时间复杂度为O(m*n)。匹配流程下图所示。
 KMP算法 基本概念 KMP算法（由Knuth、Morris、Pratt三人共同发表），其特点就是在一次字符串的遍历过程中就可以匹配出子串。其时间复杂度是O(m+n)。
@@ -27,27 +43,11 @@ next数组的第一位默认是-1，即当匹配失败的时候，子串往后�
     </item>
     
     <item>
-      <title>ReentrantLock源码解析</title>
-      <link>https://leejay.top/post/reentrantlock/</link>
-      <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/reentrantlock/</guid>
-      <description>Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。
-AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。
-state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。
-线程的中断 interrupt 将线程的中断标识设置为true，并不是让线程立马停止执行。 isInterrupted 判断线程的中断状态，不会对当前线程中断状态产生任何影响。 interrupted 判断当前线程的中断状态，但是会清楚当前线程的中断标识（即为false）。 线程阻塞和唤醒 由LockSupport类实现，其底层是调用了Unsafe的park 和 unpark。
-如果当前线程是非中断状态，调用park则线程阻塞，如果当前线程是中断状态，调用park()会立即返回也是为什么AQS要清空中断状态的原因。 park方法不会抛出中断异常（也不会清除中断状态），如果先调用unpark再调用park，那么park也会立马返回。 连续调用多次unpark方法，效果等同于调用一次unpark方法。 park方法和sleep方法相同，不会释放资源，而wait方法会释放资源。 park方法将Runnable -&amp;gt; WAITING/TIME_WAITING，unpark方法将WAITING/TIME_WAITING -&amp;gt; Runnable。 FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
-还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
-Node的waitStatus Node状态 描述 INIT=0 Node初始创建时默认为0 CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。 SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。 CONDITION=-2 表示节点处于等待队列中，等待被唤醒。 PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。 ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。
-class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK.</description>
-    </item>
-    
-    <item>
       <title>Elasticsearch操作文档</title>
-      <link>https://leejay.top/post/elasticsearch%E6%93%8D%E4%BD%9C%E6%96%87%E6%A1%A3/</link>
+      <link>https://leejay.top/post/elasticsearch/</link>
       <pubDate>Thu, 09 Feb 2023 14:17:55 +0800</pubDate>
       
-      <guid>https://leejay.top/post/elasticsearch%E6%93%8D%E4%BD%9C%E6%96%87%E6%A1%A3/</guid>
+      <guid>https://leejay.top/post/elasticsearch/</guid>
       <description>前置知识 Elasticsearch是一个分布式，RESTful风格的搜索和数据分析引擎。
 概念点 ES是面向文档的，文档是最小单位，对应着关系型数据库中的一条数据。 index索引除了存储所有映射类型的字段，还包含一些设置，ex: refresh_interval（新增文档对于搜索可见的时间间隔，准实时）。 集群由n个节点（n≥1）组成，节点由m个分片（m≥1）组成。索引由x个主分片（x≥1）和y个副本分片（y≥0）组成。（副本可以在运行时增加，而主分片不行，在创建索引前必须决定其数量） 新增文档时，会根据文档的id进行hash计算确认一个主分区A（shard_num = hash(_id) % 主分片个数），如果A分区不在当前节点，那么ES会将文档索引到A分区所在的目标节点上，并同步到非目标节点的主分片中，并通过各节点的主分片与副本分片进行同步。 RESTful ES的查询会涉及到RESTful的相关概念
 其中GET、HEAD、PUT、DELETE是幂等的操作（即任意多次执行所产生的影响均与一次执行的影响相同） POST不是幂等的操作（即每次调用都会创建一个新的资源，但实际会通过数据库主键或其他方式进行限制）。PATCH也不是幂等的，因为相比PUT对资源的全部更新，PATCH强调的是部分更新，如果是依赖于当前值的++操作，那么必定是非幂等的。 GET、HEAD是安全的操作，仅仅是查询资源并不会修改资源，PUT、PATHC、DELETE、POST是不安全的操作，会修改资源数据。 type移除 ES中的index、type、document、field分别对应着关系型数据库中的database、table、row、column，在ES8.0版本中已经不在支持type。
@@ -57,48 +57,126 @@ class Test { private static final ReentrantLock LOCK = new ReentrantLock(); publ
     </item>
     
     <item>
-      <title>ThreadPool线程池源码解析</title>
-      <link>https://leejay.top/post/threadpool/</link>
-      <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/threadpool/</guid>
-      <description>ThreadPool 为什么使用线程池 我们知道频繁的单独创建线程是很消耗系统资源的，而线程池中线程是可以线程复用的，不需要每次执行都重新创建，并且线程池可以提供控制线程个数等资源限制和管理的手段。
-实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
-线程池类继承体系 ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。
-任何需要线程池执行的任务，都必须直接或间接的实现Runnable接口。
-ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this.</description>
-    </item>
-    
-    <item>
-      <title>ThreadLocal内存泄漏分析</title>
-      <link>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</link>
-      <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/threadlocal%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/</guid>
-      <description>ThreadLocal概述 ThreadLocal类，底层由ThreadLocalMap实现，是Thread类的成员变量，因为类的每个实例的成员变量都是这个实例独有的，所以在不同的Thread中有不同的副本，每个线程的副本只能由当前线程使用，线程间互不影响。因为一个线程可以拥有多个ThreadLocal对象，所以其内部使用ThreadLocalMap&amp;lt;ThreadLocal&amp;lt;?&amp;gt;, Object&amp;gt;来实现。
-public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocals = null; } public class ThreadLocal&amp;lt;T&amp;gt; { static class ThreadLocalMap { // 需要注意的是这里的Entry key是ThreadLocal的弱引用 // 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理 static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;lt;?&amp;gt;&amp;gt; { // value 与 ThreadLocal关联 Object value; Entry(ThreadLocal&amp;lt;?&amp;gt; k, Object v) { super(k); value = v; } } } } 当前线程执行时(currentThread已初始化)，会初始化ThreadLocal对象，存储在Heap堆中，ThreadLocal的引用，即ThreadLocalRef会存储在当前线程Stack栈中。 当执行ThreadLocal的get()/set()方法时，会通过当前线程的引用找到当前线程在堆中的实例，判断这个实例的成员变量：ThreadLocalMap是否已经创建(即初始化)，如果没有则初始化。 若一个Threa中存在多个ThreadLocal，那么ThreadLocalMap会存在多个Entry，Entry的key是弱引用的ThreadLocal。 内存泄漏触发条件 根据ThreadLocal堆栈示意图，我们可以推断处只要符合以下条件，ThreadLocal就会出现内存泄漏：
-ThreadLocal没有被外部强引用，这样在GC的时候ThreadLocal会被回收，导致key = null。 key = null后没有调用过ThreadLocalMap中的get、set或remove方法中的任意一个。(因为这些方法会将key = null的value也置为null，便于GC回收) Thread对象没有被回收，Thread强引用着ThreadLocalMap，这样ThreadLocalMap也不会被回收。 ThreadLocalMap没有被回收，但是它的Entry中的key已被回收，key关联的value也不能被外部访问，所以导致了内存泄漏。 总结如下：
-Thread生命周期还没有结束，ThreadLocal对象被回收后且没有调用过get、set或remove方法就会导致内存泄漏。
-我们可以看出内存泄漏的触发条件比较苛刻的，但确实会发生，其实只要线程Thread的生命周期结束，那么Thread的ThreadLocalMap也不会存在强引用，那么ThreadLocalMap中的value最终也会被回收。，所以在使用ThreadLocal时，除了需要密切关注Thread和ThreadLocal的生命周期，还需要在每次使用完之后调用remove方法，这样做还有一个问题就是：</description>
-    </item>
-    
-    <item>
       <title>Java中的小知识点</title>
-      <link>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/</link>
+      <link>https://leejay.top/post/knowledge/</link>
       <pubDate>Thu, 12 May 2022 17:55:10 +0800</pubDate>
       
-      <guid>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E5%B0%8F%E7%9F%A5%E8%AF%86%E7%82%B9/</guid>
-      <description>1. Java是值传递还是引用传递 结论： Java只有值传递没有引用传递。
-值传递与引用传递的区别：对形参的修改不会影响到实参被称为值传递。引用传递则相反。
-public static void change(Integer i) { i = 3; } public static void change(Person person) { person.name = &amp;#34;李四&amp;#34;; } public static void main(String.. args) { Integer x = 1; change(x); System.out.println(x); // x = 1; Person person = new Person(&amp;#34;张三&amp;#34;); change(person); System.out.println(person.getName()); // &amp;#34;李四&amp;#34; } 如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。 如果是对象做参数时，将堆中对象的引用复制一份传递给方法，引用的地址不会被修改（也是被称为值传递的根本原因)，但是地址的内容会被函数修改。 2. 包装类Integer中的缓存池 Integer x = 123; Integer y = 123; System.out.println(x == y); // true Integer a = 128; Integer b = 128; System.</description>
+      <guid>https://leejay.top/post/knowledge/</guid>
+      <description>&lt;h2 id=&#34;1-java是值传递还是引用传递&#34;&gt;1. Java是值传递还是引用传递&lt;/h2&gt;
+&lt;p&gt;结论： Java只有值传递没有引用传递。&lt;/p&gt;
+&lt;p&gt;值传递与引用传递的区别：&lt;code&gt;对形参的修改不会影响到实参被称为值传递。引用传递则相反。&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;change&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Integer i&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;3&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;change&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;Person person&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    person&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;name&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;李四&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;..&lt;/span&gt; args&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Integer x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    change&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// x = 1;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	Person person &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Person&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;张三&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    change&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;person&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;person&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;getName&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;());&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// &amp;#34;李四&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。&lt;/li&gt;
+&lt;li&gt;如果是对象做参数时，将堆中对象的引用复制一份传递给方法，&lt;code&gt;引用的地址不会被修改（也是被称为值传递的根本原因&lt;/code&gt;)，但是地址的内容会被函数修改。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-包装类integer中的缓存池&#34;&gt;2. 包装类Integer中的缓存池&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer x &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;123&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer y &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;123&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; y&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;128&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;128&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; b&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// false
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;a&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;equals&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;b&lt;span style=&#34;color:#f92672&#34;&gt;));&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer z &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Integer&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;valueOf&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;123&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Integer w &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Integer&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;123&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;x &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; z&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;z &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; w&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// false
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;Integer类型的缓存池的范围是&lt;code&gt;[-128, 127]&lt;/code&gt;，只要是这个范围的值自动装箱就会返回相同的对象。&lt;/li&gt;
+&lt;li&gt;Integer类型中的equals()方法是对&lt;code&gt;包装的值&lt;/code&gt;进行了比较，而不是比较对象。&lt;/li&gt;
+&lt;li&gt;valueOf()方法利用了缓存，符合第一条的规则。&lt;/li&gt;
+&lt;li&gt;如果通过new关键字创建对象，是没用利用缓存，并不符合第一条规则。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;3-多层嵌套循环跳出问题&#34;&gt;3. 多层嵌套循环跳出问题&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;c中可以通过goto语句跳出多层嵌套循环，java保留了goto关键字，但没有任何作用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]{&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]{&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;,&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        loop_a:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; a&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; k &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; b&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;k &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; loop_a&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 跳出最外层循环
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;j &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; -&amp;gt; &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; k&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 1 -&amp;gt; 4
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;------------------------&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        loop_b&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; a&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; k &lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; b&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;k &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;)&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt; loop_b&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 跳过内层循环值为5的，继续从外层的下一个数开始执行
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;j &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; -&amp;gt; &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; k&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;// 1 -&amp;gt; 4; 2 -&amp;gt; 4
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;hr&gt;
+&lt;h2 id=&#34;4-string对象的创建&#34;&gt;4. String对象的创建&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;字符串常量池（String Common Pool）：因为字符串的大量创建会影响程序的性能，JVM引入了&lt;code&gt;字符串常量池&lt;/code&gt;来减少字符串性能的开销（也基于字符串的不可变性才能实现）。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String a &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;abc&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String b &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; String&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;abc&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;a&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;b&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;c&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String d &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; a&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;intern&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;String e &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; b&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;intern&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; b&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;//  false
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; c&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;//  true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;a &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; d&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;//  true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;System&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;(&lt;/span&gt;d &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; e&lt;span style=&#34;color:#f92672&#34;&gt;);&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;//  true
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;字面量创建对象&#34;&gt;字面量创建对象&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.leejay.top/img/String%E5%AD%97%E9%9D%A2%E9%87%8F.png&#34; alt=&#34;String字面量&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;new关键字创建对象&#34;&gt;new关键字创建对象&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.leejay.top/img/image-20220512175258152.png&#34; alt=&#34;image-20220512175258152&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;stringintern&#34;&gt;String.intern()&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;当调用 intern 方法时，如果池中已经包含一个等于该String对象的字符串，&lt;code&gt;由equals(Object)方法确定&lt;/code&gt;，则返回池中的字符串。否则，将此String对象添加到池中并返回对该String对象的引用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;img src=&#34;https://image.leejay.top/img/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20220512175811.png&#34; alt=&#34;微信截图_20220512175811&#34;&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;最近在阅读Spring AOP的源码(基于Spring 5.2.8.RELEASE)中，发现&lt;code&gt;@EnableAspectJAutoProxy&lt;/code&gt;注解中的&lt;code&gt;proxyTargetClass&lt;/code&gt;参数并不如注释（&lt;code&gt;是否创建基于子类的CGLIB代理&lt;/code&gt;）中说所的哪样生效。无论我设置成true/false都会使用CGLIB代理。&lt;/p&gt;
+&lt;/blockquote&gt;</description>
     </item>
     
     <item>
       <title>Grpc快速入门</title>
-      <link>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</link>
+      <link>https://leejay.top/post/grpc/</link>
       <pubDate>Fri, 22 Apr 2022 16:29:25 +0800</pubDate>
       
-      <guid>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</guid>
+      <guid>https://leejay.top/post/grpc/</guid>
       <description>Grpc快速入门 grpc是一款高性能、开源的通用Rpc框架。由google开源，默认使用protobuf作为定义接口的语言(IDL)和底层的消息交换格式，使用Http/2作为传输协议。
 Rpc简介 Rpc(remote procedure call)，即远程过程调用。服务器A上的服务想调用服务器B上的服务提供的方法，因为不存在于同一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。
 Rpc像调用本地方法一样去调用远程方法。
@@ -111,10 +189,10 @@ pom配置 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/grou
     
     <item>
       <title>Tinyproxy轻量代理使用教程</title>
-      <link>https://leejay.top/post/tinyproxy%E8%BD%BB%E9%87%8F%E4%BB%A3%E7%90%86%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <link>https://leejay.top/post/tiny_proxy/</link>
       <pubDate>Fri, 15 Apr 2022 10:40:36 +0800</pubDate>
       
-      <guid>https://leejay.top/post/tinyproxy%E8%BD%BB%E9%87%8F%E4%BB%A3%E7%90%86%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://leejay.top/post/tiny_proxy/</guid>
       <description>Tinyproxy是一个轻量级的HTTP / HTTPS代理守护进程，快速且小巧。
 Tinyproxy的安装 基于Docker安装 使用monokal/tinyproxy的镜像,dockerhub上的使用已经很清楚了，按照描述:
 docker run -d --name=&amp;#39;tinyproxy&amp;#39; -p &amp;lt;Host_Port&amp;gt;:8888 --env BASIC_AUTH_USER=&amp;lt;username&amp;gt; --env BASIC_AUTH_PASSWORD=&amp;lt;password&amp;gt; --env TIMEOUT=&amp;lt;timeout&amp;gt; monokal/tinyproxy:latest &amp;lt;ACL&amp;gt; Set &amp;lt;Host_Port&amp;gt; to the port you wish the proxy to be accessible from.
@@ -126,10 +204,10 @@ curl测试 curl -x http://&amp;lt;your_username&amp;gt;:&amp;lt;your_password&am
     
     <item>
       <title>Java中的进制与位运算</title>
-      <link>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E8%BF%9B%E5%88%B6%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/</link>
+      <link>https://leejay.top/post/decimal/</link>
       <pubDate>Fri, 08 Apr 2022 14:44:27 +0800</pubDate>
       
-      <guid>https://leejay.top/post/java%E4%B8%AD%E7%9A%84%E8%BF%9B%E5%88%B6%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97/</guid>
+      <guid>https://leejay.top/post/decimal/</guid>
       <description>进制详解 包括二进制、八进制、十进制和十六进制, 计算机由电路构成, 只有0/1两种状态, 所以采用的是二进制
 二进制 由0 和 1组成, 计算机内部都是二进制的形式存储的。 进行加法运算的时候逢二进一, 减法运算的时候借一当二。在java中0b开头表示二进制值
 十进制 由0~9的数字组成, 加法计算时逢十进一, 减法计算时借一当十。十进制是人类发展中自然形成的
@@ -142,20 +220,20 @@ curl测试 curl -x http://&amp;lt;your_username&amp;gt;:&amp;lt;your_password&am
     
     <item>
       <title>Kube Eventer基于mysql的使用</title>
-      <link>https://leejay.top/post/kube-eventer%E5%9F%BA%E4%BA%8Emysql%E7%9A%84%E4%BD%BF%E7%94%A8/</link>
+      <link>https://leejay.top/post/kube_eventer/</link>
       <pubDate>Mon, 21 Mar 2022 15:03:59 +0800</pubDate>
       
-      <guid>https://leejay.top/post/kube-eventer%E5%9F%BA%E4%BA%8Emysql%E7%9A%84%E4%BD%BF%E7%94%A8/</guid>
+      <guid>https://leejay.top/post/kube_eventer/</guid>
       <description>前言 工作上需要持久化Pod的事件信息，我们知道事件默认是由etcd来进行存储的，但是事件的信息存储具有时效性（默认1h，通过修改kube-apiserver的--event--ttl实现更长时间的存储），且将etcd这种内存级别的组件作为持久化数据库也是不合理的，所以使用了阿里开源的这款事件告警组件kube-eventer。
 使用方法 创建表 CREATE TABLE IF NOT EXISTS `kube_event` ( `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &amp;#39;event primary key&amp;#39;, `name` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event name&amp;#39;, `namespace` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event namespace&amp;#39;, `event_id` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event_id&amp;#39;, `type` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event type Warning or Normal&amp;#39;, `reason` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event reason&amp;#39;, `message` text NOT NULL COMMENT &amp;#39;event message&amp;#39;, `kind` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event kind&amp;#39;, `first_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event first occurrence time&amp;#39;, `last_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event last occurrence time&amp;#39;, `cluster` varchar(64) DEFAULT NULL COMMENT &amp;#39;cluster&amp;#39;, `source` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT &amp;#39;source&amp;#39;, PRIMARY KEY (`id`), UNIQUE KEY `event_id_index` (`event_id`) ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT=&amp;#39;Event info tables&amp;#39;; 执行yaml apiVersion: apps/v1 kind: Deployment metadata: labels: name: kube-eventer name: kube-eventer namespace: kube-system spec: replicas: 1 selector: matchLabels: app: kube-eventer template: metadata: labels: app: kube-eventer annotations:	scheduler.</description>
     </item>
     
     <item>
       <title>Mirai安装教程</title>
-      <link>https://leejay.top/post/mirai%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</link>
+      <link>https://leejay.top/post/mirai/</link>
       <pubDate>Mon, 07 Mar 2022 10:21:01 +0800</pubDate>
       
-      <guid>https://leejay.top/post/mirai%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://leejay.top/post/mirai/</guid>
       <description>&lt;h2 id=&#34;mirai&#34;&gt;Mirai&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/mamoe/mirai&#34;&gt;mirai&lt;/a&gt; 是一个在全平台下运行，提供 QQ Android 协议支持的高效率机器人库。&lt;/p&gt;
@@ -164,20 +242,20 @@ curl测试 curl -x http://&amp;lt;your_username&amp;gt;:&amp;lt;your_password&am
     
     <item>
       <title>ApereoCas安装与使用教程</title>
-      <link>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <link>https://leejay.top/post/aperao_cas/</link>
       <pubDate>Mon, 22 Nov 2021 15:30:48 +0800</pubDate>
       
-      <guid>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://leejay.top/post/aperao_cas/</guid>
       <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。&lt;/code&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>事务的处理机制</title>
-      <link>https://leejay.top/post/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/</link>
+      <link>https://leejay.top/post/transcation/</link>
       <pubDate>Mon, 06 Sep 2021 16:06:48 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6/</guid>
+      <guid>https://leejay.top/post/transcation/</guid>
       <description>本地事务 本地事务是指仅操作单一事务资源的、不需要全局事务管理器进行协调的事务。
 从应用角度看，它是直接依赖于数据源本身提供的事务能力来工作的，在程序代码层面，最多只能对事务接口做一层标准化的包装（如 JDBC 接口），并不能深入参与到事务的运作过程当中，事务的操作都要依赖底层数据源的支持才能工作。
 例如MySQL的Innodb引擎支持事务操作。
@@ -200,10 +278,10 @@ CAP定理：
     
     <item>
       <title>Git Command</title>
-      <link>https://leejay.top/post/gitcommand/</link>
+      <link>https://leejay.top/post/git_command/</link>
       <pubDate>Wed, 25 Aug 2021 16:39:56 +0800</pubDate>
       
-      <guid>https://leejay.top/post/gitcommand/</guid>
+      <guid>https://leejay.top/post/git_command/</guid>
       <description>本地仓库的操作 本地仓库提交 # 本地提交 git commit -m &amp;#34;message&amp;#34; 分支 分支的创建基于``基于某个提交及它的父提交，当前所在的分支会用*`标识
 # 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} # 将source分支指向目标分支或目标版本 git branch -f &amp;lt;source_branch_name&amp;gt; &amp;lt;dest_branch_name|version num&amp;gt; # 删除指定分支 git branch [-D|-d] &amp;lt;branch_name&amp;gt; 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。
 # 将${branch_name}分支提交记录覆盖到当前分支 git merge ${branch_name} rebase 相比于merge，rebase会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。
@@ -212,10 +290,10 @@ CAP定理：
     
     <item>
       <title>Mysql学习笔记</title>
-      <link>https://leejay.top/post/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <link>https://leejay.top/post/mysql/</link>
       <pubDate>Fri, 23 Jul 2021 09:51:37 +0800</pubDate>
       
-      <guid>https://leejay.top/post/mysql%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://leejay.top/post/mysql/</guid>
       <description>MySQL中的字符集和比较规则 字符集 SHOW CHARSET LIKE &amp;#39;utf8_%&amp;#39;; 字符集 编码长度 ASCII（128个字符） 1字节 ISO 8859-1（256个字符，又叫latin1） 1字节 GB2312（收录6763个汉字，兼容ASCII） 字符在ASCII中采用1字节，否则2字节 GBK（对GB2312进行扩充，兼容GB2312） 与GB2312相同 Unicode（兼容ASCII字符集，采用变长编码方式） UTF-8:：1-4个字节，UTF-16：2或4字节，UTF-32：4字节 MySQL中的utf8和utf8mb4字符集区别在于前者是1-3字符（阉割），后者是1-4字符。
 比较规则 SHOW COLLATION LIKE &amp;#39;utf8_%&amp;#39;; 后缀 英文 不区分重音 _ai accent insensitive 不区分重音 _as accent sensitive 区分重音 _ci case insensitive 不区分大小写 _cs case sensitive 区分大小写 _bin binary 以二进制方式比较 MySQL中utf8默认的比较规则就是utf8_general_ci。
 字符集与比较规则的级别 # [服务器级别] SHOW VARIABLES LIKE &amp;#39;character_set_server&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_server&amp;#39;; # [创建或修改数据库比较规则] CREATE[ALTER] DATABASE [database_name] CHARACTER SET utf8 COLLATE utf8_general_ci; # [数据库级别] USE [database_name]; SHOW VARIABLES LIKE &amp;#39;character_set_database&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_database&amp;#39;; # [表级别] 如果表不设置字符集和比较规则，默认继承数据库的配置 CREATE[ALTER] TABLE unicode(name VARCHAR(10)) CHARACTER SET utf8 COLLATE utf8_general_ci; # [表级别] 查看表的字符集和编码规则 SHOW TABLE STATUS FROM unicode; # [创建列的字符集和比较规则] 不设置默认读取表的配置 CREATE TABLE line( name VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci, age INT(16) ) ALTER TABLE [table_name] MODIFY [column] VARCHAR CHARACTER SET latin1 COLLATE latin1_general_cs; 无论是只修改字符集或比较规则，未设置的一方都会自动的改为与修改一方对应的配置。</description>
@@ -223,10 +301,10 @@ CAP定理：
     
     <item>
       <title>关于EnableAspectJAutoProxy注解引出的若干问题</title>
-      <link>https://leejay.top/post/%E5%85%B3%E4%BA%8Eenableaspectjautoproxy%E6%B3%A8%E8%A7%A3%E5%BC%95%E5%87%BA%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</link>
+      <link>https://leejay.top/post/enable_aspectj_auto_proxy/</link>
       <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E5%85%B3%E4%BA%8Eenableaspectjautoproxy%E6%B3%A8%E8%A7%A3%E5%BC%95%E5%87%BA%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://leejay.top/post/enable_aspectj_auto_proxy/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;最近在阅读Spring AOP的源码(基于Spring 5.2.8.RELEASE)中，发现&lt;code&gt;@EnableAspectJAutoProxy&lt;/code&gt;注解中的&lt;code&gt;proxyTargetClass&lt;/code&gt;参数并不如注释（&lt;code&gt;是否创建基于子类的CGLIB代理&lt;/code&gt;）中说所的哪样生效。无论我设置成true/false都会使用CGLIB代理。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
@@ -234,10 +312,10 @@ CAP定理：
     
     <item>
       <title>Docker命令汇总</title>
-      <link>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</link>
+      <link>https://leejay.top/post/docker/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
       
-      <guid>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</guid>
+      <guid>https://leejay.top/post/docker/</guid>
       <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
@@ -249,10 +327,10 @@ CAP定理：
     
     <item>
       <title>Kubernetes概念入门</title>
-      <link>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</link>
+      <link>https://leejay.top/post/kubernetes/</link>
       <pubDate>Fri, 09 Apr 2021 11:07:57 +0800</pubDate>
       
-      <guid>https://leejay.top/post/kubernetes%E6%A6%82%E5%BF%B5%E5%85%A5%E9%97%A8/</guid>
+      <guid>https://leejay.top/post/kubernetes/</guid>
       <description>容器与虚拟机的区别 虚拟机（VM）是虚拟化底层计算机，每个VM不仅需要运行操作系统的完整副本，还需要运行操作系统需要运行的所有硬件的虚拟副本。这就意味着需要大量的硬件资源。
 相比VM，容器只需要虚拟化操作系统。每个容器共享主机操作系统内核。相比VM功能类似，但是开销少很多。但是VM提供了完全隔离的环境。
 容器内的进程是运行在宿主机的操作系统上的，而虚拟机内的进程是运行在不同的操作系统上的，但容器内的进程是与其他进程隔离的。、
@@ -263,41 +341,28 @@ Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程 �
     
     <item>
       <title>HashMap的几点注意事项</title>
-      <link>https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</link>
+      <link>https://leejay.top/post/hashmap/</link>
       <pubDate>Wed, 07 Apr 2021 11:03:14 +0800</pubDate>
       
-      <guid>https://leejay.top/post/hashmap%E7%9A%84%E5%87%A0%E7%82%B9%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9/</guid>
+      <guid>https://leejay.top/post/hashmap/</guid>
       <description>HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) { Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i; if ((tab = table) == null || (n = tab.length) == 0) n = (tab = resize()).length; // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() { // 省略代码 else { // 初始容量16 newCap = DEFAULT_INITIAL_CAPACITY; newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY); } Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap]; // 省略代码 return newTab; } static final float DEFAULT_LOAD_FACTOR = 0.</description>
     </item>
     
     <item>
-      <title>Spring Security框架入门与源码解析</title>
-      <link>https://leejay.top/post/spring-security%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</link>
+      <title>Spring Security基础入门</title>
+      <link>https://leejay.top/post/spring_security_in_action/</link>
       <pubDate>Fri, 19 Mar 2021 17:47:21 +0800</pubDate>
       
-      <guid>https://leejay.top/post/spring-security%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</guid>
+      <guid>https://leejay.top/post/spring_security_in_action/</guid>
       <description>Spring Security入门 依赖与配置 maven依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Security配置 @Configuration public class WebSecurityConfig extends WebSecurityConfigurerAdapter { /** * 自定义用户管理系统 */ @Bean public UserDetailsManager userDetailsManager() { UserManager userManager = new UserManager(); userManager.createUser(innerUser()); return userManager; } private UserDetails innerUser() { // load user by username 模拟从数据库获取用户权限等信息 List&amp;lt;GrantedAuthority&amp;gt; authorities = new ArrayList&amp;lt;&amp;gt;(); // 添加 ADMIN &amp;amp; USER 权限 authorities.add(new SimpleGrantedAuthority(&amp;#34;USER&amp;#34;)); authorities.add(new SimpleGrantedAuthority(&amp;#34;ADMIN&amp;#34;)); // 一般数据库用户密码存入时会先加密，此处只是模拟加密后的用户信息 // 使用UserDetails.User$UserBuilder构建user return User.withUsername(&amp;#34;jack&amp;#34;) .</description>
     </item>
     
     <item>
-      <title>Redis（二）持久化与复制</title>
-      <link>https://leejay.top/post/redis%E4%BA%8C%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%A4%8D%E5%88%B6/</link>
-      <pubDate>Tue, 23 Feb 2021 11:27:01 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/redis%E4%BA%8C%E6%8C%81%E4%B9%85%E5%8C%96%E4%B8%8E%E5%A4%8D%E5%88%B6/</guid>
-      <description>&lt;h2 id=&#34;redis持久化&#34;&gt;Redis持久化&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Redis提供了两种&lt;code&gt;持久化&lt;/code&gt;方法用于将数据存储到硬盘：&lt;code&gt;快照(rdb)和只追加文件(aof)&lt;/code&gt;。&lt;/p&gt;
-&lt;p&gt;这两种方法和可以同时使用，也可以单独使用。&lt;/p&gt;
-&lt;/blockquote&gt;</description>
-    </item>
-    
-    <item>
-      <title>Redis（一）基本数据结构</title>
-      <link>https://leejay.top/post/redis%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <title>Redis基础入门</title>
+      <link>https://leejay.top/post/redis_in_action/</link>
       <pubDate>Thu, 28 Jan 2021 11:10:39 +0800</pubDate>
       
-      <guid>https://leejay.top/post/redis%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <guid>https://leejay.top/post/redis_in_action/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;基于内存存储的&lt;code&gt;非关系型&lt;/code&gt;数据库，支持五种数据结构，并支持&lt;code&gt;发布与订阅&lt;/code&gt;、&lt;code&gt;主从复制&lt;/code&gt;、&lt;code&gt;持久化&lt;/code&gt;等功能。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
@@ -305,10 +370,10 @@ Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程 �
     
     <item>
       <title>Linux下cron定时器</title>
-      <link>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</link>
+      <link>https://leejay.top/post/linux_cron/</link>
       <pubDate>Thu, 07 Jan 2021 14:21:38 +0800</pubDate>
       
-      <guid>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</guid>
+      <guid>https://leejay.top/post/linux_cron/</guid>
       <description>&lt;h3 id=&#34;crontab命令&#34;&gt;crontab命令&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;code&gt;crontab&lt;/code&gt;是linux下的定时任务服务，是基于&lt;code&gt;cron表达式&lt;/code&gt;实现定时任务操作。&lt;/p&gt;
@@ -317,22 +382,11 @@ Kubernetes基本概念 Kubernetes Master &amp;amp; Node Kubernetes运行流程 �
     
     <item>
       <title>Shell启动服务</title>
-      <link>https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/</link>
+      <link>https://leejay.top/post/linux_shell/</link>
       <pubDate>Tue, 29 Dec 2020 18:29:04 +0800</pubDate>
       
-      <guid>https://leejay.top/post/shell%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1/</guid>
+      <guid>https://leejay.top/post/linux_shell/</guid>
       <description>__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数 usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1 Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2.</description>
-    </item>
-    
-    <item>
-      <title>《财报就像一本故事书》读后感</title>
-      <link>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</link>
-      <pubDate>Tue, 15 Dec 2020 18:08:57 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/</guid>
-      <description>&lt;blockquote&gt;
-&lt;p&gt;以前做招聘的时候经常会给准备上市的企业招聘一些高管，经常会接触这么一句话：上市？上市就是为了圈钱！当时听了一知半解没有深究，也不知道为嘛说财务总监、采购总监之类的职位是敏感职位，近期在跟小伙伴学理财，学的越久越能体会到：&lt;code&gt;学会基本的财务知识对于家庭日常收支，更好的经营家庭盈利有帮助，当然直接目的是为了日后获取更多理财收益。&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;</description>
     </item>
     
     <item>
@@ -354,135 +408,20 @@ public interface ChannelHandler {} public interface ChannelInboundHandler extend
     
     <item>
       <title>SpringMVC使用注意</title>
-      <link>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</link>
+      <link>https://leejay.top/post/spring_mvc/</link>
       <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
       
-      <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
+      <guid>https://leejay.top/post/spring_mvc/</guid>
       <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
 public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } } WebMvcConfigurer 和 WebMvcConfigurationSupport 存在WebMvcConfigurationSupport则WebMvcConfigurer不生效 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class }) @ConditionalOnMissingBean(WebMvcConfigurationSupport.</description>
     </item>
     
     <item>
-      <title>Jvm类加载机制</title>
-      <link>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</link>
-      <pubDate>Wed, 09 Sep 2020 17:51:05 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</guid>
-      <description>Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。
-1.类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
-其中验证、准备、解析统称为连接。
-需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
-类初始化的六种情况 **《Java虚拟机规范》**中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
-遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
-使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。
-调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A.print(); } } 我们可以用过-XX:+TraceClassLoading来查看类是否被加载。</description>
-    </item>
-    
-    <item>
-      <title>HotSpot参数汇总</title>
-      <link>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</link>
-      <pubDate>Fri, 28 Aug 2020 16:36:54 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/</guid>
-      <description>基本参数 参数 作用 -XX:+PrintGCDetails 打印详细的GC日志 -XX:+PrintGCTimeStamps GC开头的时间为虚拟机启动时间的偏移量 -XX:+PrintGCApplicationStoppedTime 打印引用程序由于GC而产生停顿的时间 -Xloggc:D://log.txt 输出GC日志到D盘下log.txt文件中 -XX:+PrintVMOptions 打印显示传递的参数 -XX:+PrintCommandLineFlags 打印传递给虚拟机的显式和隐式参数 -XX:+PrintFlagsFinal 打印全部参数(包括虚拟机自身的参数) -Xss1m 指定栈大小为1m -Xms10m 初始堆空间大小 -Xmx20m 最大堆空间大小 -Xmn2m 新生代大小 -XX:SurvivorRatio 新生代中eden/s0/s1比例，默认8:1:1 -XX:NewRatio 老年代/新生代的比例，默认2:1 -XX:NewSize 新生代初始大小 -XX:MaxNewSize 新生代大小最大值 -XX:+HeapDumpOnOutOfMemoryError 堆OOM时导出堆的信息 -XX:HeapDumpPath=D://log.dump 将OOM信息导入到D盘下log.dump文件中 -XX:MetaspaceSize=1m 设置元数据区初始大小为1m -XX:MaxMetaspaceSize=2m 设置元数据区大小最大为2m -XX:MaxDirectMemorySize=2m 本机直接内存(堆外内存)最大2m，默认等于-Xmx -XX:+UseTLAB 开启TLAB，默认开启 -XX:+PrintTLAB 打印TLAB信息 -XX:TLABSize=1024 设置TLAB大小为1kb -XX:TLABRefillWasteFraction=64 允许TLAB空间浪费的比例 -XX:-ResizeTLAB 禁止TLAB自动调整大小和浪费比例 -XX:PretenureSizeThreshold=5242880 大于5m对象直接进入老年代，只对Serial、ParNew有用 -XX:MaxTenuringThreshold=15 晋升到老年代的年龄大小 -XX:TargetSurvivorRatio=50 用于动态对象年龄判断的s0的使用率参数，默认50 收集器选择参数 参数 新生代 老年代 -XX:+UseSerialGC Serial Serial Old -XX:+UseParallelGC Parallel Scavenge Parallel Old -XX:+UseParNewGC ParNew Serial Old -XX:+UseConcMarkSweepGC ParNew CMS -XX:UseG1GC G1 G1 收集相关参数 收集器 相关参数 注释 ParNew</description>
-    </item>
-    
-    <item>
-      <title>HotSpot垃圾收集器</title>
-      <link>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</link>
-      <pubDate>Thu, 20 Aug 2020 16:34:32 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</guid>
-      <description>JVM中经典的垃圾回收器 下图是来自oracle官方博客中介绍垃圾回收器之间的关系图。
-黄色代表新生代，灰色代表老年代，两个垃圾回收器之间相连表示这两个垃圾回收器组合使用。
-Serial &amp;amp; CMS 与 ParNew &amp;amp; Serial Old两组 在JDK8中已过期，JDK9中已移除。
-我们用并行、并发来形容不同的收集器：
-并行：描述的是多条垃圾回收器线程之间的关系，默认此时的用户线程处于等待状态。
-并发：描述垃圾回收器线程与用户线程间的关系，说明同一时间垃圾回收器线程与用户线程都在运行。
-新生代收集器 以下三种收集器都采用的是标记-复制算法来实现收集器的回收逻辑。
-Serial收集器 使用单线程工作的收集器，除了只会用一个处理器或一个收集线程去完成垃圾收集工作，更重要的是它在进行垃圾收集时，必须暂停其他所有的工作线程(STW)，直到收集结束。是客户端模式下默认新生代收集器。
-客户端/服务端区别：client比server模式启动速度更快，当server比client模式运行速度更快。
-相比其他垃圾收集器，Serial收集器时所有垃圾回收器里面额外内存消耗最小的，但STW耗时是最长的；对于单核处理器或处理器核心较少环境来说，由于没有线程交互的开销，Serial收集器可以获得最高的单线程收集效率。
--XX:+UseSerialGC 新生代 &amp;amp; 老年代都使用串行收集器 ParNew收集器 ParNew收集器本质上是Serial收集器的多线程并行版本。除了同时使用多条线程进行垃圾收集外，其余的和Serial收集器一致。
-这里的并行指的是：同一个时间有多个这样的收集线程在协调工作，用户线程此时处于等待状态。
-除了Serial收集器外，只有ParNew收集器能与CMS收集器配合工作。
-# 新生代ParNew &amp;amp; 老年代CMS 是开启CMS下新生代默认收集器 -XX:+UseConcMarkSweepGC # 新生代ParNew &amp;amp; 老年代SerialOld（JDK8后已过期） -XX:+UseParNewGC 因为线程交互的开销，在单核处理器下性能低于Serial，但是多核心下ParNew收集器还是很高效的。
-# 垃圾收集的线程数为8 -XX:ParallelGCThreads=8 不设置此参数时，当Cpu Cores &amp;lt; 8时，Threads=Cpu Cores，否则 Threads=3+(5*cores)/8）。
-Parallel Scavenge收集器 相比ParNew收集器目标是减少用户线程的停顿时间，Paraller收集器关注则是可控制的吞吐量。 $$ 吞吐量 = 运行用户代码时间 / (运行用户代码时间 + 运行垃圾收集时间） $$
-假设JVM执行完成某个请求共需要100分钟，其中垃圾收集花费1分钟，那么吞吐量就是99%。
-低停顿时间适合用户交互或保证服务响应的程序。高吞吐量适合最高效率利用处理器资源，尽快完成程序的运算任务。
-停顿时间缩短是以牺牲吞吐量和新生代空间为代价的。如果我们将新生代设置的较小，虽然会减少每次回收的时间，但是会导致垃圾回收更加频繁，虽然停顿时间在减少，但是吞吐量在下降。
-# 允许设置一个大于0的毫秒数，收集器尽量保证内存回收时间不超过该值 -XX:MaxGCPauseMillis # 允许设置一个大于0小于100的整数n # 系统将花费不超过 1/(1+n)的时间进行回收 假设n=99，那么不超过1%时间进行回收。 -XX:GCTimeRatio # 自适应GC策略，自动调整新生代大小，老年代晋年龄等 区别于ParNew是Paraller独有 -XX:+UseAdaptiveSizePolicy 老年代收集器 Serial Old收集器 是Serial收集器的老年代版本，基于标记-整理的单线程收集器，用于客户端模式下的HotSpot虚拟机使用。</description>
-    </item>
-    
-    <item>
-      <title>HotSpot垃圾回收算法</title>
-      <link>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</link>
-      <pubDate>Fri, 14 Aug 2020 16:33:06 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/</guid>
-      <description>垃圾回收概述 在JVM运行期间，会对内存中不再被使用的对象进行分配和管理。若不及时对内存中的垃圾进行清理，会导致被保留的空间无法被其他对象使用，从而导致内存溢出。
-内存溢出：系统无法分配给程序所需要的指定大小内存。
-内存泄漏：当对象不再使用或无法继续使用时，因为强引用的存在导致本该会回收的内存无法被回收，常见于：Map用对象作为key不重写hashcode &amp;amp; equals &amp;amp; ThreadLocal内存泄漏。
-对象是否存活 JVM垃圾回收器会对对象中不再使用(死去)的对象进行回收，那么垃圾回收器是如何进行判断的呢。
-1. 引用计数法 对于一个对象A，只要有一个对象引用了A，那么A的计数器增加1，当引用失效的时候就减1。该算法会产生对象之间循环引用问题，会导致内存泄漏。
-2. 可达性算法 通过一系列称为&amp;quot;GC Roots&amp;quot;的根对象作为起点，根据引用关系向下搜索，搜索过程走过的路称为&amp;quot;引用链&amp;quot;。如果某个对象到&amp;quot;GC Roots&amp;quot;没有任何引用链相连，就说明该对象需要被回收。
-图中绿色为可达对象，灰色为不可达对象。
-GC Roots包括但不限于以下：
-栈帧中引用的对象（局部变量、临时变量等） 类中的引用型静态变量 字符串常量池中的引用。 被Synchronized锁持有的对象。 3.并发的可达性 我们知道大部分的收集器都是使用可达性算法判断标记对象是否要被回收，其中又被分为中断用户线程、与用户线程并发执行两种。
-中断用户线程进行标记时，对象图中的对象或引用不会被修改，但堆中存储的对象越多，带来的STW时间也会越长。因此为了减少STW时长，标记与用户线程同时运行能有效减少STW时长，但会带来并发可达性问题：
-被标记完毕的对象又新引用了未被收集器访问的对象。 正在被标记的对象直接或间接删除了未被收集器访问的对象的引用。 基于上述两个问题产生了两种解决方案：
-增量更新 基于问题1，当被标记完毕对象又引用了未被收集器访问的对象时，将这些被标记完毕对象记录下来，等并发标记阶段结束后，以这些被标记完毕对象为根再次进行扫描。CMS收集器采用此策略实现并发标记。
-原始快照 基于问题2，当正在被标记的对象直接或间接删除了未被收集器访问的对象的引用时，将这些正在被标记的对象记录下来，等并发标记结束后，以这些正在被标记的对象为根重新扫描。G1收集器采用此策略实现并发标记。
-Java中的引用 传统的引用概念：若reference类型的数据中存储的数值是另一块内存的起始地址，就说明该reference数据是某个内存、某个对象的引用。
-从JDK1.2开始，Java对引用的概念进行补充，将引用分为了：强引用、软引用、弱引用和虚引用四种。
-public abstract class Reference&amp;lt;T&amp;gt; { // 引用本身 private T referent; // 存储reference本身的链表队列 volatile ReferenceQueue&amp;lt;? super T&amp;gt; queue; } 当垃圾回收器准备回收一个对象时，发现它还有软、弱、虚引用，就会在回收对象之前，将该引用加入到与之关联的引用队列ReferenceQueue中去，这样就可以实现在引用对象回收前的相关操作。
-强引用 即最传统引用的体现，比如Object obj = new Object()，只要强引用关系存在，那么垃圾回收器永远不会回收掉被引用的对象。
-软引用 用于描述还有用、但非必须的对象，只被软引用关联（指向）的对象，在OOM之前，会将这些对象进行二次回收，如果回收后仍没有足够内存，才会抛出OOM。Java中用SoftReference实现。
-弱引用 相比软引用，只被弱引用关联（指向）的对象只能生存到下一次垃圾收集，只要垃圾回收器工作，弱引用就会被回收。Java中用WeakReference实现。ThreadLocal.ThreadLocalMap&amp;lt;k,v&amp;gt;中key就继承了弱引用。
-public class Weak { private static WeakReference&amp;lt;String&amp;gt; weakReference; public static void main(String[] args) { test(); System.</description>
-    </item>
-    
-    <item>
-      <title>JVM内存区域概述</title>
-      <link>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/</link>
-      <pubDate>Thu, 13 Aug 2020 13:21:20 +0800</pubDate>
-      
-      <guid>https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/</guid>
-      <description>JVM内存区域概述 虚拟机栈 虚拟机栈描述的是Java方法执行的线程内存模型:每个方法被执行时，JVM会同步创建一个栈帧，用于存储局部变量表、操作数栈、动态链接、方法出口等信息，虚拟机栈区域是线程私有的，它的生命周期与线程相同。
-局部变量表：存放编译期可知的数据类型：8种基本数据类型和对象引用类型。这些数据类型在栈中用slot来表示，除了long &amp;amp; double占用2个slot，其余的都为1个。
-虚拟机栈包含用于执行native方法的本地方法栈。它们都会抛出OOM和StackOverFlow异常。
-虚拟机堆 这是一块线程共享的内存区域，几乎全部的对象实例、数组都在堆上分配（小对象可以在栈上分配）。
-从内存回收角度看， 堆被逻辑的分为：年轻代（包括eden、from、to三个区域）、老年代。
-从内存分配角度看，堆被分为多个线程私有的内存分配缓冲区（TLAB）。
-TLAB Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是CAS + 失败重试的方式。而TLAB是：
-通预先给每个线程在堆中分配一小块区域。 哪个线程创建对象，就在哪个线程的TLAB中分配内存。 如果这个线程的TLAB空间不够分配时，就通过同步锁定给这个线程分配新的TLAB。 -XX:+/-UseTLAB来开启和关闭TLAB。 元数据区 JDK1.8起，方法区改名为元数据区（MetaSpace），是线程共享的区域，是堆的一个逻辑部分，用于存储JVM加载的类型信息、常量、静态变量及即时编译后的方法代码等数据。会抛出OOM异常。
-常量池分类 Class文件中的常量池 主要存放字面量 &amp;amp; 符号引用。前者主要是文本字符串、八种基本数据类型、final修饰的常量等，后者包含：类和接口的全限定名、字段的名称和描述符、方法的名称和描述符。在类被加载后会存放到运行时常量池中。
-运行时常量池 属于元数据区中的一部分，类在被JVM加载后，类的版本、字段、方法和常量池等都会进入该区域。JVM会为每个加载的class维护一个运行时常量池，同时其中存储的是引用，实际对象还在堆中。日常我们所称的常量池就是运行时常量池。
-全局字符串常量池 JDK7后位于堆中，运行时存在的用于记录interned string的全局表StringTabel。其中存放的是String实例的引用，实际的String对象仍存在于堆。
-String.intern()：如果字符串常量池已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到字符串常量池并返回引用。
-字符常量的执行流程 首先编译期会将字面量、符号引用等放入Class文件的常量池中。
-在JVM类加载的过程中，除了字面量，类的字段、方法等信息都会加载到当前类运行时常量池。此时运行时常量池中存放的是CONSTANT-UnresolvedString，表明尚未resolve，只有在解析后存放的是CONSTANT_String，内容是实际的String对象的引用，和字符串常量池的引用一致。
-因为JVM类加载过程中的解析(resolve)阶段是可以懒执行的，只有当执行ldc指令时，通过存放在运行时常量池的索引去字符串常量池查找是否存在对应的String实例，如果存在就直接返回该引用，不存在就先在堆中创建对应的String对象，并将引用记录在字符串常量池中，再返回该引用。
-ldc指令：将int、float或String类型的常量值从常量池推送至栈顶。
-资料来源：https://www.zhihu.com/question/55994121/answer/408891707
-程序计数器 当前线程所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是线程私有的。
-直接内存 直接内存并不是JVM运行时数据区的一部分。常见于NIO类使用：通过Native方法分配堆外内存，在Java堆中持有该内存区域的引用实现操作，相比之前在Java堆和Native堆之间来回复制的方式，提升了效率。
-JVM中的对象 对象的创建 在Class类的常量池中寻找该类的符号引用，并通过该符号引用判断类是否被加载。 如果类没有被加载，那么JVM就会执行相应的类加载过程。 给对象分配内存空间共有两种方式：指针碰撞 &amp;amp; 空闲列表。 在对象分配内存的线程安全问题，默认是通过CAS + 失败重试实现，也可以选择TLAB。 初始化内存空间为零值，并对Mark Word进行必要设置（根据是否启动偏向锁设置信息）。 最终调用对象的构造函数进行初始化。 对象的构成 对象在堆中的布局分为三个部分：对象头、实例数据和对齐填充。而对象头中又包含：对象自身的运行时数据(Mark Word)、对象指向它类型元数据的指针以及数组长度(如果对象是数组)。
-对象头 Mark Word
-用于记录存储对象自身运行时的数据。比如HashCode、锁状态标识等。
-类型指针
-对象头中指向该对象类型元数据(元数据区)的指针，通过类型指针，JVM可以判断当前对象是哪个类的实例。
-并不是所有的虚拟机都会在对象头中保留类型指针。此问题查看对象的引用
-数组长度</description>
-    </item>
-    
-    <item>
       <title>二叉堆时间复杂度分析</title>
-      <link>https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</link>
+      <link>https://leejay.top/post/algorithm_binary_dump/</link>
       <pubDate>Sat, 01 Aug 2020 11:10:01 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E4%BA%8C%E5%8F%89%E5%A0%86%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90/</guid>
+      <guid>https://leejay.top/post/algorithm_binary_dump/</guid>
       <description>二叉堆概念 二叉堆本质上是一颗完全二叉树，它的根节点又叫做堆顶。二叉堆分为：
 最大堆：最大堆的任何一个父节点的值，都大于或等于它左、右节点的值。
 最小堆：最小堆的任何一个父节点的值，都小于或等于它左、右节点的值。
@@ -497,39 +436,52 @@ Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构�
     
     <item>
       <title>Future源码解析</title>
-      <link>https://leejay.top/post/future/</link>
+      <link>https://leejay.top/post/concurrent_future/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
       
-      <guid>https://leejay.top/post/future/</guid>
+      <guid>https://leejay.top/post/concurrent_future/</guid>
       <description>Future public interface Future&amp;lt;V&amp;gt; { // 获取任务结果 V get() throws InterruptedException, ExecutionException; // 获取任务结果，带超时机制 V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException; // 任务是否完成 boolean isDone(); // 任务是否取消 boolean isCancelled(); // 取消任务 boolean cancel(boolean mayInterruptIfRunning); } ThreadPoolExecutor中的submit方法是由他的父类AbstractExecutorService实现的
 public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象 RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法 execute(ftask); // 返回FutureTask return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); } FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); } FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。</description>
     </item>
     
     <item>
+      <title>ThreadPool线程池源码解析</title>
+      <link>https://leejay.top/post/concurrent_thread_pool/</link>
+      <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/concurrent_thread_pool/</guid>
+      <description>ThreadPool 为什么使用线程池 我们知道频繁的单独创建线程是很消耗系统资源的，而线程池中线程是可以线程复用的，不需要每次执行都重新创建，并且线程池可以提供控制线程个数等资源限制和管理的手段。
+实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
+线程池类继承体系 ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。
+任何需要线程池执行的任务，都必须直接或间接的实现Runnable接口。
+ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this.</description>
+    </item>
+    
+    <item>
       <title>ConcurrentHashMap源码浅析</title>
-      <link>https://leejay.top/post/concurrenthashmap/</link>
+      <link>https://leejay.top/post/concurrent_hash_map/</link>
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
       
-      <guid>https://leejay.top/post/concurrenthashmap/</guid>
+      <guid>https://leejay.top/post/concurrent_hash_map/</guid>
       <description>ConcurrentHashMap JDK1.8之后采用的是数组 + 链表 + 红黑树的结构，通过Synchronized + CAS实现线程安全，而JDK1.7采用的是将一个HashMap分成多个Segment的方式，通过继承ReentrentLock的Segment分段锁实现线程安全。
 Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this.</description>
     </item>
     
     <item>
       <title>ConcurrentLinkedQueue源码浅析</title>
-      <link>https://leejay.top/post/concurrentlinkedqueue/</link>
+      <link>https://leejay.top/post/concurrent_linked_queue/</link>
       <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
       
-      <guid>https://leejay.top/post/concurrentlinkedqueue/</guid>
+      <guid>https://leejay.top/post/concurrent_linked_queue/</guid>
       <description>ConcurrentLinkedQueue 特性 基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 + CAS实现。与LinkedBlockingQueue独占锁不同。 构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点 private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点 private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量 public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点 head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表） // 核心是通过CAS来实现并发操作 private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的 volatile Node&amp;lt;E&amp;gt; next; // 构造 Node(E item) { // CAS添加item UNSAFE.</description>
     </item>
     
     <item>
       <title>CopyOnWriteArrayList源码解析</title>
-      <link>https://leejay.top/post/copyonwritearraylist/</link>
+      <link>https://leejay.top/post/concurrent_copy_on_write_arraylist/</link>
       <pubDate>Wed, 08 Jul 2020 11:50:04 +0800</pubDate>
       
-      <guid>https://leejay.top/post/copyonwritearraylist/</guid>
+      <guid>https://leejay.top/post/concurrent_copy_on_write_arraylist/</guid>
       <description>CopyOnWriteArrayList CopyOnWrite思想是计算机程序设计领域的一种优化策略。若有多个调用者同时要求相同的资源，他们会获得共同的指针指向相同的资源，直到某个调用者试图修改资源的时候，才会复制一份副本给该调用者，但其他调用者见到的最初资源不改变，此过程对其他调用者透明。
 CopyOnWriteArrayList是ArrayList的线程安全变体，通过生成新的副本来实现。
 构造 public class CopyOnWriteArrayList&amp;lt;E&amp;gt; implements List&amp;lt;E&amp;gt;, RandomAccess, Cloneable, java.io.Serializable { // 内部独占锁 final transient ReentrantLock lock = new ReentrantLock(); // volatile 修饰的数组，只能getArray和setArray操作 private transient volatile Object[] array; // 返回当前数组 final Object[] getArray() { return array; } // 设置数组 final void setArray(Object[] a) { array = a; } // 构造函数 创建一个空数组 public CopyOnWriteArrayList() { setArray(new Object[0]); } } 底层是通过数组实现，数组使用volatile修饰保证了多线程之间的可见性。
@@ -538,10 +490,10 @@ add public boolean add(E e) { // 获取独占锁 final ReentrantLock lock = this
     
     <item>
       <title>BlockingDeque双端阻塞队列源码浅析</title>
-      <link>https://leejay.top/post/blockingdeque/</link>
+      <link>https://leejay.top/post/concurrent_blocking_deque/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       
-      <guid>https://leejay.top/post/blockingdeque/</guid>
+      <guid>https://leejay.top/post/concurrent_blocking_deque/</guid>
       <description>BlockingDeque 双端队列，支持在队列的头尾出增加或获取数据，Deque接口中定义了相关的方法
 public interface Deque&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加到队首 void addFirst(E e); // 添加到队尾 void addLast(E e); // 获取队首 boolean offerFirst(E e); // 获取队尾 boolean offerLast(E e); ... }	相比BlockingQueue的父接口Queue，Deque中定义了头尾操作数据的方法。
 public interface BlockingDeque&amp;lt;E&amp;gt; extends BlockingQueue&amp;lt;E&amp;gt;, Deque&amp;lt;E&amp;gt; { void putFirst(E e) throws InterruptedException; void putLast(E e) throws InterruptedException; E takeFirst() throws InterruptedException; E takeLast() throws InterruptedException; ... } BlockingQueue继承了BlockingQueue和Deque接口。添加了一些抛出中断的方法。
@@ -551,20 +503,20 @@ LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列�
     
     <item>
       <title>BlockingQueue单向阻塞队列源码解析</title>
-      <link>https://leejay.top/post/blockingqueue/</link>
+      <link>https://leejay.top/post/concurrent_blocking_queue/</link>
       <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
       
-      <guid>https://leejay.top/post/blockingqueue/</guid>
+      <guid>https://leejay.top/post/concurrent_blocking_queue/</guid>
       <description>BlockingQueue 概念 BlockingQueue带阻塞功能的线程安全队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。
 接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常 boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞 void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞 boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入 boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常 E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回 // Integer.max_value int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较) // 若元素存在（或队列改变）返回true boolean remove(Object o); // 判断队列是否至少包含一个某元素 public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在 // 移除前和添加后的集合中 int drainTo(Collection&amp;lt;?</description>
     </item>
     
     <item>
       <title>StampedLock读写锁源码浅析</title>
-      <link>https://leejay.top/post/stampedlock/</link>
+      <link>https://leejay.top/post/concurrent_stamped_lock/</link>
       <pubDate>Wed, 01 Jul 2020 10:32:01 +0800</pubDate>
       
-      <guid>https://leejay.top/post/stampedlock/</guid>
+      <guid>https://leejay.top/post/concurrent_stamped_lock/</guid>
       <description>JDK1.8新增的并发工具，回顾之前的ReentrentReadWriteLock，它是悲观锁的实现：只要有线程获取了读锁，获取写锁的线程就需要等待，但有可能导致写锁无限等待（其中使用了apparentlyFirstQueuedIsExclusive方法一定概率降低了写锁无限等待的问题）。
 而StampedLock是乐观锁的实现，乐观读的时候不加锁，读取后发现数据改变了再升级为悲观读，此时与写互斥。
 @Slf4j public class StampedLockTest { private static final StampedLock LOCK = new StampedLock(); private static int x, y; static void add() { long stamp = LOCK.writeLock(); try { x += 1; y += 1; } finally { LOCK.unlockWrite(stamp); } } static void print() { // 尝试乐观读 long stamp = LOCK.tryOptimisticRead(); int currentX = x， currentY = y; // 如果stamp修改了，这时再加悲观读锁 if (!LOCK.validate(stamp)) { log.info(&amp;#34;value has changed ...&amp;#34;); stamp = LOCK.</description>
@@ -572,10 +524,10 @@ LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列�
     
     <item>
       <title>CyclieBarrier源码解析</title>
-      <link>https://leejay.top/post/cycliebarrier/</link>
+      <link>https://leejay.top/post/concurrent_cyclic_barrier/</link>
       <pubDate>Mon, 29 Jun 2020 13:27:36 +0800</pubDate>
       
-      <guid>https://leejay.top/post/cycliebarrier/</guid>
+      <guid>https://leejay.top/post/concurrent_cyclic_barrier/</guid>
       <description>CyclicBarrier 基于CountDownLatch的特性：计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。
 CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势。
 CountDownLatch中存在两种类型的线程：分别是调用await方法和调用countDown方法的线程。
@@ -587,10 +539,10 @@ Cyclic（回环）：当所有等待线程执行完毕后，会重置状态，�
     
     <item>
       <title>CountDownLatch源码解析</title>
-      <link>https://leejay.top/post/countdownlatch/</link>
+      <link>https://leejay.top/post/concurrent_count_down_latch/</link>
       <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
       
-      <guid>https://leejay.top/post/countdownlatch/</guid>
+      <guid>https://leejay.top/post/concurrent_count_down_latch/</guid>
       <description>CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
 常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
 又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。
@@ -599,10 +551,10 @@ public class CountDownLatchTest { // 显示传入计数器值 private static fin
     
     <item>
       <title>ReadWriteLock源码解析</title>
-      <link>https://leejay.top/post/readwritelock/</link>
+      <link>https://leejay.top/post/concurrent_read_write_lock/</link>
       <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
       
-      <guid>https://leejay.top/post/readwritelock/</guid>
+      <guid>https://leejay.top/post/concurrent_read_write_lock/</guid>
       <description>ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。 ReadWriteLock的默认实现类ReentrantReadWriteLock
 public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写锁都是ReentrantReadWriteLock的内部类 private final ReentrantReadWriteLock.ReadLock readerLock; private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; // 读写锁默认是非公平锁 public ReentrantReadWriteLock() { this(false); } // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列 public ReentrantReadWriteLock(boolean fair) { sync = fair ? new FairSync() : new NonfairSync(); readerLock = new ReadLock(this); writerLock = new WriteLock(this); } } 相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。
@@ -612,30 +564,46 @@ abstract static class Sync extends AbstractQueuedSynchronizer { static final int
     
     <item>
       <title>Semaphore共享锁源码解析</title>
-      <link>https://leejay.top/post/semaphore/</link>
+      <link>https://leejay.top/post/concurrent_semaphore/</link>
       <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
       
-      <guid>https://leejay.top/post/semaphore/</guid>
+      <guid>https://leejay.top/post/concurrent_semaphore/</guid>
       <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常 if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
 tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可能不成功 &amp;lt; 0 获取共享锁失败 &amp;gt; 0 获取共享锁成功，后续获取可能成功 tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态 if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } } 为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
     </item>
     
     <item>
       <title>Condition源码解析</title>
-      <link>https://leejay.top/post/condition/</link>
+      <link>https://leejay.top/post/concurrent_condition/</link>
       <pubDate>Thu, 18 Jun 2020 20:01:58 +0800</pubDate>
       
-      <guid>https://leejay.top/post/condition/</guid>
+      <guid>https://leejay.top/post/concurrent_condition/</guid>
       <description>Condition是一个接口，其实现在Lock内，需要配合Lock锁使用。其内部构建了一个单向队列，操作时不需要使用CAS来保证同步。
 final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常 if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列 Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁 int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面 while (!</description>
     </item>
     
     <item>
+      <title>ReentrantLock源码解析</title>
+      <link>https://leejay.top/post/concurrent_reentrant_lock/</link>
+      <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/concurrent_reentrant_lock/</guid>
+      <description>Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。
+AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。
+state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。
+线程的中断 interrupt 将线程的中断标识设置为true，并不是让线程立马停止执行。 isInterrupted 判断线程的中断状态，不会对当前线程中断状态产生任何影响。 interrupted 判断当前线程的中断状态，但是会清楚当前线程的中断标识（即为false）。 线程阻塞和唤醒 由LockSupport类实现，其底层是调用了Unsafe的park 和 unpark。
+如果当前线程是非中断状态，调用park则线程阻塞，如果当前线程是中断状态，调用park()会立即返回也是为什么AQS要清空中断状态的原因。 park方法不会抛出中断异常（也不会清除中断状态），如果先调用unpark再调用park，那么park也会立马返回。 连续调用多次unpark方法，效果等同于调用一次unpark方法。 park方法和sleep方法相同，不会释放资源，而wait方法会释放资源。 park方法将Runnable -&amp;gt; WAITING/TIME_WAITING，unpark方法将WAITING/TIME_WAITING -&amp;gt; Runnable。 FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
+还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
+Node的waitStatus Node状态 描述 INIT=0 Node初始创建时默认为0 CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。 SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。 CONDITION=-2 表示节点处于等待队列中，等待被唤醒。 PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。 ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。
+class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK.</description>
+    </item>
+    
+    <item>
       <title>CAS乐观锁浅析</title>
-      <link>https://leejay.top/post/cas/</link>
+      <link>https://leejay.top/post/concurrent_cas/</link>
       <pubDate>Fri, 12 Jun 2020 22:49:05 +0800</pubDate>
       
-      <guid>https://leejay.top/post/cas/</guid>
+      <guid>https://leejay.top/post/concurrent_cas/</guid>
       <description>判断数据是否被修改，同时写回新值，这两个操作要合成一个原子操作，这就是CAS(compare and swap)。
 之前多线程环境下，我们对变量进行计算都是对其加锁来实现，但是现在我们可以用过Atomic相关的类来实现相同的效果且性能更好。而AtomicInteger就是其中的一员，其底层就是通过CAS来实现的。
 // 伪代码 class AtomicInteger { // 保证内存可见性 private volatile int value; public final int getAndIncrement() { for(;;) { int current = get(); int next = current + 1; // cas替换 if (compareAndSwap(current, next)) { return current; } } } public int get() { return value; } } 乐观锁：读操作不上锁，等到写操作的时候，判断数据在此期间是否被修改，如果已被修改，则重复该流程，直到把值写回去。CAS就是乐观锁的体现。
@@ -645,10 +613,10 @@ CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作c
     
     <item>
       <title>volatile关键字浅析</title>
-      <link>https://leejay.top/post/volatile/</link>
+      <link>https://leejay.top/post/concurrent_volatile/</link>
       <pubDate>Mon, 08 Jun 2020 11:13:38 +0800</pubDate>
       
-      <guid>https://leejay.top/post/volatile/</guid>
+      <guid>https://leejay.top/post/concurrent_volatile/</guid>
       <description>作用 volatile保证了内存的可见性，对于共享变量操作会直接从共享内存中读取，修改时会直接将结果刷入共享内存，其次禁止了volatile修饰的变量和非volatile变量之间的重排序。
 原理 为了禁止编译器重排序和CPU重排序，底层原理是通过内存屏障指令来实现的。
 编译器内存屏障 只是为了告诉编译器不要对指令进行重排序，但编译完成后，这种内存屏障就消失了，CPU不会感知到编译器中内存屏障的存在。
@@ -661,21 +629,34 @@ class Test { // 这里的flag就可以不用锁同步 private static volatile bo
     
     <item>
       <title>MESA模型结构分析</title>
-      <link>https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/</link>
+      <link>https://leejay.top/post/concurrent_mesa/</link>
       <pubDate>Sat, 06 Jun 2020 22:45:30 +0800</pubDate>
       
-      <guid>https://leejay.top/post/mesa%E6%A8%A1%E5%9E%8B/</guid>
+      <guid>https://leejay.top/post/concurrent_mesa/</guid>
       <description>在解释MESA模型之前，我们需要了解什么是管程：又称为监视器，它是描述并实现对共享变量的管理与操作，使其在多线程下能正确执行的一个管理策略。可以理解成临界区资源的管理策略。MESA模型是管程的一种实现策略，Java使用的就是该策略。
 相关术语 enterQueue：管程的入口队列，当线程在申请进入管程中发现管程已被占用，那么就会进入该队列并阻塞。 varQueue：条件变量等待队列，在线程执行过程中(已进入管程)，条件变量不符合要求，线程被阻塞时会进入该队列。 condition variables：条件变量，存在于管程中，一般由程序赋予意义，程序通过判断条件变量执行阻塞或唤醒操作。 阻塞和唤醒：wait()和await()就是阻塞操作。notify()和notifyAll()就是唤醒操作。 模型概念图 Synchronized和Lock在MSEA监视器模型中的区别在于前者只有一个条件变量，后者可以有多个。
 执行流程 多个线程进入入口等待队列enterQueue，JVM会保证只有一个线程能进入管程内部，Synchronized中进入管程的线程随机。 进入管程后通过条件变量判断当前线程是否能执行操作，如果不能跳到step3，否则跳到step4。 条件变量调用阻塞方法，将当前线程放入varQueue，等待其他线程唤醒，跳回step1。 执行相应操作，执行完毕后调用notify/notifyAll等唤醒操作，唤醒对应varQueue中的一个或多个等待线程。 被唤醒的线程会从varQueue放入enterQueue中，再次执行step1。 被唤醒的线程不会立即执行，会被放入enterQueue，等待JVM下一次选择运行，而正在运行的线程会继续执行，直到程序执行完毕。 </description>
     </item>
     
     <item>
+      <title>ThreadLocal内存泄漏分析</title>
+      <link>https://leejay.top/post/concurrent_thread_local/</link>
+      <pubDate>Thu, 04 Jun 2020 14:49:04 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/concurrent_thread_local/</guid>
+      <description>ThreadLocal概述 ThreadLocal类，底层由ThreadLocalMap实现，是Thread类的成员变量，因为类的每个实例的成员变量都是这个实例独有的，所以在不同的Thread中有不同的副本，每个线程的副本只能由当前线程使用，线程间互不影响。因为一个线程可以拥有多个ThreadLocal对象，所以其内部使用ThreadLocalMap&amp;lt;ThreadLocal&amp;lt;?&amp;gt;, Object&amp;gt;来实现。
+public class Thread implements Runnable { ThreadLocal.ThreadLocalMap threadLocals = null; } public class ThreadLocal&amp;lt;T&amp;gt; { static class ThreadLocalMap { // 需要注意的是这里的Entry key是ThreadLocal的弱引用 // 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理 static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;lt;?&amp;gt;&amp;gt; { // value 与 ThreadLocal关联 Object value; Entry(ThreadLocal&amp;lt;?&amp;gt; k, Object v) { super(k); value = v; } } } } 当前线程执行时(currentThread已初始化)，会初始化ThreadLocal对象，存储在Heap堆中，ThreadLocal的引用，即ThreadLocalRef会存储在当前线程Stack栈中。 当执行ThreadLocal的get()/set()方法时，会通过当前线程的引用找到当前线程在堆中的实例，判断这个实例的成员变量：ThreadLocalMap是否已经创建(即初始化)，如果没有则初始化。 若一个Threa中存在多个ThreadLocal，那么ThreadLocalMap会存在多个Entry，Entry的key是弱引用的ThreadLocal。 内存泄漏触发条件 根据ThreadLocal堆栈示意图，我们可以推断处只要符合以下条件，ThreadLocal就会出现内存泄漏：
+ThreadLocal没有被外部强引用，这样在GC的时候ThreadLocal会被回收，导致key = null。 key = null后没有调用过ThreadLocalMap中的get、set或remove方法中的任意一个。(因为这些方法会将key = null的value也置为null，便于GC回收) Thread对象没有被回收，Thread强引用着ThreadLocalMap，这样ThreadLocalMap也不会被回收。 ThreadLocalMap没有被回收，但是它的Entry中的key已被回收，key关联的value也不能被外部访问，所以导致了内存泄漏。 总结如下：
+Thread生命周期还没有结束，ThreadLocal对象被回收后且没有调用过get、set或remove方法就会导致内存泄漏。
+我们可以看出内存泄漏的触发条件比较苛刻的，但确实会发生，其实只要线程Thread的生命周期结束，那么Thread的ThreadLocalMap也不会存在强引用，那么ThreadLocalMap中的value最终也会被回收。，所以在使用ThreadLocal时，除了需要密切关注Thread和ThreadLocal的生命周期，还需要在每次使用完之后调用remove方法，这样做还有一个问题就是：</description>
+    </item>
+    
+    <item>
       <title>Java内存可见性</title>
-      <link>https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</link>
+      <link>https://leejay.top/post/concurrent_memory/</link>
       <pubDate>Tue, 19 May 2020 08:08:47 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://leejay.top/post/concurrent_memory/</guid>
       <description>CPU和JVM的重排序 CPU及JVM为了优化代码执行效率，会对代码进行重排序，其中包括：
 编译器重排序(没有先后依赖关系的语句，编译器可以重新调整语句执行顺序) CPU指令重排序(让没有依赖关系的多条指令并行) CPU内存重排序(CPU有自己的缓存，指令执行顺序和写入主内存顺序不一致) 其中CPU内存重排序是导致内存可见性的主因。根据JMM内存模型，我们描述下过程：
 如果线程需要修改共享变量，那么线程A会拷贝共享变量的副本到本地线程中并对其进行修改，之后会将值写回共享内存中(时间不确定)，但在写回之前，线程B读取共享变量到本地准备修改，而此时线程A修改共享变量的操作对线程B不可见。
@@ -687,10 +668,10 @@ class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;/
     
     <item>
       <title>Complexity概念浅析</title>
-      <link>https://leejay.top/post/complexity/</link>
+      <link>https://leejay.top/post/algorithm_complexity/</link>
       <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
       
-      <guid>https://leejay.top/post/complexity/</guid>
+      <guid>https://leejay.top/post/algorithm_complexity/</guid>
       <description>算法 算法是指用来操作数据和解决程序问题的一组方法。对于相同的问题，使用不同的算法，虽然最后的结果一致，但是消耗的时间和资源有很大的区别。
 我们从时间和空间两个方面来衡量:
 时间维度：是指执行当前算法所消耗的时间，我们通常用「时间复杂度」来描述。 空间维度：是指执行当前算法需要占用多少内存空间，我们通常用「空间复杂度」来描述。 时间复杂度 一个算法所消耗的时间，从理论上是不能算出来的，我们需要实际的测试。一个算法花费的时间与算法中语句的执行次数成正比。一个算法中语句执行次数称为语句频度或「时间频度」(记为T(n))。

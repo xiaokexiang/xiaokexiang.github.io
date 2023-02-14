@@ -10,10 +10,10 @@
     <lastBuildDate>Mon, 22 Nov 2021 15:30:48 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/sso/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ApereoCas安装与使用教程</title>
-      <link>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <link>https://leejay.top/post/aperao_cas/</link>
       <pubDate>Mon, 22 Nov 2021 15:30:48 +0800</pubDate>
       
-      <guid>https://leejay.top/post/apereocas%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://leejay.top/post/aperao_cas/</guid>
       <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;正值疫情期间，一直在家办公，年前年后一直在忙基于Apereo Cas的单点登陆相关的需求，目前已经完成了大半的工作，特此记录下Apereo Cas的安装与使用教程。&lt;/code&gt;&lt;/p&gt;</description>
     </item>

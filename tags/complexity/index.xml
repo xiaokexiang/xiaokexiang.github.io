@@ -10,10 +10,10 @@
     <lastBuildDate>Tue, 14 Apr 2020 14:41:02 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/complexity/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Complexity概念浅析</title>
-      <link>https://leejay.top/post/complexity/</link>
+      <link>https://leejay.top/post/algorithm_complexity/</link>
       <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
       
-      <guid>https://leejay.top/post/complexity/</guid>
+      <guid>https://leejay.top/post/algorithm_complexity/</guid>
       <description>算法 算法是指用来操作数据和解决程序问题的一组方法。对于相同的问题，使用不同的算法，虽然最后的结果一致，但是消耗的时间和资源有很大的区别。
 我们从时间和空间两个方面来衡量:
 时间维度：是指执行当前算法所消耗的时间，我们通常用「时间复杂度」来描述。 空间维度：是指执行当前算法需要占用多少内存空间，我们通常用「空间复杂度」来描述。 时间复杂度 一个算法所消耗的时间，从理论上是不能算出来的，我们需要实际的测试。一个算法花费的时间与算法中语句的执行次数成正比。一个算法中语句执行次数称为语句频度或「时间频度」(记为T(n))。

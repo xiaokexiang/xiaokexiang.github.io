@@ -10,10 +10,10 @@
     <lastBuildDate>Wed, 24 Jun 2020 09:15:29 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/reentrantreadwritelock/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ReadWriteLock源码解析</title>
-      <link>https://leejay.top/post/readwritelock/</link>
+      <link>https://leejay.top/post/concurrent_read_write_lock/</link>
       <pubDate>Wed, 24 Jun 2020 09:15:29 +0800</pubDate>
       
-      <guid>https://leejay.top/post/readwritelock/</guid>
+      <guid>https://leejay.top/post/concurrent_read_write_lock/</guid>
       <description>ReadWriteLock ReadWriteLock是接口，它定义了两个方法：ReadLock和WriteLock，读写锁的具体实现在ReentrantReadWriteLock中。读写锁是之前分析的独占锁和共享锁两个特性的集合体，具有如下规定：
 允许多个线程同时读取变量。 某时刻只允许一个线程写变量。 如果有写线程正在执行写操作，那么禁止其他读线程读取变量。 ReadWriteLock的默认实现类ReentrantReadWriteLock
 public class ReentrantReadWriteLock implements ReadWriteLock { // 读锁和写锁都是ReentrantReadWriteLock的内部类 private final ReentrantReadWriteLock.ReadLock readerLock; private final ReentrantReadWriteLock.WriteLock writerLock; final Sync sync; // 读写锁默认是非公平锁 public ReentrantReadWriteLock() { this(false); } // ReadLock和WriteLock都是继承了同一个抽象类Lock，所以他们属于同一个AQS队列 public ReentrantReadWriteLock(boolean fair) { sync = fair ? new FairSync() : new NonfairSync(); readerLock = new ReadLock(this); writerLock = new WriteLock(this); } } 相比于Semaphore，ReentrantReadWriteLock采用共享和独占结合的方法。Semaphore就像是一个令牌桶，谁都可以拿取令牌执行任务，谁都可以归还令牌。它不会记录是哪个线程获取了锁，而ReentrantReadWriteLock会记录，只有持有相关锁才能来释放锁。

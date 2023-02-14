@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 16 Apr 2021 11:02:51 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/docker/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker命令汇总</title>
-      <link>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</link>
+      <link>https://leejay.top/post/docker/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
       
-      <guid>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</guid>
+      <guid>https://leejay.top/post/docker/</guid>
       <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d

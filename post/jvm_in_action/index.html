@@ -1,0 +1,3764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Java虚拟机基础入门 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="1. 类加载流程 Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。
+1.1 类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
+其中验证、准备、解析统称为连接。
+需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
+类初始化的六种情况 《Java虚拟机规范》中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
+遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
+使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。
+调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/jvm_in_action/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Java虚拟机基础入门">
+<meta property="og:description" content="Java虚拟机概述，包括类加载机制、运行时数据区与垃圾回收器。" />
+<meta property="og:url" content="https://leejay.top/post/jvm_in_action/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Jvm" />
+
+
+  <meta property="article:published_time" content="2023-02-14 14:58:25 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    HelloWorld
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong> ↓ 目录 ↓ </strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#1-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e6%b5%81%e7%a8%8b">
+                    1. 类加载流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#11-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e6%97%b6%e6%9c%ba">
+                    1.1 类加载时机
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%b1%bb%e5%8a%a0%e8%bd%bd%e7%9a%84%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f">
+                    类加载的生命周期
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%b1%bb%e5%88%9d%e5%a7%8b%e5%8c%96%e7%9a%84%e5%85%ad%e7%a7%8d%e6%83%85%e5%86%b5">
+                    类初始化的六种情况
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#12-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e6%b5%81%e7%a8%8b">
+                    1.2 类加载流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%8a%a0%e8%bd%bd">
+                    加载
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%aa%8c%e8%af%81">
+                    验证
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%87%86%e5%a4%87">
+                    准备
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%a7%a3%e6%9e%90">
+                    解析
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%9d%e5%a7%8b%e5%8c%96">
+                    初始化
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#13-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e5%99%a8">
+                    1.3 类加载器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%8f%8c%e4%ba%b2%e5%a7%94%e6%b4%be%e6%a8%a1%e5%9e%8b">
+                    双亲委派模型
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%ad%a3%e7%a1%ae%e7%bc%96%e5%86%99%e8%87%aa%e5%ae%9a%e4%b9%89%e7%b1%bb%e5%8a%a0%e8%bd%bd%e5%99%a8">
+                    正确编写自定义类加载器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%b0%8f%e7%9f%a5%e8%af%86%e7%82%b9">
+                    小知识点
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#2-%e8%bf%90%e8%a1%8c%e6%95%b0%e6%8d%ae%e5%8c%ba%e6%a6%82%e8%bf%b0">
+                    2. 运行数据区概述
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#21-%e8%99%9a%e6%8b%9f%e6%9c%ba%e6%a0%88">
+                    2.1 虚拟机栈
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#22-%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%a0%86">
+                    2.2 虚拟机堆
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tlab">
+                    TLAB
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#23-%e5%85%83%e6%95%b0%e6%8d%ae%e5%8c%ba">
+                    2.3 元数据区
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%b8%b8%e9%87%8f%e6%b1%a0%e5%88%86%e7%b1%bb">
+                    常量池分类
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ad%97%e7%ac%a6%e5%b8%b8%e9%87%8f%e7%9a%84%e6%89%a7%e8%a1%8c%e6%b5%81%e7%a8%8b">
+                    字符常量的执行流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#24-%e7%a8%8b%e5%ba%8f%e8%ae%a1%e6%95%b0%e5%99%a8">
+                    2.4 程序计数器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#25-%e7%9b%b4%e6%8e%a5%e5%86%85%e5%ad%98">
+                    2.5 直接内存
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#26-jvm%e4%b8%ad%e7%9a%84%e5%af%b9%e8%b1%a1">
+                    2.6 JVM中的对象
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e5%88%9b%e5%bb%ba">
+                    对象的创建
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e6%9e%84%e6%88%90">
+                    对象的构成
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e5%bc%95%e7%94%a8">
+                    对象的引用
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#27-%e6%a8%a1%e6%8b%9f%e5%90%84%e5%8c%ba%e5%9f%9foom">
+                    2.7 模拟各区域OOM
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a0%86">
+                    堆
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a0%88">
+                    栈
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%85%83%e6%95%b0%e6%8d%ae%e5%8c%ba">
+                    元数据区
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e7%9b%b4%e6%8e%a5%e5%86%85%e5%ad%98">
+                    直接内存
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%b8%b8%e9%87%8f%e6%b1%a0%e5%ae%9e%e6%88%98">
+                    常量池实战
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#3-%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e7%ae%97%e6%b3%95">
+                    3. 垃圾回收算法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e6%a6%82%e8%bf%b0">
+                    垃圾回收概述
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e6%98%af%e5%90%a6%e5%ad%98%e6%b4%bb">
+                    对象是否存活
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#1-%e5%bc%95%e7%94%a8%e8%ae%a1%e6%95%b0%e6%b3%95">
+                    1. 引用计数法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#2-%e5%8f%af%e8%be%be%e6%80%a7%e7%ae%97%e6%b3%95">
+                    2. 可达性算法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#3%e5%b9%b6%e5%8f%91%e7%9a%84%e5%8f%af%e8%be%be%e6%80%a7">
+                    3.并发的可达性
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#java%e4%b8%ad%e7%9a%84%e5%bc%95%e7%94%a8">
+                    Java中的引用
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e7%9a%84%e5%9b%9e%e6%94%b6">
+                    对象的回收
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e7%ae%97%e6%b3%95">
+                    垃圾回收算法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a0%87%e8%ae%b0%e6%b8%85%e9%99%a4%e6%b3%95mark-sweep">
+                    标记清除法(Mark-Sweep)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%8d%e5%88%b6%e7%ae%97%e6%b3%95copying">
+                    复制算法(Copying)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a0%87%e8%ae%b0%e5%8e%8b%e7%bc%a9%e7%ae%97%e6%b3%95mark-compact">
+                    标记压缩算法(Mark-Compact)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%86%e4%bb%a3%e7%ae%97%e6%b3%95generational-collecting">
+                    分代算法(Generational Collecting)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%88%86%e5%8c%ba%e7%ae%97%e6%b3%95region">
+                    分区算法(Region)
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#4-%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e6%9c%9f%e5%99%a8">
+                    4. 垃圾回收期器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#jvm%e4%b8%ad%e7%bb%8f%e5%85%b8%e7%9a%84%e5%9e%83%e5%9c%be%e5%9b%9e%e6%94%b6%e5%99%a8">
+                    JVM中经典的垃圾回收器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%96%b0%e7%94%9f%e4%bb%a3%e6%94%b6%e9%9b%86%e5%99%a8">
+                    新生代收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#serial%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Serial收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parnew%e6%94%b6%e9%9b%86%e5%99%a8">
+                    ParNew收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parallel-scavenge%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Parallel Scavenge收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e8%80%81%e5%b9%b4%e4%bb%a3%e6%94%b6%e9%9b%86%e5%99%a8">
+                    老年代收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#serial-old%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Serial Old收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#parallel-old%e6%94%b6%e9%9b%86%e5%99%a8">
+                    Parallel Old收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cms%e6%94%b6%e9%9b%86%e5%99%a8">
+                    CMS收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#g1%e6%94%b6%e9%9b%86%e5%99%a8">
+                    G1收集器
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%a6%82%e5%bf%b5">
+                    概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%94%b6%e9%9b%86%e6%b5%81%e7%a8%8b-1">
+                    收集流程
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#g1vscms">
+                    G1vsCMS
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%af%b9%e8%b1%a1%e5%9c%a8%e5%a0%86%e4%b8%ad%e7%9a%84%e5%88%86%e9%85%8d">
+                    对象在堆中的分配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tlab-1">
+                    TLAB
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%80%e8%88%ac%e5%9c%a8eden%e4%b8%ad%e5%88%86%e9%85%8d">
+                    一般在eden中分配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%a4%a7%e5%af%b9%e8%b1%a1%e8%bf%9b%e5%85%a5%e8%80%81%e5%b9%b4%e4%bb%a3">
+                    大对象进入老年代
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e9%95%bf%e6%9c%9f%e5%ad%98%e6%b4%bb%e5%af%b9%e8%b1%a1%e8%bf%9b%e5%85%a5%e8%80%81%e5%b9%b4%e4%bb%a3">
+                    长期存活对象进入老年代
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%80%bb%e7%bb%93">
+                    总结
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#5-%e8%99%9a%e6%8b%9f%e6%9c%ba%e5%8f%82%e6%95%b0%e6%a6%82%e8%bf%b0">
+                    5. 虚拟机参数概述
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9f%ba%e6%9c%ac%e5%8f%82%e6%95%b0">
+                    基本参数
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%94%b6%e9%9b%86%e5%99%a8%e9%80%89%e6%8b%a9%e5%8f%82%e6%95%b0">
+                    收集器选择参数
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%94%b6%e9%9b%86%e7%9b%b8%e5%85%b3%e5%8f%82%e6%95%b0">
+                    收集相关参数
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/jvm_in_action/">Java虚拟机基础入门</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2023-02-14 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/jvm-/">Jvm </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="1-类加载流程">1. 类加载流程<a href="#1-类加载流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<blockquote>
+<p>Java虚拟机把<code>描述类的数据从Class文件加载到内存</code>，并对数据进行<code>校验、转换解析和初始化</code>，最终形成可以被虚拟机<code>直接使用</code>的Java类型。</p>
+</blockquote>
+<h3 id="11-类加载时机">1.1 类加载时机<a href="#11-类加载时机" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="类加载的生命周期">类加载的生命周期<a href="#类加载的生命周期" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/Fp0TSKAc1i8rSPKcAe1t36qz4a7e" alt=""></p>
+<blockquote>
+<p>类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。</p>
+<p>其中<code>验证、准备、解析</code>统称为<code>连接</code>。</p>
+<p>需要注意的是：<code>解析阶段顺序是不确定的</code>，它可以在<code>初始化阶段之后再开始</code>。</p>
+</blockquote>
+<h4 id="类初始化的六种情况">类初始化的六种情况<a href="#类初始化的六种情况" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>《Java虚拟机规范》中规定了<code>六种</code>要立即<code>对类进行”初始化“(加载、验证、准备自然需要在此之前执行)</code>的情况：</p>
+<ul>
+<li>
+<p>遇到<code>new</code>、<code>getstatic</code>、<code>putstatic</code>、<code>invokestatic</code>这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：</p>
+<ul>
+<li>使用<code>new</code>关键字实例化对象。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 会初始化A
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>A a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
+</span></span></code></pre></div><ul>
+<li>读取或设置一个类型的<code>静态字段(final修饰、编译器进入常量池的静态字段除外)</code>。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">B</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 会导致A类被初始化  
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> A a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不会导致A类被初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span>A<span style="color:#f92672">.</span><span style="color:#a6e22e">HELLO_WORLD</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String HELLO_WORLD <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello_world&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>引用<code>静态字符串常量</code>不会导致持有该常量的类初始化。</p>
+</blockquote>
+<ul>
+<li>调用一个类型的静态方法</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">A</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        A<span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>我们可以用过<code>-XX:+TraceClassLoading</code>来查看类是否被加载。</p>
+</blockquote>
+</li>
+<li>
+<p>通过<code>java.lang.Reflect</code>对方法进行反射调用时</p>
+</li>
+<li>
+<p>初始化类时发现其<code>父类</code>还没有初始化。</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SuperClass</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Super class init&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> value <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SubClass</span> <span style="color:#66d9ef">extends</span> SuperClass <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Sub class init&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//  只会初始化父类，不会初始化子类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>SubClass<span style="color:#f92672">.</span><span style="color:#a6e22e">value</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>接口中定义的<code>default</code>方法，若该接口的实现类发生初始化，<code>default</code>方法在此之前要被初始化。</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Father</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">print</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Son</span> <span style="color:#66d9ef">implements</span> Father <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 会初始化Father接口中的default方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Father f <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Son<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>如果是接口初始化，那么不会要求父接口也全部初始化，<code>真正使用到的父接口</code>才会初始化。</p>
+</blockquote>
+<ul>
+<li><code>java.lang.invoke.MethodHandle</code>实例的解析结果为<code>REF_getstatic</code>、<code>REF_putstatic</code>、<code>REF_invokestatic</code>、<code>REF_newInvokeSpecial</code>四种类型的方法句柄还没有初始化时。</li>
+</ul>
+<hr>
+<h3 id="12-类加载流程">1.2 类加载流程<a href="#12-类加载流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="加载">加载<a href="#加载" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>加载</code>阶段是整个类加载生命周期的<strong>第一个阶段</strong>，Java虚拟机需要完成以下三件事情：</p>
+<ul>
+<li>通过一个类的全限定名获取定义此类的二进制字节流。</li>
+</ul>
+<blockquote>
+<p>《Java虚拟机规范》没有规定<code>二进制字节流</code>的具体获取方式，目前已知获取方式包括：<code>从zip包读取、运行时生成、加密文件获取等</code>。既可以通过<code>Java虚拟机内置的类加载器</code>，也可以通过<code>用户自定义的类加载器</code>来实现类的加载动作（类来源的多样性需要自定义类加载器）。</p>
+<p>数组本身不通过类加载器创建，但<code>数组的类型</code>需要通过类加载器来完成加载。</p>
+</blockquote>
+<ul>
+<li>
+<p>将字节流代表的静态存储结构（ex: 常量池 -&gt; 运行时常量池）转换为<code>方法区运行时数据结构</code>。</p>
+</li>
+<li>
+<p>堆中生成<code>java.lang.Class</code>对象，并作为这个类方法区各各种数据的访问入口。</p>
+</li>
+</ul>
+<h4 id="验证">验证<a href="#验证" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>文件格式验证</li>
+</ul>
+<p>验证字节流是否符号<code>Class文件格式</code>的规范，并能够被当前版本的虚拟机处理。包括：<code>常量池中的常量是否有不被支持的常量类型</code>、<code>是否以魔数0XCAFEBABE开头</code>等验证点。</p>
+<ul>
+<li>元数据验证</li>
+</ul>
+<p>对字节码描述的信息进行予以分析，确保符合规范，包括：<code>此类是否有父类</code>、<code>是否继承了不被允许继承的类</code>、<code>是否缺少字段、方法</code>等验证点。</p>
+<ul>
+<li>字节码验证</li>
+</ul>
+<p>通过<code>数据流和控制流分析</code>，确保程序语义是合法、符合逻辑的。包括：<code>保证任意时刻操作数栈的数据类型与指令代码序列都能配合工作</code>、<code>保证方法中类型转换都是有效的</code>等验证点。</p>
+<ul>
+<li>符号引用验证</li>
+</ul>
+<p>目的是确保将<code>符号引用转为直接引用</code>的<code>解析</code>阶段能够顺利执行，对类自身以外的类信息进行匹配性校验。包括：<code>符号引用中通过字符串描述的权限定名能够找到对应的类</code>、<code>符号引用中的类、字段、方法的可访问性</code>等验证点。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 关闭大部分的类验证以缩短虚拟机加载类时间</span>
+</span></span><span style="display:flex;"><span>-Xverify:none
+</span></span></code></pre></div><h4 id="准备">准备<a href="#准备" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>为类中定义的<code>静态变量</code>分配内存并设置<code>类变量初始值</code>的阶段。这些变量所使用的内存都会在<code>方法区</code>进行分配。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 类变量(静态变量)，初始值为0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> value1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 类变量，初始值为123
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> value2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 实例变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">public</span> Object obj<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>类变量value1在<code>准备</code>阶段过后的<code>初始值为0</code>，赋值为123的操作要等到<code>初始化</code>阶段才会执行。</p>
+<p>类变量value2在编译时会生成<code>ConstantValue</code>属性，在<code>准备</code>阶段虚拟机就会将value2设置为123。</p>
+<p>实例变量会随着<code>对象Test的实例化</code>而一起分配在<code>堆中</code>。</p>
+</blockquote>
+<h4 id="解析">解析<a href="#解析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>Java虚拟机将<code>常量池内的符号引用替换为直接引用</code>的过程。《Java虚拟机规范》没有规定<code>解析</code>阶段发生的具体时间，只要求了执行<code>ldc、getfield、getstatic等17个指令前</code>，先对它们所使用的<code>符号引用</code>进行解析。所以虚拟机可以自行决定解析的触发时机是<strong>类被加载器加载时</strong>或<strong>符号引用将被使用前</strong>。</p>
+<blockquote>
+<p>符号引用：以<code>一组符号</code>来描述所引用的目标。可以引用没有加载到内存中的内容。</p>
+<p>直接引用：可以直接指向目标的指针、相对偏移量或者能够定位到目标的句柄池。</p>
+</blockquote>
+<ul>
+<li>类或接口解析</li>
+</ul>
+<p>基于以下代码，将从未解析过的<code>符号引用x</code>解析为类或接口的<code>直接引用</code>。包括三个步骤：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    A x <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> A<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<ol>
+<li>
+<p>若A不是数组类型，虚拟机将<code>x作为权限定名</code>交给<code>Test类的加载器</code>去加载<code>类A</code>，<code>类A</code>按照<code>类加载流程</code>执行类加载，若发生错误，那么解析失败。</p>
+</li>
+<li>
+<p>若A是数组类型(如Integer[])，那么虚拟机会将<code>x即[Ljava/lang/Integer</code>中的<code>Integer</code>类型交给<code>Test类加载器</code>去加载，再由虚拟机生成对应的<code>数组对象</code>。</p>
+</li>
+<li>
+<p>若前两步没有问题，在解析完成前还要进行<code>符号引用</code>验证，确保<code>Test对A</code>的访问权限。</p>
+</li>
+</ol>
+</blockquote>
+<ul>
+<li>字段解析</li>
+</ul>
+<p>通过类的常量池表查找<code>字段所属的</code>类或接口的符号引用<code>(用A表示)</code>，并执行<code>类或接口的解析</code>。按照如下步骤执行：</p>
+<ol>
+<li>若A本身包含了<code>简单名称</code>和<code>字段描述</code>都与目标匹配的字段，返回该字段的直接引用。</li>
+<li>否则，若A实现了接口，会按照继承关系从下往上查找，重复步骤1。</li>
+<li>否则，若A不是<code>java.lang.Object</code>，会按照继承关系从下往上查找，重复步骤1。</li>
+<li>否则，查找失败，抛出<code>NoSuchFieldError</code>异常。</li>
+<li>最后对该字段进行<code>权限验证</code>，若不具备权限，抛出<code>java.lang.illegalAccessError</code>异常。</li>
+</ol>
+<ul>
+<li>方法解析</li>
+</ul>
+<p>与<code>字段解析</code>类似，都是要找到<code>方法所属的</code>类或接口的符号引用<code>(用A表示)</code>。按照如下步骤执行：</p>
+<ol>
+<li>如果A是个接口，那么直接抛出<code>java.lang.IncompatibleClasssChangeError</code>异常。</li>
+<li>否则，查找类A中是否存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
+<li>否则，查找类A<code>实现的接口及它们的父接口</code>中递归查找是否存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，若存在匹配的方法，说明类A是个<code>抽象类</code>，抛出<code>java.lang.AbstractMethodError</code>异常。</li>
+<li>否则宣告查找失败，抛出<code>java.lang.NoSuchMethodError</code>异常。</li>
+<li>若返回了方法的直接引用，则需要进行<code>权限验证</code>，若不具备抛出<code>java.lang.illegalAccessError</code>异常。</li>
+</ol>
+<ul>
+<li>接口方法解析</li>
+</ul>
+<ol>
+<li>如果A是个类，那么直接抛出<code>java.lang.IncompatibleClasssChangeError</code>异常。</li>
+<li>否则，查找接口A中是否存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
+<li>否则 ，在接口A的父接口中递归查找，直到<code>java.lang.Object类</code>为止，若存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
+<li>否则宣告查找失败，抛出<code>java.lang.NoSuchMethodError</code>异常。</li>
+</ol>
+<h4 id="初始化">初始化<a href="#初始化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>直接来说：<code>初始化</code>阶段就是执行类构造器<code>&lt;clinit&gt;</code>方法的过程。</p>
+<blockquote>
+<p><code>&lt;clinit&gt;</code>方法是由编译器自动收集类中的所有<code>类变量的赋值动作</code>与<code>静态语句块(static {})</code>中的语句合并产生的。编译器的收集顺序由语句在<code>源文件</code>中出现的顺序决定的。
+<code>&lt;clinit&gt;</code>不包含<code>静态方法</code>，<code>静态方法</code>在被调用的时候才会加载。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// i=1执行先于i=0，但并不能修改成功
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 输出i，提示Illegal forward reference编译错误
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// System.out.println(i);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>i<span style="color:#f92672">);</span> <span style="color:#75715e">// 0
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p><code>static静态代码块</code>只能访问到定义在其之前的变量，定义在其之后的变量<code>能赋值但不能访问</code>。</p>
+</blockquote>
+<h5 id="clinit">clinit<a href="#clinit" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>
+<p>与<code>类的构造函数&lt;init&gt;方法</code>不同，<code>&lt;clinit&gt;</code>不需要显示的调用父类构造器，Java虚拟机会保证子类的<code>&lt;clinit&gt;</code>方法执行前，父类的<code>&lt;clinit&gt;</code>已执行完毕，因此<code>java.lang.Object</code>类是Java虚拟机中第一个被执行的<code>&lt;clinit&gt;</code>方法的类型。</p>
+</li>
+<li>
+<p>由于父类的<code>&lt;clinit&gt;</code>先执行，所以父类中的而静态语句块要先于子类的变量赋值操作。</p>
+</li>
+<li>
+<p><code>&lt;clinit&gt;</code>方法对于接口或类来说不是必须的，如果没有静态语句块、也没有变量赋值操作，那么编译器不会为该类生成<code>&lt;clinit&gt;</code>方法。</p>
+</li>
+<li>
+<p>接口中不能使用<code>静态语句块</code>，但能有静态变量赋值操作，所以接口也能生成<code>&lt;clinit&gt;</code>方法。但与类不同的是，执行接口的<code>&lt;clinit&gt;</code>方法不需要执行父接口的<code>&lt;clinit&gt;</code>方法，只有当父接口中定义的变量被使用时，父接口才会初始化。此外接口的实现类在初始化时也不会执行接口的<code>&lt;clinit&gt;</code>方法。</p>
+</li>
+<li>
+<p>Java虚拟机必须要保证一个类的<code>&lt;clinit&gt;</code>方法在多线程环境中，如果多个线程同时初始化一个类，那么只会有一个线程去执行<code>&lt;clinit&gt;</code>方法，其他线程都要阻塞等待，直到活动线程执行完<code>&lt;clinit&gt;</code>。若一个类的<code>&lt;clinit&gt;</code>方法存在耗时很长的操作，那么可能造成多线程阻塞（活动线程执行完，其他线程不会再进入<code>&lt;clinit&gt;</code>方法）。</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Parent</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> A <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        A <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Son</span> <span style="color:#66d9ef">extends</span> Parent <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> B <span style="color:#f92672">=</span> A<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test1</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>Son<span style="color:#f92672">.</span><span style="color:#a6e22e">B</span><span style="color:#f92672">);</span><span style="color:#75715e">// 2
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>根据规则：父类的<code>&lt;clinit&gt;</code>先执行，所以父类的静态语句块先于子类而执行。<code>Son.B = 2</code>。</p>
+</blockquote>
+<hr>
+<h3 id="13-类加载器">1.3 类加载器<a href="#13-类加载器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>类加载阶段的<code>通过一个类的全限定名来获取描述该类的二进制字节流</code>这个动作交给Java虚拟机外部去实现，让应用程序决定如何去获取所需的类，实现这个动作的代码被称为<code>类加载器(Class Loader)</code>。类加载器用于实现<code>类的加载动作</code>。</p>
+<blockquote>
+<p>判断两个类是否相等，前提是由<code>同一个类加载器</code>加载。不同类加载器加载同一个.class文件也是不相等的。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassLoaderTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 自定义类加载器,匿名内部类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ClassLoader classLoader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ClassLoader<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">public</span> Class<span style="color:#f92672">&lt;?&gt;</span> loadClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    String fileName <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                        name<span style="color:#f92672">.</span><span style="color:#a6e22e">substring</span><span style="color:#f92672">(</span>name<span style="color:#f92672">.</span><span style="color:#a6e22e">lastIndexOf</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;.&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.class&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 使用当前自定义类加载来加载fileName的类为二进制字节流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    InputStream inputStream <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                        getClass<span style="color:#f92672">().</span><span style="color:#a6e22e">getResourceAsStream</span><span style="color:#f92672">(</span>fileName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果找不到就让父类加载器去执行加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">==</span> inputStream<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">available</span><span style="color:#f92672">()];</span>
+</span></span><span style="display:flex;"><span>                    inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 创建name的Class对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">return</span> defineClass<span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> bytes<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> bytes<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ClassNotFoundException<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 通过自定义类加载器实现类的加载，并实例化该对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Object obj <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>            classLoader<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;top.leejay.jvm.load.ClassLoaderTest&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">.</span><span style="color:#a6e22e">newInstance</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查看加载的Class对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>obj<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 验证不同的类加载器加载同一个.class文件是否相同
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>obj <span style="color:#66d9ef">instanceof</span> ClassLoaderTest<span style="color:#f92672">);</span><span style="color:#75715e">// false
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>此时在Java虚拟机中共存在两个<code>ClassLoaderTest</code>类，一个是<code>应用程序类加载器</code>加载的，一个是<code>自定义类加载</code>加载的。</p>
+</blockquote>
+<h4 id="双亲委派模型">双亲委派模型<a href="#双亲委派模型" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/image/20200909/tcECLtcm1kv0.png?imageslim" alt=""></p>
+<blockquote>
+<p>上图各种类加载器之间的层次关系被称为<code>类加载器的双亲委派模型</code>。双亲委派模型要求：除了顶层的启动类加载器外，其余的类加载器都应有自己的父类加载器(继承自<code>java.lang.ClassLoader</code>类)。</p>
+<p>如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载该类，而是把这个请求委派给父加载器去执行，每个层次都是如此，最终所有的请求都传递到<code>最顶层的启动类加载器</code>中。只有当<code>父加载器无法完成这个加载请求</code>时，子加载才会尝试自己去完成加载。</p>
+</blockquote>
+<ul>
+<li>启动类加载器</li>
+</ul>
+<p>负责加载<code>JAVA_HOME/lib</code>目录下，能被Java虚拟机识别的类库。由<code>C++</code>实现。Java中用<code>null</code>来表示。</p>
+<ul>
+<li>扩展类加载器</li>
+</ul>
+<p>负责加载<code>JAVA_HOME/lib/ext</code>目录下的类库。由<code>Java</code>实现。</p>
+<ul>
+<li>应用程序加载器</li>
+</ul>
+<p>因为是<code>ClassLoader.getSystemClassLoader</code>的返回值，又被称为系统类加载器。负责加载用户类路径(ClassPath)上所有的类库。</p>
+<h5 id="不同加载器加载同一文件">不同加载器加载同一文件<a href="#不同加载器加载同一文件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> loadClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> resolve<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        						<span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>getClassLoadingLock<span style="color:#f92672">(</span>name<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断类是否被加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class<span style="color:#f92672">&lt;?&gt;</span> c <span style="color:#f92672">=</span> findLoadedClass<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果没有被加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">long</span> t0 <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 如果当前类加载器的父类不为null，说明存在父加载器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 如果为null，说明加载到顶层的启动类加载器了(Java中为null)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>parent <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 调用父类的类加载器加载类，往上查找
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    c <span style="color:#f92672">=</span> parent<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果为null，那么调用顶层的启动类加载器来加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    c <span style="color:#f92672">=</span> findBootstrapClassOrNull<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>ClassNotFoundException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 如果父加载器没找到，那么会抛出该异常，默认不处理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 如果c=null，说明启动类加载器也没找到这个类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 那么会直接调用本身的findClass方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">long</span> t1 <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 调用findClass，从上往下查找
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                c <span style="color:#f92672">=</span> findClass<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>resolve<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            resolveClass<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> c<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>判断请求加载的类型是否被加载过，如果没有则调用父加载器的<code>loadClass()</code>，若父加载器为<code>null</code>则默认使用<code>启动类加载器</code>作为自己的父加载器。若父加载器加载失败，抛出<code>ClassNotFound</code>异常后，就会调用自身的<code>findClass</code>方法尝试进行加载。</p>
+</blockquote>
+<h5 id="双亲委派的优点">双亲委派的优点<a href="#双亲委派的优点" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>避免<code>类重复加载</code>。加载类都会先判断这个是否被加载过。</li>
+<li>避免<code>核心类</code>被篡改。如果用户自定义了<code>java.lang.Object</code>类，就无法保证最基本的行为。</li>
+</ul>
+<h5 id="破坏双亲委派">破坏双亲委派<a href="#破坏双亲委派" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>历史遗留原因</li>
+</ul>
+<p><u>类加载器和ClassLoader抽象类</u>在<code>JDK1</code>中就存在，而<u>双亲委派模型</u>在<code>JDK1.2</code>才出现，为了面对已经存在的用户自定义类加载器的代码而做出妥协，加入了<code>protected Class&lt;?&gt; findClass()</code>方法，结合<code>ClassLoader</code>的源码，当<code>loadClass</code>加载失败，就会调用自身的<code>findClass</code>方法。</p>
+<ul>
+<li>JNDI</li>
+</ul>
+<p>我们知道<code>JNDI</code>的代码由启动类加载器加载，但<code>JNDI</code>需要对调用部署在应用程序的<code>ClassPath</code>下的<code>JNDI</code>服务提供者接口，简单来说就是<code>顶层启动类加载器需要加载应用程序类加载器</code>，此问题会破坏双亲委派模型。</p>
+<p>解决办法：引入线程上下文类加载器，如果创建线程时还未设置，它会从父线程中继承一个，如果在应用程序的全局范围内都没有设置的话，那么这个类加载器默认是<code>应用程序类加载器</code>。</p>
+<h4 id="正确编写自定义类加载器">正确编写自定义类加载器<a href="#正确编写自定义类加载器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>在前面我们编写了<code>&quot;糟糕&quot;</code>的自定义类加载器代码来验证<code>不同的类加载器加载同一个.class文件是不相等的</code>。那么这节我们按照<code>JDK1.2</code>后建议我们使用的<code>findClass</code>来编写自定义类加载器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyClassLoader</span> <span style="color:#66d9ef">extends</span> ClassLoader <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> Class<span style="color:#f92672">&lt;?&gt;</span> findClass<span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 先判断类是否已被加载
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class<span style="color:#f92672">&lt;?&gt;</span> c <span style="color:#f92672">=</span> findLoadedClass<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">==</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 加载本地磁盘上指定name的class文件(只要不在ClassPath下即可)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                FileInputStream inputStream <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">new</span> FileInputStream<span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> File<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;D://&#34;</span> <span style="color:#f92672">+</span> name <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.class&#34;</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>                ByteArrayOutputStream outputStream <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ByteArrayOutputStream<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> bytes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">byte</span><span style="color:#f92672">[</span>inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">available</span><span style="color:#f92672">()];</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> index<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>index <span style="color:#f92672">=</span> inputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">read</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    outputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">write</span><span style="color:#f92672">(</span>bytes<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> index<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 获取字节流
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">byte</span><span style="color:#f92672">[]</span> byteArray <span style="color:#f92672">=</span> outputStream<span style="color:#f92672">.</span><span style="color:#a6e22e">toByteArray</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 创建name的Class对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                c <span style="color:#f92672">=</span> defineClass<span style="color:#f92672">(</span>name<span style="color:#f92672">,</span> byteArray<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> byteArray<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IOException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> ClassNotFoundException<span style="color:#f92672">(</span>name<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> c<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassLoaderTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        MyClassLoader loader <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MyClassLoader<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        Class<span style="color:#f92672">&lt;?&gt;</span> hello <span style="color:#f92672">=</span> loader<span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// top.leejay.jvm.load.MyClassLoader@4fccd51b
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>hello<span style="color:#f92672">.</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<ol>
+<li>D盘下创建一个名为<code>Hello</code>的java文件，<code>javac -encoding utf-8 Hello.java</code>生成class文件。</li>
+<li>切记<code>Hello.class</code>文件不能在<code>ClassPath</code>下，否则会导致<code>AppClassLoader</code>加载该类。</li>
+<li>自定义类加载器的<code>loadClass</code>方法为入口，在三个默认类加载器都找不到时会调用<code>findClass</code>。</li>
+</ol>
+</blockquote>
+<h4 id="小知识点">小知识点<a href="#小知识点" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>Class.forName()</code>与<code>ClassLoader.loadClass()</code>的区别？</p>
+<p>先说结论：</p>
+<ol>
+<li><code>forName</code>除了<code>加载.class文件</code>外，还会执行该类的<code>初始化</code>，即执行类的<code>&lt;clinit&gt;</code>方法，所以<code>类的静态代码块</code>和<code>静态变量赋值操作</code>都会执行。</li>
+<li><code>loadClass</code>只会将<code>.class文件</code>加载到虚拟机中，不会执行初始化操作。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@CallerSensitive</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> Class<span style="color:#f92672">&lt;?&gt;</span> forName<span style="color:#f92672">(</span>String className<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Class<span style="color:#f92672">&lt;?&gt;</span> caller <span style="color:#f92672">=</span> Reflection<span style="color:#f92672">.</span><span style="color:#a6e22e">getCallerClass</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      * @param 要加载的类名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      * @param 是否需要初始化 true/false 初始化/不初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      * @param 调用者类加载器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      * @param 调用者Class对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">      */</span> 
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> forName0<span style="color:#f92672">(</span>className<span style="color:#f92672">,</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">,</span> ClassLoader<span style="color:#f92672">.</span><span style="color:#a6e22e">getClassLoader</span><span style="color:#f92672">(</span>caller<span style="color:#f92672">),</span> caller<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ClassDemo</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> value <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;static ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        value <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>value<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> ClassNotFoundException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class<span style="color:#f92672">&lt;?&gt;</span> aClass1 <span style="color:#f92672">=</span> 
+</span></span><span style="display:flex;"><span>            Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;top.leejay.jvm.load.ClassDemo&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不会初始化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Class<span style="color:#f92672">&lt;?&gt;</span> aClass2 <span style="color:#f92672">=</span> ClassLoader<span style="color:#f92672">.</span><span style="color:#a6e22e">getSystemClassLoader</span><span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">.</span><span style="color:#a6e22e">loadClass</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;top.leejay.jvm.load.ClassDemo&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><hr>
+<h2 id="2-运行数据区概述">2. 运行数据区概述<a href="#2-运行数据区概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="21-虚拟机栈">2.1 虚拟机栈<a href="#21-虚拟机栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>虚拟机栈描述的是Java方法执行的<code>线程内存模型:</code>每个方法被执行时，JVM会同步创建一个<code>栈帧</code>，用于存储<code>局部变量表、操作数栈、动态链接、方法出口</code>等信息，虚拟机栈区域是<code>线程私有</code>的，它的生命周期与线程相同。</p>
+<blockquote>
+<p>局部变量表：存放编译期可知的数据类型：<code>8种基本数据类型和对象引用类型</code>。这些数据类型在栈中用<code>slot</code>来表示，除了<code>long &amp; double</code>占用<code>2个slot</code>，其余的都为1个。</p>
+<p>虚拟机栈包含用于<code>执行native方法</code>的本地方法栈。它们都会抛出<code>OOM和StackOverFlow</code>异常。</p>
+</blockquote>
+<h3 id="22-虚拟机堆">2.2 虚拟机堆<a href="#22-虚拟机堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>这是一块<code>线程共享</code>的内存区域，几乎全部的<code>对象实例、数组</code>都在堆上分配（小对象可以在<code>栈上分配</code>）。</p>
+<blockquote>
+<p>从内存回收角度看，堆被逻辑的分为：<code>年轻代（包括eden、from、to三个区域）、老年代</code>。</p>
+<p>从内存分配角度看，堆被分为<code>多个线程私有的内存分配缓冲区（TLAB）</code>。</p>
+</blockquote>
+<h4 id="tlab">TLAB<a href="#tlab" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>Thread Local Allocation Buffer（本地线程缓冲区），原有的虚拟机给对象分配内存时，采用是<code>CAS + 失败重试</code>的方式。而<code>TLAB</code>是：</p>
+<ol>
+<li>通预先给每个线程在堆中分配一小块区域。</li>
+<li>哪个线程创建对象，就在哪个线程的TLAB中分配内存。</li>
+<li>如果这个线程的<code>TLAB</code>空间不够分配时，就通过<code>同步锁定</code>给这个线程分配新的<code>TLAB</code>。</li>
+<li><code>-XX:+/-UseTLAB</code>来开启和关闭TLAB。</li>
+</ol>
+<h3 id="23-元数据区">2.3 元数据区<a href="#23-元数据区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>JDK1.8</code>起，方法区改名为<code>元数据区（MetaSpace）</code>，是<code>线程共享</code>的区域，是堆的一个<code>逻辑部分</code>，用于存储<code>JVM加载的类型信息、常量、静态变量及即时编译后的方法代码</code>等数据。会抛出<code>OOM</code>异常。</p>
+<h4 id="常量池分类">常量池分类<a href="#常量池分类" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>Class文件中的常量池</li>
+</ul>
+<p>主要存放<code>字面量 &amp; 符号引用</code>。前者主要是<code>文本字符串、八种基本数据类型、final修饰的常量</code>等，后者包含：<code>类和接口的全限定名、字段的名称和描述符、方法的名称和描述符</code>。在类被加载后会存放到<code>运行时常量池</code>中。</p>
+<ul>
+<li>运行时常量池</li>
+</ul>
+<p>属于<code>元数据区</code>中的一部分，类在被JVM加载后，类的版本、字段、方法和常量池等都会进入该区域。JVM会为<code>每个加载的class维护一个运行时常量池</code>，同时其中存储的是<code>引用</code>，实际对象还在<code>堆中</code>。日常我们所称的常量池就是运行时常量池。</p>
+<ul>
+<li>全局字符串常量池</li>
+</ul>
+<p><code>JDK7后位于堆中</code>，运行时存在的用于记录<code>interned string</code>的全局表<code>StringTabel</code>。其中存放的是<code>String实例的引用</code>，实际的<code>String对象</code>仍存在于堆。</p>
+<blockquote>
+<p><code>String.intern()</code>：如果<code>字符串常量池</code>已存在该字符串引用，那么就返回已存在的字符串的引用。若没有就将引用保存到<code>字符串常量池</code>并返回引用。</p>
+</blockquote>
+<h4 id="字符常量的执行流程">字符常量的执行流程<a href="#字符常量的执行流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>
+<p>首先<code>编译期</code>会将字面量、符号引用等放入Class文件的常量池中。</p>
+</li>
+<li>
+<p>在JVM<code>类加载</code>的过程中，除了字面量，类的字段、方法等信息都会加载到当前类<code>运行时常量池</code>。此时运行时常量池中存放的是<code>CONSTANT-UnresolvedString</code>，表明尚未<code>resolve</code>，只有在解析后存放的是<code>CONSTANT_String</code>，内容是实际的<code>String对象的引用</code>，和<code>字符串常量池的引用</code>一致。</p>
+</li>
+<li>
+<p>因为JVM类加载过程中的<code>解析(resolve)阶段</code>是可以懒执行的，只有当执行<code>ldc指令</code>时，通过存放在<code>运行时常量池</code>的索引去<code>字符串常量池</code>查找是否存在对应的String实例，如果存在就直接返回该引用，不存在就先在<code>堆中创建对应的String对象</code>，并将引用记录在<code>字符串常量池</code>中，再返回该引用。</p>
+<blockquote>
+<p><code>ldc指令</code>：将<code>int、float或String类型的常量值从常量池推送至栈顶</code>。</p>
+<p>资料来源：https://www.zhihu.com/question/55994121/answer/408891707</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="24-程序计数器">2.4 程序计数器<a href="#24-程序计数器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>当前线程</code>所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是<code>线程私有</code>的。</p>
+<h3 id="25-直接内存">2.5 直接内存<a href="#25-直接内存" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>直接内存并不是JVM运行时数据区的一部分。常见于<code>NIO</code>类使用：通过<code>Native方法分配堆外内存</code>，在Java堆中持有该<code>内存区域的引用</code>实现操作，相比之前<code>在Java堆和Native堆之间来回复制</code>的方式，提升了效率。</p>
+<hr>
+<h3 id="26-jvm中的对象">2.6 JVM中的对象<a href="#26-jvm中的对象" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="对象的创建">对象的创建<a href="#对象的创建" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/image/20200806/5Yyjn8VqQBwt.png?imageslim" alt=""></p>
+<blockquote>
+<ol>
+<li>在<code>Class类的常量池</code>中寻找该类的<code>符号引用</code>，并通过该符号引用判断类是否被加载。</li>
+<li>如果类没有被加载，那么JVM就会执行相应的类加载过程。</li>
+<li>给对象分配内存空间共有两种方式：<code>指针碰撞 &amp; 空闲列表</code>。</li>
+<li>在对象分配内存的线程安全问题，默认是通过<code>CAS + 失败重试</code>实现，也可以选择<code>TLAB</code>。</li>
+<li>初始化内存空间为零值，并对<code>Mark Word</code>进行必要设置（根据是否启动偏向锁设置信息）。</li>
+<li>最终调用对象的构造函数进行初始化。</li>
+</ol>
+</blockquote>
+<h4 id="对象的构成">对象的构成<a href="#对象的构成" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>对象在堆中的布局分为三个部分：<code>对象头、实例数据和对齐填充</code>。而对象头中又包含：<code>对象自身的运行时数据(Mark Word)、对象指向它类型元数据的指针以及数组长度(如果对象是数组)</code>。</p>
+<h5 id="对象头">对象头<a href="#对象头" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>
+<p>Mark Word</p>
+<p>用于记录存储对象自身运行时的数据。比如<code>HashCode、锁状态标识</code>等。</p>
+</li>
+</ul>
+<p><img src="https://image.leejay.top/image/20200806/bf8MF7GVoqRP.png?imageslim" alt=""></p>
+<ul>
+<li>
+<p>类型指针</p>
+<p><code>对象头中指向该对象类型元数据(元数据区)的指针</code>，通过类型指针，JVM可以判断当前对象是<code>哪个类的实例</code>。</p>
+<blockquote>
+<p>并不是所有的虚拟机都会在对象头中保留类型指针。此问题查看<a href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%BC%95%E7%94%A8">对象的引用</a></p>
+</blockquote>
+</li>
+<li>
+<p>数组长度</p>
+<p>如果当前对象是数组，那么在对象头中还有一部分用于<code>存储数组长度的数据</code>。</p>
+</li>
+</ul>
+<h5 id="实例数据">实例数据<a href="#实例数据" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>即保存代码中定义的<code>各种类型的字段内容（包括父类继承）</code>，其存储顺序除了受到代码中定义的影响，还由JVM参数<code>-XX:FiedlsAllocationStyle</code>决定。</p>
+<h5 id="对齐填充">对齐填充<a href="#对齐填充" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>对齐填充并不是<code>必然存在</code>的，因为<code>HotSpot</code>要求<code>对象的大小必须是8的整数倍</code>，对象头已经是8的整数倍，如果实例数据不是8的整数倍，那么就需要使用对齐填充来补全。</p>
+<h4 id="对象的引用">对象的引用<a href="#对象的引用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>对象的创建是为了能够使用该对象，我们通过<code>栈上的reference数据</code>来操作堆上的具体对象。但对象的访问方式由虚拟机自行决定，目前主流的有两种：<code>句柄 &amp; 指针</code>。</p>
+<p><img src="https://image.leejay.top/image/20200811/doWGxxuV17Ne.png?imageslim" alt=""></p>
+<blockquote>
+<ol>
+<li>句柄：就是在堆中额外划分一块内存作为句柄池，栈中的<code>reference</code>存放的就是句柄池地址。句柄池中包含<code>对象实例数据 &amp; 类型数据的内存地址</code>。</li>
+<li>直接指针：栈中<code>reference</code>存放的是堆中的对象地址，对象头中又包含<code>对象类型数据指针</code>。</li>
+<li>句柄的优点在于GC回收移动对象时，只需要修改<code>句柄池中的实例数据指针</code>。而指针的优点在于<code>访问更快</code>，减少一次查找。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="27-模拟各区域oom">2.7 模拟各区域OOM<a href="#27-模拟各区域oom" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="堆">堆<a href="#堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xmx10m 模拟堆OOM
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Object<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Object<span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="栈">栈<a href="#栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>stackOverFlow</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xss1m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// stackOverFlow
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">stackOverFlow</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    stackOverFlow<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>OOM</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -Xss1m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    Stack stack <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Stack<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// oom
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    stack<span style="color:#f92672">.</span><span style="color:#a6e22e">oom</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">oom</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>相比OOM，stackOverFlow更容易发生。</p>
+</blockquote>
+<h4 id="元数据区">元数据区<a href="#元数据区" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>字符串常量池OOM</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 1.7前 -XX:MaxPermSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 1.7后 -Xmx10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> list <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        list<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">((</span><span style="color:#e6db74">&#34;hello&#34;</span> <span style="color:#f92672">+</span> i<span style="color:#f92672">++).</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>需要注意在JDK7及以上版本中不会抛出之前的<code>PemGen space</code>异常，因为字符串常量池被移到了<code>堆中</code>，如果我们限制堆的大小，会抛出<code>Java heap space</code>异常。</p>
+</blockquote>
+<ul>
+<li>元数据OOM</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -XX:MaxMetaspaceSize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setSuperclass</span><span style="color:#f92672">(</span>Object<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseCache</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallback</span><span style="color:#f92672">((</span>MethodInterceptor<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> method<span style="color:#f92672">,</span> objects<span style="color:#f92672">,</span> methodProxy<span style="color:#f92672">)</span> 
+</span></span><span style="display:flex;"><span>                             <span style="color:#f92672">-&gt;</span> methodProxy<span style="color:#f92672">.</span><span style="color:#a6e22e">invoke</span><span style="color:#f92672">(</span>o<span style="color:#f92672">,</span> objects<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>因为元数据区存放类型的相关信息：类名、方法描述等，通过大量创建cglib代理类实现<code>Metaspace OOM</code>。</p>
+</blockquote>
+<h4 id="直接内存">直接内存<a href="#直接内存" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * -XX：MaxDirectMemorySize=10m
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IllegalAccessException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 反射获取unsafe类
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Field unsafeField <span style="color:#f92672">=</span> Unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredFields</span><span style="color:#f92672">()[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>    unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    Unsafe unsafe <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Unsafe<span style="color:#f92672">)</span>unsafeField<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 分配直接内存
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        unsafe<span style="color:#f92672">.</span><span style="color:#a6e22e">allocateMemory</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1024</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1024</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>直接内存由：<code>-XX：MaxDirectMemorySize</code>指定，如果不指定则和<code>-Xmx</code>一致。</p>
+</blockquote>
+<hr>
+<h3 id="常量池实战">常量池实战<a href="#常量池实战" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>查看汇编指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>javac -encoding utf-8 StringTest.java
+</span></span><span style="display:flex;"><span>javap -v StringTest.class
+</span></span></code></pre></div><ul>
+<li>字符串拼接（编译器优化）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String s1 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;he&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">;</span> <span style="color:#75715e">// 编译器会自动转成 ldc &#34;hello&#34;指令
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>因为编译器的优化，<code>s2会被编译成&quot;ldc hello&quot;(汇编指令可见)</code>，s1 和 s2 都指向<code>字符串常量池</code>中<code>&quot;hello&quot;</code>的引用，所以<code>s1 == s2</code>成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/OB0vpDkBzHoV.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>字符串拼接（编译器不优化）</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;he&#34;</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;llo&#34;</span><span style="color:#f92672">);</span> <span style="color:#75715e">// 编译器不会优化
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<ol>
+<li>编译器不会优化<code>s1</code>，堆中会创建<code>&quot;he&quot;、&quot;llo&quot;</code>对象，并将两个对象的引用放入<code>字符串常量池</code>。继而通过<code>+ (底层StringBuilder)</code>创建<code>&quot;hello&quot;</code>对象，但不会放入<code>字符串常量池</code>。</li>
+<li>此时<code>字符串常量池</code>无<code>&quot;hello&quot;</code>的引用，<code>s1.intern()</code>会将堆中<code>&quot;hello&quot;</code>对象的引用放入<code>字符串常量池</code>并返回引用。</li>
+<li><code>s2 = &quot;hello&quot;</code>，执行<code>ldc</code>指令，发现<code>字符串常量池</code>已存在<code>&quot;hello&quot;</code>的引用，返回引用（<code>即s1引用</code>）给s2，所以<code>s1 == s2</code>成立。</li>
+<li>下图汇编指令中，需要注意观察，在<code>s1.intern()</code>之前，并没有<code>ldc &quot;hello&quot;</code>，进一步说明在此之前<code>字符串常量池</code>只存在<code>&quot;he&quot;、&quot;llo&quot;</code>两个对象的引用。</li>
+</ol>
+<p><img src="https://image.leejay.top/image/20200813/n30lMesr7Kjx.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>new String(&quot;&quot;)问题</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>基于<code>ldc</code>指令，若<code>字符串常量池不存在该字符串就会在堆中创建字符串实例，并将引用保存在字符串常量池中</code>。</p>
+<p>此时<code>s1 = new String(&quot;hello&quot;)</code>共创建两个对象：一个由<code>显示的new</code>创建，一个由<code>JVM</code>创建。s1指向堆中的<code>&quot;hello&quot;</code>对象，而s2指向的是<code>字符串常量池</code>中持有的实例。所以<code>s1 == s2</code>不成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/f6u1Mzjxfpm7.png?imageslim" alt=""></p>
+</blockquote>
+<ul>
+<li>intern()</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">StringTest</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		String s1 <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        s1 <span style="color:#f92672">=</span> s1<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        String s2 <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// s1 == s2?
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p><code>String.intern()</code>方法会返回<code>该字符串在字符串常量池中的引用</code>，<code>s2 = &quot;hello&quot;</code>也会先去<code>字符串常量池</code>查看是否存在该字符串的引用，有就返回引用。最终<code>s1 &amp; s2</code>都指向<code>字符串常量池中的hello引用</code>。所以<code>s1 == s2</code>成立。</p>
+<p><img src="https://image.leejay.top/image/20200813/HQTMAz6X4cCl.png?imageslim" alt=""></p>
+</blockquote>
+<hr>
+<h2 id="3-垃圾回收算法">3. 垃圾回收算法<a href="#3-垃圾回收算法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="垃圾回收概述">垃圾回收概述<a href="#垃圾回收概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>在JVM<code>运行期间</code>，会对内存中<code>不再被使用的对象</code>进行<code>分配和管理</code>。若不及时对内存中的垃圾进行清理，会导致被保留的空间无法被其他对象使用，从而导致<code>内存溢出</code>。</p>
+<blockquote>
+<p>内存溢出：系统无法分配给程序所<code>需要的指定大小内存</code>。</p>
+<p>内存泄漏：当<code>对象不再使用或无法继续使用时</code>，因为强引用的存在导致<code>本该会回收的内存无法被回收</code>，常见于：<code>Map用对象作为key不重写hashcode &amp; equals &amp; ThreadLocal内存泄漏</code>。</p>
+</blockquote>
+<h3 id="对象是否存活">对象是否存活<a href="#对象是否存活" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>JVM垃圾回收器会对对象中<code>不再使用(死去)</code>的对象进行回收，那么垃圾回收器是如何进行判断的呢。</p>
+<h4 id="1-引用计数法">1. 引用计数法<a href="#1-引用计数法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>对于一个对象A，只要有一个对象引用了A，那么A的计数器增加1，当引用失效的时候就减1。该算法会产生<code>对象之间循环引用</code>问题，会导致<code>内存泄漏</code>。</p>
+<h4 id="2-可达性算法">2. 可达性算法<a href="#2-可达性算法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>通过一系列称为<code>&quot;GC Roots&quot;</code>的根对象作为起点，根据引用关系向下搜索，搜索过程走过的路称为<code>&quot;引用链&quot;</code>。如果某个对象到<code>&quot;GC Roots&quot;</code>没有任何引用链相连，就说明该对象需要被回收。</p>
+<p><img src="https://image.leejay.top/image/20200813/PK6PSNTuG2W8.png?imageslim" alt=""></p>
+<blockquote>
+<p>图中绿色为<code>可达对象</code>，灰色为<code>不可达对象</code>。</p>
+<p><code>GC Roots</code>包括但不限于以下：</p>
+<ol>
+<li>栈帧中引用的对象（局部变量、临时变量等）</li>
+<li>类中的<code>引用型静态变量</code></li>
+<li><code>字符串常量池中的引用</code>。</li>
+<li>被<code>Synchronized</code>锁持有的对象。</li>
+</ol>
+</blockquote>
+<h4 id="3并发的可达性">3.并发的可达性<a href="#3并发的可达性" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>我们知道大部分的收集器都是使用<code>可达性算法</code>判断标记对象是否要被回收，其中又被分为<code>中断用户线程</code>、<code>与用户线程并发执行</code>两种。</p>
+<p><code>中断用户线程</code>进行标记时，对象图中的对象或引用不会被修改，但堆中存储的对象越多，带来的<code>STW</code>时间也会越长。因此为了减少<code>STW</code>时长，<code>标记与用户线程同时运行</code>能有效减少<code>STW</code>时长，但会带来并发可达性问题：</p>
+<ol>
+<li><code>被标记完毕的对象</code>又新引用了<code>未被收集器访问的对象</code>。</li>
+<li><code>正在被标记的对象</code>直接或间接删除了<code>未被收集器访问的对象</code>的引用。</li>
+</ol>
+<p>基于上述两个问题产生了两种解决方案：</p>
+<ol>
+<li><strong>增量更新</strong></li>
+</ol>
+<p>基于问题1，当<code>被标记完毕对象</code>又引用了<code>未被收集器访问的对象</code>时，将这些<code>被标记完毕对象</code>记录下来，等并发标记阶段结束后，以这些<code>被标记完毕对象为根</code>再次进行扫描。<code>CMS收集器</code>采用此策略实现并发标记。</p>
+<ol start="2">
+<li><strong>原始快照</strong></li>
+</ol>
+<p>基于问题2，当<code>正在被标记的对象</code>直接或间接删除了<code>未被收集器访问的对象</code>的引用时，将这些<code>正在被标记的对象</code>记录下来，等并发标记结束后，以这些<code>正在被标记的对象</code>为根重新扫描。<code>G1收集器</code>采用此策略实现并发标记。</p>
+<hr>
+<h3 id="java中的引用">Java中的引用<a href="#java中的引用" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>传统的引用概念：若<code>reference</code>类型的数据中存储的数值是另一块内存的起始地址，就说明该<code>reference</code>数据是某个内存、某个对象的引用。</p>
+<p>从<code>JDK1.2</code>开始，Java对引用的概念进行补充，将引用分为了：<code>强引用、软引用、弱引用和虚引用</code>四种。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Reference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 引用本身
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> T referent<span style="color:#f92672">;</span>  
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 存储reference本身的链表队列
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">volatile</span> ReferenceQueue<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">super</span> T<span style="color:#f92672">&gt;</span> queue<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>当垃圾回收器准备回收一个对象时，发现它还有<code>软、弱、虚引用</code>，就会在回收对象之前，将该引用加入到与之关联的<code>引用队列ReferenceQueue</code>中去，这样就可以实现在引用对象回收前的相关操作。</p>
+</blockquote>
+<p><img src="https://image.leejay.top/image/20200813/yIcmomijhoVr.png?imageslim" alt=""></p>
+<ul>
+<li>强引用</li>
+</ul>
+<p>即最传统引用的体现，比如<code>Object obj = new Object()</code>，只要强引用关系存在，那么垃圾回收器永远不会回收掉被引用的对象。</p>
+<ul>
+<li>软引用</li>
+</ul>
+<p>用于描述<code>还有用、但非必须的对象</code>，只被软引用<code>关联（指向）</code>的对象，在OOM之前，会将这些对象进行二次回收，如果回收后仍没有足够内存，才会抛出OOM。Java中用<code>SoftReference</code>实现。</p>
+<ul>
+<li>弱引用</li>
+</ul>
+<p>相比<code>软引用</code>，只被<code>弱引用关联（指向）</code>的对象只能生存到下一次垃圾收集，只要垃圾回收器工作，<code>弱引用</code>就会被回收。Java中用<code>WeakReference</code>实现。<code>ThreadLocal.ThreadLocalMap&lt;k,v&gt;中key就继承了弱引用</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Weak</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> WeakReference<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> weakReference<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        test<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// hello
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span> <span style="color:#75715e">// test作用域结束，gc会清理weakReference
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// null
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">test</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// str 作为test方法的本地变量
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        String str <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        weakReference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WeakReference<span style="color:#f92672">&lt;&gt;(</span>str<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span><span style="color:#75715e">// 不会被清理
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>weakReference<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">());</span><span style="color:#75715e">// hello
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>和软引用一样，弱引用也适合保存<code>可有可无的数据</code>，当系统内存不足的时候会被回收，内存充足的时候，缓存数据存在相当长的时间，达到让系统加速的作用。</p>
+</blockquote>
+<ul>
+<li>虚引用</li>
+</ul>
+<p>引用中最弱的一种，一个对象是否有<code>虚引用</code>的存在，对其生存时间不会产生影响，并且<code>无法通过虚引用获取对象实例</code>。唯一的作用就是为了在<code>该对象被回收时收到通知</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Phantom</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 实现 包含虚引用的对象在回收时接受通知
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        String hello <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;hello&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 创建引用Queue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        ReferenceQueue<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> queue <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReferenceQueue<span style="color:#f92672">&lt;&gt;();</span>
+</span></span><span style="display:flex;"><span>        PhantomReference<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> reference <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PhantomReference<span style="color:#f92672">&lt;&gt;(</span>hello<span style="color:#f92672">,</span> queue<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">new</span> Thread<span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                Reference<span style="color:#f92672">&lt;?</span> <span style="color:#66d9ef">extends</span> String<span style="color:#f92672">&gt;</span> poll <span style="color:#f92672">=</span> queue<span style="color:#f92672">.</span><span style="color:#a6e22e">poll</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>poll <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 此时说明hello对象被回收了
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        Field referent <span style="color:#f92672">=</span> Reference<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;referent&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        referent<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        String str <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>String<span style="color:#f92672">)</span> referent<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>poll<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;GC Will Collect &#34;</span> <span style="color:#f92672">+</span> str<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>IllegalAccessException <span style="color:#f92672">|</span> NoSuchFieldException e<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        e<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}).</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 去除hello的引用
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        hello <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 调用垃圾回收对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>对于虚引用，它的get()方法只会返回null，因为<code>虚引用是不可达的</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhantomReference</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Reference<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">public</span> T <span style="color:#a6e22e">get</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div></blockquote>
+<hr>
+<h3 id="对象的回收">对象的回收<a href="#对象的回收" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>我们知道<code>HotSpot</code>采用的是<code>可达性算法</code>判断对象是否存活，那么不再存活的对象垃圾回收器是如何回收的呢？</p>
+<ol>
+<li>垃圾回收器对对象进行回收时，先通过<code>可达性算法</code>判断该对象是否可达。</li>
+<li>如果<code>对象不可达</code>并且<code>复写了finalize方法且该对象的finalize方法之前没被调用过</code>。</li>
+<li>垃圾回收器会将对象放置到<code>ReferenceQueue&lt;Finalizer&gt;</code>队列中，稍后由JVM启动一个<code>低优先级的Finalizer线程</code>去执行Queue中<code>对象的finalize方法</code>。</li>
+<li>但JVM不一定会等待<code>finalize</code>执行结束，因为如果<code>finalize</code>方法卡顿，会导致队列中后续的对象处于等待，甚至导致<code>整个内存回收系统的崩溃</code>。</li>
+<li>若该对象的finalize方法不能<code>将对象与引用链建立连接</code>，该对象会被垃圾回收器清理。</li>
+</ol>
+<p><img src="https://image.leejay.top/image/20200814/1LKD8vwaOJzB.png?imageslim" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ReachabilityAnalysis</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建GC Roots
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> ReachabilityAnalysis REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">isAlive</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m still alive ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">finalize</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> Throwable <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">finalize</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;execute finalize method ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 试图和引用链建立联系
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 创建对象
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ReachabilityAnalysis<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 去除引用链的联系, 便于测试
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 调用gc时 对象第一次尝试自救
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 因为finalizer线程的低优先级, 需要休眠一会。
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// JVM会先判断是否有必要执行finalizer方法, 并执行相应的finalize()方法
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1_000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m dead ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 第二次自救 用于判断是否会执行finalize方法两次
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        REACHABILITY_ANALYSIS <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">gc</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">sleep</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1_000</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> REACHABILITY_ANALYSIS<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            REACHABILITY_ANALYSIS<span style="color:#f92672">.</span><span style="color:#a6e22e">isAlive</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;i&#39;m dead ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 结论: 任何对象的finalize()方法只会被系统调用一次
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>对象<code>finalize</code>方法只会被JVM调用一次，只要执行<code>finalize</code>方法重新与<code>引用链</code>建立联系，就不会被清理。不建议使用<code>finalize进行释放资源</code>，因为可能发生引用外泄，无意中复活对象。并且finalize调用时间不确定，相比之下更推荐<code>finally释放资源</code>。</p>
+</blockquote>
+<hr>
+<h3 id="垃圾回收算法">垃圾回收算法<a href="#垃圾回收算法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="标记清除法mark-sweep">标记清除法(Mark-Sweep)<a href="#标记清除法mark-sweep" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>包含<code>标记阶段</code>和<code>清除阶段</code>。标记阶段通过<code>可达性算法</code>标记分析可达对象，清除阶段会清除所有<code>未被标记的对象</code>。
+此方法会<code>产生空间碎片</code>。并且回收后的空间是<code>不连续</code>的，会导致工作效率低于连续空间。该算法更关注垃圾回收器的<code>耗时</code>操作。</p>
+<h4 id="复制算法copying">复制算法(Copying)<a href="#复制算法copying" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>将<code>内存空间分为两份</code>，在进行垃圾回收时，将正在使用的那一份<code>内存中的活对象</code>复制到另一份内存中，之后<code>清除正在使用的内存块中的所有对象</code>，交换两个内存的角色，完成垃圾回收。
+相对于<code>标记清除算法</code>，<code>复制算法</code>不会产生空间碎片，但会导致使用的<code>内存只有一半</code>。</p>
+<blockquote>
+<p><code>新生代串行垃圾回收器</code>使用了该算法，它将新生代分为<code>eden、from(s0)、to(s1)</code>三个区域，GC在回收对象时，会先将<code>eden &amp; s0</code>区域的对象复制到<code>s1(大对象、老年对象、s1区域满时对象会直接进入老年代)</code>，然后清空<code>eden &amp; s0</code>区域，再将<code>s0 &amp; s1互换</code>，保证<code>s1永远为空</code>。</p>
+</blockquote>
+<h4 id="标记压缩算法mark-compact">标记压缩算法(Mark-Compact)<a href="#标记压缩算法mark-compact" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>在标记阶段，使用<code>可达性算法</code>对所有可达对象进行标记。在清除阶段，将所有的存活对象压缩到内存的一端，然后清除边界外的所有空间。相比之前的算法，避免了<code>内存碎片</code>的产生且不需要<code>内存折半</code>，但是移动大对象会给系统带来较长时间的<code>STW</code>。该算法更关注垃圾回收器的<code>吞吐量</code>操作。</p>
+<blockquote>
+<p>STW：垃圾回收器工作时，Java程序需要暂停工作，等待垃圾回收完成，这种现象叫做<code>Stop The World</code>。</p>
+</blockquote>
+<h4 id="分代算法generational-collecting">分代算法(Generational Collecting)<a href="#分代算法generational-collecting" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>基于两个分代假说之上：</p>
+<blockquote>
+<p>弱分代假说：绝大多数的对象都是朝生夕灭的。</p>
+<p>强分代假说：熬过多次垃圾回收的对象就越难以消亡。</p>
+</blockquote>
+<p>奠定了垃圾收集器的一致设计原则：<code>收集器应将Java堆分成不同的区域，然后将回收对象依据其年龄(对象熬过垃圾回收的次数)分配到不同的区域中存储</code>。</p>
+<p>但因为对象会存在<code>跨代引用</code>，即<code>新生代对象完全可能被老年代对象引用</code>，因此除了必要的可达性分析外，还需要<code>遍历老年代对象</code>来保证所有对象可达性分析结果的准确性。基于此理论提出了<code>跨代引用假说：</code></p>
+<blockquote>
+<p>跨代引用相对于同代引用来说仅占极少部分。</p>
+</blockquote>
+<p>并基于此假说采用了如下设计：在新生代上建立一个全局数据结构<code>记忆集(Remembered Set)</code>，该结构将老年代划成若干小块，标识出老年代哪一块内存会存在跨代引用，当发生新生代垃圾回收时，会对记忆集中的记录加入<code>GC Roots</code>进行扫描，相比扫描整个老年代来说大大的减少了运行时开销。</p>
+<h4 id="分区算法region">分区算法(Region)<a href="#分区算法region" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>分区算法将整个堆空间分成连续的不同小区间，每个小区间都独立使用，独立回收</code>。控制一次回收小区间的数量，能够有效减少GC产生的停顿。</p>
+<p><img src="https://image.leejay.top/image/20200814/jQj1OYkGDUEJ.png?imageslim" alt=""></p>
+<blockquote>
+<p>分区回收算法带来的跨代引用问题：</p>
+<p>因为对象会存在<code>新生代、老年代间的跨代引用问题</code>，垃圾收集器建立了名为<code>记忆集(Remember Set)</code>的数据结构，用于<code>记录非收集区域指向收集区域的指针集合</code>的抽象数据结构。继而<code>避免对整个老年代进行扫描</code>。</p>
+<p><code>卡表(Card Table)</code>是最常见的实现<code>记忆集</code>结构的方式。可以是<code>字节数组</code>或<code>哈希表</code>，存储的是<code>跨代引用的对象的内存地址</code>，这样只需要筛选出跨代引用的对象，将其加入GC Roots中一起扫描即可。</p>
+</blockquote>
+<hr>
+<h2 id="4-垃圾回收期器">4. 垃圾回收期器<a href="#4-垃圾回收期器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="jvm中经典的垃圾回收器">JVM中经典的垃圾回收器<a href="#jvm中经典的垃圾回收器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>下图是来自<a href="https://blogs.oracle.com/jonthecollector/our-collectors">oracle官方博客</a>中介绍垃圾回收器之间的关系图。</p>
+<p><img src="https://image.leejay.top/image/20200817/GDG377Ck8xwv.jpg?imageslim" alt=""></p>
+<blockquote>
+<p>黄色代表<code>新生代</code>，灰色代表<code>老年代</code>，两个垃圾回收器之间相连表示<code>这两个垃圾回收器组合使用</code>。</p>
+<p><code>Serial &amp; CMS</code> 与 <code>ParNew &amp; Serial Old</code>两组 在<code>JDK8</code>中已过期，<code>JDK9</code>中已移除。</p>
+<p>我们用<code>并行</code>、<code>并发</code>来形容不同的收集器：</p>
+<p>并行：描述的是多条垃圾回收器线程之间的关系，默认此时的<code>用户线程处于等待</code>状态。</p>
+<p>并发：描述垃圾回收器线程与用户线程间的关系，说明同一时间<code>垃圾回收器线程与用户线程都在运行</code>。</p>
+</blockquote>
+<hr>
+<h3 id="新生代收集器">新生代收集器<a href="#新生代收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>以下三种收集器都采用的是<code>标记-复制算法</code>来实现收集器的回收逻辑。</p>
+<h4 id="serial收集器">Serial收集器<a href="#serial收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>使用<code>单线程</code>工作的收集器，除了只会用<code>一个处理器或一个收集线程</code>去完成垃圾收集工作，更重要的是它在进行垃圾收集时，必须<code>暂停其他所有的工作线程(STW)</code>，直到收集结束。是<code>客户端模式</code>下默认新生代收集器。</p>
+<blockquote>
+<p>客户端/服务端区别：client比server模式<code>启动速度更快</code>，当server比client模式<code>运行速度更快</code>。</p>
+</blockquote>
+<p>相比其他垃圾收集器，<code>Serial收集器</code>时所有垃圾回收器里面<code>额外内存消耗最小的</code>，但<code>STW耗时是最长的</code>；对于<code>单核处理器或处理器核心较少</code>环境来说，由于没有线程交互的开销，<code>Serial收集器</code>可以获得<code>最高的单线程收集效率</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-XX:+UseSerialGC 新生代 &amp; 老年代都使用串行收集器
+</span></span></code></pre></div><h4 id="parnew收集器">ParNew收集器<a href="#parnew收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>ParNew收集器</code>本质上是<code>Serial收集器</code>的<code>多线程并行</code>版本。除了<code>同时使用多条线程</code>进行垃圾收集外，其余的和<code>Serial收集器</code>一致。</p>
+<blockquote>
+<p>这里的并行指的是：<code>同一个时间有多个</code>这样的收集线程在协调工作，用户线程此时处于等待状态。</p>
+</blockquote>
+<p>除了<code>Serial收集器</code>外，只有<code>ParNew收集器</code>能与<code>CMS收集器</code>配合工作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 新生代ParNew &amp; 老年代CMS 是开启CMS下新生代默认收集器</span>
+</span></span><span style="display:flex;"><span>-XX:+UseConcMarkSweepGC
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 新生代ParNew &amp; 老年代SerialOld（JDK8后已过期）</span>
+</span></span><span style="display:flex;"><span>-XX:+UseParNewGC  
+</span></span></code></pre></div><p>因为线程交互的开销，在<code>单核处理器</code>下性能低于<code>Serial</code>，但是<code>多核心</code>下<code>ParNew</code>收集器还是很高效的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 垃圾收集的线程数为8</span>
+</span></span><span style="display:flex;"><span>-XX:ParallelGCThreads<span style="color:#f92672">=</span><span style="color:#ae81ff">8</span>
+</span></span></code></pre></div><blockquote>
+<p>不设置此参数时，当<code>Cpu Cores &lt; 8</code>时，<code>Threads=Cpu Cores</code>，否则 <code>Threads=3+(5*cores)/8）</code>。</p>
+</blockquote>
+<h4 id="parallel-scavenge收集器">Parallel Scavenge收集器<a href="#parallel-scavenge收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>相比<code>ParNew收集器</code>目标是<code>减少用户线程的停顿时间</code>，<code>Paraller收集器</code>关注则是<code>可控制的吞吐量</code>。
+$$
+吞吐量 = 运行用户代码时间 / (运行用户代码时间 + 运行垃圾收集时间）
+$$</p>
+<blockquote>
+<p>假设JVM执行完成某个请求共需要100分钟，其中垃圾收集花费1分钟，那么吞吐量就是<code>99%</code>。</p>
+<p><code>低停顿时间</code>适合<code>用户交互或保证服务响应</code>的程序。<code>高吞吐量</code>适合<code>最高效率</code>利用处理器资源，<code>尽快</code>完成程序的<code>运算任务</code>。</p>
+<p><code>停顿时间</code>缩短是以牺牲<code>吞吐量和新生代空间</code>为代价的。如果我们将新生代设置的较小，虽然会减少每次回收的时间，但是会导致垃圾回收更加频繁，虽然停顿时间在减少，但是吞吐量在下降。</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 允许设置一个大于0的毫秒数，收集器尽量保证内存回收时间不超过该值</span>
+</span></span><span style="display:flex;"><span>-XX:MaxGCPauseMillis
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 允许设置一个大于0小于100的整数n</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 系统将花费不超过 1/(1+n)的时间进行回收 假设n=99，那么不超过1%时间进行回收。</span>
+</span></span><span style="display:flex;"><span>-XX:GCTimeRatio
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 自适应GC策略，自动调整新生代大小，老年代晋年龄等 区别于ParNew是Paraller独有</span>
+</span></span><span style="display:flex;"><span>-XX:+UseAdaptiveSizePolicy
+</span></span></code></pre></div><hr>
+<h3 id="老年代收集器">老年代收集器<a href="#老年代收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="serial-old收集器">Serial Old收集器<a href="#serial-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>是<code>Serial</code>收集器的老年代版本，基于<code>标记-整理</code>的<code>单线程</code>收集器，用于<code>客户端</code>模式下的HotSpot虚拟机使用。</p>
+<p>在<code>服务端</code>模式下，有两个用途：JDK5及之前版本中与<code>Parallel Scavenge</code>配合使用；作为<code>CMS</code>收集器发生失败时的备用收集器。</p>
+<h4 id="parallel-old收集器">Parallel Old收集器<a href="#parallel-old收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>JDK6推出，是<code>Parallel Scavenge</code>收集器的老年代版本，支持<code>多线程并发</code>收集，基于<code>标记-整理</code>算法实现。</p>
+<p><code>Parallel Old</code>配合<code>Parallel Scavenge</code>的组合，用于<code>注重吞吐量和处理器资源较为稀缺的</code>情况。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Parallel Scavenge + Parallel Old,JDK8默认组合</span>
+</span></span><span style="display:flex;"><span>-XX:+UseParallelGC
+</span></span></code></pre></div><h4 id="cms收集器">CMS收集器<a href="#cms收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>CMS(<code>Concurrent Mark Sweep</code>)收集器是一种以获取<code>最短回收停顿时间</code>为目标的收集器。基于<code>标记-清除</code>算法。</p>
+<h5 id="收集流程">收集流程<a href="#收集流程" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>初始标记</li>
+</ul>
+<p>此阶段仅<code>标记GC Roots能直接关联到的对象</code>。需要停顿用户线程(STW)。</p>
+<ul>
+<li>并发标记(并发)</li>
+</ul>
+<p>基于<code>初始标记</code>阶段标记的<code>从GC Roots可直接关联的对象开始</code>遍历整个对象图的过程。不需要停顿用户线程，与垃圾回收线程一起工作。</p>
+<ul>
+<li>重新标记(并行)</li>
+</ul>
+<p>该阶段是为了修正并发标记期间，因用户程序继续运作而导致标记产生变动的那部分对象的标记记录。CMS是使用<code>增量更新</code>来解决并发标记产生的问题。</p>
+<ul>
+<li>并发清除(并发)</li>
+</ul>
+<p>清理删除掉标记阶段的已死亡对象，此阶段不需要移动存活对象。</p>
+<h5 id="cms收集器缺点">CMS收集器缺点<a href="#cms收集器缺点" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>对处理器资源敏感</li>
+</ul>
+<p>因为CMS的并发阶段会<code>占用一部分线程</code>会导致应用程序变慢，降低吞吐量。默认回收线程数是<code>(Cpu Cores + 3 ) / 4</code>，若Cpu Cores越小，那么对程序运行的影响较大。</p>
+<ul>
+<li>无法处理浮动垃圾</li>
+</ul>
+<p>在CMS<code>并发标记和并发清理</code>阶段，用户线程还在继续执行，就会有<code>新的垃圾对象</code>不断产生，但这些对象出现在初始标记阶段后，只能在下次垃圾回收中再处理这部分垃圾。</p>
+<p>因为<code>CMS收集器</code>并发标记和并发清理的特性，必须<code>预留一些空间</code>提供给用户线程使用，不能等老年代满再工作。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 当老年代使用了68%后CMS开始工作</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># JDK5默认68%，JDK6默认92%</span>
+</span></span><span style="display:flex;"><span>-XX:CMSInitiatingOccupancyFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">68</span>
+</span></span></code></pre></div><blockquote>
+<p>如果预留的内存不够用户线程分配新对象，会启用<code>Serial Old</code>进行<code>Major GC</code>。会带来较长的停顿时间。</p>
+</blockquote>
+<ul>
+<li>产生大量空间碎片</li>
+</ul>
+<p>因为CMS基于<code>比较-清除</code>算法，易产生大量的空间碎片，在无法给大对象分配内存时导致一次<code>Full Gc</code>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 默认开启，当CMS进行Full GC时开启内存碎片合并整理的过程 JDK9废弃</span>
+</span></span><span style="display:flex;"><span>-XX:+UseCMSCompactAtFullCollection
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># CMS在执行若干次不整理空间的Full GC后，下一次进行碎片整理 JDK9废弃</span>
+</span></span><span style="display:flex;"><span>-XX:CMSFullGCBeforeCompaction
+</span></span></code></pre></div><blockquote>
+<p>Full GC：对整个Java堆进行回收，包含新生代和老年代</p>
+<p>Minor GC：对新生代进行回收。</p>
+<p>Major GC：对老年代进行回收。</p>
+</blockquote>
+<h4 id="g1收集器">G1收集器<a href="#g1收集器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h4 id="概念">概念<a href="#概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>G1(Garbage First)收集器</code>开创了面向<code>局部收集的设计思路</code>和<code>基于Region的内存布局形式</code>。目的是为了实现支持<code>停顿时间模型</code>的收集器。基于<code>标记-整理</code>算法。</p>
+<blockquote>
+<p>停顿时间模型：支持指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不超过N毫秒。</p>
+</blockquote>
+<p>相比于其他收集器要么面向新生代，要么面向老年代，而G1面向堆内存任何部分来组成<code>回收集(Collection Set)</code>进行回收。衡量标准由属于哪个分代变为哪块内存垃圾最多，回收收益最大。</p>
+<p>相比于之前的固定大小和数量的区域划分的收集器，G1将堆内存分为<code>多个大小相等的独立区域(Region，默认分成2048份)</code>，每个<code>Region</code>可以根据需要扮演<code>Eden、Survivor或老年代空间</code>。</p>
+<p><code>Region</code>中还存在一类特殊的<code>Humongous</code>区域，用于存储大对象，G1认为只要大小超过一个<code>Region</code>容量一半的对象即为大对象，对于超过<code>Region</code>大小的对象，将会被存放在N个连续的<code>Humongous</code>区域中。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 设置Region的大小(单位： B)，在[1MB,32MB]必须为2的幂次方</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置Region的大小=2097152B=2MB，不设置默认是1MB</span>
+</span></span><span style="display:flex;"><span>-XX:G1HeapRegionSize<span style="color:#f92672">=</span><span style="color:#ae81ff">2097152</span>
+</span></span></code></pre></div><p>G1仍然保留新生代、老年代的概念，当它们不再是固定的区域了，改为<code>一系列区域(不需要连续)的动态集合</code>。G1在后台维护一个<code>优先级列表</code>，每次根据用户通过<code>-XX:MaxGCPauseMillis</code>指定的停顿时长<code>(默认200ms)</code>，优先回收价值收益最大的<code>Region</code>，以达到最大的收集效率。</p>
+<h4 id="收集流程-1">收集流程<a href="#收集流程-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>初始标记</li>
+</ul>
+<p>和CMS类似，标记<code>GC Roots</code>直接关联的对象，此阶段会产生<code>STW</code>。</p>
+<ul>
+<li>并发标记(并发)</li>
+</ul>
+<p>基于<code>初始标记</code>，从<code>GC Roots</code>开始对堆中对象进行可达性分析，并<code>递归扫描整个对象图</code>，找出可回收对象，此过程可与用户程序并发执行。</p>
+<ul>
+<li>最终标记(并行)</li>
+</ul>
+<p>对用户线程做另一个短暂的暂停，通过<code>原始快照SATB</code>处理并发标记导致的并发可达性问题（上章分析过）。</p>
+<ul>
+<li>筛选回收(并行)</li>
+</ul>
+<p>负责更新<code>Region</code>的统计数据，并按照回收价值和成本进行排序，根据用户期望的<code>停顿时间</code>来指定回收计划。可见多个<code>Region</code>合并成<code>回收集(Collection Set)</code>，将回收的<code>Region</code>中的对象移到空的<code>Region</code>，再清理旧的<code>Region</code>，设计到对象的移动(体现<code>标记-整理</code>算法)，此阶段<code>用户线程暂停</code>，<code>多条收集器线程并行</code>完成。</p>
+<h4 id="g1vscms">G1vsCMS<a href="#g1vscms" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>优势
+<ul>
+<li>指定最大停顿时间</li>
+<li>不会产生内存空间碎片</li>
+</ul>
+</li>
+<li>劣势
+<ul>
+<li>并发执行带来的较高的内存占用和负载</li>
+<li>每个<code>Region</code>都持有一份<code>卡表</code>导致堆内存的消耗。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="对象在堆中的分配">对象在堆中的分配<a href="#对象在堆中的分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>前面我们了解到，<code>大部分</code>的对象都是在<code>堆中</code>进行内存分配，但堆中又存在多个逻辑区域(新生代、老年代)，所以这章我们就要讨论下，对象在堆中的进行内存分配的基本原则。</p>
+<h4 id="tlab-1">TLAB<a href="#tlab-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>在讨论对象分配前，我们需要对之前引入的<code>TLAB</code>的概念进一步解析。<code>TLAB(本地线程缓冲)</code>，其存在的目的是为了加速对象的分配，即每个线程都拥有自己的专属区域进行对象分配，来避免多线程冲突，默认是启动的。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 开/关TLAB</span>
+</span></span><span style="display:flex;"><span>-XX:+/-UseTLAB
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置TLAB大小</span>
+</span></span><span style="display:flex;"><span>-XX:TLABSize
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看TLAB信息</span>
+</span></span><span style="display:flex;"><span>-XX:+PrintTLAB
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 对象占TLAB空间的比例，大于此比例堆中分配，小于就废弃当前</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">## TLAB区域，并新建一个TLAB存放，默认64</span>
+</span></span><span style="display:flex;"><span>-XX:TLABRefillWasteFraction<span style="color:#f92672">=</span><span style="color:#ae81ff">64</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 默认情况TLAB和refill_waste是动态的，关闭TLAB动态调整</span>
+</span></span><span style="display:flex;"><span>-XX:-ResizeTLAB
+</span></span></code></pre></div><blockquote>
+<p>我们假设TLAB大小为100KB，第一次分配给对象80KB，此时还剩20KB，如果第二次有30KB大小的对象需要分配，此时有两种选择：</p>
+<ol>
+<li>废弃所剩的20KB区域，新建一个TLAB存放30KB的对象。</li>
+<li>将30KB对象分配在堆上，保留所剩的20KB区域，等到下次有小于20KB对象分配时再使用该区域。</li>
+</ol>
+<p><code>-XX:TLABRefillWasteFraction=64</code>，即允许TLAB空间浪费的比例，当<code>对象/TLAB的比例</code>大于64，对象在堆中分配，小于64则会开辟新TLAB存放。</p>
+</blockquote>
+<h4 id="一般在eden中分配">一般在eden中分配<a href="#一般在eden中分配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>大部分情况下，<code>对象在Eden区中进行分配</code>，如果<code>Eden区</code>空间不够，JVM会发起一次<code>Minor GC</code>。</p>
+<h4 id="大对象进入老年代">大对象进入老年代<a href="#大对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><code>大对象：需要大量连续内存空间的Java对象</code>或新生代已无足够空间分配的对象直接进入老年代。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 将大于此大小的对象直接分配到老年代</span>
+</span></span><span style="display:flex;"><span>-XX:PretenureSizeThreshold<span style="color:#f92672">=</span>5242880<span style="color:#f92672">(</span>5mb<span style="color:#f92672">)</span>
+</span></span></code></pre></div><blockquote>
+<p>只适用于<code>Serial、Serial Old、ParNew</code>三种收集器。</p>
+</blockquote>
+<h4 id="长期存活对象进入老年代">长期存活对象进入老年代<a href="#长期存活对象进入老年代" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>长期存活的对象将进入老年代。对象通常在eden区诞生，如果经历了一次<code>Minor Gc</code>后仍然存活，并能够被<code>s0</code>容纳，该对象会被移动到<code>s0</code>区并将其<code>对象头中的对象年龄 + 1</code>。当年龄达到阈值，就会进入老年代。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 对象晋升到老年代的年龄阈值</span>
+</span></span><span style="display:flex;"><span>-XX:MaxTenuringThreshold<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span>
+</span></span></code></pre></div><blockquote>
+<p><code>动态对象年龄判断</code>：</p>
+<p>JVM不是永远要求对象年龄达到<code>-XX:MaxTenuringThreshold</code>指定的值才能晋升老年代：</p>
+<p>如果<code>s0中相同年龄的对象大小总</code>和大于s0区域的一半<code>(-XX:TargetSurvivorRatio决定，默认50)</code>，那么<code>大于等于该年龄的对象</code>就会进入老年代。</p>
+</blockquote>
+<h4 id="总结">总结<a href="#总结" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>对象的内存分配流程需要经历<code>栈上分配 -&gt; TLAB分配 -&gt; 是否进入老年代 -&gt; 最终eden分配</code>。</p>
+<hr>
+<h2 id="5-虚拟机参数概述">5. 虚拟机参数概述<a href="#5-虚拟机参数概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="基本参数">基本参数<a href="#基本参数" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>-XX:+PrintGCDetails</code></td>
+<td>打印详细的GC日志</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:+PrintGCTimeStamps</td>
+<td>GC开头的时间为虚拟机启动时间的偏移量</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:+PrintGCApplicationStoppedTime</td>
+<td>打印引用程序由于GC而产生停顿的时间</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-Xloggc:D://log.txt</code></td>
+<td>输出GC日志到D盘下log.txt文件中</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:+PrintVMOptions</td>
+<td>打印显示传递的参数</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:+PrintCommandLineFlags</code></td>
+<td>打印传递给虚拟机的<code>显式和隐式</code>参数</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:+PrintFlagsFinal</td>
+<td>打印全部参数<code>(包括虚拟机自身的参数)</code></td>
+</tr>
+<tr>
+<td style="text-align:left">-Xss1m</td>
+<td>指定栈大小为1m</td>
+</tr>
+<tr>
+<td style="text-align:left">-Xms10m</td>
+<td>初始堆空间大小</td>
+</tr>
+<tr>
+<td style="text-align:left">-Xmx20m</td>
+<td>最大堆空间大小</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-Xmn2m</code></td>
+<td>新生代大小</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:SurvivorRatio</code></td>
+<td>新生代中eden/s0/s1比例，默认<code>8:1:1</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:NewRatio</code></td>
+<td>老年代/新生代的比例，默认2:1</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:NewSize</td>
+<td>新生代初始大小</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:MaxNewSize</td>
+<td>新生代大小最大值</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:+HeapDumpOnOutOfMemoryError</code></td>
+<td>堆OOM时导出堆的信息</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:HeapDumpPath=D://log.dump</code></td>
+<td>将OOM信息导入到D盘下log.dump文件中</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:MetaspaceSize=1m</td>
+<td>设置元数据区初始大小为1m</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:MaxMetaspaceSize=2m</code></td>
+<td>设置元数据区大小最大为2m</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:MaxDirectMemorySize=2m</code></td>
+<td>本机直接内存(堆外内存)最大2m，默认等于-Xmx</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:+UseTLAB</td>
+<td>开启TLAB，默认开启</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:+PrintTLAB</code></td>
+<td>打印TLAB信息</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:TLABSize=1024</td>
+<td>设置TLAB大小为1kb</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-XX:TLABRefillWasteFraction=64</code></td>
+<td>允许TLAB空间浪费的比例</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:-ResizeTLAB</td>
+<td>禁止TLAB自动调整大小和浪费比例</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:PretenureSizeThreshold=5242880</td>
+<td>大于5m对象直接进入老年代，只对Serial、ParNew有用</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:MaxTenuringThreshold=15</td>
+<td>晋升到老年代的年龄大小</td>
+</tr>
+<tr>
+<td style="text-align:left">-XX:TargetSurvivorRatio=50</td>
+<td>用于<code>动态对象年龄</code>判断的s0的使用率参数，默认50</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="收集器选择参数">收集器选择参数<a href="#收集器选择参数" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>新生代</th>
+<th>老年代</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-XX:+UseSerialGC</td>
+<td>Serial</td>
+<td>Serial Old</td>
+</tr>
+<tr>
+<td><code>-XX:+UseParallelGC</code></td>
+<td>Parallel Scavenge</td>
+<td>Parallel Old</td>
+</tr>
+<tr>
+<td>-XX:+UseParNewGC</td>
+<td>ParNew</td>
+<td>Serial Old</td>
+</tr>
+<tr>
+<td><code>-XX:+UseConcMarkSweepGC</code></td>
+<td>ParNew</td>
+<td>CMS</td>
+</tr>
+<tr>
+<td><code>-XX:UseG1GC</code></td>
+<td>G1</td>
+<td>G1</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="收集相关参数">收集相关参数<a href="#收集相关参数" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">收集器</th>
+<th>相关参数</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">ParNew<br>Parallel<br>CMS<br>G1<br>Parallel Old</td>
+<td>-XX:ParallelGCThreads=n</td>
+<td>指定并行回收线程数<br><code>n=cores&lt;8?cores:3+((5*cores))/8)</code></td>
+</tr>
+<tr>
+<td style="text-align:left">Parallel</td>
+<td>-XX:MaxGCPauseMillis=n<br>-XX:GCTimeRatio=n<br>-XX:+UseAdaptiveSizePolicy</td>
+<td>最大回收停顿时长<br>不超过<code>1/1+n</code>时间进行回收<br>自适应GC策略</td>
+</tr>
+<tr>
+<td style="text-align:left">CMS</td>
+<td>-XX:CMSInitiatingOccupancyFraction=n<br>-XX:CMSFullGCBeforeCompaction=n<br>-XX:+UseCMSCompactAtFullCollection</td>
+<td>老年代容量到n时CMS开始工作，默认92<br>CMSn次FullGC后开启碎片整理，默认0<br>CMS进行FullGC时开启碎片整理</td>
+</tr>
+<tr>
+<td style="text-align:left">G1</td>
+<td>-XX:G1HeapRegionSize<br>-XX:MaxGCPauseMillis<br>-XX:InitiatingHeapOccupancyPercent</td>
+<td>指定Region大小，默认1MB，最大32MB<br>垃圾收集时停顿时长，默认200ms<br>堆使用率达到n后开启并发标记，默认45</td>
+</tr>
+</tbody>
+</table>
+<hr>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/algorithm_kmp/">
+                <span class="button__text">Kmp算法浅析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span><a rel="nofollow" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备18050258号-1</a></span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

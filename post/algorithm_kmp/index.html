@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Kmp算法浅析 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="KMP算法：一种字符串搜索算法。是第一个用于字符串匹配的线性时间算法。 暴力匹配 在字符串匹配中，若我们使用暴力破解对主串和子串进行匹配，当匹配失败就回退到主串的下一个字符重新开始匹配。在最坏的情况下，此种方式的时间复杂度为O(m*n)。匹配流程下图所示。 KMP算法 基本概念 KMP算法（由Knuth、Morris、Pratt三人共同发表），其特点就是在一次字符串的遍历过程中就可以匹配出子串。其时间复杂度是O(m&#43;n)。 KMP算法中的核心概念就是基于最大公共前后缀生成next数组，在匹配失败的时候避免了暴力算法中的回退所带来的高时间复杂度问题。 在理解KMP算法的核心概念最大公共前后缀之前，我们需要先明白前缀和后缀的含义。 前缀：在字符串中除了最后一个字符外，所有以第一个字符开始的连续子串。 后缀：在字符串中除了第一个字符外，所有以最后一个字符结尾的连续子串。 由此可以得出最大公共前后缀：在字符串里所有前缀和后缀相等的子串中最长的那个(不能超过字符串长度)。 graph LR A(&#34;ABAA&#34;) A --&gt; B(&#34;最大前缀: ABA&#34;) A --&gt; C(&#34;最大后缀: BAA&#34;) A --&gt; D(&#34;最大公共前后缀: A&#34;) 基于最大公共前后缀生成的next数组就是用于记录子串中不同位置的最大公共前后缀长度。也就是当匹配失败的时候，子串需要回退的位置。那么next数组是如何计算的呢？参考下图手算next数组流程。 next数组的第一位默认是-1，即当匹配失败的时候，子串往后移动一位继续匹配。 next数组的作用：若子串的第n个位置的与主串不匹配，那么需要将子串回退到next[n]的位置再次进行匹配。 计算next[n]最大公共前后缀的子串范围是$P_0P_1&amp;hellip;P_{n-1}$。 代码推导 next数组推导 若计算next[i&#43;1]的值时，必然已经知道next[i]的值（类似动态规划）。 假设next[i]=k，根据最大公共前后缀定义，那么此时必有：$C_0C_1&amp;hellip;C_{k-1}=C_{i-k}&amp;hellip;C_{i-1}$。 若$C_k=C_i$，则 $next[i&#43;1] = k &#43; 1$。 若$C_k != C_i$, 若 $next[k] = z$，根据最大公共前后缀定义，此时必有：$C0&amp;hellip;C_{z-1} = C_{k-z}&amp;hellip;C_{k-1} = C_{i-k}&amp;hellip;C_{i-k&#43;z-1} = C_{i-z}&amp;hellip;C_{i-1}$，结合第二步的结果可得：$C0&amp;hellip;C_{z-1} = C_{i-z}&amp;hellip;C_{i-1}$。 若$ C_{k-z} = C_{i} $，那么 $ next[i&#43;1] = z &#43; 1$。如果不相等则重复上述流程，直到最长公共前后缀的值为0就停止循环查找。 private static int[] getNext(char[] array) { final int length = array." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/algorithm_kmp/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Kmp算法浅析">
+<meta property="og:description" content="KMP算法是第一个用于字符串匹配的`线性`时间算法" />
+<meta property="og:url" content="https://leejay.top/post/algorithm_kmp/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="algorithm" />
+
+
+  <meta property="article:published_time" content="2022-06-08 15:52:15 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    HelloWorld
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+  
+  
+  <script async src="https://cdn.bootcdn.net/ajax/libs/mermaid/9.1.1/mermaid.min.js"></script>
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong> ↓ 目录 ↓ </strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%9a%b4%e5%8a%9b%e5%8c%b9%e9%85%8d">
+                    暴力匹配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#kmp%e7%ae%97%e6%b3%95">
+                    KMP算法
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9f%ba%e6%9c%ac%e6%a6%82%e5%bf%b5">
+                    基本概念
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%bb%a3%e7%a0%81%e6%8e%a8%e5%af%bc">
+                    代码推导
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#next%e6%95%b0%e7%bb%84%e6%8e%a8%e5%af%bc">
+                    next数组推导
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%ad%97%e7%ac%a6%e4%b8%b2%e5%8c%b9%e9%85%8d">
+                    字符串匹配
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/algorithm_kmp/">Kmp算法浅析</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2022-06-08 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/kmp-/">kmp </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm">KMP算法</a>：一种字符串搜索算法。是第一个用于字符串匹配的<code>线性</code>时间算法。</p>
+</blockquote>
+<h2 id="暴力匹配">暴力匹配<a href="#暴力匹配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<p>在字符串匹配中，若我们使用暴力破解对<code>主串</code>和<code>子串</code>进行匹配，当匹配失败就回退到主串的下一个字符重新开始匹配。在最坏的情况下，此种方式的时间复杂度为<code>O(m*n)</code>。匹配流程下图所示。</p>
+<p><img src="https://image.leejay.top/img/%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8C%B9%E9%85%8D.gif" alt="字符串匹配"></p>
+<h2 id="kmp算法">KMP算法<a href="#kmp算法" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="基本概念">基本概念<a href="#基本概念" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<blockquote>
+<p>KMP算法（由<code>K</code>nuth、<code>M</code>orris、<code>P</code>ratt三人共同发表），其特点就是在一次字符串的遍历过程中就可以匹配出子串。其时间复杂度是<code>O(m+n)</code>。</p>
+<p>KMP算法中的核心概念就是基于<code>最大公共前后缀</code>生成<code>next</code>数组，在匹配失败的时候避免了暴力算法中的<code>回退</code>所带来的高时间复杂度问题。</p>
+</blockquote>
+<p><img src="https://image.leejay.top/img/kmp1.gif" alt="kmp演示流程"></p>
+<p>在理解KMP算法的核心概念<code>最大公共前后缀</code>之前，我们需要先明白<code>前缀</code>和<code>后缀</code>的含义。</p>
+<ul>
+<li>
+<p>前缀：在字符串中除了最后一个字符外，所有以<code>第一个字符开始</code>的连续子串。</p>
+</li>
+<li>
+<p>后缀：在字符串中除了第一个字符外，所有以<code>最后一个字符结尾</code>的连续子串。</p>
+</li>
+</ul>
+<p>由此可以得出最大公共前后缀：在字符串里<code>所有前缀和后缀相等的子串中最长的那个(不能超过字符串长度)</code>。</p>
+<div class="mermaid">
+    
+graph LR
+    A("ABAA")
+    A --> B("最大前缀: ABA")
+    A --> C("最大后缀: BAA")
+    A --> D("最大公共前后缀: A")
+
+</div>
+<p>基于最大公共前后缀生成的<code>next数组</code>就是用于记录<code>子串</code>中不同位置的最大公共前后缀长度。也就是当匹配失败的时候，子串需要<code>回退</code>的位置。那么next数组是如何计算的呢？参考下图手算next数组流程。</p>
+<p><img src="https://image.leejay.top/img/next11.gif" alt="手算next数组"></p>
+<blockquote>
+<ol>
+<li>next数组的第一位默认是-1，即当匹配失败的时候，<code>子串往后移动一位继续匹配</code>。</li>
+<li>next数组的作用：若子串的第n个位置的与主串不匹配，那么需要将子串回退到next[n]的位置再次进行匹配。</li>
+<li>计算next[n]最大公共前后缀的子串范围是$P_0P_1&hellip;P_{n-1}$。</li>
+</ol>
+</blockquote>
+<h3 id="代码推导">代码推导<a href="#代码推导" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="next数组推导">next数组推导<a href="#next数组推导" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p><img src="https://image.leejay.top/img/next2.gif" alt="next数组推导"></p>
+<blockquote>
+<ol>
+<li>若计算next[i+1]的值时，必然已经知道next[i]的值（类似动态规划）。</li>
+<li>假设next[i]=k，根据最大公共前后缀定义，那么此时必有：$C_0C_1&hellip;C_{k-1}=C_{i-k}&hellip;C_{i-1}$。</li>
+<li>若$C_k=C_i$，则 $next[i+1] = k + 1$。</li>
+<li>若$C_k != C_i$, 若 $next[k] = z$，根据最大公共前后缀定义，此时必有：$C0&hellip;C_{z-1} = C_{k-z}&hellip;C_{k-1} = C_{i-k}&hellip;C_{i-k+z-1} = C_{i-z}&hellip;C_{i-1}$，结合第二步的结果可得：$C0&hellip;C_{z-1} = C_{i-z}&hellip;C_{i-1}$。</li>
+<li>若$ C_{k-z} = C_{i} $，那么 $ next[i+1] = z + 1$。如果不相等则重复上述流程，直到最长公共前后缀的值为0就停止循环查找。</li>
+</ol>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">getNext</span><span style="color:#f92672">(</span><span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> length <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> next <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>length<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> j <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// -1表示从子串的下一位开始匹配
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    next<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> j<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>i <span style="color:#f92672">&lt;</span> length <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>j <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">||</span> array<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">==</span> array<span style="color:#f92672">[</span>j<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            next<span style="color:#f92672">[++</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#f92672">++</span>j<span style="color:#f92672">;</span> <span style="color:#75715e">// 相等就是在next[i]的基础上加一
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            j <span style="color:#f92672">=</span> next<span style="color:#f92672">[</span>j<span style="color:#f92672">];</span> <span style="color:#75715e">// 不相等就继续往前查找
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h4 id="字符串匹配">字符串匹配<a href="#字符串匹配" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * 根据next数组进行匹配，返回匹配成功的第一个index，不匹配则返回-1
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">indexOf</span><span style="color:#f92672">(</span><span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> parent<span style="color:#f92672">,</span> <span style="color:#66d9ef">char</span><span style="color:#f92672">[]</span> child<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> next <span style="color:#f92672">=</span> getNext<span style="color:#f92672">(</span>child<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> p <span style="color:#f92672">=</span> parent<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> child<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;</span> i <span style="color:#f92672">&lt;</span> p<span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 子串循环完毕就退出
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>j <span style="color:#f92672">==</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 因为next数组第一位必定是-1.额外处理下
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>j <span style="color:#f92672">==</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">||</span> parent<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">==</span> child<span style="color:#f92672">[</span>j<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            j<span style="color:#f92672">++;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#75715e">// 不相等就根据next数组回退指定位置
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            j <span style="color:#f92672">=</span> next<span style="color:#f92672">[</span>j<span style="color:#f92672">];</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> i <span style="color:#f92672">==</span> p <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">?</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> i <span style="color:#f92672">-</span> j<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>kmp是典型的<code>空间换时间</code>算法，其核心就是基于最大公共前后缀生成的next数组，从而避免了指针回溯问题。</p>
+</blockquote>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://leejay.top/post/jvm_in_action/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Java虚拟机基础入门</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/elasticsearch/">
+                <span class="button__text">Elasticsearch操作文档</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span><a rel="nofollow" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备18050258号-1</a></span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

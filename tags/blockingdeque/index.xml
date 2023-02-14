@@ -10,10 +10,10 @@
     <lastBuildDate>Mon, 06 Jul 2020 19:20:56 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/blockingdeque/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>BlockingDeque双端阻塞队列源码浅析</title>
-      <link>https://leejay.top/post/blockingdeque/</link>
+      <link>https://leejay.top/post/concurrent_blocking_deque/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
       
-      <guid>https://leejay.top/post/blockingdeque/</guid>
+      <guid>https://leejay.top/post/concurrent_blocking_deque/</guid>
       <description>BlockingDeque 双端队列，支持在队列的头尾出增加或获取数据，Deque接口中定义了相关的方法
 public interface Deque&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加到队首 void addFirst(E e); // 添加到队尾 void addLast(E e); // 获取队首 boolean offerFirst(E e); // 获取队尾 boolean offerLast(E e); ... }	相比BlockingQueue的父接口Queue，Deque中定义了头尾操作数据的方法。
 public interface BlockingDeque&amp;lt;E&amp;gt; extends BlockingQueue&amp;lt;E&amp;gt;, Deque&amp;lt;E&amp;gt; { void putFirst(E e) throws InterruptedException; void putLast(E e) throws InterruptedException; E takeFirst() throws InterruptedException; E takeLast() throws InterruptedException; ... } BlockingQueue继承了BlockingQueue和Deque接口。添加了一些抛出中断的方法。

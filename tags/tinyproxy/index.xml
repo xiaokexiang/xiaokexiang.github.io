@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 15 Apr 2022 10:40:36 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/tinyproxy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Tinyproxy轻量代理使用教程</title>
-      <link>https://leejay.top/post/tinyproxy%E8%BD%BB%E9%87%8F%E4%BB%A3%E7%90%86%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</link>
+      <link>https://leejay.top/post/tiny_proxy/</link>
       <pubDate>Fri, 15 Apr 2022 10:40:36 +0800</pubDate>
       
-      <guid>https://leejay.top/post/tinyproxy%E8%BD%BB%E9%87%8F%E4%BB%A3%E7%90%86%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</guid>
+      <guid>https://leejay.top/post/tiny_proxy/</guid>
       <description>Tinyproxy是一个轻量级的HTTP / HTTPS代理守护进程，快速且小巧。
 Tinyproxy的安装 基于Docker安装 使用monokal/tinyproxy的镜像,dockerhub上的使用已经很清楚了，按照描述:
 docker run -d --name=&amp;#39;tinyproxy&amp;#39; -p &amp;lt;Host_Port&amp;gt;:8888 --env BASIC_AUTH_USER=&amp;lt;username&amp;gt; --env BASIC_AUTH_PASSWORD=&amp;lt;password&amp;gt; --env TIMEOUT=&amp;lt;timeout&amp;gt; monokal/tinyproxy:latest &amp;lt;ACL&amp;gt; Set &amp;lt;Host_Port&amp;gt; to the port you wish the proxy to be accessible from.

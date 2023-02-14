@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>SpringMVC使用注意 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
+public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } } WebMvcConfigurer 和 WebMvcConfigurationSupport 存在WebMvcConfigurationSupport则WebMvcConfigurer不生效 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class }) @ConditionalOnMissingBean(WebMvcConfigurationSupport." />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/spring_mvc/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="SpringMVC使用注意">
+<meta property="og:description" content="SpringMVC中的拦截器、事件使用的相关注意事项" />
+<meta property="og:url" content="https://leejay.top/post/spring_mvc/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Spring" />
+
+
+  <meta property="article:published_time" content="2020-11-10 11:04:59 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    HelloWorld
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong> ↓ 目录 ↓ </strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#springmvc%e7%9b%b8%e5%85%b3%e9%97%ae%e9%a2%98">
+                    SpringMVC相关问题
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8b%a6%e6%88%aa%e5%99%a8%e4%b8%advalue%e6%b3%a8%e8%a7%a3%e4%b8%8d%e7%94%9f%e6%95%88">
+                    拦截器中@value注解不生效
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#webmvcconfigurer-%e5%92%8c-webmvcconfigurationsupport">
+                    WebMvcConfigurer 和 WebMvcConfigurationSupport
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#spring%e4%b8%ad%e7%9a%84%e4%ba%8b%e4%bb%b6">
+                    Spring中的事件
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/spring_mvc/">SpringMVC使用注意</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2020-11-10 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/springmvc-/">SpringMVC </a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/springboot-/">SpringBoot </a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h3 id="springmvc相关问题">SpringMVC相关问题<a href="#springmvc相关问题" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<h4 id="拦截器中value注解不生效">拦截器中@value注解不生效<a href="#拦截器中value注解不生效" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<p>原因在于：当我们继承<code>WebMvcConfigurationSupport</code>中的<code>addInterceptors</code>方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过<code>@value</code>注解注入配置，推荐<code>@Bean</code>注解注入。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">LoginInterceptor</span> <span style="color:#66d9ef">implements</span> HandlerInterceptor <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Logger log <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">preHandle</span><span style="color:#f92672">(</span> HttpServletRequest request<span style="color:#f92672">,</span> 
+</span></span><span style="display:flex;"><span>        					  HttpServletResponse response<span style="color:#f92672">,</span> 
+</span></span><span style="display:flex;"><span>        					  Object handler<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> Exception <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;request is coming in ...&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringCloudEurekaServerApplication</span> <span style="color:#66d9ef">implements</span> WebMvcConfigurer <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> LoginInterceptor <span style="color:#a6e22e">loginInterceptor</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> LoginInterceptor<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addInterceptors</span><span style="color:#f92672">(</span>InterceptorRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        registry<span style="color:#f92672">.</span><span style="color:#a6e22e">addInterceptor</span><span style="color:#f92672">(</span>loginInterceptor<span style="color:#f92672">()).</span><span style="color:#a6e22e">addPathPatterns</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;/**&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><hr>
+<h4 id="webmvcconfigurer-和-webmvcconfigurationsupport">WebMvcConfigurer 和 WebMvcConfigurationSupport<a href="#webmvcconfigurer-和-webmvcconfigurationsupport" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<ul>
+<li>存在<code>WebMvcConfigurationSupport</code>则<code>WebMvcConfigurer</code>不生效</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@ConditionalOnClass</span><span style="color:#f92672">({</span> Servlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> DispatcherServlet<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> WebMvcConfigurer<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span> <span style="color:#f92672">})</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ConditionalOnMissingBean</span><span style="color:#f92672">(</span>WebMvcConfigurationSupport<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">WebMvcAutoConfiguration</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>实现方式不同</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 实现方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringCloudEurekaServerApplication</span> <span style="color:#66d9ef">implements</span> WebMvcConfigurer <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addInterceptors</span><span style="color:#f92672">(</span>InterceptorRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 继承方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SpringCloudEurekaServerApplication</span> <span style="color:#66d9ef">extends</span> WebMvcConfigurationSupport<span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">addInterceptors</span><span style="color:#f92672">(</span>InterceptorRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><hr>
+<h4 id="spring中的事件">Spring中的事件<a href="#spring中的事件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
+<h5 id="监听事件的三种方式">监听事件的三种方式<a href="#监听事件的三种方式" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<ul>
+<li>实现ApplicationListener<T> + @Component</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyListener</span> <span style="color:#66d9ef">implements</span> ApplicationListener<span style="color:#f92672">&lt;</span>MyEvent<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onApplicationEvent</span><span style="color:#f92672">(</span>MyEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;MyListener get event: {}&#34;</span><span style="color:#f92672">,</span> event<span style="color:#f92672">.</span><span style="color:#a6e22e">getSource</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>@EventListener + @Component</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyListener2</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@EventListener</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onApplicationEvent</span><span style="color:#f92672">(</span>MyEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;MyListener2 get event: {}&#34;</span><span style="color:#f92672">,</span> event<span style="color:#f92672">.</span><span style="color:#a6e22e">getSource</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>实现ApplicationListener<T> + spring.factories注入</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyListener3</span> <span style="color:#66d9ef">implements</span> ApplicationListener<span style="color:#f92672">&lt;</span>MyEvent<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Logger logger <span style="color:#f92672">=</span> LoggerFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getLogger</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onApplicationEvent</span><span style="color:#f92672">(</span>MyEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;MyListener3 get event: {}&#34;</span><span style="color:#f92672">,</span> event<span style="color:#f92672">.</span><span style="color:#a6e22e">getSource</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><pre tabindex="0"><code class="language-factories" data-lang="factories">org.springframework.context.ApplicationListener=\
+io.spring.server.event.MyListener3
+</code></pre><blockquote>
+<p>位于resources/META-INF/spring.factories文件中</p>
+</blockquote>
+<h5 id="同步异步发送事件">同步/异步发送事件<a href="#同步异步发送事件" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>默认情况下是同步发送事件，在容器的refresh()中存在<code>initApplicationEventMulticaster()</code>方法，用于初始化事件发送器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">initApplicationEventMulticaster</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    ConfigurableListableBeanFactory beanFactory <span style="color:#f92672">=</span> getBeanFactory<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果IOC容器中存在名为applicationEventMulticaster的bean则使用该bean作为事件发送器
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>beanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">containsLocalBean</span><span style="color:#f92672">(</span>APPLICATION_EVENT_MULTICASTER_BEAN_NAME<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">applicationEventMulticaster</span> <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>            beanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>APPLICATION_EVENT_MULTICASTER_BEAN_NAME<span style="color:#f92672">,</span> ApplicationEventMulticaster<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不存在则使用内置的SimpleApplicationEventMulticaster作为事件发送器，并注入到容器中
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">applicationEventMulticaster</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> SimpleApplicationEventMulticaster<span style="color:#f92672">(</span>beanFactory<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        beanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">registerSingleton</span><span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>            APPLICATION_EVENT_MULTICASTER_BEAN_NAME<span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">applicationEventMulticaster</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul>
+<li>SimpleApplicationEventMulticaster(同步)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">multicastEvent</span><span style="color:#f92672">(</span><span style="color:#66d9ef">final</span> ApplicationEvent event<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> ResolvableType eventType<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    ResolvableType type <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>eventType <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> eventType <span style="color:#f92672">:</span> resolveDefaultEventType<span style="color:#f92672">(</span>event<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    Executor executor <span style="color:#f92672">=</span> getTaskExecutor<span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>ApplicationListener<span style="color:#f92672">&lt;?&gt;</span> listener <span style="color:#f92672">:</span> getApplicationListeners<span style="color:#f92672">(</span>event<span style="color:#f92672">,</span> type<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>executor <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            executor<span style="color:#f92672">.</span><span style="color:#a6e22e">execute</span><span style="color:#f92672">(()</span> <span style="color:#f92672">-&gt;</span> invokeListener<span style="color:#f92672">(</span>listener<span style="color:#f92672">,</span> event<span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            invokeListener<span style="color:#f92672">(</span>listener<span style="color:#f92672">,</span> event<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>内置的<code>SimpleApplicationEventMulticaster</code>中的<code>multicastEvent</code>方法会判断是否存在<code>Executor</code>，如果存在则用线程池发送。</p>
+</blockquote>
+<ul>
+<li>自定义ApplicationEventMulticaster(异步)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span><span style="color:#f92672">(</span>value <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;applicationEventMulticaster&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AsyncApplicationEventMulticaster</span> <span style="color:#66d9ef">extends</span> SimpleApplicationEventMulticaster <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">AsyncApplicationEventMulticaster</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">setTaskExecutor</span><span style="color:#f92672">(</span>Executors<span style="color:#f92672">.</span><span style="color:#a6e22e">newFixedThreadPool</span><span style="color:#f92672">(</span><span style="color:#ae81ff">2</span><span style="color:#f92672">));</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>通过传入线程池实现异步invokeListeners，需要注入注入名必须是<code>applicationEventMulticaster</code>。</p>
+</blockquote>
+<h5 id="事件发送两次">事件发送两次<a href="#事件发送两次" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h5>
+<p>在使用<code>spring.factories</code>注入<code>ApplicationListener</code>时，发现监听器会被调用两次，通过debug发现：因为是web项目，所以上下文中存在父子容器的问题(<code>AnnotationConfigServletWebServerApplicationContext</code>和<code>AnnotationConfigApplicationContext</code>)，所以在子容器发布事件后，父容器也会发送一次。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onApplicationEvent</span><span style="color:#f92672">(</span>MyEvent event<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>applicationContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getParent</span><span style="color:#f92672">()</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        logger<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;MyListener3 get event: {}&#34;</span><span style="color:#f92672">,</span> event<span style="color:#f92672">.</span><span style="color:#a6e22e">getSource</span><span style="color:#f92672">());</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><blockquote>
+<p>只让子容器发送事件，父容器不需要发送。</p>
+</blockquote>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://leejay.top/post/netty/">
+                <span class="button__icon">←</span>
+                <span class="button__text">Netty框架入门</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/algorithm_binary_dump/">
+                <span class="button__text">二叉堆时间复杂度分析</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span><a rel="nofollow" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备18050258号-1</a></span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

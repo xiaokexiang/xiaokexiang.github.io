@@ -10,10 +10,10 @@
     <lastBuildDate>Sat, 27 Jun 2020 18:44:37 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/countdownlatch/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CountDownLatch源码解析</title>
-      <link>https://leejay.top/post/countdownlatch/</link>
+      <link>https://leejay.top/post/concurrent_count_down_latch/</link>
       <pubDate>Sat, 27 Jun 2020 18:44:37 +0800</pubDate>
       
-      <guid>https://leejay.top/post/countdownlatch/</guid>
+      <guid>https://leejay.top/post/concurrent_count_down_latch/</guid>
       <description>CountDownLatch 描述一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
 常见于主线程开启多个子线程执行任务，主线程需等待所有子线程执行完毕才能继续执行的情况。
 又比如车间组装产品，你必须要等到其他同事把配件组装好全交给你，你才可以最终组装。

@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 16 Apr 2021 11:02:51 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Docker命令汇总</title>
-      <link>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</link>
+      <link>https://leejay.top/post/docker/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
       
-      <guid>https://leejay.top/post/docker%E5%91%BD%E4%BB%A4%E6%B1%87%E6%80%BB/</guid>
+      <guid>https://leejay.top/post/docker/</guid>
       <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
@@ -25,10 +25,10 @@
     
     <item>
       <title>Linux下cron定时器</title>
-      <link>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</link>
+      <link>https://leejay.top/post/linux_cron/</link>
       <pubDate>Thu, 07 Jan 2021 14:21:38 +0800</pubDate>
       
-      <guid>https://leejay.top/post/linux%E4%B8%8Bcron%E5%AE%9A%E6%97%B6%E5%99%A8/</guid>
+      <guid>https://leejay.top/post/linux_cron/</guid>
       <description>&lt;h3 id=&#34;crontab命令&#34;&gt;crontab命令&lt;/h3&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;code&gt;crontab&lt;/code&gt;是linux下的定时任务服务，是基于&lt;code&gt;cron表达式&lt;/code&gt;实现定时任务操作。&lt;/p&gt;

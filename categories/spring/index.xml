@@ -10,10 +10,10 @@
     <lastBuildDate>Wed, 12 May 2021 16:18:28 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/spring/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>关于EnableAspectJAutoProxy注解引出的若干问题</title>
-      <link>https://leejay.top/post/%E5%85%B3%E4%BA%8Eenableaspectjautoproxy%E6%B3%A8%E8%A7%A3%E5%BC%95%E5%87%BA%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</link>
+      <link>https://leejay.top/post/enable_aspectj_auto_proxy/</link>
       <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
       
-      <guid>https://leejay.top/post/%E5%85%B3%E4%BA%8Eenableaspectjautoproxy%E6%B3%A8%E8%A7%A3%E5%BC%95%E5%87%BA%E7%9A%84%E8%8B%A5%E5%B9%B2%E9%97%AE%E9%A2%98/</guid>
+      <guid>https://leejay.top/post/enable_aspectj_auto_proxy/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;最近在阅读Spring AOP的源码(基于Spring 5.2.8.RELEASE)中，发现&lt;code&gt;@EnableAspectJAutoProxy&lt;/code&gt;注解中的&lt;code&gt;proxyTargetClass&lt;/code&gt;参数并不如注释（&lt;code&gt;是否创建基于子类的CGLIB代理&lt;/code&gt;）中说所的哪样生效。无论我设置成true/false都会使用CGLIB代理。&lt;/p&gt;
 &lt;/blockquote&gt;</description>
@@ -21,10 +21,10 @@
     
     <item>
       <title>SpringMVC使用注意</title>
-      <link>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</link>
+      <link>https://leejay.top/post/spring_mvc/</link>
       <pubDate>Tue, 10 Nov 2020 11:04:59 +0800</pubDate>
       
-      <guid>https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/</guid>
+      <guid>https://leejay.top/post/spring_mvc/</guid>
       <description>SpringMVC相关问题 拦截器中@value注解不生效 原因在于：当我们继承WebMvcConfigurationSupport中的addInterceptors方法，并添加自定义的拦截器时，如果我们使用new的方式创建，那么该拦截器不会被IOC容器管理，所以无法给通过@value注解注入配置，推荐@Bean注解注入。
 public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } } WebMvcConfigurer 和 WebMvcConfigurationSupport 存在WebMvcConfigurationSupport则WebMvcConfigurer不生效 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class }) @ConditionalOnMissingBean(WebMvcConfigurationSupport.</description>
     </item>

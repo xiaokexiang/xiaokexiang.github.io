@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 17 Jul 2020 17:01:26 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/threadpool/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ThreadPool线程池源码解析</title>
-      <link>https://leejay.top/post/threadpool/</link>
+      <link>https://leejay.top/post/concurrent_thread_pool/</link>
       <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
       
-      <guid>https://leejay.top/post/threadpool/</guid>
+      <guid>https://leejay.top/post/concurrent_thread_pool/</guid>
       <description>ThreadPool 为什么使用线程池 我们知道频繁的单独创建线程是很消耗系统资源的，而线程池中线程是可以线程复用的，不需要每次执行都重新创建，并且线程池可以提供控制线程个数等资源限制和管理的手段。
 实现原理 所谓线程池实现原理：调用方不断向线程池中添加任务，线程池中有一组线程，不断的从队列中取任务。典型的生产者和消费者模型。基于这样的原理，我们实现线程池需要使用到阻塞队列，避免无任务时轮询带来的资源消耗。
 线程池类继承体系 ThreadPoolExecutor和ScheduledExecutorService是需要关注的两个核心类，前者是线程池的具体实现，后者除了能实现线程池的基本功能，还可以提供周期性执行任务功能。

@@ -10,10 +10,10 @@
     <lastBuildDate>Fri, 22 Apr 2022 16:29:25 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Grpc快速入门</title>
-      <link>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</link>
+      <link>https://leejay.top/post/grpc/</link>
       <pubDate>Fri, 22 Apr 2022 16:29:25 +0800</pubDate>
       
-      <guid>https://leejay.top/post/grpc%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</guid>
+      <guid>https://leejay.top/post/grpc/</guid>
       <description>Grpc快速入门 grpc是一款高性能、开源的通用Rpc框架。由google开源，默认使用protobuf作为定义接口的语言(IDL)和底层的消息交换格式，使用Http/2作为传输协议。
 Rpc简介 Rpc(remote procedure call)，即远程过程调用。服务器A上的服务想调用服务器B上的服务提供的方法，因为不存在于同一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。
 Rpc像调用本地方法一样去调用远程方法。

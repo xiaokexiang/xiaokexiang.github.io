@@ -135,11 +135,11 @@ code.has-jax {
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/">《财报就像一本故事书》读后感</a>
+          <a href="https://leejay.top/post/concurrent_blocking_queue/">BlockingQueue单向阻塞队列源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-12-15
+            2020-07-04
           </span>
           
         </div>
@@ -147,7 +147,7 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/%E8%AF%BB%E4%B9%A6-/">读书 </a>&nbsp;
+            #<a href="https://leejay.top/tags/blockingqueue-/">BlockingQueue </a>&nbsp;
             
           </span>
         
@@ -156,29 +156,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          
-          <blockquote>
-<p>以前做招聘的时候经常会给准备上市的企业招聘一些高管，经常会接触这么一句话：上市？上市就是为了圈钱！当时听了一知半解没有深究，也不知道为嘛说财务总监、采购总监之类的职位是敏感职位，近期在跟小伙伴学理财，学的越久越能体会到：<code>学会基本的财务知识对于家庭日常收支，更好的经营家庭盈利有帮助，当然直接目的是为了日后获取更多理财收益。</code></p>
-</blockquote>
-          
+          基于ReentrantLock、Condition实现的阻塞队列，是线程池实现的重要组成部分。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/%E8%B4%A2%E6%8A%A5%E5%B0%B1%E5%83%8F%E4%B8%80%E6%9C%AC%E6%95%85%E4%BA%8B%E4%B9%A6%E8%AF%BB%E5%90%8E%E6%84%9F/">阅读更多 →</a>
+            href="/post/concurrent_blocking_queue/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/netty/">Netty框架入门</a>
+          <a href="https://leejay.top/post/concurrent_stamped_lock/">StampedLock读写锁源码浅析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-12-14
+            2020-07-01
           </span>
           
         </div>
@@ -186,9 +182,7 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/netty-/">Netty </a>&nbsp;
-            
-            #<a href="https://leejay.top/tags/network/">NetWork</a>&nbsp;
+            #<a href="https://leejay.top/tags/stampedlock-/">StampedLock </a>&nbsp;
             
           </span>
         
@@ -197,25 +191,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          网络编程框架: Netty结构、组件知识点入门。
+          为了实现更快的读写锁模式而诞生的框架，基于<code>乐观锁</code>、<code>自旋+CAS</code>、<code>类似AQS</code>的逻辑实现
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/netty/">阅读更多 →</a>
+            href="/post/concurrent_stamped_lock/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/">SpringMVC使用注意</a>
+          <a href="https://leejay.top/post/concurrent_cyclic_barrier/">CyclieBarrier源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-11-10
+            2020-06-29
           </span>
           
         </div>
@@ -223,9 +217,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/springmvc-/">SpringMVC </a>&nbsp;
+            #<a href="https://leejay.top/tags/cyclicbarrier-/">CyclicBarrier </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/springboot-/">SpringBoot </a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -234,25 +228,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          SpringMVC中的拦截器、事件使用的相关注意事项
+          基于<code>CountDownLatch</code>的特性：<code>计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。CyclicBarrier</code>的出现是为了解决复杂场景<code>CountDownLatch</code>使用的劣势。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/springmvc%E4%BD%BF%E7%94%A8%E6%B3%A8%E6%84%8F/">阅读更多 →</a>
+            href="/post/concurrent_cyclic_barrier/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">Jvm类加载机制</a>
+          <a href="https://leejay.top/post/concurrent_count_down_latch/">CountDownLatch源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-09-09
+            2020-06-27
           </span>
           
         </div>
@@ -260,9 +254,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+            #<a href="https://leejay.top/tags/countdownlatch-/">CountDownLatch </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/">类加载</a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -271,25 +265,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          Java虚拟机的<code>类加载机制</code>、<code>类加载器</code>与自定义类加载器简单实现。
+          CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/jvm%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">阅读更多 →</a>
+            href="/post/concurrent_count_down_latch/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/">HotSpot参数汇总</a>
+          <a href="https://leejay.top/post/concurrent_read_write_lock/">ReadWriteLock源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-08-28
+            2020-06-24
           </span>
           
         </div>
@@ -297,9 +291,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+            #<a href="https://leejay.top/tags/reentrantreadwritelock-/">ReentrantReadWriteLock </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/collectors/">Collectors</a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -308,25 +302,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          JVM中日常<code>调优参数</code>，收集器选择及相关配套参数
+          具备<code>独占锁和共享锁</code>两者特性的读写锁，适用于读操作多于写操作的场景。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/hotspot%E5%8F%82%E6%95%B0%E6%B1%87%E6%80%BB/">阅读更多 →</a>
+            href="/post/concurrent_read_write_lock/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">HotSpot垃圾收集器</a>
+          <a href="https://leejay.top/post/concurrent_semaphore/">Semaphore共享锁源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-08-20
+            2020-06-20
           </span>
           
         </div>
@@ -334,9 +328,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+            #<a href="https://leejay.top/tags/semaphore-/">Semaphore </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/collectors/">Collectors</a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -345,25 +339,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          JVM中<code>常见的垃圾收集器</code>，以及对象在堆中的<code>分配流程</code>。
+          Semaphore是基于AQS的<code>可重入共享锁</code>，具有公平和非公平模式。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/hotspot%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/">阅读更多 →</a>
+            href="/post/concurrent_semaphore/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">HotSpot垃圾回收算法</a>
+          <a href="https://leejay.top/post/concurrent_condition/">Condition源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-08-14
+            2020-06-18
           </span>
           
         </div>
@@ -371,9 +365,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+            #<a href="https://leejay.top/tags/condition-/">Condition </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/reference/">reference</a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -382,25 +376,25 @@ code.has-jax {
 
         <div class="post-content">
           
-          如何判断<code>对象是否存活</code>的，对象的<code>回收流程</code>及垃圾回收器采用的算法。
+          Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现<code>等待/通知</code>模式。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/hotspot%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/">阅读更多 →</a>
+            href="/post/concurrent_condition/">阅读更多 →</a>
         </div>
         
       </div>
     
       <div class="post on-list">
         <h1 class="post-title">
-          <a href="https://leejay.top/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">JVM内存区域概述</a>
+          <a href="https://leejay.top/post/concurrent_reentrant_lock/">ReentrantLock源码解析</a>
         </h1>
         <div class="post-meta">
           <span class="post-date">
-            2020-08-13
+            2020-06-15
           </span>
           
         </div>
@@ -408,9 +402,9 @@ code.has-jax {
         
           <span class="post-tags">
             
-            #<a href="https://leejay.top/tags/jvm-/">JVM </a>&nbsp;
+            #<a href="https://leejay.top/tags/reentrantlock-/">ReentrantLock </a>&nbsp;
             
-            #<a href="https://leejay.top/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/">常量池</a>&nbsp;
+            #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
             
           </span>
         
@@ -419,14 +413,88 @@ code.has-jax {
 
         <div class="post-content">
           
-          基于JDK8的<code>JVM内存区域概述</code>、JVM中<code>对象的创建</code>及<code>常量池</code>相关概念浅析
+          AbstractQueueSynchronizer是一种同步框架，而ReentrantLock是基于它实现的<code>可重入独占锁</code>，具有公平/非公平两种实现。
           
         </div>
 
         
         <div>
           <a class="read-more button"
-            href="/post/jvm%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E6%A6%82%E8%BF%B0/">阅读更多 →</a>
+            href="/post/concurrent_reentrant_lock/">阅读更多 →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://leejay.top/post/concurrent_cas/">CAS乐观锁浅析</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2020-06-12
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://leejay.top/tags/cas-/">CAS </a>&nbsp;
+            
+            #<a href="https://leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          Java并发中<code>乐观锁的实现</code>，大部分并发框架都基于CAS实现。
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/post/concurrent_cas/">阅读更多 →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://leejay.top/post/concurrent_volatile/">volatile关键字浅析</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2020-06-08
+          </span>
+          
+        </div>
+
+        
+          <span class="post-tags">
+            
+            #<a href="https://leejay.top/tags/volatile-/">volatile </a>&nbsp;
+            
+            #<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7/">内存可见性</a>&nbsp;
+            
+          </span>
+        
+
+        
+
+        <div class="post-content">
+          
+          Java中volatile关键字的原理与作用。
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/post/concurrent_volatile/">阅读更多 →</a>
         </div>
         
       </div>

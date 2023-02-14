@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Docker命令汇总 :: Keep Improving</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Docker cp # 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下 docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d # 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下 docker cp nginx:/etc/nginx/conf.d /opt/nginx/ " />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://leejay.top/post/docker/" />
+
+
+
+
+<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+
+  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Docker命令汇总">
+<meta property="og:description" content="Docker cp # 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下 docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d # 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下 docker cp nginx:/etc/nginx/conf.d /opt/nginx/ " />
+<meta property="og:url" content="https://leejay.top/post/docker/" />
+<meta property="og:site_name" content="Keep Improving" />
+
+  
+    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+  <meta property="article:section" content="Docker" />
+
+  <meta property="article:section" content="Linux" />
+
+
+  <meta property="article:published_time" content="2021-04-16 11:02:51 &#43;0800 &#43;0800" />
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code">
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="https://leejay.top">
+  <div class="logo">
+    HelloWorld
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+  
+  <script type="text/javascript"
+        async
+        src="https://cdn.bootcss.com/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\[\[','\]\]']],
+    processEscapes: true,
+    processEnvironments: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+    TeX: { equationNumbers: { autoNumber: "AMS" },
+         extensions: ["AMSmath.js", "AMSsymbols.js"] }
+  }
+});
+
+MathJax.Hub.Queue(function() {
+    
+    
+    
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<style>
+code.has-jax {
+    font: inherit;
+    font-size: 100%;
+    background: inherit;
+    border: inherit;
+    color: #515151;
+}
+</style>
+
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  
+  
+    
+
+
+
+
+
+
+
+
+
+<div class="toc" id="toc_id">
+
+    <div class="page-header"><strong> ↓ 目录 ↓ </strong></div>
+
+    <div id="page-scrollspy" class="toc-nav">
+
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#docker-cp">
+                    Docker cp
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#docker-mysql">
+                    Docker mysql
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%8d%e6%8c%82%e8%bd%bd%e5%90%af%e5%8a%a8">
+                    不挂载启动
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8c%82%e8%bd%bd%e5%ae%bf%e4%b8%bb%e6%9c%ba%e7%9b%ae%e5%bd%95%e5%90%af%e5%8a%a8">
+                    挂载宿主机目录启动
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#mysql%e7%9b%b8%e5%85%b3%e5%91%bd%e4%bb%a4">
+                    Mysql相关命令
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#docker-nginx">
+                    Docker nginx
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e4%b8%8d%e6%8c%82%e8%bd%bd%e5%90%af%e5%8a%a8-1">
+                    不挂载启动
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e6%8c%82%e8%bd%bd%e5%ae%bf%e4%b8%bb%e6%9c%ba%e7%9b%ae%e5%bd%95%e5%90%af%e5%8a%a8-1">
+                    挂载宿主机目录启动
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#dockerfile%e7%9a%84%e6%8c%87%e4%bb%a4%e5%af%b9%e6%af%94">
+                    Dockerfile的指令对比
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#add--copy">
+                    ADD &amp; COPY
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#cmd--entrypoint">
+                    CMD &amp; ENTRYPOINT
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#env--arg">
+                    ENV &amp; ARG
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+
+    </div>
+
+</div>
+
+
+
+  
+  <h1 class="post-title">
+    <a href="https://leejay.top/post/docker/">Docker命令汇总</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2021-04-16 
+      </span>
+    
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://leejay.top/tags/docker/">Docker</a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/linux/">Linux</a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/mysql/">Mysql</a>&nbsp;
+    
+    #<a href="https://leejay.top/tags/nginx/">Nginx</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <h2 id="docker-cp">Docker cp<a href="#docker-cp" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下</span>
+</span></span><span style="display:flex;"><span>docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下</span>
+</span></span><span style="display:flex;"><span>docker cp nginx:/etc/nginx/conf.d  /opt/nginx/
+</span></span></code></pre></div><h2 id="docker-mysql">Docker mysql<a href="#docker-mysql" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="不挂载启动">不挂载启动<a href="#不挂载启动" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 不使用挂载创建mysql</span>
+</span></span><span style="display:flex;"><span>docker run -itd -p 3306:3306 -e MYSQL_ROOT_PASSWORD<span style="color:#f92672">=</span><span style="color:#ae81ff">123456</span> --name mysql5.7 mysql:5.7
+</span></span></code></pre></div><h3 id="挂载宿主机目录启动">挂载宿主机目录启动<a href="#挂载宿主机目录启动" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建宿主机目录</span>
+</span></span><span style="display:flex;"><span>mkdir -p /opt/mysql/<span style="color:#f92672">{</span>logs,conf.d,data<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 拷贝默认配置文件到宿主机（借助上文的不挂在启动的mysql容器）</span>
+</span></span><span style="display:flex;"><span>docker cp mysql:/etc/mysql/conf.d/. /opt/mysql/conf.d
+</span></span><span style="display:flex;"><span>docker cp mysql:/var/log/mysql/. /opt/mysql/logs
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 可以不拷贝自己创建配置文件</span>
+</span></span><span style="display:flex;"><span>touch /opt/mysql/conf.d/my.cnf
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 执行挂载命令并启动</span>
+</span></span><span style="display:flex;"><span>docker run -p 3306:3306 --name mysql <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/mysql/conf.d:/etc/mysql/conf.d <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/mysql/logs:/var/log/mysql <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/mysql/data:/var/lib/mysql <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-e MYSQL_ROOT_PASSWORD<span style="color:#f92672">=</span><span style="color:#ae81ff">123456</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d mysql:5.7
+</span></span></code></pre></div><blockquote>
+<p><code>mysql5.7或8.0版本</code>都可以使用该命令。</p>
+</blockquote>
+<h3 id="mysql相关命令">Mysql相关命令<a href="#mysql相关命令" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 进入mysql控制台 root/123456，指定端口3316和host 127.0.0.1</span>
+</span></span><span style="display:flex;"><span>mysql -uroot -P <span style="color:#ae81ff">3316</span> -h 127.0.0.1 -p123456
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 创建远程用户 test/abcdefg</span>
+</span></span><span style="display:flex;"><span>CREATE USER <span style="color:#e6db74">&#39;test&#39;</span>@<span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED WITH mysql_native_password BY <span style="color:#e6db74">&#39;abcdefg&#39;</span>;
+</span></span><span style="display:flex;"><span>GRANT ALL PRIVILEGES ON *.* TO <span style="color:#e6db74">&#39;test&#39;</span>@<span style="color:#e6db74">&#39;%&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 查看数据库，表，使用数据库</span>
+</span></span><span style="display:flex;"><span>show databases;
+</span></span><span style="display:flex;"><span>use mysql;
+</span></span><span style="display:flex;"><span>show tables;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 控制台内执行本地的sql文件</span>
+</span></span><span style="display:flex;"><span>source /root/select.sq
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 控制台外备份数据库</span>
+</span></span><span style="display:flex;"><span>mysqldump -u root -P <span style="color:#ae81ff">3316</span> -p dbname &gt; /root/backup.sql
+</span></span></code></pre></div><h2 id="docker-nginx">Docker nginx<a href="#docker-nginx" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="不挂载启动-1">不挂载启动<a href="#不挂载启动-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>docker run -itd --name nginx -p 80:80 -p 443:443 nginx
+</span></span></code></pre></div><h3 id="挂载宿主机目录启动-1">挂载宿主机目录启动<a href="#挂载宿主机目录启动-1" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建宿主机目录</span>
+</span></span><span style="display:flex;"><span>mkdir -p /opt/nginx/<span style="color:#f92672">{</span>logs,conf.d,html<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 拷贝默认配置文件到宿主机（借助上文的不挂在启动的nginx容器）</span>
+</span></span><span style="display:flex;"><span>docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
+</span></span><span style="display:flex;"><span>docker cp nginx:/usr/share/nginx/html/. /opt/nginx/html
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#  执行挂载命令并启动</span>
+</span></span><span style="display:flex;"><span>docker run -it --name nginx <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/nginx/html:/usr/share/nginx/html <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/nginx/logs:/var/log/nginx <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /opt/nginx/conf.d:/etc/nginx/conf.d <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-p 80:80 -p 443:443 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d nginx
+</span></span></code></pre></div><blockquote>
+<p>nginx的配置文件可以通过<code>nginx -t</code>来进行校验。</p>
+</blockquote>
+<h2 id="dockerfile的指令对比">Dockerfile的指令对比<a href="#dockerfile的指令对比" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<h3 id="add--copy">ADD &amp; COPY<a href="#add--copy" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都可以将宿主机的文件到容器内，ADD具备自动解压的功能，而COPY只是复制功能。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ADD</span> hello.tar /<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> hello.tar /<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>使用ADD命令，镜像build后，在/目录下就会存在解压后的文件（<code>不会存在压缩包！</code>）</li>
+<li>使用COPY命令，镜像build后，在/目录下会存在压缩包。</li>
+</ul>
+</blockquote>
+<h3 id="cmd--entrypoint">CMD &amp; ENTRYPOINT<a href="#cmd--entrypoint" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都用于指定容器启动程序及参数，当存在ENTRYPOINT时，CMD的内容会作为参数传递给ENTRYPOINT。</code>需要注意的是：我们执行<code>docker run busybox echo hello</code>指令中的<code>echo hello</code>就是CMD命令（默认覆盖Dockerfile中的CMD命令），只是它没有写在了Dockerfile中，而是显示的传入。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;ls&#34;</span>, <span style="color:#e6db74">&#34;-l&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ENTRYPOINT [&#34;ls&#34;, &#34;-l&#34;]</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>镜像build后，若执行docker run image -h,那么会提示错误信息。而将CMD换成ENTRYPOINT则不会。</li>
+</ul>
+</blockquote>
+<h3 id="env--arg">ENV &amp; ARG<a href="#env--arg" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p><code>两者都用于设置环境变量，区别在于ENV无论是镜像构建时还是容器运行时，都可以使用。ARG只是用于构建镜像时使用，容器运行时不会出现。</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;helloworld&#34;</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">WORKDIR</span><span style="color:#e6db74"> /</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> touch $NAME <span style="color:#75715e"># 构建镜像时使用变量</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;sh&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;echo $NAME &amp;&amp; ls&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<ul>
+<li>如果此处不使用<code>sh -c</code>执行命令，那么并不会正确显示ENV变量。</li>
+</ul>
+</blockquote>
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">其他文章</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        <span class="button previous">
+            <a href="https://leejay.top/post/enable_aspectj_auto_proxy/">
+                <span class="button__icon">←</span>
+                <span class="button__text">关于EnableAspectJAutoProxy注解引出的若干问题</span>
+            </a>
+        </span>
+        
+        
+        <span class="button next">
+            <a href="https://leejay.top/post/kubernetes/">
+                <span class="button__text">Kubernetes概念入门</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span><a rel="nofollow" href="https://beian.miit.gov.cn/" target="_blank">苏ICP备18050258号-1</a></span>
+    
+        
+      </div>
+  </div>
+</footer>
+
+<script src="https://leejay.top/assets/main.js"></script>
+<script src="https://leejay.top/assets/prism.js"></script>
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>

@@ -10,10 +10,10 @@
     <lastBuildDate>Mon, 29 Jun 2020 13:27:36 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/cyclicbarrier/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CyclieBarrier源码解析</title>
-      <link>https://leejay.top/post/cycliebarrier/</link>
+      <link>https://leejay.top/post/concurrent_cyclic_barrier/</link>
       <pubDate>Mon, 29 Jun 2020 13:27:36 +0800</pubDate>
       
-      <guid>https://leejay.top/post/cycliebarrier/</guid>
+      <guid>https://leejay.top/post/concurrent_cyclic_barrier/</guid>
       <description>CyclicBarrier 基于CountDownLatch的特性：计数器为0时，即使调用await，该线程也不会等待其他线程执行完毕而被阻塞。
 CyclicBarrier的出现是为了解决复杂场景CountDownLatch使用的劣势。
 CountDownLatch中存在两种类型的线程：分别是调用await方法和调用countDown方法的线程。
