@@ -2300,6 +2300,30 @@ code.has-jax {
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#mysql%e5%8e%8b%e6%b5%8b">
+                    Mysql压测
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -3137,7 +3161,26 @@ code.has-jax {
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">LOCK</span> <span style="color:#66d9ef">IN</span> SHARE MODE;
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 独占锁
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> T1 <span style="color:#66d9ef">FOR</span> <span style="color:#66d9ef">UPDATE</span>;
-</span></span></code></pre></div>
+</span></span></code></pre></div><h2 id="mysql压测">Mysql压测<a href="#mysql压测" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-mysql" data-lang="mysql"><span style="display:flex;"><span>mysqlslap <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span>u<span style="color:#960050;background-color:#1e0010">${</span>user_name<span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span>h<span style="color:#960050;background-color:#1e0010">${</span>host_name<span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span>P<span style="color:#960050;background-color:#1e0010">${</span>port<span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span><span style="color:#66d9ef">create</span><span style="color:#f92672">-</span><span style="color:#66d9ef">schema</span><span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">${</span><span style="color:#66d9ef">database</span><span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span>no<span style="color:#f92672">-</span><span style="color:#66d9ef">drop</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span>number<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>queries<span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">${</span>per_client_queries<span style="color:#960050;background-color:#1e0010">}</span> <span style="color:#960050;background-color:#1e0010">\</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span>concurrency<span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">${</span>client_size<span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">--</span>query<span style="color:#f92672">=</span><span style="color:#960050;background-color:#1e0010">${</span>custom_query<span style="color:#960050;background-color:#1e0010">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">-</span>p
+</span></span></code></pre></div><blockquote>
+<ol>
+<li>如果使用<code>--create-schema</code>自定义压测数据库（不使用默认库为mysqlslap），那么<code>--no-drop</code>参数必不可少！！！防止测完数据库被删除！！</li>
+<li><code>--concurrency</code>表示同时连接的客户端数量，<code>--number-of-queries</code>表示<code>总的查询次数=客户端数量 * 每个客户端查询次数</code>。</li>
+<li><img src="https://image.leejay.top/typora/image-20230221111747231.png" alt="image-20230221111747231"></li>
+<li>返回的结果分别表示：平均请求时间、最小的请求时间、最大的请求时间、客户端数量、客户端平均请求数。</li>
+</ol>
+</blockquote>
+
       </div></div>
 
   

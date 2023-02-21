@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   
-    <title>Java虚拟机基础入门 :: Keep Improving</title>
+    <title>Java虚拟机概述 :: Keep Improving</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +40,7 @@
 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="Java虚拟机基础入门">
+<meta property="og:title" content="Java虚拟机概述">
 <meta property="og:description" content="Java虚拟机概述，包括类加载机制、运行时数据区与垃圾回收器。" />
 <meta property="og:url" content="https://leejay.top/post/jvm_in_action/" />
 <meta property="og:site_name" content="Keep Improving" />
@@ -2298,7 +2298,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/jvm_in_action/">Java虚拟机基础入门</a></h1>
+    <a href="https://leejay.top/post/jvm_in_action/">Java虚拟机概述</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -2440,7 +2440,7 @@ code.has-jax {
 </blockquote>
 <ul>
 <li>
-<p>将字节流代表的静态存储结构（ex: 常量池 -&gt; 运行时常量池）转换为<code>方法区运行时数据结构</code>。</p>
+<p>将字节流代表的静态存储结构（ex: <code>常量池 -&gt; 运行时常量池</code>）转换为<code>方法区运行时数据结构</code>。</p>
 </li>
 <li>
 <p>堆中生成<code>java.lang.Class</code>对象，并作为这个类方法区各各种数据的访问入口。</p>
@@ -2534,7 +2534,7 @@ code.has-jax {
 <ol>
 <li>如果A是个类，那么直接抛出<code>java.lang.IncompatibleClasssChangeError</code>异常。</li>
 <li>否则，查找接口A中是否存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
-<li>否则 ，在接口A的父接口中递归查找，直到<code>java.lang.Object类</code>为止，若存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
+<li>否则，在接口A的父接口中递归查找，直到<code>java.lang.Object类</code>为止，若存在<code>简单名称</code>和<code>字段描述</code>都与目标匹配的方法，返回该方法的直接引用。</li>
 <li>否则宣告查找失败，抛出<code>java.lang.NoSuchMethodError</code>异常。</li>
 </ol>
 <h4 id="初始化">初始化<a href="#初始化" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
@@ -2799,10 +2799,22 @@ code.has-jax {
 </span></span></code></pre></div><hr>
 <h2 id="2-运行数据区概述">2. 运行数据区概述<a href="#2-运行数据区概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="21-虚拟机栈">2.1 虚拟机栈<a href="#21-虚拟机栈" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<p>虚拟机栈描述的是Java方法执行的<code>线程内存模型:</code>每个方法被执行时，JVM会同步创建一个<code>栈帧</code>，用于存储<code>局部变量表、操作数栈、动态链接、方法出口</code>等信息，虚拟机栈区域是<code>线程私有</code>的，它的生命周期与线程相同。</p>
+<p>虚拟机栈描述的是Java方法运行时的<code>线程内存模型</code>：每个方法被执行时，JVM会同步创建一个<code>栈帧</code>，用于存储<code>局部变量表、操作数栈、动态链接、方法返回地址</code>等信息，虚拟机栈区域是<code>线程私有</code>的，它的生命周期与线程相同。栈顶存放的是当前方法。</p>
 <blockquote>
-<p>局部变量表：存放编译期可知的数据类型：<code>8种基本数据类型和对象引用类型</code>。这些数据类型在栈中用<code>slot</code>来表示，除了<code>long &amp; double</code>占用<code>2个slot</code>，其余的都为1个。</p>
+<ol>
+<li>
+<p>局部变量表：存放编译期可知的数据类型：<code>8种基本数据类型、对象引用类型、返回类型</code>。这些数据类型在栈中用<code>slot</code>来表示，除了<code>long &amp; double</code>占用<code>2个slot</code>，其余的都为1个。</p>
+</li>
+<li>
 <p>虚拟机栈包含用于<code>执行native方法</code>的本地方法栈。它们都会抛出<code>OOM和StackOverFlow</code>异常。</p>
+</li>
+<li>
+<p>虚拟机中的线程与操作系统的本地线程直接映射，操作系统负责将所有的线程调度到可用的CPU上，一旦本地线程初始化成功，就会调用Java虚拟机线程中的run方法。</p>
+</li>
+<li>
+<p>动态链接：类加载时将<code>常量池中的符号引用</code>转换为<code>运行时常量池中方法的直接引用</code>，这个引用被称为动态链接。</p>
+</li>
+</ol>
 </blockquote>
 <h3 id="22-虚拟机堆">2.2 虚拟机堆<a href="#22-虚拟机堆" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>这是一块<code>线程共享</code>的内存区域，几乎全部的<code>对象实例、数组</code>都在堆上分配（小对象可以在<code>栈上分配</code>）。</p>
@@ -2854,7 +2866,7 @@ code.has-jax {
 </ul>
 <hr>
 <h3 id="24-程序计数器">2.4 程序计数器<a href="#24-程序计数器" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<p><code>当前线程</code>所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是<code>线程私有</code>的。</p>
+<p>程序计数器（Program Counter Register），<code>当前线程</code>所执行的字节码的行号指示器。分支、循环、异常处理都是依赖计数器实现，该区域是<code>线程私有</code>的。</p>
 <h3 id="25-直接内存">2.5 直接内存<a href="#25-直接内存" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>直接内存并不是JVM运行时数据区的一部分。常见于<code>NIO</code>类使用：通过<code>Native方法分配堆外内存</code>，在Java堆中持有该<code>内存区域的引用</code>实现操作，相比之前<code>在Java堆和Native堆之间来回复制</code>的方式，提升了效率。</p>
 <hr>
