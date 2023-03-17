@@ -500,6 +500,34 @@ code.has-jax {
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#samba">
+                    samba
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -670,6 +698,17 @@ code.has-jax {
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /etc/resolv.conf:/etc/resolv.conf <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /root/v2raya:/etc/v2raya <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>mzz2017/v2raya
+</span></span></code></pre></div><h3 id="samba">samba<a href="#samba" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 挂载本机的/root/mount目录到容器的/mount目录</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置访问的账户名密码: username &amp; password 和共享目录:share</span>
+</span></span><span style="display:flex;"><span>docker run -it --name samba <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-p 139:139 -p 445:445 <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /root/mount:/mount  <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d dperson/samba <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-w <span style="color:#e6db74">&#34;WORKGROUP&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-u <span style="color:#e6db74">&#34;username;password&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-s <span style="color:#e6db74">&#34;share;/mount/;yes;no;no;all;none&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在window上通过\\ip\share访问并输入用户名密码即可</span>
 </span></span></code></pre></div>
       </div></div>
 
