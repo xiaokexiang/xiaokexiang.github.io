@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Tue, 14 Feb 2023 14:58:25 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 17 Mar 2023 15:43:00 +0800</lastBuildDate><atom:link href="https://leejay.top/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Java虚拟机概述</title>
       <link>https://leejay.top/post/jvm_in_action/</link>
@@ -40,6 +40,17 @@ KMP算法中的核心概念就是基于最大公共前后缀生成next数组，�
 由此可以得出最大公共前后缀：在字符串里所有前缀和后缀相等的子串中最长的那个(不能超过字符串长度)。
 graph LR A(&#34;ABAA&#34;) A --&gt; B(&#34;最大前缀: ABA&#34;) A --&gt; C(&#34;最大后缀: BAA&#34;) A --&gt; D(&#34;最大公共前后缀: A&#34;) 基于最大公共前后缀生成的next数组就是用于记录子串中不同位置的最大公共前后缀长度。也就是当匹配失败的时候，子串需要回退的位置。那么next数组是如何计算的呢？参考下图手算next数组流程。
 next数组的第一位默认是-1，即当匹配失败的时候，子串往后移动一位继续匹配。 next数组的作用：若子串的第n个位置的与主串不匹配，那么需要将子串回退到next[n]的位置再次进行匹配。 计算next[n]最大公共前后缀的子串范围是$P_0P_1&amp;hellip;P_{n-1}$。 代码推导 next数组推导 若计算next[i+1]的值时，必然已经知道next[i]的值（类似动态规划）。 假设next[i]=k，根据最大公共前后缀定义，那么此时必有：$C_0C_1&amp;hellip;C_{k-1}=C_{i-k}&amp;hellip;C_{i-1}$。 若$C_k=C_i$，则 $next[i+1] = k + 1$。 若$C_k != C_i$, 若 $next[k] = z$，根据最大公共前后缀定义，此时必有：$C0&amp;hellip;C_{z-1} = C_{k-z}&amp;hellip;C_{k-1} = C_{i-k}&amp;hellip;C_{i-k+z-1} = C_{i-z}&amp;hellip;C_{i-1}$，结合第二步的结果可得：$C0&amp;hellip;C_{z-1} = C_{i-z}&amp;hellip;C_{i-1}$。 若$ C_{k-z} = C_{i} $，那么 $ next[i+1] = z + 1$。如果不相等则重复上述流程，直到最长公共前后缀的值为0就停止循环查找。 private static int[] getNext(char[] array) { final int length = array.</description>
+    </item>
+    
+    <item>
+      <title>Raspberrypi搭建指南</title>
+      <link>https://leejay.top/post/raspberrypi/</link>
+      <pubDate>Fri, 17 Mar 2023 15:43:00 +0800</pubDate>
+      
+      <guid>https://leejay.top/post/raspberrypi/</guid>
+      <description>前置工作 安装系统 使用Raspberry Pi Imager来烧录系统，这个工具是树莓派官网推荐烧录工具，内置了系统镜像下来，树莓派4B推荐使用64位系统。同时高级设置中支持设置账户密码（账户默认是pi，密码不设置默认为raspberry）和wifi密码，设置完成等待烧录完毕即可。
+查找树莓派ip 使用Advanced IP Scanner工具来实现局域网ip扫描，通过制造商来筛选出ip地址。
+开启root账户 # 输入root密码 sudo passwd root # 解锁root账户 sudo passwd --unlock root # 如果没安装ssh sudo apt install ssh # 如果出现password expiry information changed提示 # 修改sshd_config中的PermitRootLogin without-password为PermitRootLogin yes sudo vi /etc/ssh/sshd_config # 重启后使用root登陆 reboot 修改ubuntu镜像源 vi /etc/apt/sources.list deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse deb https://mirrors.</description>
     </item>
     
     <item>
