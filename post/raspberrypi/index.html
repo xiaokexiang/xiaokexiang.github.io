@@ -289,6 +289,62 @@ code.has-jax {
             
         <ul class="nav">
             
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%9b%ba%e5%ae%9aip">
+                    固定ip
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#%e5%bf%85%e5%a4%87%e5%8c%85">
+                    必备包
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
             
             <li class="nav-item">
                 <a class="nav-link" href="#%e6%a0%91%e8%8e%93%e6%b4%be%e8%bd%af%e4%bb%b6%e5%ae%89%e8%a3%85">
@@ -588,6 +644,37 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-backports main restricted universe multiverse
 </span></span><span style="display:flex;"><span>deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted universe multiverse
 </span></span><span style="display:flex;"><span>deb-src http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted universe multiverse
+</span></span></code></pre></div><h3 id="固定ip">固定ip<a href="#固定ip" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span>-- <span style="color:#ae81ff">vim /etc/netplan/01-network-manager-all.yaml</span>
+</span></span><span style="display:flex;"><span>-- <span style="color:#ae81ff">Let NetworkManager manage all devices on this system</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">network</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">version</span>: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">renderer</span>: <span style="color:#ae81ff">NetworkManager</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ethernets</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">eth0</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">addresses</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">192.168.10.100</span><span style="color:#ae81ff">/24</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">nameservers</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">addresses</span>: [<span style="color:#ae81ff">114.114.114.114</span>, <span style="color:#ae81ff">8.8.8.8</span>]
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">to</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">via</span>: <span style="color:#ae81ff">192.168.10.1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">wifis</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">wlan0</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">dhcp4</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">optional</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">addresses</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#ae81ff">192.168.10.99</span><span style="color:#ae81ff">/24</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">nameservers</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">addresses</span>: [<span style="color:#ae81ff">114.114.114.114</span>, <span style="color:#ae81ff">8.8.8.8</span>]
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">access-points</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;wifi名称&#34;</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">password</span>: <span style="color:#e6db74">&#34;wifi密码&#34;</span>
+</span></span></code></pre></div><h3 id="必备包">必备包<a href="#必备包" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 安装macvlan必备，否则会出现failed to create the macvlan port: operation not supported.</span>
+</span></span><span style="display:flex;"><span>apt install linux-modules-extra-raspi
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 安装raspi-config图形界面</span>
+</span></span><span style="display:flex;"><span>apt install raspi-config
 </span></span></code></pre></div><h2 id="树莓派软件安装">树莓派软件安装<a href="#树莓派软件安装" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="oh-my-zsh">oh-my-zsh<a href="#oh-my-zsh" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 安装zsh</span>
@@ -701,14 +788,24 @@ code.has-jax {
 </span></span></code></pre></div><h3 id="samba">samba<a href="#samba" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 挂载本机的/root/mount目录到容器的/mount目录</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置访问的账户名密码: username &amp; password 和共享目录:share</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在window上通过\\ip\share访问并输入用户名密码即可</span>
 </span></span><span style="display:flex;"><span>docker run -it --name samba <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-p 139:139 -p 445:445 <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /root/mount:/mount  <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d dperson/samba <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-w <span style="color:#e6db74">&#34;WORKGROUP&#34;</span> <span style="color:#ae81ff">\
 </span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-u <span style="color:#e6db74">&#34;username;password&#34;</span> <span style="color:#ae81ff">\
-</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-s <span style="color:#e6db74">&#34;share;/mount/;yes;no;no;all;none&#34;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># 在window上通过\\ip\share访问并输入用户名密码即可</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-s <span style="color:#e6db74">&#34;share;/mount/;yes;no;no;all;admin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [name;path;browse;readonly;guest;users;admins;writelist;comment]</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [name] is how it&#39;s called for clients</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [path] path to share</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [browsable] default:&#39;yes&#39; or &#39;no&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [readonly] default:&#39;yes&#39; or &#39;no&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [guest] allowed default:&#39;yes&#39; or &#39;no&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [users] allowed default:&#39;all&#39; or list of allowed users</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [admins] allowed default:&#39;none&#39; or list of admin users</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [writelist] list of users that can write to a RO share</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># [comment] description of share</span>
 </span></span></code></pre></div>
       </div></div>
 
