@@ -520,7 +520,7 @@ code.has-jax {
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">await</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException<span style="color:#f92672">,</span> BrokenBarrierException <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// false表明不需要判断超时
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">);</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">return</span> dowait<span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>TimeoutException toe<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// await()中的dowait按道理不会抛出该异常
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span>toe<span style="color:#f92672">);</span>
@@ -577,7 +577,7 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 当前count!=0，所以将当前线程放入条件队列等待唤醒
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 唤醒后从此处继续执行
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// Condition.await(指定时长)
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 返回的是deadline - currentTime的差值
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
@@ -607,7 +607,7 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>			
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 执行到此说明broken = false 且 代没有更新，最后一个线程还没来
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 继续判断是否超时，如果超时调用breakBarrier并抛出异常
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>                breakBarrier<span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
@@ -638,13 +638,13 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span><span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>timed<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>            trip<span style="color:#f92672">.</span><span style="color:#a6e22e">await</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanos <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 执行的是Condition.await(time)方法
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            nanos <span style="color:#f92672">=</span> trip<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitNanos</span><span style="color:#f92672">(</span>nanos<span style="color:#f92672">);</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#f92672">...</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#f92672">...</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>timed <span style="color:#f92672">&amp;&amp;</span> nanos <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
 </span></span><span style="display:flex;"><span>       breakBarrier<span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#75715e">// await并不会抛出此异常
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> TimeoutException<span style="color:#f92672">();</span>

@@ -1301,7 +1301,7 @@ code.has-jax {
 </span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取锁的超时方法
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">doAcquireNanos</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">,</span> <span style="color:#66d9ef">long</span> nanosTimeout<span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算deadline
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">long</span> deadline <span style="color:#f92672">=</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">()</span> <span style="color:#f92672">+</span> nanosTimeout<span style="color:#f92672">;</span>
@@ -1320,7 +1320,7 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 计算剩余时间
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            nanosTimeout <span style="color:#f92672">=</span> deadline <span style="color:#f92672">-</span> System<span style="color:#f92672">.</span><span style="color:#a6e22e">nanoTime</span><span style="color:#f92672">();</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果小于0说明计时结束，获取失败
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>L<span style="color:#f92672">)</span>
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span><span style="color:#f92672">)</span>
 </span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
 </span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断是否需要阻塞，区别在于该方法阻塞了指定了时长
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 为什么剩余时间要大于spinForTimeoutThreshold(1000)才会阻塞

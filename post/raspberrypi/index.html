@@ -429,8 +429,64 @@ code.has-jax {
             
             
             <li class="nav-item">
+                <a class="nav-link" href="#frpc-docker">
+                    frpc-docker
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
                 <a class="nav-link" href="#tfoled">
                     TFOLED
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tfoled-docker">
+                    TFOLED-docker
                 </a>
             </li>
             
@@ -584,6 +640,34 @@ code.has-jax {
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#icloud-backup">
+                    icloud-backup
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -724,6 +808,13 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>systemctl list-units <span style="color:#e6db74">&#34;frpc@*&#34;</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 设置服务开机启动</span>
 </span></span><span style="display:flex;"><span>systemctl enable <span style="color:#f92672">{</span>服务名称<span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="frpc-docker">frpc-docker<a href="#frpc-docker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-d --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--name<span style="color:#f92672">=</span>frpc-web <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--pull<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>registry.cn-hongkong.aliyuncs.com/natfrp/frpc <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-f 账户密钥:隧道id --remote_control 远程密码
 </span></span></code></pre></div><h3 id="tfoled">TFOLED<a href="#tfoled" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 编辑TFOLED服务</span>
 </span></span><span style="display:flex;"><span>vi /etc/systemd/system/tfoled.service
@@ -743,6 +834,16 @@ code.has-jax {
 </span></span><span style="display:flex;"><span>systemctl start tfoled.service
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># 开机启动</span>
 </span></span><span style="display:flex;"><span>systemctl enable tfoled.service
+</span></span></code></pre></div><h3 id="tfoled-docker">TFOLED-docker<a href="#tfoled-docker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -itd --name tfoled <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   --privileged <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   --restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   --name tfoled
+</span></span><span style="display:flex;"><span>   --net<span style="color:#f92672">=</span>host <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>   -v <span style="color:#e6db74">${</span>mount_path<span style="color:#e6db74">}</span>:/data <span style="color:#ae81ff">\ </span><span style="color:#75715e"># 将需要统计的磁盘挂在到/data目录</span>
+</span></span><span style="display:flex;"><span>   -e upper<span style="color:#f92672">=</span><span style="color:#ae81ff">40</span>  <span style="color:#ae81ff">\ </span><span style="color:#75715e"># 风扇启动的温度，不填默认45</span>
+</span></span><span style="display:flex;"><span>   -e lower<span style="color:#f92672">=</span><span style="color:#ae81ff">38</span> <span style="color:#ae81ff">\ </span><span style="color:#75715e"># 风扇停止的温度，不填默认42</span>
+</span></span><span style="display:flex;"><span>   -d xiaokexiang/alpine-tfoled
 </span></span></code></pre></div><h3 id="docker">docker<a href="#docker" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 安装证书</span>
 </span></span><span style="display:flex;"><span>apt install apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
@@ -806,6 +907,24 @@ code.has-jax {
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># [admins] allowed default:&#39;none&#39; or list of admin users</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># [writelist] list of users that can write to a RO share</span>
 </span></span><span style="display:flex;"><span><span style="color:#75715e"># [comment] description of share</span>
+</span></span></code></pre></div><h3 id="icloud-backup">icloud-backup<a href="#icloud-backup" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>docker run -it <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--name icloud-backup <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--hostname icloudpd_boredazfcuk <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--network bridge <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--restart<span style="color:#f92672">=</span>always <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env auth_china<span style="color:#f92672">=</span>True <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env apple_id<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>your_icloud<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env authentication_type<span style="color:#f92672">=</span>2FA <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env folder_structure<span style="color:#f92672">={</span>:%Y/%m<span style="color:#f92672">}</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env auto_delete<span style="color:#f92672">=</span>True <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env synchronisation_interval<span style="color:#f92672">=</span><span style="color:#ae81ff">43200</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env icloud_china<span style="color:#f92672">=</span>True <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env TZ<span style="color:#f92672">=</span>Asia/Shanghai <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>--env download_path<span style="color:#f92672">=</span>/home/root/iCloud <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /mnt/usb2-1/iCloud/config:/config <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>-v /mnt/usb2-1/iCloud/download:/home/root/iCloud <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>pjoc/docker-icloudpd:master
 </span></span></code></pre></div>
       </div></div>
 
