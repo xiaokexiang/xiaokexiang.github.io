@@ -266,26 +266,26 @@ code.has-jax {
   <div class="post-content"><div>
         <h3 id="threadlocal概述">ThreadLocal概述<a href="#threadlocal概述" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p>ThreadLocal类，底层由<code>ThreadLocalMap</code>实现，是Thread类的成员变量，因为<code>类的每个实例的成员变量都是这个实例独有的</code>，所以在不同的Thread中有不同的副本，每个线程的副本<code>只能由当前线程使用，线程间互不影响</code>。因为一个线程可以拥有多个ThreadLocal对象，所以其内部使用<code>ThreadLocalMap&lt;ThreadLocal&lt;?&gt;, Object&gt;</code>来实现。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span> <span style="color:#66d9ef">implements</span> Runnable <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    ThreadLocal<span style="color:#f92672">.</span><span style="color:#a6e22e">ThreadLocalMap</span> threadLocals <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocal</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span> <span style="color:#66d9ef">implements</span> Runnable {
+</span></span><span style="display:flex;"><span>    ThreadLocal.<span style="color:#a6e22e">ThreadLocalMap</span> threadLocals <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocal</span><span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocalMap</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ThreadLocalMap</span> {
 </span></span><span style="display:flex;"><span>        
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 需要注意的是这里的Entry key是ThreadLocal的弱引用
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Entry</span> <span style="color:#66d9ef">extends</span> WeakReference<span style="color:#f92672">&lt;</span>ThreadLocal<span style="color:#f92672">&lt;?&gt;&gt;</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// value 与 ThreadLocal关联
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Object value<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 需要注意的是这里的Entry key是ThreadLocal的弱引用</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 弱引用的特点是当对象没有被外部强引用引用时，下次GC弱引用对象会被清理</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Entry</span> <span style="color:#66d9ef">extends</span> WeakReference<span style="color:#f92672">&lt;</span>ThreadLocal<span style="color:#f92672">&lt;?&gt;&gt;</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// value 与 ThreadLocal关联</span>
+</span></span><span style="display:flex;"><span>            Object value;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>            Entry<span style="color:#f92672">(</span>ThreadLocal<span style="color:#f92672">&lt;?&gt;</span> k<span style="color:#f92672">,</span> Object v<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>k<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                value <span style="color:#f92672">=</span> v<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            Entry(ThreadLocal<span style="color:#f92672">&lt;?&gt;</span> k, Object v) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">super</span>(k);
+</span></span><span style="display:flex;"><span>                value <span style="color:#f92672">=</span> v;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p><img src="https://image.leejay.top/image/20200701/Y6kWCwYi46IF.png?imageslim" alt=""></p>
 <blockquote>
 <ol>

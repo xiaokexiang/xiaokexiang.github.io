@@ -7,16 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Tue, 14 Jul 2020 16:58:36 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/concurrenthashmap/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 14 Jul 2020 16:58:36 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/tags/concurrenthashmap/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ConcurrentHashMap源码浅析</title>
       <link>https://leejay.top/post/concurrent_hash_map/</link>
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
-      
       <guid>https://leejay.top/post/concurrent_hash_map/</guid>
-      <description>ConcurrentHashMap JDK1.8之后采用的是数组 + 链表 + 红黑树的结构，通过Synchronized + CAS实现线程安全，而JDK1.7采用的是将一个HashMap分成多个Segment的方式，通过继承ReentrentLock的Segment分段锁实现线程安全。
-Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this.</description>
+      <description>ConcurrentHashMap JDK1.8之后采用的是数组 + 链表 + 红黑树的结构，通过Synchronized + CAS实现线程安全，而JDK1.7采用的是将一个HashMap分成多个Segment的方式，通过继承ReentrentLock的Segment分段锁实现线程安全。&#xA;Node // Node数组，组成ConcurrentHashMap的主要结构 transient volatile Node&amp;lt;K,V&amp;gt;[] table; // 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性 private transient volatile Node&amp;lt;K,V&amp;gt;[] nextTable; static class Node&amp;lt;K,V&amp;gt; implements Map.Entry&amp;lt;K,V&amp;gt; { final int hash; final K key; volatile V val; volatile Node&amp;lt;K,V&amp;gt; next; Node(int hash, K key, V val, Node&amp;lt;K,V&amp;gt; next) { this.hash = hash; this.key = key; this.val = val; this.next = next; } } // 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置 // 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发 // 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值 static final class ForwardingNode&amp;lt;K,V&amp;gt; extends Node&amp;lt;K,V&amp;gt; { final Node&amp;lt;K,V&amp;gt;[] nextTable; ForwardingNode(Node&amp;lt;K,V&amp;gt;[] tab) { super(MOVED, null, null, null); this.</description>
     </item>
-    
   </channel>
 </rss>

@@ -7,22 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Mon, 15 Jun 2020 15:53:46 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/reentrantlock/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 15 Jun 2020 15:53:46 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/tags/reentrantlock/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ReentrantLock源码解析</title>
       <link>https://leejay.top/post/concurrent_reentrant_lock/</link>
       <pubDate>Mon, 15 Jun 2020 15:53:46 +0800</pubDate>
-      
       <guid>https://leejay.top/post/concurrent_reentrant_lock/</guid>
-      <description>Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。
-AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。
-state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。
-线程的中断 interrupt 将线程的中断标识设置为true，并不是让线程立马停止执行。 isInterrupted 判断线程的中断状态，不会对当前线程中断状态产生任何影响。 interrupted 判断当前线程的中断状态，但是会清楚当前线程的中断标识（即为false）。 线程阻塞和唤醒 由LockSupport类实现，其底层是调用了Unsafe的park 和 unpark。
-如果当前线程是非中断状态，调用park则线程阻塞，如果当前线程是中断状态，调用park()会立即返回也是为什么AQS要清空中断状态的原因。 park方法不会抛出中断异常（也不会清除中断状态），如果先调用unpark再调用park，那么park也会立马返回。 连续调用多次unpark方法，效果等同于调用一次unpark方法。 park方法和sleep方法相同，不会释放资源，而wait方法会释放资源。 park方法将Runnable -&amp;gt; WAITING/TIME_WAITING，unpark方法将WAITING/TIME_WAITING -&amp;gt; Runnable。 FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。
-还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。
-Node的waitStatus Node状态 描述 INIT=0 Node初始创建时默认为0 CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。 SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。 CONDITION=-2 表示节点处于等待队列中，等待被唤醒。 PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。 ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。
-class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK.</description>
+      <description>Lock与Synchronized都是可重入锁，否则会发生死锁。Lock锁核心在于AbstractQueueSynchronizer，又名队列同步器(简称AQS)。如果需要实现自定义锁，除了需要实现Lock接口外，还需要内部类继承Sync类。&#xA;AbstractQueueSynchronizer 记录当前锁的持有线程 由AQS的父类AbstractOwnableSynchronizer实现记录当前锁的持有线程功能（独占锁）。&#xA;state变量 内部维护了volatile修饰的state变量，state = 0时表明没有线程获取锁，state = 1时表明有一个线程获取锁，当state &amp;gt; 1时，说明该线程重入了该锁。&#xA;线程的中断 interrupt 将线程的中断标识设置为true，并不是让线程立马停止执行。 isInterrupted 判断线程的中断状态，不会对当前线程中断状态产生任何影响。 interrupted 判断当前线程的中断状态，但是会清楚当前线程的中断标识（即为false）。 线程阻塞和唤醒 由LockSupport类实现，其底层是调用了Unsafe的park 和 unpark。&#xA;如果当前线程是非中断状态，调用park则线程阻塞，如果当前线程是中断状态，调用park()会立即返回也是为什么AQS要清空中断状态的原因。 park方法不会抛出中断异常（也不会清除中断状态），如果先调用unpark再调用park，那么park也会立马返回。 连续调用多次unpark方法，效果等同于调用一次unpark方法。 park方法和sleep方法相同，不会释放资源，而wait方法会释放资源。 park方法将Runnable -&amp;gt; WAITING/TIME_WAITING，unpark方法将WAITING/TIME_WAITING -&amp;gt; Runnable。 FIFO队列 AQS内部维护了一个基于CLH(Craig, Landin, and Hagersten(CLH)locks。基于链表的公平的自旋锁)变种的FIFO双向链表阻塞队列，在等待机制上由自旋改成阻塞唤醒(park/unpark)。&#xA;还未初始化的时候，head = tail = null，之后初始化队列，往其中假如阻塞的线程时，会新建一个空的node，让head和tail都指向这个空node。之后加入被阻塞的线程对象。当head=tai时候说明队列为空。&#xA;Node的waitStatus Node状态 描述 INIT=0 Node初始创建时默认为0 CANCELLED=1 由于超时或者中断，线程获取锁的请求取消了，节点一旦变成此状态就不会再变化。 SIGNAL=-1 表示线程已经准备好了，等待资源释放去获取锁。 CONDITION=-2 表示节点处于等待队列中，等待被唤醒。 PROPAGATE=-3 只有当前线程处于SHARED情况下，该字段才会使用，用于共享锁的获取。 ReentrentLock 我们选择ReentrentLock作为入口进行源码解读，自定义的获取释放锁的方法，由其内部抽象类Sync的子类FairSync和NonfairSync中的tryAcquire、tryRelease实现。&#xA;class Test { private static final ReentrantLock LOCK = new ReentrantLock(); public void run() { LOCK.</description>
     </item>
-    
   </channel>
 </rss>

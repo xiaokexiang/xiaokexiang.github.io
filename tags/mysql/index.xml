@@ -7,32 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Fri, 23 Jul 2021 09:51:37 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jul 2021 09:51:37 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mysql学习笔记</title>
       <link>https://leejay.top/post/mysql/</link>
       <pubDate>Fri, 23 Jul 2021 09:51:37 +0800</pubDate>
-      
       <guid>https://leejay.top/post/mysql/</guid>
-      <description>MySQL中的字符集和比较规则 字符集 SHOW CHARSET LIKE &amp;#39;utf8_%&amp;#39;; 字符集 编码长度 ASCII（128个字符） 1字节 ISO 8859-1（256个字符，又叫latin1） 1字节 GB2312（收录6763个汉字，兼容ASCII） 字符在ASCII中采用1字节，否则2字节 GBK（对GB2312进行扩充，兼容GB2312） 与GB2312相同 Unicode（兼容ASCII字符集，采用变长编码方式） UTF-8:：1-4个字节，UTF-16：2或4字节，UTF-32：4字节 MySQL中的utf8和utf8mb4字符集区别在于前者是1-3字符（阉割），后者是1-4字符。
-比较规则 SHOW COLLATION LIKE &amp;#39;utf8_%&amp;#39;; 后缀 英文 不区分重音 _ai accent insensitive 不区分重音 _as accent sensitive 区分重音 _ci case insensitive 不区分大小写 _cs case sensitive 区分大小写 _bin binary 以二进制方式比较 MySQL中utf8默认的比较规则就是utf8_general_ci。
-字符集与比较规则的级别 # [服务器级别] SHOW VARIABLES LIKE &amp;#39;character_set_server&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_server&amp;#39;; # [创建或修改数据库比较规则] CREATE[ALTER] DATABASE [database_name] CHARACTER SET utf8 COLLATE utf8_general_ci; # [数据库级别] USE [database_name]; SHOW VARIABLES LIKE &amp;#39;character_set_database&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_database&amp;#39;; # [表级别] 如果表不设置字符集和比较规则，默认继承数据库的配置 CREATE[ALTER] TABLE unicode(name VARCHAR(10)) CHARACTER SET utf8 COLLATE utf8_general_ci; # [表级别] 查看表的字符集和编码规则 SHOW TABLE STATUS FROM unicode; # [创建列的字符集和比较规则] 不设置默认读取表的配置 CREATE TABLE line( name VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci, age INT(16) ) ALTER TABLE [table_name] MODIFY [column] VARCHAR CHARACTER SET latin1 COLLATE latin1_general_cs; 无论是只修改字符集或比较规则，未设置的一方都会自动的改为与修改一方对应的配置。</description>
+      <description>MySQL中的字符集和比较规则 字符集 SHOW CHARSET LIKE &amp;#39;utf8_%&amp;#39;; 字符集 编码长度 ASCII（128个字符） 1字节 ISO 8859-1（256个字符，又叫latin1） 1字节 GB2312（收录6763个汉字，兼容ASCII） 字符在ASCII中采用1字节，否则2字节 GBK（对GB2312进行扩充，兼容GB2312） 与GB2312相同 Unicode（兼容ASCII字符集，采用变长编码方式） UTF-8:：1-4个字节，UTF-16：2或4字节，UTF-32：4字节 MySQL中的utf8和utf8mb4字符集区别在于前者是1-3字符（阉割），后者是1-4字符。&#xA;比较规则 SHOW COLLATION LIKE &amp;#39;utf8_%&amp;#39;; 后缀 英文 不区分重音 _ai accent insensitive 不区分重音 _as accent sensitive 区分重音 _ci case insensitive 不区分大小写 _cs case sensitive 区分大小写 _bin binary 以二进制方式比较 MySQL中utf8默认的比较规则就是utf8_general_ci。&#xA;字符集与比较规则的级别 # [服务器级别] SHOW VARIABLES LIKE &amp;#39;character_set_server&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_server&amp;#39;; # [创建或修改数据库比较规则] CREATE[ALTER] DATABASE [database_name] CHARACTER SET utf8 COLLATE utf8_general_ci; # [数据库级别] USE [database_name]; SHOW VARIABLES LIKE &amp;#39;character_set_database&amp;#39;; SHOW VARIABLES LIKE &amp;#39;collation_database&amp;#39;; # [表级别] 如果表不设置字符集和比较规则，默认继承数据库的配置 CREATE[ALTER] TABLE unicode(name VARCHAR(10)) CHARACTER SET utf8 COLLATE utf8_general_ci; # [表级别] 查看表的字符集和编码规则 SHOW TABLE STATUS FROM unicode; # [创建列的字符集和比较规则] 不设置默认读取表的配置 CREATE TABLE line( name VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci, age INT(16) ) ALTER TABLE [table_name] MODIFY [column] VARCHAR CHARACTER SET latin1 COLLATE latin1_general_cs; 无论是只修改字符集或比较规则，未设置的一方都会自动的改为与修改一方对应的配置。</description>
     </item>
-    
     <item>
       <title>Docker命令汇总</title>
       <link>https://leejay.top/post/docker/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
-      
       <guid>https://leejay.top/post/docker/</guid>
-      <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d  /opt/nginx/
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+      <description>&lt;h2 id=&#34;docker-cp&#34;&gt;Docker cp&lt;/h2&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹下的所有文件复制到宿主机上/opt/nginx/conf.d文件夹下&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d/. /opt/nginx/conf.d&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 将容器内的conf.d文件夹（包含文件夹内的文件）复制到宿主及上/opt/nginx目录下&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;docker cp nginx:/etc/nginx/conf.d  /opt/nginx/&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
     </item>
-    
   </channel>
 </rss>

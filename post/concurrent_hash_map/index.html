@@ -412,58 +412,58 @@ code.has-jax {
         <h3 id="concurrenthashmap">ConcurrentHashMap<a href="#concurrenthashmap" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><code>JDK1.8</code>之后采用的是<code>数组 + 链表 + 红黑树</code>的结构，通过<code>Synchronized + CAS</code>实现线程安全，而<code>JDK1.7</code>采用的是<code>将一个HashMap分成多个Segment</code>的方式，通过<code>继承ReentrentLock的Segment分段锁</code>实现线程安全。</p>
 <h4 id="node">Node<a href="#node" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// Node数组，组成ConcurrentHashMap的主要结构
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> table<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nextTable<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> hash<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> K key<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> V val<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// Node数组，组成ConcurrentHashMap的主要结构</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> table;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容期间不为null，因为存在协助扩容的机制，所以需要设置volatile保证线程间可见性</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nextTable;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Node</span><span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">implements</span> Map.<span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> hash;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> K key;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> V val;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> next;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> hash<span style="color:#f92672">,</span> K key<span style="color:#f92672">,</span> V val<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">=</span> hash<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> key<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> val<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> next<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ForwardingNode</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nextTable<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    ForwardingNode<span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>MOVED<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">nextTable</span> <span style="color:#f92672">=</span> tab<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 红黑树的根节点使用的TreeNode，不存储key-value
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeBin</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> root<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> first<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> Thread waiter<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> lockState<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// values for lockState
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> WRITER <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span> <span style="color:#75715e">// set while holding write lock 
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> WAITER <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span> <span style="color:#75715e">// set when waiting for write lock
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> READER <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span><span style="color:#f92672">;</span> <span style="color:#75715e">// increment value for setting read lock
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 构建成红黑树树的节点结构
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeNode</span><span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> parent<span style="color:#f92672">;</span>  <span style="color:#75715e">// red-black tree links
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> left<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> right<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> prev<span style="color:#f92672">;</span>    <span style="color:#75715e">// needed to unlink next upon deletion
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> red<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    Node(<span style="color:#66d9ef">int</span> hash, K key, V val, Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> next) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">hash</span> <span style="color:#f92672">=</span> hash;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> key;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> val;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> next;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果一个index下所有的节点全部转移完后会放置ForwardingNode节点，防止put插入错误位置</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果正在扩容但是put插入的位置不是ForwardingNode还是可以继续put的，支持两者并发</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 如果是get的方法，那么就需要获取nextTable属性(新的chm的引用)，用于返回新的值</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ForwardingNode</span><span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nextTable;
+</span></span><span style="display:flex;"><span>    ForwardingNode(Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span>(MOVED, <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">nextTable</span> <span style="color:#f92672">=</span> tab;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 红黑树的根节点使用的TreeNode，不存储key-value</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeBin</span><span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> root;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> first;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> Thread waiter;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> lockState;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// values for lockState</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> WRITER <span style="color:#f92672">=</span> 1; <span style="color:#75715e">// set while holding write lock </span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> WAITER <span style="color:#f92672">=</span> 2; <span style="color:#75715e">// set when waiting for write lock</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> READER <span style="color:#f92672">=</span> 4; <span style="color:#75715e">// increment value for setting read lock</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 构建成红黑树树的节点结构</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">TreeNode</span><span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">extends</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> {
+</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> parent;  <span style="color:#75715e">// red-black tree links</span>
+</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> left;
+</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> right;
+</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> prev;    <span style="color:#75715e">// needed to unlink next upon deletion</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> red;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    TreeNode<span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> hash<span style="color:#f92672">,</span> K key<span style="color:#f92672">,</span> V val<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> next<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>             TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> parent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span> val<span style="color:#f92672">,</span> next<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">parent</span> <span style="color:#f92672">=</span> parent<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    TreeNode(<span style="color:#66d9ef">int</span> hash, K key, V val, Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> next,
+</span></span><span style="display:flex;"><span>             TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> parent) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span>(hash, key, val, next);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">parent</span> <span style="color:#f92672">=</span> parent;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <ol>
 <li>
@@ -484,23 +484,23 @@ code.has-jax {
 </ol>
 </blockquote>
 <h4 id="构造">构造<a href="#构造" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 负数时表示为正在初始化或扩容：-1表示初始化或-(1+活动resize线程数量)
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 当table为null时，持有初始table size直到table创建(默认为0)
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化后持有下个大小直到扩容table
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> sizeCtl<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ConcurrentHashMap</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> initialCapacity<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                             <span style="color:#66d9ef">float</span> loadFactor<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> concurrencyLevel<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!(</span>loadFactor <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0f</span><span style="color:#f92672">)</span> <span style="color:#f92672">||</span> initialCapacity <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> concurrencyLevel <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>initialCapacity <span style="color:#f92672">&lt;</span> concurrencyLevel<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>        initialCapacity <span style="color:#f92672">=</span> concurrencyLevel<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">long</span> size <span style="color:#f92672">=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">long</span><span style="color:#f92672">)(</span><span style="color:#ae81ff">1</span><span style="color:#f92672">.</span><span style="color:#a6e22e">0</span> <span style="color:#f92672">+</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">long</span><span style="color:#f92672">)</span>initialCapacity <span style="color:#f92672">/</span> loadFactor<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// tableSizeFor方法用于保证容量必须是2次幂
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">&gt;=</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">long</span><span style="color:#f92672">)</span>MAXIMUM_CAPACITY<span style="color:#f92672">)</span> <span style="color:#f92672">?</span>
-</span></span><span style="display:flex;"><span>        MAXIMUM_CAPACITY <span style="color:#f92672">:</span> tableSizeFor<span style="color:#f92672">((</span><span style="color:#66d9ef">int</span><span style="color:#f92672">)</span>size<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sizeCtl的初始值就是cap
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">sizeCtl</span> <span style="color:#f92672">=</span> cap<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 负数时表示为正在初始化或扩容：-1表示初始化或-(1+活动resize线程数量)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 当table为null时，持有初始table size直到table创建(默认为0)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 初始化后持有下个大小直到扩容table</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> sizeCtl;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">ConcurrentHashMap</span>(<span style="color:#66d9ef">int</span> initialCapacity,
+</span></span><span style="display:flex;"><span>                             <span style="color:#66d9ef">float</span> loadFactor, <span style="color:#66d9ef">int</span> concurrencyLevel) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(loadFactor <span style="color:#f92672">&gt;</span> 0.<span style="color:#a6e22e">0f</span>) <span style="color:#f92672">||</span> initialCapacity <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span> concurrencyLevel <span style="color:#f92672">&lt;=</span> 0)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> IllegalArgumentException();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (initialCapacity <span style="color:#f92672">&lt;</span> concurrencyLevel)
+</span></span><span style="display:flex;"><span>        initialCapacity <span style="color:#f92672">=</span> concurrencyLevel;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">long</span> size <span style="color:#f92672">=</span> (<span style="color:#66d9ef">long</span>)(1.<span style="color:#a6e22e">0</span> <span style="color:#f92672">+</span> (<span style="color:#66d9ef">long</span>)initialCapacity <span style="color:#f92672">/</span> loadFactor);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// tableSizeFor方法用于保证容量必须是2次幂</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> cap <span style="color:#f92672">=</span> (size <span style="color:#f92672">&gt;=</span> (<span style="color:#66d9ef">long</span>)MAXIMUM_CAPACITY) <span style="color:#f92672">?</span>
+</span></span><span style="display:flex;"><span>        MAXIMUM_CAPACITY : tableSizeFor((<span style="color:#66d9ef">int</span>)size);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sizeCtl的初始值就是cap</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sizeCtl</span> <span style="color:#f92672">=</span> cap;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p><code>构造方法只是定义了属性，并没有真正的开辟空间创建对象</code>。</p>
 <p>initialCapacity：初始容量，默认是<code>16</code>。</p>
@@ -510,173 +510,173 @@ code.has-jax {
 </blockquote>
 <hr>
 <h3 id="put">put<a href="#put" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> putVal<span style="color:#f92672">(</span>key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">put</span>(K key, V value) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> putVal(key, value, <span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> HASH_BITS <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>x7fffffff<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 计算hash值，通过高低16交互避免hash冲突，并通过&amp;运算保证最高位是0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">spread</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> h<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">^</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">16</span><span style="color:#f92672">))</span> <span style="color:#f92672">&amp;</span> HASH_BITS<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> HASH_BITS <span style="color:#f92672">=</span> 0x7fffffff;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 计算hash值，通过高低16交互避免hash冲突，并通过&amp;运算保证最高位是0</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">spread</span>(<span style="color:#66d9ef">int</span> h) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> (h <span style="color:#f92672">^</span> (h <span style="color:#f92672">&gt;&gt;&gt;</span> 16)) <span style="color:#f92672">&amp;</span> HASH_BITS;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// onlyIfAbsent：  false/true 允许覆盖/不允许覆盖
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> V <span style="color:#a6e22e">putVal</span><span style="color:#f92672">(</span>K key<span style="color:#f92672">,</span> V value<span style="color:#f92672">,</span> <span style="color:#66d9ef">boolean</span> onlyIfAbsent<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// key和value都不允许为null，hashmap允许
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>key <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> value <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算key的hash值
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> hash <span style="color:#f92672">=</span> spread<span style="color:#f92672">(</span>key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> binCount <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义局部变量 tab = Node[]
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab <span style="color:#f92672">=</span> table<span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> f<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> fh<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table = null 或 table.length = 0，说明table没有初始化
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 初始化table
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            tab <span style="color:#f92672">=</span> initTable<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table不为null说明已经初始化过
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 计算当前key在table[]对应位置是否为null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>f <span style="color:#f92672">=</span> tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> hash<span style="color:#f92672">))</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// cas设置Node到指定index，成功就退出
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 失败说明有同样index的key刚操作成功
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>casTabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                         <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span> value<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)))</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果不为null判断当前节点的hash == MOVED(-1)，表示当前正在对数组进行扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>fh <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> MOVED<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 协助进行扩容，扩容下面再分析
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            tab <span style="color:#f92672">=</span> helpTransfer<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> f<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 已经初始化，且不在扩容，那么调用synchronized进行元素的添加
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            V oldVal <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 加锁
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 判断有没有线程对table[i]进行修改
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> f<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// fh &gt;= 0说明是链表结构
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>fh <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        binCount <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> f<span style="color:#f92672">;;</span> <span style="color:#f92672">++</span>binCount<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            K ek<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 如果hash key都相同，替换旧值
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> hash <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">((</span>ek <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span>
-</span></span><span style="display:flex;"><span>                                 <span style="color:#f92672">(</span>ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>ek<span style="color:#f92672">))))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                                oldVal <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#75715e">// onlyIfAbsent = false 才能替换
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>onlyIfAbsent<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                                    e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 否则找到链表最后的节点，将当前节点加入链接
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> pred <span style="color:#f92672">=</span> e<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>e <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                                pred<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                                                          value<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果不是链表判断是不是红黑树
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>f <span style="color:#66d9ef">instanceof</span> TreeBin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        binCount <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 调用红黑树的put方法，返回不是null说明之前有过这个key
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p <span style="color:#f92672">=</span> <span style="color:#f92672">((</span>TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;)</span>f<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                          <span style="color:#f92672">.</span><span style="color:#a6e22e">putTreeVal</span><span style="color:#f92672">(</span>hash<span style="color:#f92672">,</span> key<span style="color:#f92672">,</span>value<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            oldVal <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>onlyIfAbsent<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                                p<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> value<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断binCount &gt;= 8
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>binCount <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>binCount <span style="color:#f92672">&gt;=</span> TREEIFY_THRESHOLD<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 成立就转换成红黑树或扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    treeifyBin<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>oldVal <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> oldVal<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 进行数量统计或扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    addCount<span style="color:#f92672">(</span><span style="color:#ae81ff">1L</span><span style="color:#f92672">,</span> binCount<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// onlyIfAbsent：  false/true 允许覆盖/不允许覆盖</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">final</span> V <span style="color:#a6e22e">putVal</span>(K key, V value, <span style="color:#66d9ef">boolean</span> onlyIfAbsent) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// key和value都不允许为null，hashmap允许</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (key <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> value <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> NullPointerException();
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算key的hash值</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> hash <span style="color:#f92672">=</span> spread(key.<span style="color:#a6e22e">hashCode</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> binCount <span style="color:#f92672">=</span> 0;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义局部变量 tab = Node[]</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab <span style="color:#f92672">=</span> table;;) {
+</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> f; <span style="color:#66d9ef">int</span> n, i, fh;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table = null 或 table.length = 0，说明table没有初始化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (tab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> (n <span style="color:#f92672">=</span> tab.<span style="color:#a6e22e">length</span>) <span style="color:#f92672">==</span> 0)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 初始化table</span>
+</span></span><span style="display:flex;"><span>            tab <span style="color:#f92672">=</span> initTable();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table不为null说明已经初始化过</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 计算当前key在table[]对应位置是否为null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((f <span style="color:#f92672">=</span> tabAt(tab, i <span style="color:#f92672">=</span> (n <span style="color:#f92672">-</span> 1) <span style="color:#f92672">&amp;</span> hash)) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// cas设置Node到指定index，成功就退出</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 失败说明有同样index的key刚操作成功</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (casTabAt(tab, i, <span style="color:#66d9ef">null</span>,
+</span></span><span style="display:flex;"><span>                         <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(hash, key, value, <span style="color:#66d9ef">null</span>)))
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果不为null判断当前节点的hash == MOVED(-1)，表示当前正在对数组进行扩容</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((fh <span style="color:#f92672">=</span> f.<span style="color:#a6e22e">hash</span>) <span style="color:#f92672">==</span> MOVED)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 协助进行扩容，扩容下面再分析</span>
+</span></span><span style="display:flex;"><span>            tab <span style="color:#f92672">=</span> helpTransfer(tab, f);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 已经初始化，且不在扩容，那么调用synchronized进行元素的添加</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            V oldVal <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 加锁</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">synchronized</span> (f) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 判断有没有线程对table[i]进行修改</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (tabAt(tab, i) <span style="color:#f92672">==</span> f) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// fh &gt;= 0说明是链表结构</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (fh <span style="color:#f92672">&gt;=</span> 0) {
+</span></span><span style="display:flex;"><span>                        binCount <span style="color:#f92672">=</span> 1;
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> f;; <span style="color:#f92672">++</span>binCount) {
+</span></span><span style="display:flex;"><span>                            K ek;
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 如果hash key都相同，替换旧值</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> (e.<span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> hash <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                                ((ek <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">key</span>) <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>                                 (ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key.<span style="color:#a6e22e">equals</span>(ek)))) {
+</span></span><span style="display:flex;"><span>                                oldVal <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">val</span>;
+</span></span><span style="display:flex;"><span>                                <span style="color:#75715e">// onlyIfAbsent = false 才能替换</span>
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>onlyIfAbsent)
+</span></span><span style="display:flex;"><span>                                    e.<span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> value;
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 否则找到链表最后的节点，将当前节点加入链接</span>
+</span></span><span style="display:flex;"><span>                            Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> pred <span style="color:#f92672">=</span> e;
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> ((e <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">next</span>) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                                pred.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(hash, key,
+</span></span><span style="display:flex;"><span>                                                          value, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果不是链表判断是不是红黑树</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (f <span style="color:#66d9ef">instanceof</span> TreeBin) {
+</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> p;
+</span></span><span style="display:flex;"><span>                        binCount <span style="color:#f92672">=</span> 2;
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 调用红黑树的put方法，返回不是null说明之前有过这个key</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> ((p <span style="color:#f92672">=</span> ((TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>)f)
+</span></span><span style="display:flex;"><span>                          .<span style="color:#a6e22e">putTreeVal</span>(hash, key,value)) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>                            oldVal <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">val</span>;
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>onlyIfAbsent)
+</span></span><span style="display:flex;"><span>                                p.<span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> value;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断binCount &gt;= 8</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (binCount <span style="color:#f92672">!=</span> 0) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (binCount <span style="color:#f92672">&gt;=</span> TREEIFY_THRESHOLD)
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 成立就转换成红黑树或扩容</span>
+</span></span><span style="display:flex;"><span>                    treeifyBin(tab, i);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (oldVal <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span> oldVal;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 进行数量统计或扩容</span>
+</span></span><span style="display:flex;"><span>    addCount(1L, binCount);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> <span style="color:#a6e22e">initTable</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// CAS + 自旋,老搭档，table不为空就退出自旋
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>tab <span style="color:#f92672">=</span> table<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果sizeCtl &lt; 0说明有其他线程正在初始化或扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>sc <span style="color:#f92672">=</span> sizeCtl<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 交出线程执行权，只是自旋
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">yield</span><span style="color:#f92672">();</span> <span style="color:#75715e">// lost initialization race; just spin
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 不是，则CAS修改sizeCtl为-1，表示正在初始化
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> SIZECTL<span style="color:#f92672">,</span> sc<span style="color:#f92672">,</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 继续判断一次table==null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#75715e">// 确实会出现：执行到此处线程切换，别的线程执行了初始化
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>tab <span style="color:#f92672">=</span> table<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果sizeCtl &gt; 0说明构造函数设置了sizeCtl，否则默认cap=16
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>sc <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> sc <span style="color:#f92672">:</span> DEFAULT_CAPACITY<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 定义数组的大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[])</span><span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?,?&gt;[</span>n<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// table成员变量指向nt刚创建的数组
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    table <span style="color:#f92672">=</span> tab <span style="color:#f92672">=</span> nt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 计算新的sizeCtl，表示下一次扩容的阈值0.75n
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    sc <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                sizeCtl <span style="color:#f92672">=</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tab<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> <span style="color:#a6e22e">initTable</span>() {
+</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab; <span style="color:#66d9ef">int</span> sc;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// CAS + 自旋,老搭档，table不为空就退出自旋</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((tab <span style="color:#f92672">=</span> table) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> tab.<span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果sizeCtl &lt; 0说明有其他线程正在初始化或扩容</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((sc <span style="color:#f92672">=</span> sizeCtl) <span style="color:#f92672">&lt;</span> 0)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 交出线程执行权，只是自旋</span>
+</span></span><span style="display:flex;"><span>            Thread.<span style="color:#a6e22e">yield</span>(); <span style="color:#75715e">// lost initialization race; just spin</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 不是，则CAS修改sizeCtl为-1，表示正在初始化</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>(<span style="color:#66d9ef">this</span>, SIZECTL, sc, <span style="color:#f92672">-</span>1)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 继续判断一次table==null</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 确实会出现：执行到此处线程切换，别的线程执行了初始化</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> ((tab <span style="color:#f92672">=</span> table) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> tab.<span style="color:#a6e22e">length</span> <span style="color:#f92672">==</span> 0) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果sizeCtl &gt; 0说明构造函数设置了sizeCtl，否则默认cap=16</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> (sc <span style="color:#f92672">&gt;</span> 0) <span style="color:#f92672">?</span> sc : DEFAULT_CAPACITY;
+</span></span><span style="display:flex;"><span>                    <span style="color:#a6e22e">@SuppressWarnings</span>(<span style="color:#e6db74">&#34;unchecked&#34;</span>)
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 定义数组的大小</span>
+</span></span><span style="display:flex;"><span>                    Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span>)<span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?</span>,<span style="color:#f92672">?&gt;[</span>n<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// table成员变量指向nt刚创建的数组</span>
+</span></span><span style="display:flex;"><span>                    table <span style="color:#f92672">=</span> tab <span style="color:#f92672">=</span> nt;
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 计算新的sizeCtl，表示下一次扩容的阈值0.75n</span>
+</span></span><span style="display:flex;"><span>                    sc <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> (n <span style="color:#f92672">&gt;&gt;&gt;</span> 2);
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">finally</span> {
+</span></span><span style="display:flex;"><span>                sizeCtl <span style="color:#f92672">=</span> sc;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tab;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TREEIFY_CAPACITY <span style="color:#f92672">=</span> <span style="color:#ae81ff">64</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 判断转成红黑树还是扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">treeifyBin</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> index<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> b<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">,</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// table不能为null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tab <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断数组长度是否小于64
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> MIN_TREEIFY_CAPACITY<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 扩容的核心方法，下面再分析，扩大一倍
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            tryPresize<span style="color:#f92672">(</span>n <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 转成红黑树
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>b <span style="color:#f92672">=</span> tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> index<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> b<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>b<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> index<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> hd <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> tl <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 将链表转换成红黑树
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span> e <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> e <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 遍历每个节点，创建对应的TreeNode
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">new</span> TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">,</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">,</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                                              <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 建立树之间的关系
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> tl<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                            hd <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TREEIFY_CAPACITY <span style="color:#f92672">=</span> 64;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 判断转成红黑树还是扩容</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">treeifyBin</span>(Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab, <span style="color:#66d9ef">int</span> index) {
+</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> b; <span style="color:#66d9ef">int</span> n, sc;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// table不能为null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (tab <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断数组长度是否小于64</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((n <span style="color:#f92672">=</span> tab.<span style="color:#a6e22e">length</span>) <span style="color:#f92672">&lt;</span> MIN_TREEIFY_CAPACITY)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 扩容的核心方法，下面再分析，扩大一倍</span>
+</span></span><span style="display:flex;"><span>            tryPresize(n <span style="color:#f92672">&lt;&lt;</span> 1);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 转成红黑树</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((b <span style="color:#f92672">=</span> tabAt(tab, index)) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> b.<span style="color:#a6e22e">hash</span> <span style="color:#f92672">&gt;=</span> 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">synchronized</span> (b) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (tabAt(tab, index) <span style="color:#f92672">==</span> b) {
+</span></span><span style="display:flex;"><span>                    TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> hd <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>, tl <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 将链表转换成红黑树</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> b; e <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>; e <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 遍历每个节点，创建对应的TreeNode</span>
+</span></span><span style="display:flex;"><span>                        TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">new</span> TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(e.<span style="color:#a6e22e">hash</span>, e.<span style="color:#a6e22e">key</span>, e.<span style="color:#a6e22e">val</span>,
+</span></span><span style="display:flex;"><span>                                              <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 建立树之间的关系</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> ((p.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> tl) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                            hd <span style="color:#f92672">=</span> p;
 </span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                            tl<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        tl <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 将第一个树节点放到TreeBin容器中
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    setTabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> index<span style="color:#f92672">,</span> <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>hd<span style="color:#f92672">));</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                            tl.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                        tl <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 将第一个树节点放到TreeBin容器中</span>
+</span></span><span style="display:flex;"><span>                    setTabAt(tab, index, <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(hd));
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <ol>
 <li>
@@ -711,228 +711,228 @@ code.has-jax {
 </blockquote>
 <hr>
 <h3 id="resize">resize<a href="#resize" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TRANSFER_STRIDE <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容期间表示下一个数组的index
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> transferIndex<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容的核心方法，参数原有的table和扩容后的table
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">transfer</span><span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">,</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nextTab<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义数组长度和步长
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">,</span> stride<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果CPU核数大于1，计算 n/(8*NCPU) &lt; 16成立 步长stride = 16
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 单核情况下，默认一个线程执行扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>stride <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>NCPU <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">)</span> <span style="color:#f92672">/</span> NCPU <span style="color:#f92672">:</span> n<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> MIN_TRANSFER_STRIDE<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>        stride <span style="color:#f92672">=</span> MIN_TRANSFER_STRIDE<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果nextTable为null，那么创建扩容后的table[]，默认是2倍
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>nextTab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 初始化创建大小为2倍原有数组长度的数组
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[])</span><span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?,?&gt;[</span>n <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            nextTab <span style="color:#f92672">=</span> nt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable ex<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            sizeCtl <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">MAX_VALUE</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将创建的数组赋予nextTable成员变量，在此处被赋值，只有扩容期间此参数不为null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 说明是第一个扩容的线程,此后如果有其他线程调用put，那么也会进来帮忙
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        nextTable <span style="color:#f92672">=</span> nextTab<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 默认是旧table的大小，用于表示数组扩容进度
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// [0, transferIndex-1]表示还未分配到线程扩容的部分
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// [transferIndex， n-1]表示已经分配给某个线程正在扩容或已经扩容完成的部分
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        transferIndex <span style="color:#f92672">=</span> n<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> nextn <span style="color:#f92672">=</span> nextTab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建ForwardingNode，并赋值nextTab
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    ForwardingNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> fwd <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ForwardingNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>nextTab<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 结合下文：advance表示从i(transferIndex - 1)到bound位置过程中是否一直继续
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 表示扩容是否结束
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">boolean</span> finishing <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// i 表示为 遍历的下标，bound为遍历的边界
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// i = nextIndex - 1;bound = nextIndex - stride，拿不到任务两者都为0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> bound <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> f<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> fh<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>advance<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 以下三个分支，一个成功就会退出while循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> nextIndex<span style="color:#f92672">,</span> nextBound<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(--</span>i <span style="color:#f92672">&gt;=</span> bound <span style="color:#f92672">||</span> finishing<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>nextIndex <span style="color:#f92672">=</span> transferIndex<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 因为扩容分配给多个线程需要同步，使用CAS操作transferIndex
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 尝试为当前线程分配步长，CAS操作成功就表示拿到步长了。
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span>
-</span></span><span style="display:flex;"><span>                     <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> TRANSFERINDEX<span style="color:#f92672">,</span> nextIndex<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                      nextBound <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>nextIndex <span style="color:#f92672">&gt;</span> stride <span style="color:#f92672">?</span>
-</span></span><span style="display:flex;"><span>                                   nextIndex <span style="color:#f92672">-</span> stride <span style="color:#f92672">:</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 分配成功就修改bound和i，advance退出循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                bound <span style="color:#f92672">=</span> nextBound<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> nextIndex <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 至此i为负数，整个hashmap已经遍历完成了，准备扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 如果 i&lt;0 或i &gt;= 旧数组大小n 或 i + n &gt;= 新数组大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> i <span style="color:#f92672">&gt;=</span> n <span style="color:#f92672">||</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&gt;=</span> nextn<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果finishing = true说明扩容完成
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>finishing<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 将nextTable置为null，将
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                nextTable <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                table <span style="color:#f92672">=</span> nextTab<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                sizeCtl <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">-</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> SIZECTL<span style="color:#f92672">,</span> sc <span style="color:#f92672">=</span> sizeCtl<span style="color:#f92672">,</span> sc <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>sc <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> resizeStamp<span style="color:#f92672">(</span>n<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;&lt;</span> RESIZE_STAMP_SHIFT<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                finishing <span style="color:#f92672">=</span> advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> n<span style="color:#f92672">;</span> <span style="color:#75715e">// recheck before commit
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// table[i]迁移完毕，此位置放个ForwardingNode
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>f <span style="color:#f92672">=</span> tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">))</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            advance <span style="color:#f92672">=</span> casTabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> fwd<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 说明这个位置已经在迁移中了 fh = f.hash
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>fh <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> MOVED<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 对table[i]开始迁移
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">synchronized</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 先判断此位置有没有被其他线程修改
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> f<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> ln<span style="color:#f92672">,</span> hn<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果fh &gt; 0说明是链表
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>fh <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> runBit <span style="color:#f92672">=</span> fh <span style="color:#f92672">&amp;</span> n<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> lastRun <span style="color:#f92672">=</span> f<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span> p <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> p <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">&amp;</span> n<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 当b!=runBit时表明节点p后的全部节点的hashcode都相同
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>b <span style="color:#f92672">!=</span> runBit<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                                runBit <span style="color:#f92672">=</span> b<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                lastRun <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 和hashmap一致 hashcode &amp; n = 0就不平移，不等于就平移
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>runBit <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            ln <span style="color:#f92672">=</span> lastRun<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            hn <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            hn <span style="color:#f92672">=</span> lastRun<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            ln <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> f<span style="color:#f92672">;</span> p <span style="color:#f92672">!=</span> lastRun<span style="color:#f92672">;</span> p <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> ph <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">;</span> K pk <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">;</span> V pv <span style="color:#f92672">=</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 下面是将链表中的节点平移到新的数组中
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#75715e">// 这点hashmap是一致的，通过hashcode &amp; 数组长度来判断
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#75715e">// 如果需要平移，那么平移后的index = oldIndex + n
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>ph <span style="color:#f92672">&amp;</span> n<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                                ln <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>ph<span style="color:#f92672">,</span> pk<span style="color:#f92672">,</span> pv<span style="color:#f92672">,</span> ln<span style="color:#f92672">);</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> MIN_TRANSFER_STRIDE <span style="color:#f92672">=</span> 16;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容期间表示下一个数组的index</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">transient</span> <span style="color:#66d9ef">volatile</span> <span style="color:#66d9ef">int</span> transferIndex;
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 扩容的核心方法，参数原有的table和扩容后的table</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">transfer</span>(Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab, Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nextTab) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 定义数组长度和步长</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> n <span style="color:#f92672">=</span> tab.<span style="color:#a6e22e">length</span>, stride;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果CPU核数大于1，计算 n/(8*NCPU) &lt; 16成立 步长stride = 16</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 单核情况下，默认一个线程执行扩容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ((stride <span style="color:#f92672">=</span> (NCPU <span style="color:#f92672">&gt;</span> 1) <span style="color:#f92672">?</span> (n <span style="color:#f92672">&gt;&gt;&gt;</span> 3) <span style="color:#f92672">/</span> NCPU : n) <span style="color:#f92672">&lt;</span> MIN_TRANSFER_STRIDE)
+</span></span><span style="display:flex;"><span>        stride <span style="color:#f92672">=</span> MIN_TRANSFER_STRIDE;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果nextTable为null，那么创建扩容后的table[]，默认是2倍</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (nextTab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">@SuppressWarnings</span>(<span style="color:#e6db74">&#34;unchecked&#34;</span>)
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 初始化创建大小为2倍原有数组长度的数组</span>
+</span></span><span style="display:flex;"><span>            Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span>)<span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?</span>,<span style="color:#f92672">?&gt;[</span>n <span style="color:#f92672">&lt;&lt;</span> 1<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            nextTab <span style="color:#f92672">=</span> nt;
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">catch</span> (Throwable ex) {
+</span></span><span style="display:flex;"><span>            sizeCtl <span style="color:#f92672">=</span> Integer.<span style="color:#a6e22e">MAX_VALUE</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将创建的数组赋予nextTable成员变量，在此处被赋值，只有扩容期间此参数不为null</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 说明是第一个扩容的线程,此后如果有其他线程调用put，那么也会进来帮忙</span>
+</span></span><span style="display:flex;"><span>        nextTable <span style="color:#f92672">=</span> nextTab;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 默认是旧table的大小，用于表示数组扩容进度</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// [0, transferIndex-1]表示还未分配到线程扩容的部分</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// [transferIndex， n-1]表示已经分配给某个线程正在扩容或已经扩容完成的部分</span>
+</span></span><span style="display:flex;"><span>        transferIndex <span style="color:#f92672">=</span> n;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> nextn <span style="color:#f92672">=</span> nextTab.<span style="color:#a6e22e">length</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 创建ForwardingNode，并赋值nextTab</span>
+</span></span><span style="display:flex;"><span>    ForwardingNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> fwd <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ForwardingNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(nextTab);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 结合下文：advance表示从i(transferIndex - 1)到bound位置过程中是否一直继续</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 表示扩容是否结束</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> finishing <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// i 表示为 遍历的下标，bound为遍历的边界</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// i = nextIndex - 1;bound = nextIndex - stride，拿不到任务两者都为0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> 0, bound <span style="color:#f92672">=</span> 0;;) {
+</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> f; <span style="color:#66d9ef">int</span> fh;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (advance) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 以下三个分支，一个成功就会退出while循环</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> nextIndex, nextBound;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#f92672">--</span>i <span style="color:#f92672">&gt;=</span> bound <span style="color:#f92672">||</span> finishing)
+</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((nextIndex <span style="color:#f92672">=</span> transferIndex) <span style="color:#f92672">&lt;=</span> 0) {
+</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>1;
+</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 因为扩容分配给多个线程需要同步，使用CAS操作transferIndex</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 尝试为当前线程分配步长，CAS操作成功就表示拿到步长了。</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>
+</span></span><span style="display:flex;"><span>                     (<span style="color:#66d9ef">this</span>, TRANSFERINDEX, nextIndex,
+</span></span><span style="display:flex;"><span>                      nextBound <span style="color:#f92672">=</span> (nextIndex <span style="color:#f92672">&gt;</span> stride <span style="color:#f92672">?</span>
+</span></span><span style="display:flex;"><span>                                   nextIndex <span style="color:#f92672">-</span> stride : 0))) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 分配成功就修改bound和i，advance退出循环</span>
+</span></span><span style="display:flex;"><span>                bound <span style="color:#f92672">=</span> nextBound;
+</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> nextIndex <span style="color:#f92672">-</span> 1;
+</span></span><span style="display:flex;"><span>                advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 至此i为负数，整个hashmap已经遍历完成了，准备扩容</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果 i&lt;0 或i &gt;= 旧数组大小n 或 i + n &gt;= 新数组大小</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (i <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span> i <span style="color:#f92672">&gt;=</span> n <span style="color:#f92672">||</span> i <span style="color:#f92672">+</span> n <span style="color:#f92672">&gt;=</span> nextn) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> sc;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果finishing = true说明扩容完成</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (finishing) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 将nextTable置为null，将</span>
+</span></span><span style="display:flex;"><span>                nextTable <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                table <span style="color:#f92672">=</span> nextTab;
+</span></span><span style="display:flex;"><span>                sizeCtl <span style="color:#f92672">=</span> (n <span style="color:#f92672">&lt;&lt;</span> 1) <span style="color:#f92672">-</span> (n <span style="color:#f92672">&gt;&gt;&gt;</span> 1);
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>(<span style="color:#66d9ef">this</span>, SIZECTL, sc <span style="color:#f92672">=</span> sizeCtl, sc <span style="color:#f92672">-</span> 1)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> ((sc <span style="color:#f92672">-</span> 2) <span style="color:#f92672">!=</span> resizeStamp(n) <span style="color:#f92672">&lt;&lt;</span> RESIZE_STAMP_SHIFT)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>                finishing <span style="color:#f92672">=</span> advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                i <span style="color:#f92672">=</span> n; <span style="color:#75715e">// recheck before commit</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// table[i]迁移完毕，此位置放个ForwardingNode</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((f <span style="color:#f92672">=</span> tabAt(tab, i)) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>            advance <span style="color:#f92672">=</span> casTabAt(tab, i, <span style="color:#66d9ef">null</span>, fwd);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 说明这个位置已经在迁移中了 fh = f.hash</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> ((fh <span style="color:#f92672">=</span> f.<span style="color:#a6e22e">hash</span>) <span style="color:#f92672">==</span> MOVED)
+</span></span><span style="display:flex;"><span>            advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 对table[i]开始迁移</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">synchronized</span> (f) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 先判断此位置有没有被其他线程修改</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (tabAt(tab, i) <span style="color:#f92672">==</span> f) {
+</span></span><span style="display:flex;"><span>                    Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> ln, hn;
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 如果fh &gt; 0说明是链表</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (fh <span style="color:#f92672">&gt;=</span> 0) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> runBit <span style="color:#f92672">=</span> fh <span style="color:#f92672">&amp;</span> n;
+</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> lastRun <span style="color:#f92672">=</span> f;
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> f.<span style="color:#a6e22e">next</span>; p <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>; p <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> b <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">hash</span> <span style="color:#f92672">&amp;</span> n;
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 当b!=runBit时表明节点p后的全部节点的hashcode都相同</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> (b <span style="color:#f92672">!=</span> runBit) {
+</span></span><span style="display:flex;"><span>                                runBit <span style="color:#f92672">=</span> b;
+</span></span><span style="display:flex;"><span>                                lastRun <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 和hashmap一致 hashcode &amp; n = 0就不平移，不等于就平移</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> (runBit <span style="color:#f92672">==</span> 0) {
+</span></span><span style="display:flex;"><span>                            ln <span style="color:#f92672">=</span> lastRun;
+</span></span><span style="display:flex;"><span>                            hn <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                            hn <span style="color:#f92672">=</span> lastRun;
+</span></span><span style="display:flex;"><span>                            ln <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> f; p <span style="color:#f92672">!=</span> lastRun; p <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> ph <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">hash</span>; K pk <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">key</span>; V pv <span style="color:#f92672">=</span> p.<span style="color:#a6e22e">val</span>;
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 下面是将链表中的节点平移到新的数组中</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 这点hashmap是一致的，通过hashcode &amp; 数组长度来判断</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 如果需要平移，那么平移后的index = oldIndex + n</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> ((ph <span style="color:#f92672">&amp;</span> n) <span style="color:#f92672">==</span> 0)
+</span></span><span style="display:flex;"><span>                                ln <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(ph, pk, pv, ln);
 </span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                                hn <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>ph<span style="color:#f92672">,</span> pk<span style="color:#f92672">,</span> pv<span style="color:#f92672">,</span> hn<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>nextTab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> ln<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>nextTab<span style="color:#f92672">,</span> i <span style="color:#f92672">+</span> n<span style="color:#f92672">,</span> hn<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> fwd<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 下面是处理红黑树的迁移
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>f <span style="color:#66d9ef">instanceof</span> TreeBin<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> t <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;)</span>f<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> lo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> loTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> hi <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> hiTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> lc <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> hc <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> t<span style="color:#f92672">.</span><span style="color:#a6e22e">first</span><span style="color:#f92672">;</span> e <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> e <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> h <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeNode<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">,</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>h <span style="color:#f92672">&amp;</span> n<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> loTail<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                                    lo <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                                hn <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(ph, pk, pv, hn);
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        setTabAt(nextTab, i, ln);
+</span></span><span style="display:flex;"><span>                        setTabAt(nextTab, i <span style="color:#f92672">+</span> n, hn);
+</span></span><span style="display:flex;"><span>                        setTabAt(tab, i, fwd);
+</span></span><span style="display:flex;"><span>                        advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 下面是处理红黑树的迁移</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (f <span style="color:#66d9ef">instanceof</span> TreeBin) {
+</span></span><span style="display:flex;"><span>                        TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> t <span style="color:#f92672">=</span> (TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>)f;
+</span></span><span style="display:flex;"><span>                        TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> lo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>, loTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                        TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> hi <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>, hiTail <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">int</span> lc <span style="color:#f92672">=</span> 0, hc <span style="color:#f92672">=</span> 0;
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">for</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> e <span style="color:#f92672">=</span> t.<span style="color:#a6e22e">first</span>; e <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>; e <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">next</span>) {
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">int</span> h <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">hash</span>;
+</span></span><span style="display:flex;"><span>                            TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> p <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> TreeNode<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>                                (h, e.<span style="color:#a6e22e">key</span>, e.<span style="color:#a6e22e">val</span>, <span style="color:#66d9ef">null</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> ((h <span style="color:#f92672">&amp;</span> n) <span style="color:#f92672">==</span> 0) {
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">if</span> ((p.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> loTail) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                                    lo <span style="color:#f92672">=</span> p;
 </span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                                    loTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                loTail <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">++</span>lc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>p<span style="color:#f92672">.</span><span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> hiTail<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                                    hi <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                                    loTail.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                                loTail <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">++</span>lc;
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">if</span> ((p.<span style="color:#a6e22e">prev</span> <span style="color:#f92672">=</span> hiTail) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>)
+</span></span><span style="display:flex;"><span>                                    hi <span style="color:#f92672">=</span> p;
 </span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">else</span>
-</span></span><span style="display:flex;"><span>                                    hiTail<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                hiTail <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">++</span>hc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                        ln <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>lc <span style="color:#f92672">&lt;=</span> UNTREEIFY_THRESHOLD<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> untreeify<span style="color:#f92672">(</span>lo<span style="color:#f92672">)</span> <span style="color:#f92672">:</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">(</span>hc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>lo<span style="color:#f92672">)</span> <span style="color:#f92672">:</span> t<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        hn <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>hc <span style="color:#f92672">&lt;=</span> UNTREEIFY_THRESHOLD<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> untreeify<span style="color:#f92672">(</span>hi<span style="color:#f92672">)</span> <span style="color:#f92672">:</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">(</span>lc <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;(</span>hi<span style="color:#f92672">)</span> <span style="color:#f92672">:</span> t<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>nextTab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> ln<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>nextTab<span style="color:#f92672">,</span> i <span style="color:#f92672">+</span> n<span style="color:#f92672">,</span> hn<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        setTabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> i<span style="color:#f92672">,</span> fwd<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                        advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// tryPersize可以扩容指定大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">tryPresize</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> size<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 判断size是否超过MAXIMUM_CAPACITY &gt;&gt;&gt; 1，是size就是MAXIMUM_CAPACITY
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 否就调用tableSizeFor生成大于size的最小2此幂
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">&gt;=</span> <span style="color:#f92672">(</span>MAXIMUM_CAPACITY <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">))</span> <span style="color:#f92672">?</span> MAXIMUM_CAPACITY <span style="color:#f92672">:</span>
-</span></span><span style="display:flex;"><span>    tableSizeFor<span style="color:#f92672">(</span>size <span style="color:#f92672">+</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sizeCtl &lt; 0表示正在初始化或扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>sc <span style="color:#f92672">=</span> sizeCtl<span style="color:#f92672">)</span> <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab <span style="color:#f92672">=</span> table<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table = null，sizeCtl表示初始容量
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 选择sizeCtl和cap较大的作为数组大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            n <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>sc <span style="color:#f92672">&gt;</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">?</span> sc <span style="color:#f92672">:</span> c<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 尝试将sizeCtl设为-1表示正在初始化
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> SIZECTL<span style="color:#f92672">,</span> sc<span style="color:#f92672">,</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>table <span style="color:#f92672">==</span> tab<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">@SuppressWarnings</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;unchecked&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[])</span><span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?,?&gt;[</span>n<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>                        table <span style="color:#f92672">=</span> nt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//sizeCtl = 0.75n，即扩容阈值
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                        sc <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    sizeCtl <span style="color:#f92672">=</span> sc<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果c小于等于sc或数组大小超过max，则break
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">&lt;=</span> sc <span style="color:#f92672">||</span> n <span style="color:#f92672">&gt;=</span> MAXIMUM_CAPACITY<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tab <span style="color:#f92672">==</span> table<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> rs <span style="color:#f92672">=</span> resizeStamp<span style="color:#f92672">(</span>n<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// sc &lt; 0说明正在扩容，那么帮助扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sc <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> nt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>sc <span style="color:#f92672">&gt;&gt;&gt;</span> RESIZE_STAMP_SHIFT<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> rs <span style="color:#f92672">||</span> sc <span style="color:#f92672">==</span> rs <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">||</span>
-</span></span><span style="display:flex;"><span>                    sc <span style="color:#f92672">==</span> rs <span style="color:#f92672">+</span> MAX_RESIZERS <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>nt <span style="color:#f92672">=</span> nextTable<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span>
-</span></span><span style="display:flex;"><span>                    transferIndex <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 将sc加1，sc表示正在进行扩容帮忙的线程数量
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> SIZECTL<span style="color:#f92672">,</span> sc<span style="color:#f92672">,</span> sc <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>                    transfer<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> nt<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果没有初始化或者正在扩容，那么开启第一次扩容
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>U<span style="color:#f92672">.</span><span style="color:#a6e22e">compareAndSwapInt</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">,</span> SIZECTL<span style="color:#f92672">,</span> sc<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>                                         <span style="color:#f92672">(</span>rs <span style="color:#f92672">&lt;&lt;</span> RESIZE_STAMP_SHIFT<span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>                transfer<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                                    hiTail.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                                hiTail <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>                                <span style="color:#f92672">++</span>hc;
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                        ln <span style="color:#f92672">=</span> (lc <span style="color:#f92672">&lt;=</span> UNTREEIFY_THRESHOLD) <span style="color:#f92672">?</span> untreeify(lo) :
+</span></span><span style="display:flex;"><span>                        (hc <span style="color:#f92672">!=</span> 0) <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(lo) : t;
+</span></span><span style="display:flex;"><span>                        hn <span style="color:#f92672">=</span> (hc <span style="color:#f92672">&lt;=</span> UNTREEIFY_THRESHOLD) <span style="color:#f92672">?</span> untreeify(hi) :
+</span></span><span style="display:flex;"><span>                        (lc <span style="color:#f92672">!=</span> 0) <span style="color:#f92672">?</span> <span style="color:#66d9ef">new</span> TreeBin<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span>(hi) : t;
+</span></span><span style="display:flex;"><span>                        setTabAt(nextTab, i, ln);
+</span></span><span style="display:flex;"><span>                        setTabAt(nextTab, i <span style="color:#f92672">+</span> n, hn);
+</span></span><span style="display:flex;"><span>                        setTabAt(tab, i, fwd);
+</span></span><span style="display:flex;"><span>                        advance <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// tryPersize可以扩容指定大小</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">tryPresize</span>(<span style="color:#66d9ef">int</span> size) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 判断size是否超过MAXIMUM_CAPACITY &gt;&gt;&gt; 1，是size就是MAXIMUM_CAPACITY</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 否就调用tableSizeFor生成大于size的最小2此幂</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> (size <span style="color:#f92672">&gt;=</span> (MAXIMUM_CAPACITY <span style="color:#f92672">&gt;&gt;&gt;</span> 1)) <span style="color:#f92672">?</span> MAXIMUM_CAPACITY :
+</span></span><span style="display:flex;"><span>    tableSizeFor(size <span style="color:#f92672">+</span> (size <span style="color:#f92672">&gt;&gt;&gt;</span> 1) <span style="color:#f92672">+</span> 1);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> sc;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// sizeCtl &lt; 0表示正在初始化或扩容</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((sc <span style="color:#f92672">=</span> sizeCtl) <span style="color:#f92672">&gt;=</span> 0) {
+</span></span><span style="display:flex;"><span>        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab <span style="color:#f92672">=</span> table; <span style="color:#66d9ef">int</span> n;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果table = null，sizeCtl表示初始容量</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (tab <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> (n <span style="color:#f92672">=</span> tab.<span style="color:#a6e22e">length</span>) <span style="color:#f92672">==</span> 0) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 选择sizeCtl和cap较大的作为数组大小</span>
+</span></span><span style="display:flex;"><span>            n <span style="color:#f92672">=</span> (sc <span style="color:#f92672">&gt;</span> c) <span style="color:#f92672">?</span> sc : c;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 尝试将sizeCtl设为-1表示正在初始化</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>(<span style="color:#66d9ef">this</span>, SIZECTL, sc, <span style="color:#f92672">-</span>1)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> (table <span style="color:#f92672">==</span> tab) {
+</span></span><span style="display:flex;"><span>                        <span style="color:#a6e22e">@SuppressWarnings</span>(<span style="color:#e6db74">&#34;unchecked&#34;</span>)
+</span></span><span style="display:flex;"><span>                        Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nt <span style="color:#f92672">=</span> (Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span>)<span style="color:#66d9ef">new</span> Node<span style="color:#f92672">&lt;?</span>,<span style="color:#f92672">?&gt;[</span>n<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>                        table <span style="color:#f92672">=</span> nt;
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">//sizeCtl = 0.75n，即扩容阈值</span>
+</span></span><span style="display:flex;"><span>                        sc <span style="color:#f92672">=</span> n <span style="color:#f92672">-</span> (n <span style="color:#f92672">&gt;&gt;&gt;</span> 2);
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">finally</span> {
+</span></span><span style="display:flex;"><span>                    sizeCtl <span style="color:#f92672">=</span> sc;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果c小于等于sc或数组大小超过max，则break</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (c <span style="color:#f92672">&lt;=</span> sc <span style="color:#f92672">||</span> n <span style="color:#f92672">&gt;=</span> MAXIMUM_CAPACITY)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (tab <span style="color:#f92672">==</span> table) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> rs <span style="color:#f92672">=</span> resizeStamp(n);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// sc &lt; 0说明正在扩容，那么帮助扩容</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (sc <span style="color:#f92672">&lt;</span> 0) {
+</span></span><span style="display:flex;"><span>                Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> nt;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> ((sc <span style="color:#f92672">&gt;&gt;&gt;</span> RESIZE_STAMP_SHIFT) <span style="color:#f92672">!=</span> rs <span style="color:#f92672">||</span> sc <span style="color:#f92672">==</span> rs <span style="color:#f92672">+</span> 1 <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>                    sc <span style="color:#f92672">==</span> rs <span style="color:#f92672">+</span> MAX_RESIZERS <span style="color:#f92672">||</span> (nt <span style="color:#f92672">=</span> nextTable) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>                    transferIndex <span style="color:#f92672">&lt;=</span> 0)
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 将sc加1，sc表示正在进行扩容帮忙的线程数量</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>(<span style="color:#66d9ef">this</span>, SIZECTL, sc, sc <span style="color:#f92672">+</span> 1))
+</span></span><span style="display:flex;"><span>                    transfer(tab, nt);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果没有初始化或者正在扩容，那么开启第一次扩容</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (U.<span style="color:#a6e22e">compareAndSwapInt</span>(<span style="color:#66d9ef">this</span>, SIZECTL, sc,
+</span></span><span style="display:flex;"><span>                                         (rs <span style="color:#f92672">&lt;&lt;</span> RESIZE_STAMP_SHIFT) <span style="color:#f92672">+</span> 2))
+</span></span><span style="display:flex;"><span>                transfer(tab, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <ol>
 <li>
@@ -962,35 +962,35 @@ code.has-jax {
 </blockquote>
 <hr>
 <h3 id="get">get<a href="#get" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>Object key<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;[]</span> tab<span style="color:#f92672">;</span> Node<span style="color:#f92672">&lt;</span>K<span style="color:#f92672">,</span>V<span style="color:#f92672">&gt;</span> e<span style="color:#f92672">,</span> p<span style="color:#f92672">;</span> <span style="color:#66d9ef">int</span> n<span style="color:#f92672">,</span> eh<span style="color:#f92672">;</span> K ek<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算key的hashcode
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> h <span style="color:#f92672">=</span> spread<span style="color:#f92672">(</span>key<span style="color:#f92672">.</span><span style="color:#a6e22e">hashCode</span><span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果table不为空且table[i]的值不为null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>tab <span style="color:#f92672">=</span> table<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">=</span> tab<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">(</span>e <span style="color:#f92672">=</span> tabAt<span style="color:#f92672">(</span>tab<span style="color:#f92672">,</span> <span style="color:#f92672">(</span>n <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&amp;</span> h<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果hashcode相同
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>eh <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> h<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 并且key相同
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>ek <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>ek<span style="color:#f92672">)))</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 返回该位置的value
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">return</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// eh=-1说明当前节点时ForwardingNode节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// eh=-2说明是TreeBin
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>     	<span style="color:#75715e">// 不同类型调用各自的find方法
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>eh <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">find</span><span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> key<span style="color:#f92672">))</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> p<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// eh&gt;=0,说明该节点下挂的是链表，直接遍历链表
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>e <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>e<span style="color:#f92672">.</span><span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">((</span>ek <span style="color:#f92672">=</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">key</span><span style="color:#f92672">)</span> <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> <span style="color:#f92672">(</span>ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>ek<span style="color:#f92672">))))</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> e<span style="color:#f92672">.</span><span style="color:#a6e22e">val</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果查不到就返回null
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> V <span style="color:#a6e22e">get</span>(Object key) {
+</span></span><span style="display:flex;"><span>    Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;[]</span> tab; Node<span style="color:#f92672">&lt;</span>K,V<span style="color:#f92672">&gt;</span> e, p; <span style="color:#66d9ef">int</span> n, eh; K ek;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算key的hashcode</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> h <span style="color:#f92672">=</span> spread(key.<span style="color:#a6e22e">hashCode</span>());
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果table不为空且table[i]的值不为null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> ((tab <span style="color:#f92672">=</span> table) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> (n <span style="color:#f92672">=</span> tab.<span style="color:#a6e22e">length</span>) <span style="color:#f92672">&gt;</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>        (e <span style="color:#f92672">=</span> tabAt(tab, (n <span style="color:#f92672">-</span> 1) <span style="color:#f92672">&amp;</span> h)) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果hashcode相同</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((eh <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">hash</span>) <span style="color:#f92672">==</span> h) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 并且key相同</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> ((ek <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">key</span>) <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> (ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key.<span style="color:#a6e22e">equals</span>(ek)))
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 返回该位置的value</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> e.<span style="color:#a6e22e">val</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// eh=-1说明当前节点时ForwardingNode节点</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// eh=-2说明是TreeBin</span>
+</span></span><span style="display:flex;"><span>     	<span style="color:#75715e">// 不同类型调用各自的find方法</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (eh <span style="color:#f92672">&lt;</span> 0)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> (p <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">find</span>(h, key)) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">?</span> p.<span style="color:#a6e22e">val</span> : <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// eh&gt;=0,说明该节点下挂的是链表，直接遍历链表</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> ((e <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">next</span>) <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (e.<span style="color:#a6e22e">hash</span> <span style="color:#f92672">==</span> h <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                ((ek <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">key</span>) <span style="color:#f92672">==</span> key <span style="color:#f92672">||</span> (ek <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> key.<span style="color:#a6e22e">equals</span>(ek))))
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">return</span> e.<span style="color:#a6e22e">val</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果查不到就返回null</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>为什么get()方法不需要加锁？</p>
 <p>因为Node类的<code>属性value被volatile修饰</code>，保证线程间的可见性。因为是无锁的，所以性能能够大幅提升。</p>

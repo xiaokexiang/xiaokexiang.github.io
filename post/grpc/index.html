@@ -726,54 +726,54 @@ code.has-jax {
 <p>编译后的文件在target目录下，如上图所示。</p>
 </blockquote>
 <h4 id="服务端">服务端<a href="#服务端" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcServer</span> <span style="color:#66d9ef">extends</span> HelloGrpc<span style="color:#f92672">.</span><span style="color:#a6e22e">HelloImplBase</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcServer</span> <span style="color:#66d9ef">extends</span> HelloGrpc.<span style="color:#a6e22e">HelloImplBase</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sayHello</span><span style="color:#f92672">(</span>HelloRequest request<span style="color:#f92672">,</span> StreamObserver<span style="color:#f92672">&lt;</span>HelloResponse<span style="color:#f92672">&gt;</span> responseObserver<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        HelloResponse message <span style="color:#f92672">=</span> HelloResponse<span style="color:#f92672">.</span><span style="color:#a6e22e">newBuilder</span><span style="color:#f92672">().</span><span style="color:#a6e22e">setMessage</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;你发送的信息是: &#34;</span> <span style="color:#f92672">+</span> request<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">()).</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        responseObserver<span style="color:#f92672">.</span><span style="color:#a6e22e">onNext</span><span style="color:#f92672">(</span>message<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        responseObserver<span style="color:#f92672">.</span><span style="color:#a6e22e">onCompleted</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">sayHello</span>(HelloRequest request, StreamObserver<span style="color:#f92672">&lt;</span>HelloResponse<span style="color:#f92672">&gt;</span> responseObserver) {
+</span></span><span style="display:flex;"><span>        HelloResponse message <span style="color:#f92672">=</span> HelloResponse.<span style="color:#a6e22e">newBuilder</span>().<span style="color:#a6e22e">setMessage</span>(<span style="color:#e6db74">&#34;你发送的信息是: &#34;</span> <span style="color:#f92672">+</span> request.<span style="color:#a6e22e">getName</span>()).<span style="color:#a6e22e">build</span>();
+</span></span><span style="display:flex;"><span>        responseObserver.<span style="color:#a6e22e">onNext</span>(message);
+</span></span><span style="display:flex;"><span>        responseObserver.<span style="color:#a6e22e">onCompleted</span>();
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#66d9ef">throws</span> IOException<span style="color:#f92672">,</span> InterruptedException <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        Server server <span style="color:#f92672">=</span> ServerBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">forPort</span><span style="color:#f92672">(</span><span style="color:#ae81ff">10010</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">addService</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> GrpcServer<span style="color:#f92672">())</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">()</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">.</span><span style="color:#a6e22e">start</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;grpc服务端已启动，监听端口: 10010&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        server<span style="color:#f92672">.</span><span style="color:#a6e22e">awaitTermination</span><span style="color:#f92672">();</span> <span style="color:#75715e">// wait等待请求
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) <span style="color:#66d9ef">throws</span> IOException, InterruptedException {
+</span></span><span style="display:flex;"><span>        Server server <span style="color:#f92672">=</span> ServerBuilder.<span style="color:#a6e22e">forPort</span>(10010)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">addService</span>(<span style="color:#66d9ef">new</span> GrpcServer())
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">build</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">start</span>();
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;grpc服务端已启动，监听端口: 10010&#34;</span>);
+</span></span><span style="display:flex;"><span>        server.<span style="color:#a6e22e">awaitTermination</span>(); <span style="color:#75715e">// wait等待请求</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h4 id="客户端">客户端<a href="#客户端" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcClient</span> <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">GrpcClient</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ManagedChannel channel<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> ManagedChannel channel;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> HelloGrpc<span style="color:#f92672">.</span><span style="color:#a6e22e">HelloBlockingStub</span> stub<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">final</span> HelloGrpc.<span style="color:#a6e22e">HelloBlockingStub</span> stub;
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">GrpcClient</span><span style="color:#f92672">(</span>String host<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> port<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        ManagedChannel channel <span style="color:#f92672">=</span> ManagedChannelBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">forAddress</span><span style="color:#f92672">(</span>host<span style="color:#f92672">,</span> port<span style="color:#f92672">).</span><span style="color:#a6e22e">usePlaintext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">channel</span> <span style="color:#f92672">=</span> channel<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">stub</span> <span style="color:#f92672">=</span> HelloGrpc<span style="color:#f92672">.</span><span style="color:#a6e22e">newBlockingStub</span><span style="color:#f92672">(</span>channel<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">GrpcClient</span>(String host, <span style="color:#66d9ef">int</span> port) {
+</span></span><span style="display:flex;"><span>        ManagedChannel channel <span style="color:#f92672">=</span> ManagedChannelBuilder.<span style="color:#a6e22e">forAddress</span>(host, port).<span style="color:#a6e22e">usePlaintext</span>().<span style="color:#a6e22e">build</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">channel</span> <span style="color:#f92672">=</span> channel;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">stub</span> <span style="color:#f92672">=</span> HelloGrpc.<span style="color:#a6e22e">newBlockingStub</span>(channel);
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">sayHello</span><span style="color:#f92672">(</span>String name<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        HelloRequest request <span style="color:#f92672">=</span> HelloRequest<span style="color:#f92672">.</span><span style="color:#a6e22e">newBuilder</span><span style="color:#f92672">().</span><span style="color:#a6e22e">setName</span><span style="color:#f92672">(</span>name<span style="color:#f92672">).</span><span style="color:#a6e22e">build</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        HelloResponse response <span style="color:#f92672">=</span> stub<span style="color:#f92672">.</span><span style="color:#a6e22e">sayHello</span><span style="color:#f92672">(</span>request<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessage</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">sayHello</span>(String name) {
+</span></span><span style="display:flex;"><span>        HelloRequest request <span style="color:#f92672">=</span> HelloRequest.<span style="color:#a6e22e">newBuilder</span>().<span style="color:#a6e22e">setName</span>(name).<span style="color:#a6e22e">build</span>();
+</span></span><span style="display:flex;"><span>        HelloResponse response <span style="color:#f92672">=</span> stub.<span style="color:#a6e22e">sayHello</span>(request);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> response.<span style="color:#a6e22e">getMessage</span>();
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">shutdown</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        channel<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">shutdown</span>() {
+</span></span><span style="display:flex;"><span>        channel.<span style="color:#a6e22e">shutdown</span>();
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        GrpcClient client <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GrpcClient<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;127.0.0.1&#34;</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">10010</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        String message <span style="color:#f92672">=</span> client<span style="color:#f92672">.</span><span style="color:#a6e22e">sayHello</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello World&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;从服务端获取返回数据: &#34;</span> <span style="color:#f92672">+</span> message<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        client<span style="color:#f92672">.</span><span style="color:#a6e22e">shutdown</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        GrpcClient client <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> GrpcClient(<span style="color:#e6db74">&#34;127.0.0.1&#34;</span>, 10010);
+</span></span><span style="display:flex;"><span>        String message <span style="color:#f92672">=</span> client.<span style="color:#a6e22e">sayHello</span>(<span style="color:#e6db74">&#34;Hello World&#34;</span>);
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;从服务端获取返回数据: &#34;</span> <span style="color:#f92672">+</span> message);
+</span></span><span style="display:flex;"><span>        client.<span style="color:#a6e22e">shutdown</span>();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h4 id="基于postman的客户端">基于postman的客户端<a href="#基于postman的客户端" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p><img src="https://image.leejay.top/FvBldfku-Txj6XE9qKpS3X5-OA5C" alt=""></p>
 

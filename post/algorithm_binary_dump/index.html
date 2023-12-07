@@ -358,67 +358,67 @@ code.has-jax {
 <ul>
 <li>我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 计算当前index的父节点index
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">build</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算队尾节点index
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从队尾开始往前比较,队首不需要比较
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> last<span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> p <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果当前节点小于父节点，那么继续循环比较
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 交换位置和index
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>p<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>c<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            c <span style="color:#f92672">=</span> p<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            p <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>c<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 跳出循环的条件:parentIndex&lt;0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 计算当前index的父节点index</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span>(<span style="color:#66d9ef">int</span> c) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> 2 <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">?</span> (c <span style="color:#f92672">-</span> 1) <span style="color:#f92672">&gt;&gt;&gt;</span> 1 : (c <span style="color:#f92672">-</span> 2) <span style="color:#f92672">&gt;&gt;&gt;</span> 1;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">build</span>(<span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 计算队尾节点index</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从队尾开始往前比较,队首不需要比较</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> last; i <span style="color:#f92672">&gt;</span> 0; i<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> i;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> p <span style="color:#f92672">=</span> prev(c);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果当前节点小于父节点，那么继续循环比较</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">]</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 交换位置和index</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>p<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>p<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>c<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>            c <span style="color:#f92672">=</span> p;
+</span></span><span style="display:flex;"><span>            p <span style="color:#f92672">=</span> prev(c);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 跳出循环的条件:parentIndex&lt;0</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">&lt;</span> 0) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>该方法时间复杂度：我们假设数组有<code>n</code>个元素，那么一共需要判断<code>n-1</code>个元素，每个元素最多交换<code>logn</code>次(即树高度)，所以时间复杂度为：<code>O(nlogn)</code>。</p>
 </blockquote>
 <ul>
 <li>从非叶子节点<code>(倒数第二层)</code>最后一个节点开始倒序遍历，让当前节点依次和它下面的子节点比较，最小元素作为父节点，直到堆顶。</li>
 </ul>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">buildFast</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从非叶子节点开始遍历，从后往前遍历
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span> i <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i<span style="color:#f92672">--)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 遍历查找当前index的左右节点是否都小于当前节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 退出条件：当前节点的右子节点index超过数组大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">while</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;</span> size<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> le <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 左右子节点比较大小
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">],</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果当前节点大于子节点中的最小节点，那么需要移位
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> min<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 继续判断直到左右节点溢出
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            k <span style="color:#f92672">=</span> rt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">buildFast</span>(<span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 从非叶子节点开始遍历，从后往前遍历</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> (size <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;&gt;&gt;</span> 1) <span style="color:#f92672">-</span> 1; i <span style="color:#f92672">&gt;=</span> 0; i<span style="color:#f92672">--</span>) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> i;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 遍历查找当前index的左右节点是否都小于当前节点</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 退出条件：当前节点的右子节点index超过数组大小</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">while</span> (k <span style="color:#f92672">&lt;</span> size) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> le <span style="color:#f92672">=</span> (k <span style="color:#f92672">&lt;&lt;</span> 1) <span style="color:#f92672">+</span> 1;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> 1;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 左右子节点比较大小</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">min</span>(array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span>, array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果当前节点大于子节点中的最小节点，那么需要移位</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> min) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min;
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span>) {
+</span></span><span style="display:flex;"><span>                    array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                    array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 继续判断直到左右节点溢出</span>
+</span></span><span style="display:flex;"><span>            k <span style="color:#f92672">=</span> rt;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>先说结论再证明，该方法时间复杂度：<code>O(n)</code>。</p>
 <p>基于第二种构建思路可知：<code>同一层</code>的节点的<code>最多交换次数是相同</code>的，最后一层的<code>叶子节点</code>不需要执行交换，因为它的下面没有节点了。时间复杂度即为：<code>O(sum(交换次数)) = O(每层节点数 * 该层节点的最多交换次数)</code>。</p>
@@ -440,18 +440,18 @@ $sum(n) = n - log2n - 1$</li>
 <hr>
 <h4 id="添加">添加<a href="#添加" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>二叉堆的添加，都是将<code>元素添加到队尾</code>，因为此时数组已经是符合二叉堆要求的最小二叉堆，所以只需要处理新添加的元素，和新加元素的所有父节点比较替换。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 我们先使用System.arraycopy复制原有数据并将新元素加入
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">arraycopy</span><span style="color:#f92672">(</span>array<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> arr<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> size<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    arr<span style="color:#f92672">[</span>size<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> i<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> siftUp<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取当前index的父节点index
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> c<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">?</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#f92672">(</span>c <span style="color:#f92672">-</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">add</span>(<span style="color:#66d9ef">int</span> i) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 我们先使用System.arraycopy复制原有数据并将新元素加入</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">+</span> 1<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">arraycopy</span>(array, 0, arr, 0, size);
+</span></span><span style="display:flex;"><span>    arr<span style="color:#f92672">[</span>size<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> i;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> siftUp(arr);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 获取当前index的父节点index</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">prev</span>(<span style="color:#66d9ef">int</span> c) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> c <span style="color:#f92672">%</span> 2 <span style="color:#f92672">!=</span> 0 <span style="color:#f92672">?</span> (c <span style="color:#f92672">-</span> 1) <span style="color:#f92672">&gt;&gt;&gt;</span> 1 : (c <span style="color:#f92672">-</span> 2) <span style="color:#f92672">&gt;&gt;&gt;</span> 1;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 从堆底往上替换
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 时间复杂度： O(logn)
@@ -459,23 +459,23 @@ $sum(n) = n - log2n - 1$</li>
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * @param array 默认新增元素在队尾
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * @return 添加后的最小二叉堆
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftUp</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取新加入元素的index,即队尾
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> prev<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只要父节点的index&gt; 0，说明此时还存在父节点或爷节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>prev <span style="color:#f92672">=</span> prev<span style="color:#f92672">(</span>last<span style="color:#f92672">))</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 只要当前节点小于父节点的值，那么就交换
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>prev<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>last<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将当前节点的index换为父节点的index，继续循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        last <span style="color:#f92672">=</span> prev<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftUp</span>(<span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取新加入元素的index,即队尾</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> last <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span> <span style="color:#f92672">-</span> 1;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> prev;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 只要父节点的index&gt; 0，说明此时还存在父节点或爷节点</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((prev <span style="color:#f92672">=</span> prev(last)) <span style="color:#f92672">&gt;</span> 0) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 只要当前节点小于父节点的值，那么就交换</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">]</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>prev<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>prev<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>last<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将当前节点的index换为父节点的index，继续循环</span>
+</span></span><span style="display:flex;"><span>        last <span style="color:#f92672">=</span> prev;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>无论数组大小是多少，只需要处理新加入那个的节点，并且该元素最多交换<code>logn</code>次（即树高），时间复杂度为：O(1 * logn) = <code>O(logn)</code>。</p>
 </blockquote>
@@ -485,16 +485,16 @@ $sum(n) = n - log2n - 1$</li>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 移除队首元素，将队尾元素移到队首，再重新构建
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">delete</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将队尾移到队首
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    array<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">arraycopy</span><span style="color:#f92672">(</span>array<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> arr<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> size <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    siftDown<span style="color:#f92672">(</span>arr<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> first<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">delete</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> first <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> arr <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> 1<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 将队尾移到队首</span>
+</span></span><span style="display:flex;"><span>    array<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>size <span style="color:#f92672">-</span> 1<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">arraycopy</span>(array, 0, arr, 0, size <span style="color:#f92672">-</span> 1);
+</span></span><span style="display:flex;"><span>    siftDown(arr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> first;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span><span style="color:#75715e">/**
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 从堆顶往堆底遍历，依次和左右子节点中较小的交换
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * 同样的从上往下替换，最多处理O(树高)次 -&gt; O(logn)
@@ -503,36 +503,36 @@ $sum(n) = n - log2n - 1$</li>
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * @param index 被删除的元素index
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  * @return 删除后的最小二叉堆
 </span></span></span><span style="display:flex;"><span><span style="color:#75715e">  */</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftDown</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> index<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> index<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> le<span style="color:#f92672">,</span> rt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 只要当前节点的左子节点小于size就继续循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">while</span> <span style="color:#f92672">((</span>le <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> size<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 存在左节点没越界，但右节点越界情况
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 此时当前节点只有一个左节点，需要当前节点和左节点比较
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">((</span>rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">)</span> <span style="color:#f92672">&gt;=</span> size <span style="color:#f92672">&amp;&amp;</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            k <span style="color:#f92672">=</span> le<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 此时说明左右节点都存在
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math<span style="color:#f92672">.</span><span style="color:#a6e22e">min</span><span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">],</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">];</span>
-</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 注意这里的index要和左右子节点中较小的交换
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">])</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                k <span style="color:#f92672">=</span> rt<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                k <span style="color:#f92672">=</span> le<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> <span style="color:#a6e22e">siftDown</span>(<span style="color:#66d9ef">int</span> index, <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> array) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> k <span style="color:#f92672">=</span> index;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> size <span style="color:#f92672">=</span> array.<span style="color:#a6e22e">length</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> le, rt;
+</span></span><span style="display:flex;"><span>     <span style="color:#75715e">// 只要当前节点的左子节点小于size就继续循环</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">while</span> ((le <span style="color:#f92672">=</span> (k <span style="color:#f92672">&lt;&lt;</span> 1) <span style="color:#f92672">+</span> 1) <span style="color:#f92672">&lt;</span> size) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 存在左节点没越界，但右节点越界情况</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 此时当前节点只有一个左节点，需要当前节点和左节点比较</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> ((rt <span style="color:#f92672">=</span> le <span style="color:#f92672">+</span> 1) <span style="color:#f92672">&gt;=</span> size <span style="color:#f92672">&amp;&amp;</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>            k <span style="color:#f92672">=</span> le;
+</span></span><span style="display:flex;"><span>        } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 此时说明左右节点都存在</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> min <span style="color:#f92672">=</span> Math.<span style="color:#a6e22e">min</span>(array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span>, array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> temp <span style="color:#f92672">=</span> array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            array<span style="color:#f92672">[</span>k<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> min;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 注意这里的index要和左右子节点中较小的交换</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">&gt;</span> array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span>) {
+</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>rt<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>                k <span style="color:#f92672">=</span> rt;
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                array<span style="color:#f92672">[</span>le<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> temp;
+</span></span><span style="display:flex;"><span>                k <span style="color:#f92672">=</span> le;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> array;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>只需要处理<code>移到队首的原队尾元素</code>这一个元素，并最多交换<code>logn</code>次，所以删除的时间复杂度也是<code>O(logn)</code>。</p>
 </blockquote>

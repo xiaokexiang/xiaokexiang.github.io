@@ -7,23 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Mon, 14 Dec 2020 17:58:49 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/netty/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 14 Dec 2020 17:58:49 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/categories/netty/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Netty框架入门</title>
       <link>https://leejay.top/post/netty/</link>
       <pubDate>Mon, 14 Dec 2020 17:58:49 +0800</pubDate>
-      
       <guid>https://leejay.top/post/netty/</guid>
-      <description>Netty OIO：最开始表示为旧的输入/输出（Old I/O），后又可以理解为阻塞输入/输出（Block I/O）。
-NIO：最开始表示为新的输入/输出（New I/O），后又可以理解为非阻塞输入/输出（Non-Block I/O）。
-核心组件 组件概览 Channel 基于Socket的进一步封装，降低了Socket的复杂度。包含众多的实现：NioSocketChannel、NioServerSocketChannel等。
-EventLoop Netty的核心抽象，用于处理连接的生命周期中所发生的事件。
-一个EventLoopGroup包含一个或多个EventLoop。 一个EventLoop在其生命周期中只和一个Thread绑定。该EventLoop处理的I/O都在该Thread上被处理。 一个Channel在其生命周期中只会被注册到一个EventLoop中。 一个EventLoop可以被分配个一个或多个Channel。 EventLoop执行任务时，会先判断当前执行任务的线程是否是当前EventLoop的绑定线程，不是则入队等待下一次处理。 bootstrap.handle(new ChannelInitializer&amp;lt;SocketChannel&amp;gt;() { @Override protected void initChannel(SocketChannel ch) throws Exception { // 通过channel绑定的eventLoop来实现调度任务 ch.eventLoop().scheduleAtFixedRate( () -&amp;gt; log.info(&amp;#34;do something ...&amp;#34;), 1L, 1L, TimeUnit.SECONDS); }); 使用Channel绑定的EventLoop实现定时任务调度。
-ChannelFuture 因为Netty的操作都是异步的，基于Future的ChannelFuture的接口，添加ChannelFutureListener来实现某个操作完成时被通知。
-同属于一个channel的操作都会被保证以它们被调用的顺序来执行。
-ChannelHandler 用于处理所有进出站的数据的事件处理器。实现类包括ChannelInboundHandler、ChannelOutboundHandler。
-public interface ChannelHandler {} public interface ChannelInboundHandler extends ChannelHandler {} public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implements ChannelInboundHandler {} public abstract class SimpleChannelInboundHandler&amp;lt;I&amp;gt; extends ChannelInboundHandlerAdapter {} ChannelPipeline 用于存储ChannelHandler链的容器。在应用程序初始化时（BootStrap引导）通过ChannelInitializer将自定义的ChannelHandler注册到ChannelPipeline中。</description>
+      <description>Netty OIO：最开始表示为旧的输入/输出（Old I/O），后又可以理解为阻塞输入/输出（Block I/O）。&#xA;NIO：最开始表示为新的输入/输出（New I/O），后又可以理解为非阻塞输入/输出（Non-Block I/O）。&#xA;核心组件 组件概览 Channel 基于Socket的进一步封装，降低了Socket的复杂度。包含众多的实现：NioSocketChannel、NioServerSocketChannel等。&#xA;EventLoop Netty的核心抽象，用于处理连接的生命周期中所发生的事件。&#xA;一个EventLoopGroup包含一个或多个EventLoop。 一个EventLoop在其生命周期中只和一个Thread绑定。该EventLoop处理的I/O都在该Thread上被处理。 一个Channel在其生命周期中只会被注册到一个EventLoop中。 一个EventLoop可以被分配个一个或多个Channel。 EventLoop执行任务时，会先判断当前执行任务的线程是否是当前EventLoop的绑定线程，不是则入队等待下一次处理。 bootstrap.handle(new ChannelInitializer&amp;lt;SocketChannel&amp;gt;() { @Override protected void initChannel(SocketChannel ch) throws Exception { // 通过channel绑定的eventLoop来实现调度任务 ch.eventLoop().scheduleAtFixedRate( () -&amp;gt; log.info(&amp;#34;do something ...&amp;#34;), 1L, 1L, TimeUnit.SECONDS); }); 使用Channel绑定的EventLoop实现定时任务调度。&#xA;ChannelFuture 因为Netty的操作都是异步的，基于Future的ChannelFuture的接口，添加ChannelFutureListener来实现某个操作完成时被通知。&#xA;同属于一个channel的操作都会被保证以它们被调用的顺序来执行。&#xA;ChannelHandler 用于处理所有进出站的数据的事件处理器。实现类包括ChannelInboundHandler、ChannelOutboundHandler。&#xA;public interface ChannelHandler {} public interface ChannelInboundHandler extends ChannelHandler {} public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implements ChannelInboundHandler {} public abstract class SimpleChannelInboundHandler&amp;lt;I&amp;gt; extends ChannelInboundHandlerAdapter {} ChannelPipeline 用于存储ChannelHandler链的容器。在应用程序初始化时（BootStrap引导）通过ChannelInitializer将自定义的ChannelHandler注册到ChannelPipeline中。</description>
     </item>
-    
   </channel>
 </rss>

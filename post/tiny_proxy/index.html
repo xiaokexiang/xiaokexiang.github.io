@@ -330,59 +330,59 @@ code.has-jax {
 </span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/dependency&gt;</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Slf4j</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RestTemplateConfiguration</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RestTemplateConfiguration</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${proxy.switch:off}&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Boolean proxySwitch<span style="color:#f92672">;</span> <span style="color:#75715e">// // 是否开启代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${proxy.url}&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String proxyUrl<span style="color:#f92672">;</span> <span style="color:#75715e">// tinyproxy代理所在ip
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${proxy.port}&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer proxyPort<span style="color:#f92672">;</span> <span style="color:#75715e">// tinyproxy代理端口
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
-</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${proxy.username}&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String username<span style="color:#f92672">;</span> <span style="color:#75715e">// tinyproxy代理auth username
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;${proxy.password}&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer password<span style="color:#f92672">;</span> <span style="color:#75715e">// tinyproxy代理auth password
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${proxy.switch:off}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Boolean proxySwitch; <span style="color:#75715e">// // 是否开启代理</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${proxy.url}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String proxyUrl; <span style="color:#75715e">// tinyproxy代理所在ip</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${proxy.port}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer proxyPort; <span style="color:#75715e">// tinyproxy代理端口</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>     <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${proxy.username}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> String username; <span style="color:#75715e">// tinyproxy代理auth username</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Value</span>(<span style="color:#e6db74">&#34;${proxy.password}&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Integer password; <span style="color:#75715e">// tinyproxy代理auth password</span>
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@SneakyThrows</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> RestTemplate <span style="color:#a6e22e">restTemplate</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        RestTemplate restTemplate <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RestTemplate<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        HttpClientBuilder builder <span style="color:#f92672">=</span> HttpClientBuilder<span style="color:#f92672">.</span><span style="color:#a6e22e">create</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> RestTemplate <span style="color:#a6e22e">restTemplate</span>() {
+</span></span><span style="display:flex;"><span>        RestTemplate restTemplate <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RestTemplate();
+</span></span><span style="display:flex;"><span>        HttpClientBuilder builder <span style="color:#f92672">=</span> HttpClientBuilder.<span style="color:#a6e22e">create</span>();
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        HttpComponentsClientHttpRequestFactory factory <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HttpComponentsClientHttpRequestFactory<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>proxySwitch<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> InetSocketAddress<span style="color:#f92672">(</span>proxyUrl<span style="color:#f92672">,</span> proxyPort<span style="color:#f92672">).</span><span style="color:#a6e22e">getAddress</span><span style="color:#f92672">().</span><span style="color:#a6e22e">isReachable</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1000</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                log<span style="color:#f92672">.</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;设置RestTemplate的代理地址为: {}&#34;</span><span style="color:#f92672">,</span> proxyUrl <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;:&#39;</span> <span style="color:#f92672">+</span> proxyPort<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                CredentialsProvider provider <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BasicCredentialsProvider<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>                provider<span style="color:#f92672">.</span><span style="color:#a6e22e">setCredentials</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> AuthScope<span style="color:#f92672">(</span>proxyUrl<span style="color:#f92672">,</span> proxyPort<span style="color:#f92672">),</span>
-</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> UsernamePasswordCredentials<span style="color:#f92672">(</span>username<span style="color:#f92672">,</span> password<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                builder<span style="color:#f92672">.</span><span style="color:#a6e22e">setProxy</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> HttpHost<span style="color:#f92672">(</span>proxyUrl<span style="color:#f92672">,</span> proxyPort<span style="color:#f92672">)).</span><span style="color:#a6e22e">setDefaultCredentialsProvider</span><span style="color:#f92672">(</span>provider<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        factory<span style="color:#f92672">.</span><span style="color:#a6e22e">setHttpClient</span><span style="color:#f92672">(</span>builder<span style="color:#f92672">.</span><span style="color:#a6e22e">build</span><span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>        factory<span style="color:#f92672">.</span><span style="color:#a6e22e">setConnectTimeout</span><span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        factory<span style="color:#f92672">.</span><span style="color:#a6e22e">setReadTimeout</span><span style="color:#f92672">(</span><span style="color:#ae81ff">25</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">setRequestFactory</span><span style="color:#f92672">(</span>factory<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        restTemplate<span style="color:#f92672">.</span><span style="color:#a6e22e">getMessageConverters</span><span style="color:#f92672">().</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>getMappingJackson2HttpMessageConverter<span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> restTemplate<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        HttpComponentsClientHttpRequestFactory factory <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> HttpComponentsClientHttpRequestFactory();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (proxySwitch) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">new</span> InetSocketAddress(proxyUrl, proxyPort).<span style="color:#a6e22e">getAddress</span>().<span style="color:#a6e22e">isReachable</span>(1000 <span style="color:#f92672">*</span> 3)) {
+</span></span><span style="display:flex;"><span>                log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;设置RestTemplate的代理地址为: {}&#34;</span>, proxyUrl <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;:&#39;</span> <span style="color:#f92672">+</span> proxyPort);
+</span></span><span style="display:flex;"><span>                CredentialsProvider provider <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> BasicCredentialsProvider();
+</span></span><span style="display:flex;"><span>                provider.<span style="color:#a6e22e">setCredentials</span>(
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> AuthScope(proxyUrl, proxyPort),
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">new</span> UsernamePasswordCredentials(username, password)
+</span></span><span style="display:flex;"><span>                );
+</span></span><span style="display:flex;"><span>                builder.<span style="color:#a6e22e">setProxy</span>(<span style="color:#66d9ef">new</span> HttpHost(proxyUrl, proxyPort)).<span style="color:#a6e22e">setDefaultCredentialsProvider</span>(provider);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        factory.<span style="color:#a6e22e">setHttpClient</span>(builder.<span style="color:#a6e22e">build</span>());
+</span></span><span style="display:flex;"><span>        factory.<span style="color:#a6e22e">setConnectTimeout</span>(25 <span style="color:#f92672">*</span> 1000);
+</span></span><span style="display:flex;"><span>        factory.<span style="color:#a6e22e">setReadTimeout</span>(25 <span style="color:#f92672">*</span> 1000);
+</span></span><span style="display:flex;"><span>        restTemplate.<span style="color:#a6e22e">setRequestFactory</span>(factory);
+</span></span><span style="display:flex;"><span>        restTemplate.<span style="color:#a6e22e">getMessageConverters</span>().<span style="color:#a6e22e">add</span>(getMappingJackson2HttpMessageConverter());
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> restTemplate;
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> MappingJackson2HttpMessageConverter <span style="color:#a6e22e">getMappingJackson2HttpMessageConverter</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        MappingJackson2HttpMessageConverter converter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MappingJackson2HttpMessageConverter<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>MediaType<span style="color:#f92672">&gt;</span> mediaTypes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;();</span>
-</span></span><span style="display:flex;"><span>        mediaTypes<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>MediaType<span style="color:#f92672">.</span><span style="color:#a6e22e">APPLICATION_OCTET_STREAM</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        mediaTypes<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>MediaType<span style="color:#f92672">.</span><span style="color:#a6e22e">TEXT_HTML</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        mediaTypes<span style="color:#f92672">.</span><span style="color:#a6e22e">add</span><span style="color:#f92672">(</span>MediaType<span style="color:#f92672">.</span><span style="color:#a6e22e">APPLICATION_JSON</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        converter<span style="color:#f92672">.</span><span style="color:#a6e22e">setSupportedMediaTypes</span><span style="color:#f92672">(</span>mediaTypes<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> converter<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> MappingJackson2HttpMessageConverter <span style="color:#a6e22e">getMappingJackson2HttpMessageConverter</span>() {
+</span></span><span style="display:flex;"><span>        MappingJackson2HttpMessageConverter converter <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> MappingJackson2HttpMessageConverter();
+</span></span><span style="display:flex;"><span>        List<span style="color:#f92672">&lt;</span>MediaType<span style="color:#f92672">&gt;</span> mediaTypes <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;&gt;</span>();
+</span></span><span style="display:flex;"><span>        mediaTypes.<span style="color:#a6e22e">add</span>(MediaType.<span style="color:#a6e22e">APPLICATION_OCTET_STREAM</span>);
+</span></span><span style="display:flex;"><span>        mediaTypes.<span style="color:#a6e22e">add</span>(MediaType.<span style="color:#a6e22e">TEXT_HTML</span>);
+</span></span><span style="display:flex;"><span>        mediaTypes.<span style="color:#a6e22e">add</span>(MediaType.<span style="color:#a6e22e">APPLICATION_JSON</span>);
+</span></span><span style="display:flex;"><span>        converter.<span style="color:#a6e22e">setSupportedMediaTypes</span>(mediaTypes);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> converter;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><hr>
 
       </div></div>

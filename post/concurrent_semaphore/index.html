@@ -390,18 +390,18 @@ code.has-jax {
 
   <div class="post-content"><div>
         <h3 id="acquire">acquire<a href="#acquire" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 共享锁可以立即响应中断异常
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    sync<span style="color:#f92672">.</span><span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#ae81ff">1</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果线程被中断立即抛出异常
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Thread<span style="color:#f92672">.</span><span style="color:#a6e22e">interrupted</span><span style="color:#f92672">())</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">)</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>        doAcquireSharedInterruptibly<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 共享锁可以立即响应中断异常</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquire</span>() <span style="color:#66d9ef">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>    sync.<span style="color:#a6e22e">acquireSharedInterruptibly</span>(1);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 如果线程被中断立即抛出异常</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (Thread.<span style="color:#a6e22e">interrupted</span>())
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (tryAcquireShared(arg) <span style="color:#f92672">&lt;</span> 0)
+</span></span><span style="display:flex;"><span>        doAcquireSharedInterruptibly(arg);
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。</p>
 <table>
 <thead>
@@ -426,76 +426,76 @@ code.has-jax {
 </tbody>
 </table>
 <h4 id="tryacquireshared">tryAcquireShared<a href="#tryacquireshared" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> nonfairTryAcquireShared<span style="color:#f92672">(</span>acquires<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 默认是采用了非公平获取锁的方式
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">nonfairTryAcquireShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> acquires<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> available <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> remaining <span style="color:#f92672">=</span> available <span style="color:#f92672">-</span> acquires<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果remaining&gt;=0时就一直自旋CAS修改state状态
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>remaining <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span>
-</span></span><span style="display:flex;"><span>            compareAndSetState<span style="color:#f92672">(</span>available<span style="color:#f92672">,</span> remaining<span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> remaining<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span>(<span style="color:#66d9ef">int</span> acquires) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> nonfairTryAcquireShared(acquires);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 默认是采用了非公平获取锁的方式</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">final</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">nonfairTryAcquireShared</span>(<span style="color:#66d9ef">int</span> acquires) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (;;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> available <span style="color:#f92672">=</span> getState();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> remaining <span style="color:#f92672">=</span> available <span style="color:#f92672">-</span> acquires;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果remaining&gt;=0时就一直自旋CAS修改state状态</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (remaining <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>            compareAndSetState(available, remaining))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> remaining;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</p>
 <p>如果tryAcquireShared的返回值小于0，说明此时没有锁可以获取，执行入队等相关操作。</p>
 </blockquote>
 <h4 id="doacquiresharedinterruptibly">doAcquireSharedInterruptibly<a href="#doacquiresharedinterruptibly" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireSharedInterruptibly</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">throws</span> InterruptedException <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 封装共享节点添加到同步队列队尾
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">final</span> Node node <span style="color:#f92672">=</span> addWaiter<span style="color:#f92672">(</span>Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SHARED</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取前驱节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">final</span> Node p <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">predecessor</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果前驱节点是head节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>p <span style="color:#f92672">==</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 尝试获取共享锁
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> tryAcquireShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 注意这里是r&gt;=0
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>r <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 与独占锁不同之处，独占锁是setHead()
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    <span style="color:#75715e">// 除了当前线程获取锁，后面的线程也有可能获取共享锁
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    setHeadAndPropagate<span style="color:#f92672">(</span>node<span style="color:#f92672">,</span> r<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>                    p<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span> <span style="color:#75715e">// help GC
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                    failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断是否需要中断及中断步骤 与独占锁相同
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>shouldParkAfterFailedAcquire<span style="color:#f92672">(</span>p<span style="color:#f92672">,</span> node<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                parkAndCheckInterrupt<span style="color:#f92672">())</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 共享锁及时响应中断
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">finally</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果抛出中断异常，此处就会执行该逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>failed<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            cancelAcquire<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">throws</span> InterruptedException {
+</span></span><span style="display:flex;"><span>      <span style="color:#75715e">// 封装共享节点添加到同步队列队尾</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">final</span> Node node <span style="color:#f92672">=</span> addWaiter(Node.<span style="color:#a6e22e">SHARED</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (;;) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 获取前驱节点</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">final</span> Node p <span style="color:#f92672">=</span> node.<span style="color:#a6e22e">predecessor</span>();
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果前驱节点是head节点</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">==</span> head) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 尝试获取共享锁</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> tryAcquireShared(arg);
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 注意这里是r&gt;=0</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (r <span style="color:#f92672">&gt;=</span> 0) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 与独占锁不同之处，独占锁是setHead()</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 除了当前线程获取锁，后面的线程也有可能获取共享锁</span>
+</span></span><span style="display:flex;"><span>                    setHeadAndPropagate(node, r);
+</span></span><span style="display:flex;"><span>                    p.<span style="color:#a6e22e">next</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>; <span style="color:#75715e">// help GC</span>
+</span></span><span style="display:flex;"><span>                    failed <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">return</span>;
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断是否需要中断及中断步骤 与独占锁相同</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (shouldParkAfterFailedAcquire(p, node) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                parkAndCheckInterrupt())
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 共享锁及时响应中断</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> InterruptedException();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    } <span style="color:#66d9ef">finally</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果抛出中断异常，此处就会执行该逻辑</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (failed)
+</span></span><span style="display:flex;"><span>            cancelAcquire(node);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><h4 id="setheadandpropagate">setHeadAndPropagate<a href="#setheadandpropagate" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span><span style="color:#f92672">(</span>Node node<span style="color:#f92672">,</span> <span style="color:#66d9ef">int</span> propagate<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 记录老的head用于下面的对比校验
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    Node h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span> 
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和独占锁一致，将获取锁的node设为新head，清空thread属性
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#75715e">// 此时node=new head，h=old head
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    setHead<span style="color:#f92672">(</span>node<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 此时h = old head
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>propagate <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 此时h = new node
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">(</span>h <span style="color:#f92672">=</span> head<span style="color:#f92672">)</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        Node s <span style="color:#f92672">=</span> node<span style="color:#f92672">.</span><span style="color:#a6e22e">next</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>s <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> s<span style="color:#f92672">.</span><span style="color:#a6e22e">isShared</span><span style="color:#f92672">())</span>
-</span></span><span style="display:flex;"><span>            doReleaseShared<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span>(Node node, <span style="color:#66d9ef">int</span> propagate) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 记录老的head用于下面的对比校验</span>
+</span></span><span style="display:flex;"><span>    Node h <span style="color:#f92672">=</span> head; 
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 和独占锁一致，将获取锁的node设为新head，清空thread属性</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 此时node=new head，h=old head</span>
+</span></span><span style="display:flex;"><span>    setHead(node);
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 此时h = old head</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (propagate <span style="color:#f92672">&gt;</span> 0 <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h.<span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> 0 <span style="color:#f92672">||</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 此时h = new node</span>
+</span></span><span style="display:flex;"><span>        (h <span style="color:#f92672">=</span> head) <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> h.<span style="color:#a6e22e">waitStatus</span> <span style="color:#f92672">&lt;</span> 0) {
+</span></span><span style="display:flex;"><span>        Node s <span style="color:#f92672">=</span> node.<span style="color:#a6e22e">next</span>;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (s <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> s.<span style="color:#a6e22e">isShared</span>())
+</span></span><span style="display:flex;"><span>            doReleaseShared();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>doReleaseShared()可以理解成unparkSuccessor的升级方法，不止获取锁的过程中被调用，释放锁的过程中也会被调用。</p>
 <ol>
@@ -508,63 +508,63 @@ code.has-jax {
 </ol>
 </blockquote>
 <h4 id="doreleaseshared">doReleaseShared<a href="#doreleaseshared" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 唤醒后继节点并确认传播
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 循环执行
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取头节点，接上文，此时的头节点是node，不是老的head节点了
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Node h <span style="color:#f92672">=</span> head<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// h != null ，只要队列初始化过，就一直成立
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// h != tail 如果队列中添加过节点，就一直成立
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 这两个条件保证了队列至少有两个node，其中一个哨兵节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h <span style="color:#f92672">!=</span> tail<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> h<span style="color:#f92672">.</span><span style="color:#a6e22e">waitStatus</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果head是SIGNAL，就执行unparkSuccessor()
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ws <span style="color:#f92672">==</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SIGNAL</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>compareAndSetWaitStatus<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">SIGNAL</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 修改成功就唤醒头节点的有效后继节点
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                unparkSuccessor<span style="color:#f92672">(</span>h<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果ws == 0说明h的后继节点已经或即将被唤醒
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// CAS设置为PROPAGATE
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ws <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>                     <span style="color:#f92672">!</span>compareAndSetWaitStatus<span style="color:#f92672">(</span>h<span style="color:#f92672">,</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">,</span> Node<span style="color:#f92672">.</span><span style="color:#a6e22e">PROPAGATE</span><span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span><span style="color:#f92672">;</span>                <span style="color:#75715e">// loop on failed CAS
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果waitStatus是PROPAGATE直接判断
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 跳出循环的关键: 只要新老head相等就跳出循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>h <span style="color:#f92672">==</span> head<span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 唤醒后继节点并确认传播</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 循环执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (;;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取头节点，接上文，此时的头节点是node，不是老的head节点了</span>
+</span></span><span style="display:flex;"><span>        Node h <span style="color:#f92672">=</span> head;
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// h != null ，只要队列初始化过，就一直成立</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// h != tail 如果队列中添加过节点，就一直成立</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 这两个条件保证了队列至少有两个node，其中一个哨兵节点</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (h <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> h <span style="color:#f92672">!=</span> tail) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> h.<span style="color:#a6e22e">waitStatus</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果head是SIGNAL，就执行unparkSuccessor()</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> Node.<span style="color:#a6e22e">SIGNAL</span>) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>compareAndSetWaitStatus(h, Node.<span style="color:#a6e22e">SIGNAL</span>, 0))
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 修改成功就唤醒头节点的有效后继节点</span>
+</span></span><span style="display:flex;"><span>                unparkSuccessor(h);
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果ws == 0说明h的后继节点已经或即将被唤醒</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// CAS设置为PROPAGATE</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> 0 <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>                     <span style="color:#f92672">!</span>compareAndSetWaitStatus(h, 0, Node.<span style="color:#a6e22e">PROPAGATE</span>))
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">continue</span>;                <span style="color:#75715e">// loop on failed CAS</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果waitStatus是PROPAGATE直接判断</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 跳出循环的关键: 只要新老head相等就跳出循环</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (h <span style="color:#f92672">==</span> head)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>只要有线程获取锁设置了<code>新head</code>，<code>h == head</code>就会不成立导致再次循环，其目的是为了执行<code>unparkSuccessor(head)来唤醒有效后继节点</code>。</p>
 </blockquote>
 <h3 id="release">release<a href="#release" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> arg<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用semaphore的内部实现去释放锁
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>tryReleaseShared<span style="color:#f92672">(</span>arg<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果成功就尝试唤醒后继节点且传播
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        doReleaseShared<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e">// 释放共享锁
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> releases<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#f92672">(;;)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取当前state
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> current <span style="color:#f92672">=</span> getState<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将 state + 1
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> releases<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>next <span style="color:#f92672">&lt;</span> current<span style="color:#f92672">)</span> <span style="color:#75715e">// overflow
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Maximum permit count exceeded&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// CAS修改state成功返回true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>compareAndSetState<span style="color:#f92672">(</span>current<span style="color:#f92672">,</span> next<span style="color:#f92672">))</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">releaseShared</span>(<span style="color:#66d9ef">int</span> arg) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 调用semaphore的内部实现去释放锁</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (tryReleaseShared(arg)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果成功就尝试唤醒后继节点且传播</span>
+</span></span><span style="display:flex;"><span>        doReleaseShared();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// 释放共享锁</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">final</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">tryReleaseShared</span>(<span style="color:#66d9ef">int</span> releases) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (;;) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取当前state</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> current <span style="color:#f92672">=</span> getState();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将 state + 1</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span> next <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> releases;
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (next <span style="color:#f92672">&lt;</span> current) <span style="color:#75715e">// overflow</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">throw</span> <span style="color:#66d9ef">new</span> Error(<span style="color:#e6db74">&#34;Maximum permit count exceeded&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// CAS修改state成功返回true</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (compareAndSetState(current, next))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <ol>
 <li>

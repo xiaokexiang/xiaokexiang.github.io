@@ -7,20 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Thu, 09 Feb 2023 14:17:55 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Feb 2023 14:17:55 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/tags/elasticsearch/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Elasticsearch操作文档</title>
       <link>https://leejay.top/post/elasticsearch/</link>
       <pubDate>Thu, 09 Feb 2023 14:17:55 +0800</pubDate>
-      
       <guid>https://leejay.top/post/elasticsearch/</guid>
-      <description>前置知识 Elasticsearch是一个分布式，RESTful风格的搜索和数据分析引擎。
-概念点 ES是面向文档的，文档是最小单位，对应着关系型数据库中的一条数据。 index索引除了存储所有映射类型的字段，还包含一些设置，ex: refresh_interval（新增文档对于搜索可见的时间间隔，准实时）。 集群由n个节点（n≥1）组成，节点由m个分片（m≥1）组成。索引由x个主分片（x≥1）和y个副本分片（y≥0）组成。（副本可以在运行时增加，而主分片不行，在创建索引前必须决定其数量） 新增文档时，会根据文档的id进行hash计算确认一个主分区A（shard_num = hash(_id) % 主分片个数），如果A分区不在当前节点，那么ES会将文档索引到A分区所在的目标节点上，并同步到非目标节点的主分片中，并通过各节点的主分片与副本分片进行同步。 RESTful ES的查询会涉及到RESTful的相关概念
-其中GET、HEAD、PUT、DELETE是幂等的操作（即任意多次执行所产生的影响均与一次执行的影响相同） POST不是幂等的操作（即每次调用都会创建一个新的资源，但实际会通过数据库主键或其他方式进行限制）。PATCH也不是幂等的，因为相比PUT对资源的全部更新，PATCH强调的是部分更新，如果是依赖于当前值的++操作，那么必定是非幂等的。 GET、HEAD是安全的操作，仅仅是查询资源并不会修改资源，PUT、PATHC、DELETE、POST是不安全的操作，会修改资源数据。 type移除 ES中的index、type、document、field分别对应着关系型数据库中的database、table、row、column，在ES8.0版本中已经不在支持type。
-在es中同一个index中不同的type是存储在同一个lucene索引文件中的，不同type中相同名字的字段的含义必须相同。
-但关系型数据库中的table是独立存储的，所以type在es中的用途就十分有限。
-环境搭建 docker部署 # 基于docker部署es7.8.0 mkdir -p /root/es/plugins /root/es/data /root/es/config &amp;amp;&amp;amp; touch /root/es/config/elasticsearch.yml &amp;amp;&amp;amp; chmod 777 /root/es/** docker run -d --name es -p 9200:9200 -p 9300:9300 \ -v /root/es/data:/usr/share/elasticsearch/data \ -v /root/es/plugins:/usr/share/elasticsearch/plugins \ -v /root/es/conig/elasticsearch.yml:/usr/share/elasticsearch/conig/elasticsearch.yml \ -e &amp;#34;discovery.type=single-node&amp;#34; \ -e &amp;#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&amp;#34; \ docker.io/library/elasticsearch:7.8.0 配置分词器 # 配置分词器 wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.8.0/elasticsearch-analysis-ik-7.8.0.zip \ &amp;amp;&amp;amp; mkdir -p ik/ &amp;amp;&amp;amp; unzip -od ik/ elasticsearch-analysis-ik-7.</description>
+      <description>前置知识 Elasticsearch是一个分布式，RESTful风格的搜索和数据分析引擎。&#xA;概念点 ES是面向文档的，文档是最小单位，对应着关系型数据库中的一条数据。 index索引除了存储所有映射类型的字段，还包含一些设置，ex: refresh_interval（新增文档对于搜索可见的时间间隔，准实时）。 集群由n个节点（n≥1）组成，节点由m个分片（m≥1）组成。索引由x个主分片（x≥1）和y个副本分片（y≥0）组成。（副本可以在运行时增加，而主分片不行，在创建索引前必须决定其数量） 新增文档时，会根据文档的id进行hash计算确认一个主分区A（shard_num = hash(_id) % 主分片个数），如果A分区不在当前节点，那么ES会将文档索引到A分区所在的目标节点上，并同步到非目标节点的主分片中，并通过各节点的主分片与副本分片进行同步。 RESTful ES的查询会涉及到RESTful的相关概念&#xA;其中GET、HEAD、PUT、DELETE是幂等的操作（即任意多次执行所产生的影响均与一次执行的影响相同） POST不是幂等的操作（即每次调用都会创建一个新的资源，但实际会通过数据库主键或其他方式进行限制）。PATCH也不是幂等的，因为相比PUT对资源的全部更新，PATCH强调的是部分更新，如果是依赖于当前值的++操作，那么必定是非幂等的。 GET、HEAD是安全的操作，仅仅是查询资源并不会修改资源，PUT、PATHC、DELETE、POST是不安全的操作，会修改资源数据。 type移除 ES中的index、type、document、field分别对应着关系型数据库中的database、table、row、column，在ES8.0版本中已经不在支持type。&#xA;在es中同一个index中不同的type是存储在同一个lucene索引文件中的，不同type中相同名字的字段的含义必须相同。&#xA;但关系型数据库中的table是独立存储的，所以type在es中的用途就十分有限。&#xA;环境搭建 docker部署 # 基于docker部署es7.8.0 mkdir -p /root/es/plugins /root/es/data /root/es/config &amp;amp;&amp;amp; touch /root/es/config/elasticsearch.yml &amp;amp;&amp;amp; chmod 777 /root/es/** docker run -d --name es -p 9200:9200 -p 9300:9300 \ -v /root/es/data:/usr/share/elasticsearch/data \ -v /root/es/plugins:/usr/share/elasticsearch/plugins \ -v /root/es/conig/elasticsearch.yml:/usr/share/elasticsearch/conig/elasticsearch.yml \ -e &amp;#34;discovery.type=single-node&amp;#34; \ -e &amp;#34;ES_JAVA_OPTS=-Xms512m -Xmx512m&amp;#34; \ docker.io/library/elasticsearch:7.8.0 配置分词器 # 配置分词器 wget https://github.com/medcl/elasticsearch-analysis-ik/releases/download/v7.8.0/elasticsearch-analysis-ik-7.8.0.zip \ &amp;amp;&amp;amp; mkdir -p ik/ &amp;amp;&amp;amp; unzip -od ik/ elasticsearch-analysis-ik-7.</description>
     </item>
-    
   </channel>
 </rss>

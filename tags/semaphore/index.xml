@@ -7,16 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Sat, 20 Jun 2020 16:09:38 +0800</lastBuildDate><atom:link href="https://leejay.top/tags/semaphore/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 20 Jun 2020 16:09:38 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/tags/semaphore/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Semaphore共享锁源码解析</title>
       <link>https://leejay.top/post/concurrent_semaphore/</link>
       <pubDate>Sat, 20 Jun 2020 16:09:38 +0800</pubDate>
-      
       <guid>https://leejay.top/post/concurrent_semaphore/</guid>
-      <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常 if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。
-tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可能不成功 &amp;lt; 0 获取共享锁失败 &amp;gt; 0 获取共享锁成功，后续获取可能成功 tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态 if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } } 为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
+      <description>acquire // 共享锁可以立即响应中断异常 public void acquire() throws InterruptedException { sync.acquireSharedInterruptibly(1); } public final void acquireSharedInterruptibly(int arg) throws InterruptedException { // 如果线程被中断立即抛出异常 if (Thread.interrupted()) throw new InterruptedException(); if (tryAcquireShared(arg) &amp;lt; 0) doAcquireSharedInterruptibly(arg); } 共享锁tryAcquireShared()与独占锁tryAcquire()的不同在于。前者的返回值存在三种情况，后者只有两种情况(true/false)。&#xA;tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可能不成功 &amp;lt; 0 获取共享锁失败 &amp;gt; 0 获取共享锁成功，后续获取可能成功 tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态 if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } } 为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。</description>
     </item>
-    
   </channel>
 </rss>

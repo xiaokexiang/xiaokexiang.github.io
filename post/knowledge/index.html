@@ -599,23 +599,23 @@ code.has-jax {
         <h2 id="1-java是值传递还是引用传递">1. Java是值传递还是引用传递<a href="#1-java是值传递还是引用传递" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <p>结论： Java只有值传递没有引用传递。</p>
 <p>值传递与引用传递的区别：<code>对形参的修改不会影响到实参被称为值传递。引用传递则相反。</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">change</span><span style="color:#f92672">(</span>Integer i<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    i <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">change</span>(Integer i) {
+</span></span><span style="display:flex;"><span>    i <span style="color:#f92672">=</span> 3;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">change</span><span style="color:#f92672">(</span>Person person<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    person<span style="color:#f92672">.</span><span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;李四&#34;</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">change</span>(Person person) {
+</span></span><span style="display:flex;"><span>    person.<span style="color:#a6e22e">name</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;李四&#34;</span>;
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">..</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    Integer x <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>    change<span style="color:#f92672">(</span>x<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>	System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>x<span style="color:#f92672">);</span> <span style="color:#75715e">// x = 1;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    
-</span></span><span style="display:flex;"><span>	Person person <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Person<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;张三&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    change<span style="color:#f92672">(</span>person<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>    System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>person<span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">());</span> <span style="color:#75715e">// &#34;李四&#34;
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String.. args) {
+</span></span><span style="display:flex;"><span>    Integer x <span style="color:#f92672">=</span> 1;
+</span></span><span style="display:flex;"><span>    change(x);
+</span></span><span style="display:flex;"><span>	System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(x); <span style="color:#75715e">// x = 1;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>	Person person <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Person(<span style="color:#e6db74">&#34;张三&#34;</span>);
+</span></span><span style="display:flex;"><span>    change(person);
+</span></span><span style="display:flex;"><span>    System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(person.<span style="color:#a6e22e">getName</span>()); <span style="color:#75715e">// &#34;李四&#34;</span>
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <ol>
 <li>如果是基本数据类型，是将数据复制一份传递给方法，自然不会影响。</li>
@@ -624,20 +624,20 @@ code.has-jax {
 </blockquote>
 <hr>
 <h2 id="2-包装类integer中的缓存池">2. 包装类Integer中的缓存池<a href="#2-包装类integer中的缓存池" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Integer x <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>Integer y <span style="color:#f92672">=</span> <span style="color:#ae81ff">123</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>x <span style="color:#f92672">==</span> y<span style="color:#f92672">);</span> <span style="color:#75715e">// true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>Integer a <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>Integer b <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a <span style="color:#f92672">==</span> b<span style="color:#f92672">);</span> <span style="color:#75715e">// false
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a<span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>b<span style="color:#f92672">));</span> <span style="color:#75715e">// true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
-</span></span><span style="display:flex;"><span>Integer z <span style="color:#f92672">=</span> Integer<span style="color:#f92672">.</span><span style="color:#a6e22e">valueOf</span><span style="color:#f92672">(</span><span style="color:#ae81ff">123</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>Integer w <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Integer<span style="color:#f92672">(</span><span style="color:#ae81ff">123</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>x <span style="color:#f92672">==</span> z<span style="color:#f92672">);</span> <span style="color:#75715e">// true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>z <span style="color:#f92672">==</span> w<span style="color:#f92672">);</span> <span style="color:#75715e">// false
-</span></span></span></code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>Integer x <span style="color:#f92672">=</span> 123;
+</span></span><span style="display:flex;"><span>Integer y <span style="color:#f92672">=</span> 123;
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(x <span style="color:#f92672">==</span> y); <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Integer a <span style="color:#f92672">=</span> 128;
+</span></span><span style="display:flex;"><span>Integer b <span style="color:#f92672">=</span> 128;
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a <span style="color:#f92672">==</span> b); <span style="color:#75715e">// false</span>
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a.<span style="color:#a6e22e">equals</span>(b)); <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Integer z <span style="color:#f92672">=</span> Integer.<span style="color:#a6e22e">valueOf</span>(123);
+</span></span><span style="display:flex;"><span>Integer w <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Integer(123);
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(x <span style="color:#f92672">==</span> z); <span style="color:#75715e">// true</span>
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(z <span style="color:#f92672">==</span> w); <span style="color:#75715e">// false</span>
+</span></span></code></pre></div><blockquote>
 <ol>
 <li>Integer类型的缓存池的范围是<code>[-128, 127]</code>，只要是这个范围的值自动装箱就会返回相同的对象。</li>
 <li>Integer类型中的equals()方法是对<code>包装的值</code>进行了比较，而不是比较对象。</li>
@@ -650,48 +650,48 @@ code.has-jax {
 <blockquote>
 <p>c中可以通过goto语句跳出多层嵌套循环，java保留了goto关键字，但没有任何作用。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]{</span><span style="color:#ae81ff">1</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">};</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]{</span><span style="color:#ae81ff">4</span><span style="color:#f92672">,</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">};</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> a <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span>{1, 2};
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span> b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#66d9ef">int</span><span style="color:#f92672">[]</span>{4, 5};
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>        loop_a:
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">:</span> a<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> k <span style="color:#f92672">:</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span> loop_a<span style="color:#f92672">;</span> <span style="color:#75715e">// 跳出最外层循环
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>j <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; -&gt; &#34;</span> <span style="color:#f92672">+</span> k<span style="color:#f92672">);</span> <span style="color:#75715e">// 1 -&gt; 4
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j : a) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> k : b) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (k <span style="color:#f92672">==</span> 5) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">break</span> loop_a; <span style="color:#75715e">// 跳出最外层循环</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(j <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; -&gt; &#34;</span> <span style="color:#f92672">+</span> k); <span style="color:#75715e">// 1 -&gt; 4</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>        System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;------------------------&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;------------------------&#34;</span>);
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>        loop_b<span style="color:#f92672">:</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> j <span style="color:#f92672">:</span> a<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> k <span style="color:#f92672">:</span> b<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>k <span style="color:#f92672">==</span> <span style="color:#ae81ff">5</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span> loop_b<span style="color:#f92672">;</span> <span style="color:#75715e">// 跳过内层循环值为5的，继续从外层的下一个数开始执行
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>                <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>                System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>j <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; -&gt; &#34;</span> <span style="color:#f92672">+</span> k<span style="color:#f92672">);</span> <span style="color:#75715e">// 1 -&gt; 4; 2 -&gt; 4
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        loop_b:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> j : a) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> k : b) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (k <span style="color:#f92672">==</span> 5) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">continue</span> loop_b; <span style="color:#75715e">// 跳过内层循环值为5的，继续从外层的下一个数开始执行</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>                System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(j <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; -&gt; &#34;</span> <span style="color:#f92672">+</span> k); <span style="color:#75715e">// 1 -&gt; 4; 2 -&gt; 4</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><hr>
 <h2 id="4-string对象的创建">4. String对象的创建<a href="#4-string对象的创建" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <blockquote>
 <p>字符串常量池（String Common Pool）：因为字符串的大量创建会影响程序的性能，JVM引入了<code>字符串常量池</code>来减少字符串性能的开销（也基于字符串的不可变性才能实现）。</p>
 </blockquote>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String a <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>String b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;abc&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>String c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;a&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;b&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;c&#34;</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>String d <span style="color:#f92672">=</span> a<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>String e <span style="color:#f92672">=</span> b<span style="color:#f92672">.</span><span style="color:#a6e22e">intern</span><span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a <span style="color:#f92672">==</span> b<span style="color:#f92672">);</span> <span style="color:#75715e">//  false
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a <span style="color:#f92672">==</span> c<span style="color:#f92672">);</span> <span style="color:#75715e">//  true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>a <span style="color:#f92672">==</span> d<span style="color:#f92672">);</span> <span style="color:#75715e">//  true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span>d <span style="color:#f92672">==</span> e<span style="color:#f92672">);</span> <span style="color:#75715e">//  true
-</span></span></span></code></pre></div><h3 id="字面量创建对象">字面量创建对象<a href="#字面量创建对象" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>String a <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;abc&#34;</span>;
+</span></span><span style="display:flex;"><span>String b <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String(<span style="color:#e6db74">&#34;abc&#34;</span>);
+</span></span><span style="display:flex;"><span>String c <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;a&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;b&#34;</span> <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;c&#34;</span>;
+</span></span><span style="display:flex;"><span>String d <span style="color:#f92672">=</span> a.<span style="color:#a6e22e">intern</span>();
+</span></span><span style="display:flex;"><span>String e <span style="color:#f92672">=</span> b.<span style="color:#a6e22e">intern</span>();
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a <span style="color:#f92672">==</span> b); <span style="color:#75715e">//  false</span>
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a <span style="color:#f92672">==</span> c); <span style="color:#75715e">//  true</span>
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(a <span style="color:#f92672">==</span> d); <span style="color:#75715e">//  true</span>
+</span></span><span style="display:flex;"><span>System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(d <span style="color:#f92672">==</span> e); <span style="color:#75715e">//  true</span>
+</span></span></code></pre></div><h3 id="字面量创建对象">字面量创建对象<a href="#字面量创建对象" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/img/String%E5%AD%97%E9%9D%A2%E9%87%8F.png" alt="String字面量"></p>
 <h3 id="new关键字创建对象">new关键字创建对象<a href="#new关键字创建对象" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <p><img src="https://image.leejay.top/img/image-20220512175258152.png" alt="image-20220512175258152"></p>
@@ -706,84 +706,84 @@ code.has-jax {
 <h3 id="自定义配置代码">自定义配置代码<a href="#自定义配置代码" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@EnableAspectJAutoProxy</span>
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ComponentScan</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;org.springframework.chapter13&#34;</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AopConfiguration</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@ComponentScan</span>(<span style="color:#e6db74">&#34;org.springframework.chapter13&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AopConfiguration</span> {
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        AnnotationConfigApplicationContext ctx <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AnnotationConfigApplicationContext<span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>                AopConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ....
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Test</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
+</span></span><span style="display:flex;"><span>        AnnotationConfigApplicationContext ctx <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> AnnotationConfigApplicationContext(
+</span></span><span style="display:flex;"><span>                AopConfiguration.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// ....</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><hr>
 <h2 id="5-enableaspectjautoproxy的疑问">5. @EnableAspectJAutoProxy的疑问<a href="#5-enableaspectjautoproxy的疑问" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <h3 id="源码解析">源码解析<a href="#源码解析" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
 <h4 id="问题的切入口">问题的切入口<a href="#问题的切入口" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>我们知道Spring AOP是基于后置处理器实现对Bean的代理对象的创建，其核心类就是<code>AbstractAutoProxyCreator</code>。所以我们尝试从AOP核心类进行问题的解析。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractAutoProxyCreator</span> <span style="color:#66d9ef">extends</span> ProxyProcessorSupport
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">implements</span> SmartInstantiationAwareBeanPostProcessor<span style="color:#f92672">,</span> BeanFactoryAware <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">implements</span> SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware {
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">postProcessAfterInitialization</span><span style="color:#f92672">(</span><span style="color:#a6e22e">@Nullable</span> Object bean<span style="color:#f92672">,</span> String beanName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断bean是否需要被代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>bean <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			Object cacheKey <span style="color:#f92672">=</span> getCacheKey<span style="color:#f92672">(</span>bean<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">(),</span> beanName<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">earlyProxyReferences</span><span style="color:#f92672">.</span><span style="color:#a6e22e">remove</span><span style="color:#f92672">(</span>cacheKey<span style="color:#f92672">)</span> <span style="color:#f92672">!=</span> bean<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> wrapIfNecessary<span style="color:#f92672">(</span>bean<span style="color:#f92672">,</span> beanName<span style="color:#f92672">,</span> cacheKey<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> bean<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> Object <span style="color:#a6e22e">postProcessAfterInitialization</span>(<span style="color:#a6e22e">@Nullable</span> Object bean, String beanName) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 判断bean是否需要被代理</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (bean <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
+</span></span><span style="display:flex;"><span>			Object cacheKey <span style="color:#f92672">=</span> getCacheKey(bean.<span style="color:#a6e22e">getClass</span>(), beanName);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">earlyProxyReferences</span>.<span style="color:#a6e22e">remove</span>(cacheKey) <span style="color:#f92672">!=</span> bean) {
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">return</span> wrapIfNecessary(bean, beanName, cacheKey);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> bean;
+</span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// wrapIfNecessary中会调用此方法创建代理对象
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">protected</span> Object <span style="color:#a6e22e">createProxy</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> beanClass<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> String beanName<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">@Nullable</span> Object<span style="color:#f92672">[]</span> specificInterceptors<span style="color:#f92672">,</span> TargetSource targetSource<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略不相关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// AOP核心判断逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 上文我们没有设置proxyTargetClass，所以默认是false
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>proxyFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">isProxyTargetClass</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 问题的核心入口！！！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 判断是否需要代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>shouldProxyTargetClass<span style="color:#f92672">(</span>beanClass<span style="color:#f92672">,</span> beanName<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 设置proxyTargetClass属性为true，用于走cglib代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				proxyFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">setProxyTargetClass</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 否则走jdk代理的校验逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>				evaluateProxyInterfaces<span style="color:#f92672">(</span>beanClass<span style="color:#f92672">,</span> proxyFactory<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略无关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 调用代理工厂创建代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span> proxyFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getProxy</span><span style="color:#f92672">(</span>getProxyClassLoader<span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// wrapIfNecessary中会调用此方法创建代理对象</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> Object <span style="color:#a6e22e">createProxy</span>(Class<span style="color:#f92672">&lt;?&gt;</span> beanClass, <span style="color:#a6e22e">@Nullable</span> String beanName,
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">@Nullable</span> Object<span style="color:#f92672">[]</span> specificInterceptors, TargetSource targetSource) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略不相关代码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// AOP核心判断逻辑</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 上文我们没有设置proxyTargetClass，所以默认是false</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>proxyFactory.<span style="color:#a6e22e">isProxyTargetClass</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 问题的核心入口！！！</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 判断是否需要代理</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (shouldProxyTargetClass(beanClass, beanName)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 设置proxyTargetClass属性为true，用于走cglib代理</span>
+</span></span><span style="display:flex;"><span>				proxyFactory.<span style="color:#a6e22e">setProxyTargetClass</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 否则走jdk代理的校验逻辑</span>
+</span></span><span style="display:flex;"><span>				evaluateProxyInterfaces(beanClass, proxyFactory);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略无关代码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 调用代理工厂创建代理</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> proxyFactory.<span style="color:#a6e22e">getProxy</span>(getProxyClassLoader());
+</span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">evaluateProxyInterfaces</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> beanClass<span style="color:#f92672">,</span> ProxyFactory proxyFactory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查找目标对象的所有实现接口，并筛选合适的代理接口
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Class<span style="color:#f92672">&lt;?&gt;[]</span> targetInterfaces <span style="color:#f92672">=</span> ClassUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">getAllInterfacesForClass</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>            					beanClass<span style="color:#f92672">,</span> getProxyClassLoader<span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">boolean</span> hasReasonableProxyInterface <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> ifc <span style="color:#f92672">:</span> targetInterfaces<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>isConfigurationCallbackInterface<span style="color:#f92672">(</span>ifc<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isInternalLanguageInterface<span style="color:#f92672">(</span>ifc<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>					ifc<span style="color:#f92672">.</span><span style="color:#a6e22e">getMethods</span><span style="color:#f92672">().</span><span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>				hasReasonableProxyInterface <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>hasReasonableProxyInterface<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 设置proxyFactory的interface属性，用于实现jdk代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> ifc <span style="color:#f92672">:</span> targetInterfaces<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>				proxyFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">addInterface</span><span style="color:#f92672">(</span>ifc<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果当前被代理的目标对象不是基于接口的，那么还是会设置proxyTargetClass=true走CGLIB代理
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			proxyFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">setProxyTargetClass</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">evaluateProxyInterfaces</span>(Class<span style="color:#f92672">&lt;?&gt;</span> beanClass, ProxyFactory proxyFactory) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 查找目标对象的所有实现接口，并筛选合适的代理接口</span>
+</span></span><span style="display:flex;"><span>		Class<span style="color:#f92672">&lt;?&gt;[]</span> targetInterfaces <span style="color:#f92672">=</span> ClassUtils.<span style="color:#a6e22e">getAllInterfacesForClass</span>(
+</span></span><span style="display:flex;"><span>            					beanClass, getProxyClassLoader());
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">boolean</span> hasReasonableProxyInterface <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (Class<span style="color:#f92672">&lt;?&gt;</span> ifc : targetInterfaces) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>isConfigurationCallbackInterface(ifc) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isInternalLanguageInterface(ifc) <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>					ifc.<span style="color:#a6e22e">getMethods</span>().<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> 0) {
+</span></span><span style="display:flex;"><span>				hasReasonableProxyInterface <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">break</span>;
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (hasReasonableProxyInterface) {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 设置proxyFactory的interface属性，用于实现jdk代理</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (Class<span style="color:#f92672">&lt;?&gt;</span> ifc : targetInterfaces) {
+</span></span><span style="display:flex;"><span>				proxyFactory.<span style="color:#a6e22e">addInterface</span>(ifc);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果当前被代理的目标对象不是基于接口的，那么还是会设置proxyTargetClass=true走CGLIB代理</span>
+</span></span><span style="display:flex;"><span>			proxyFactory.<span style="color:#a6e22e">setProxyTargetClass</span>(<span style="color:#66d9ef">true</span>);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>从上面的代码切入，我们知道：</p>
 <ol>
@@ -795,122 +795,122 @@ code.has-jax {
 <h4 id="问题的深入">问题的深入<a href="#问题的深入" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>书接上文，针对上面的问题，我们继续阅读相关源码。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AbstractAutoProxyCreator</span> <span style="color:#66d9ef">extends</span> ProxyProcessorSupport
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">implements</span> SmartInstantiationAwareBeanPostProcessor<span style="color:#f92672">,</span> BeanFactoryAware <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">implements</span> SmartInstantiationAwareBeanPostProcessor, BeanFactoryAware {
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldProxyTargetClass</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> beanClass<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> String beanName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 我们是基于AnnotationConfigApplicationContext创建的上下文，默认是其父类         
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// GenericApplicationContext创建了DefaultListableBeanFactory类
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 而前者是ConfigurableListableBeanFactory的默认实现，所以第一个是true
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">return</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">beanFactory</span> <span style="color:#66d9ef">instanceof</span> ConfigurableListableBeanFactory <span style="color:#f92672">&amp;&amp;</span>
-</span></span><span style="display:flex;"><span>				AutoProxyUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">shouldProxyTargetClass</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">(</span>ConfigurableListableBeanFactory<span style="color:#f92672">)</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">beanFactory</span><span style="color:#f92672">,</span> beanName<span style="color:#f92672">));</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>    
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldProxyTargetClass</span>(Class<span style="color:#f92672">&lt;?&gt;</span> beanClass, <span style="color:#a6e22e">@Nullable</span> String beanName) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 我们是基于AnnotationConfigApplicationContext创建的上下文，默认是其父类         </span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// GenericApplicationContext创建了DefaultListableBeanFactory类</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 而前者是ConfigurableListableBeanFactory的默认实现，所以第一个是true</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> (<span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">beanFactory</span> <span style="color:#66d9ef">instanceof</span> ConfigurableListableBeanFactory <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>				AutoProxyUtils.<span style="color:#a6e22e">shouldProxyTargetClass</span>(
+</span></span><span style="display:flex;"><span>                    (ConfigurableListableBeanFactory) <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">beanFactory</span>, beanName));
+</span></span><span style="display:flex;"><span>	}    
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AutoProxyUtils</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AutoProxyUtils</span> {
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> String PRESERVE_TARGET_CLASS_ATTRIBUTE <span style="color:#f92672">=</span>
-</span></span><span style="display:flex;"><span>			Conventions<span style="color:#f92672">.</span><span style="color:#a6e22e">getQualifiedAttributeName</span><span style="color:#f92672">(</span>AutoProxyUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;preserveTargetClass&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>			Conventions.<span style="color:#a6e22e">getQualifiedAttributeName</span>(AutoProxyUtils.<span style="color:#a6e22e">class</span>, <span style="color:#e6db74">&#34;preserveTargetClass&#34;</span>);
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldProxyTargetClass</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>			ConfigurableListableBeanFactory beanFactory<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> String beanName<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// isNull判断 &amp; 容器中是否包含当前bean
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>beanName <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> beanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">containsBeanDefinition</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果包含，那么获取BeanDefinition判断是否包含PRESERVE_TARGET_CLASS_ATTRIBUTE属性
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			BeanDefinition bd <span style="color:#f92672">=</span> beanFactory<span style="color:#f92672">.</span><span style="color:#a6e22e">getBeanDefinition</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">TRUE</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>bd<span style="color:#f92672">.</span><span style="color:#a6e22e">getAttribute</span><span style="color:#f92672">(</span>PRESERVE_TARGET_CLASS_ATTRIBUTE<span style="color:#f92672">));</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">shouldProxyTargetClass</span>(
+</span></span><span style="display:flex;"><span>			ConfigurableListableBeanFactory beanFactory, <span style="color:#a6e22e">@Nullable</span> String beanName) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// isNull判断 &amp; 容器中是否包含当前bean</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (beanName <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> beanFactory.<span style="color:#a6e22e">containsBeanDefinition</span>(beanName)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果包含，那么获取BeanDefinition判断是否包含PRESERVE_TARGET_CLASS_ATTRIBUTE属性</span>
+</span></span><span style="display:flex;"><span>			BeanDefinition bd <span style="color:#f92672">=</span> beanFactory.<span style="color:#a6e22e">getBeanDefinition</span>(beanName);
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> Boolean.<span style="color:#a6e22e">TRUE</span>.<span style="color:#a6e22e">equals</span>(bd.<span style="color:#a6e22e">getAttribute</span>(PRESERVE_TARGET_CLASS_ATTRIBUTE));
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>阅读完上述代码，我们可以了解到为什么<code>shouldProxyTargetClass()</code>返回了<code>true</code>，因为当前的BeanDefinition中包含了<code>PRESERVE_TARGET_CLASS_ATTRIBUTE</code>属性。那么：这个属性是什么时候设置的呢？</p>
 </blockquote>
 <h4 id="问题继续深入">问题继续深入<a href="#问题继续深入" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>借助IDEA我们可以知道Spring在<code>ConfigurationClassPostProcessor.enhanceConfigurationClasses()方法</code>中设置了<code>PRESERVE_TARGET_CLASS_ATTRIBUTE</code>属性。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 解析配置类注解的核心后置处理器，启动时注入到容器中
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassPostProcessor</span> <span style="color:#66d9ef">implements</span> BeanDefinitionRegistryPostProcessor<span style="color:#f92672">,</span>
-</span></span><span style="display:flex;"><span>		PriorityOrdered<span style="color:#f92672">,</span> ResourceLoaderAware<span style="color:#f92672">,</span> BeanClassLoaderAware<span style="color:#f92672">,</span> EnvironmentAware <span style="color:#f92672">{</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#75715e">// 解析配置类注解的核心后置处理器，启动时注入到容器中</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassPostProcessor</span> <span style="color:#66d9ef">implements</span> BeanDefinitionRegistryPostProcessor,
+</span></span><span style="display:flex;"><span>		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
 </span></span><span style="display:flex;"><span>                   
 </span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">@Override</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">postProcessBeanDefinitionRegistry</span><span style="color:#f92672">(</span>BeanDefinitionRegistry registry<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略无关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 最终调用了ConfigurationClassUtils.checkConfigurationClassCandidate设置了		
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// CONFIGURATION_CLASS_ATTRIBUTE属性
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		processConfigBeanDefinitions<span style="color:#f92672">(</span>registry<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">postProcessBeanDefinitionRegistry</span>(BeanDefinitionRegistry registry) {
+</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 省略无关代码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最终调用了ConfigurationClassUtils.checkConfigurationClassCandidate设置了		</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// CONFIGURATION_CLASS_ATTRIBUTE属性</span>
+</span></span><span style="display:flex;"><span>		processConfigBeanDefinitions(registry);
+</span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enhanceConfigurationClasses</span><span style="color:#f92672">(</span>ConfigurableListableBeanFactory beanFactory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 核心 如果当前类被具有full属性，那么最终会添加PRESERVE_TARGET_CLASS_ATTRIBUTE属性
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 核心，在BeanDefinition通过registry注册的时候会设置参数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 最终调用ConfigurationClassUtils.checkConfigurationClassCandidate中设置
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>ConfigurationClassUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">CONFIGURATION_CLASS_FULL</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>configClassAttr<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 省略无关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            <span style="color:#75715e">// 添加成员到configBeanDefs中
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			configBeanDefs<span style="color:#f92672">.</span><span style="color:#a6e22e">put</span><span style="color:#f92672">(</span>beanName<span style="color:#f92672">,</span> <span style="color:#f92672">(</span>AbstractBeanDefinition<span style="color:#f92672">)</span> beanDef<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>Map<span style="color:#f92672">.</span><span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> AbstractBeanDefinition<span style="color:#f92672">&gt;</span> entry <span style="color:#f92672">:</span> configBeanDefs<span style="color:#f92672">.</span><span style="color:#a6e22e">entrySet</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果@Configuration的proxyBeanMethods=true那么会被设置PRESERVE_TARGET_CLASS_ATTRIBUTE
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			beanDef<span style="color:#f92672">.</span><span style="color:#a6e22e">setAttribute</span><span style="color:#f92672">(</span>AutoProxyUtils<span style="color:#f92672">.</span><span style="color:#a6e22e">PRESERVE_TARGET_CLASS_ATTRIBUTE</span><span style="color:#f92672">,</span> Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">TRUE</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 设置Bean增强时被回调的操作
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>            Class<span style="color:#f92672">&lt;?&gt;</span> enhancedClass <span style="color:#f92672">=</span> enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">enhance</span><span style="color:#f92672">(</span>configClass<span style="color:#f92672">,</span> <span style="color:#66d9ef">this</span><span style="color:#f92672">.</span><span style="color:#a6e22e">beanClassLoader</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 省略无关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">enhanceConfigurationClasses</span>(ConfigurableListableBeanFactory beanFactory) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 核心 如果当前类被具有full属性，那么最终会添加PRESERVE_TARGET_CLASS_ATTRIBUTE属性</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 核心，在BeanDefinition通过registry注册的时候会设置参数</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 最终调用ConfigurationClassUtils.checkConfigurationClassCandidate中设置</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (ConfigurationClassUtils.<span style="color:#a6e22e">CONFIGURATION_CLASS_FULL</span>.<span style="color:#a6e22e">equals</span>(configClassAttr)) {
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 省略无关代码</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 添加成员到configBeanDefs中</span>
+</span></span><span style="display:flex;"><span>			configBeanDefs.<span style="color:#a6e22e">put</span>(beanName, (AbstractBeanDefinition) beanDef);
+</span></span><span style="display:flex;"><span>			}
+</span></span><span style="display:flex;"><span>    	<span style="color:#66d9ef">for</span> (Map.<span style="color:#a6e22e">Entry</span><span style="color:#f92672">&lt;</span>String, AbstractBeanDefinition<span style="color:#f92672">&gt;</span> entry : configBeanDefs.<span style="color:#a6e22e">entrySet</span>()) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 如果@Configuration的proxyBeanMethods=true那么会被设置PRESERVE_TARGET_CLASS_ATTRIBUTE</span>
+</span></span><span style="display:flex;"><span>			beanDef.<span style="color:#a6e22e">setAttribute</span>(AutoProxyUtils.<span style="color:#a6e22e">PRESERVE_TARGET_CLASS_ATTRIBUTE</span>, Boolean.<span style="color:#a6e22e">TRUE</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 设置Bean增强时被回调的操作</span>
+</span></span><span style="display:flex;"><span>            Class<span style="color:#f92672">&lt;?&gt;</span> enhancedClass <span style="color:#f92672">=</span> enhancer.<span style="color:#a6e22e">enhance</span>(configClass, <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">beanClassLoader</span>);
+</span></span><span style="display:flex;"><span>			<span style="color:#75715e">// 省略无关代码</span>
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassUtils</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">checkConfigurationClassCandidate</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>			BeanDefinition beanDef<span style="color:#f92672">,</span> MetadataReaderFactory metadataReaderFactory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">// 省略无关代码
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#75715e">// 获取配置类上@Configuration中的参数
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        Map<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">,</span> Object<span style="color:#f92672">&gt;</span> config <span style="color:#f92672">=</span> metadata<span style="color:#f92672">.</span><span style="color:#a6e22e">getAnnotationAttributes</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>            										Configuration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">getName</span><span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果proxyBeanMethods=true，那么设置为full（默认）
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>config <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>Boolean<span style="color:#f92672">.</span><span style="color:#a6e22e">FALSE</span><span style="color:#f92672">.</span><span style="color:#a6e22e">equals</span><span style="color:#f92672">(</span>config<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;proxyBeanMethods&#34;</span><span style="color:#f92672">)))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			beanDef<span style="color:#f92672">.</span><span style="color:#a6e22e">setAttribute</span><span style="color:#f92672">(</span>CONFIGURATION_CLASS_ATTRIBUTE<span style="color:#f92672">,</span> CONFIGURATION_CLASS_FULL<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 否则设置为lite
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>config <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> isConfigurationCandidate<span style="color:#f92672">(</span>metadata<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			beanDef<span style="color:#f92672">.</span><span style="color:#a6e22e">setAttribute</span><span style="color:#f92672">(</span>CONFIGURATION_CLASS_ATTRIBUTE<span style="color:#f92672">,</span> CONFIGURATION_CLASS_LITE<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassUtils</span> {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">checkConfigurationClassCandidate</span>(
+</span></span><span style="display:flex;"><span>			BeanDefinition beanDef, MetadataReaderFactory metadataReaderFactory) {
+</span></span><span style="display:flex;"><span>    	<span style="color:#75715e">// 省略无关代码</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 获取配置类上@Configuration中的参数</span>
+</span></span><span style="display:flex;"><span>        Map<span style="color:#f92672">&lt;</span>String, Object<span style="color:#f92672">&gt;</span> config <span style="color:#f92672">=</span> metadata.<span style="color:#a6e22e">getAnnotationAttributes</span>(
+</span></span><span style="display:flex;"><span>            										Configuration.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">getName</span>());
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 如果proxyBeanMethods=true，那么设置为full（默认）</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (config <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>Boolean.<span style="color:#a6e22e">FALSE</span>.<span style="color:#a6e22e">equals</span>(config.<span style="color:#a6e22e">get</span>(<span style="color:#e6db74">&#34;proxyBeanMethods&#34;</span>))) {
+</span></span><span style="display:flex;"><span>			beanDef.<span style="color:#a6e22e">setAttribute</span>(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_FULL);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 否则设置为lite</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (config <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">||</span> isConfigurationCandidate(metadata)) {
+</span></span><span style="display:flex;"><span>			beanDef.<span style="color:#a6e22e">setAttribute</span>(CONFIGURATION_CLASS_ATTRIBUTE, CONFIGURATION_CLASS_LITE);
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassEnhancer</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// CGLIB callback回调的逻辑
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Callback<span style="color:#f92672">[]</span> CALLBACKS <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Callback<span style="color:#f92672">[]</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">new</span> BeanMethodInterceptor<span style="color:#f92672">(),</span> <span style="color:#75715e">// 拦截@Bean注解的核心类
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">new</span> BeanFactoryAwareMethodInterceptor<span style="color:#f92672">(),</span>
-</span></span><span style="display:flex;"><span>			NoOp<span style="color:#f92672">.</span><span style="color:#a6e22e">INSTANCE</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ConfigurationClassEnhancer</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// CGLIB callback回调的逻辑</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> Callback<span style="color:#f92672">[]</span> CALLBACKS <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Callback<span style="color:#f92672">[]</span> {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">new</span> BeanMethodInterceptor(), <span style="color:#75715e">// 拦截@Bean注解的核心类</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">new</span> BeanFactoryAwareMethodInterceptor(),
+</span></span><span style="display:flex;"><span>			NoOp.<span style="color:#a6e22e">INSTANCE</span>
+</span></span><span style="display:flex;"><span>	};
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">final</span> ConditionalCallbackFilter CALLBACK_FILTER <span style="color:#f92672">=</span> 
-</span></span><span style="display:flex;"><span>        									<span style="color:#66d9ef">new</span> ConditionalCallbackFilter<span style="color:#f92672">(</span>CALLBACKS<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        									<span style="color:#66d9ef">new</span> ConditionalCallbackFilter(CALLBACKS);
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Class<span style="color:#f92672">&lt;?&gt;</span> enhance<span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> configClass<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> ClassLoader classLoader<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>EnhancedConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">.</span><span style="color:#a6e22e">isAssignableFrom</span><span style="color:#f92672">(</span>configClass<span style="color:#f92672">))</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> configClass<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 基于CGLIB创建增强代理类
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		Class<span style="color:#f92672">&lt;?&gt;</span> enhancedClass <span style="color:#f92672">=</span> createClass<span style="color:#f92672">(</span>newEnhancer<span style="color:#f92672">(</span>configClass<span style="color:#f92672">,</span> classLoader<span style="color:#f92672">));</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> enhancedClass<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Class<span style="color:#f92672">&lt;?&gt;</span> enhance(Class<span style="color:#f92672">&lt;?&gt;</span> configClass, <span style="color:#a6e22e">@Nullable</span> ClassLoader classLoader) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (EnhancedConfiguration.<span style="color:#a6e22e">class</span>.<span style="color:#a6e22e">isAssignableFrom</span>(configClass)) {
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">return</span> configClass;
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 基于CGLIB创建增强代理类</span>
+</span></span><span style="display:flex;"><span>		Class<span style="color:#f92672">&lt;?&gt;</span> enhancedClass <span style="color:#f92672">=</span> createClass(newEnhancer(configClass, classLoader));
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> enhancedClass;
+</span></span><span style="display:flex;"><span>	}
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Enhancer <span style="color:#a6e22e">newEnhancer</span><span style="color:#f92672">(</span>Class<span style="color:#f92672">&lt;?&gt;</span> configSuperClass<span style="color:#f92672">,</span> <span style="color:#a6e22e">@Nullable</span> ClassLoader classLoader<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>		Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setSuperclass</span><span style="color:#f92672">(</span>configSuperClass<span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 配置类会增加对EnhancedConfiguration接口的实现
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setInterfaces</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> Class<span style="color:#f92672">&lt;?&gt;[]</span> <span style="color:#f92672">{</span>EnhancedConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">});</span>
-</span></span><span style="display:flex;"><span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setUseFactory</span><span style="color:#f92672">(</span><span style="color:#66d9ef">false</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setNamingPolicy</span><span style="color:#f92672">(</span>SpringNamingPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">INSTANCE</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setStrategy</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> BeanFactoryAwareGeneratorStrategy<span style="color:#f92672">(</span>classLoader<span style="color:#f92672">));</span>
-</span></span><span style="display:flex;"><span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallbackFilter</span><span style="color:#f92672">(</span>CALLBACK_FILTER<span style="color:#f92672">);</span> <span style="color:#75715e">// 设置CGLIB CALLBACK 核心！
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>		enhancer<span style="color:#f92672">.</span><span style="color:#a6e22e">setCallbackTypes</span><span style="color:#f92672">(</span>CALLBACK_FILTER<span style="color:#f92672">.</span><span style="color:#a6e22e">getCallbackTypes</span><span style="color:#f92672">());</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> enhancer<span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> Enhancer <span style="color:#a6e22e">newEnhancer</span>(Class<span style="color:#f92672">&lt;?&gt;</span> configSuperClass, <span style="color:#a6e22e">@Nullable</span> ClassLoader classLoader) {
+</span></span><span style="display:flex;"><span>		Enhancer enhancer <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Enhancer();
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setSuperclass</span>(configSuperClass);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 配置类会增加对EnhancedConfiguration接口的实现</span>
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setInterfaces</span>(<span style="color:#66d9ef">new</span> Class<span style="color:#f92672">&lt;?&gt;[]</span> {EnhancedConfiguration.<span style="color:#a6e22e">class</span>});
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setUseFactory</span>(<span style="color:#66d9ef">false</span>);
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setNamingPolicy</span>(SpringNamingPolicy.<span style="color:#a6e22e">INSTANCE</span>);
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setStrategy</span>(<span style="color:#66d9ef">new</span> BeanFactoryAwareGeneratorStrategy(classLoader));
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setCallbackFilter</span>(CALLBACK_FILTER); <span style="color:#75715e">// 设置CGLIB CALLBACK 核心！</span>
+</span></span><span style="display:flex;"><span>		enhancer.<span style="color:#a6e22e">setCallbackTypes</span>(CALLBACK_FILTER.<span style="color:#a6e22e">getCallbackTypes</span>());
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">return</span> enhancer;
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>通过上述代码的解析，我们可知，因为目标类上的<code>@Configuration(proxyBeanMethods=true)</code>注解，设置了<code>CONFIGURATION_CLASS_FULL</code>属性，继而设置了<code>PRESERVE_TARGET_CLASS_ATTRIBUTE</code>，最终设置了<code>proxyTargetClass=true</code>属性，用于创建CGLIB代理并设置默认的CALLBACK回调（<code>Spring CGLIB代理的通知类都是通过实现MethodInterceptor接口来实现的，CALLBACK中的BeanMethodInterceptor也是实现此接口，在proceed()执行时会被调用</code>）。</p>
 <p>我们继续思考：</p>
@@ -919,58 +919,58 @@ code.has-jax {
 </blockquote>
 <h4 id="configuration">@Configuration<a href="#configuration" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h4>
 <p>经过上面的源码阅读，我们知道解决问题的关键在于@Configuration注解。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Target</span><span style="color:#f92672">(</span>ElementType<span style="color:#f92672">.</span><span style="color:#a6e22e">TYPE</span><span style="color:#f92672">)</span>
-</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Retention</span><span style="color:#f92672">(</span>RetentionPolicy<span style="color:#f92672">.</span><span style="color:#a6e22e">RUNTIME</span><span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Target</span>(ElementType.<span style="color:#a6e22e">TYPE</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Retention</span>(RetentionPolicy.<span style="color:#a6e22e">RUNTIME</span>)
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Documented</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Component</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Configuration <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">proxyBeanMethods</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">;</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#a6e22e">@interface</span> Configuration {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">boolean</span> <span style="color:#a6e22e">proxyBeanMethods</span>() <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">true</span>;
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>翻译注释可知：</p>
 <p>proxyBeanMethods属性是用来指定<code>@Bean注解标注的方法是否使用代理（默认为true）</code>，如果开启代理那么会<code>直接从IOC容器之中取得对象</code>；如果关闭则每次调用@Bean标注的方法获取到的对象则是<code>一个新的对象（与容器中不同）</code>。</p>
 </blockquote>
 <p>我们还是写个demo测试下把：</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Configuration</span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchoolConfiguration</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">SchoolConfiguration</span> {
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Teacher <span style="color:#a6e22e">teacher</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Teacher<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Teacher <span style="color:#a6e22e">teacher</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Teacher();
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Bean</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 我们在student方法中调用teacher()
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        teacher<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student<span style="color:#f92672">();</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> Student <span style="color:#a6e22e">student</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 我们在student方法中调用teacher()</span>
+</span></span><span style="display:flex;"><span>        teacher();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Student();
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Data</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Teacher</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Teacher</span> {
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Teacher</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;teacher ...&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Teacher</span>() {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;teacher ...&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    
 </span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Data</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
-</span></span><span style="display:flex;"><span>            System<span style="color:#f92672">.</span><span style="color:#a6e22e">out</span><span style="color:#f92672">.</span><span style="color:#a6e22e">println</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;student ...&#34;</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Student</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">Student</span>() {
+</span></span><span style="display:flex;"><span>            System.<span style="color:#a6e22e">out</span>.<span style="color:#a6e22e">println</span>(<span style="color:#e6db74">&#34;student ...&#34;</span>);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>    
-</span></span><span style="display:flex;"><span>  	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span><span style="color:#f92672">(</span>String<span style="color:#f92672">[]</span> args<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  	<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">main</span>(String<span style="color:#f92672">[]</span> args) {
 </span></span><span style="display:flex;"><span>        AnnotationConfigApplicationContext context <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> 
-</span></span><span style="display:flex;"><span>            AnnotationConfigApplicationContext<span style="color:#f92672">(</span>SchoolConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        SchoolConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">Teacher</span> teacher <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>            							SchoolConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">Teacher</span><span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        SchoolConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">Student</span> student <span style="color:#f92672">=</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getBean</span><span style="color:#f92672">(</span>
-</span></span><span style="display:flex;"><span>            							SchoolConfiguration<span style="color:#f92672">.</span><span style="color:#a6e22e">Student</span><span style="color:#f92672">.</span><span style="color:#a6e22e">class</span><span style="color:#f92672">);</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 问teacher ...会被调用几次
-</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            AnnotationConfigApplicationContext(SchoolConfiguration.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        SchoolConfiguration.<span style="color:#a6e22e">Teacher</span> teacher <span style="color:#f92672">=</span> context.<span style="color:#a6e22e">getBean</span>(
+</span></span><span style="display:flex;"><span>            							SchoolConfiguration.<span style="color:#a6e22e">Teacher</span>.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        SchoolConfiguration.<span style="color:#a6e22e">Student</span> student <span style="color:#f92672">=</span> context.<span style="color:#a6e22e">getBean</span>(
+</span></span><span style="display:flex;"><span>            							SchoolConfiguration.<span style="color:#a6e22e">Student</span>.<span style="color:#a6e22e">class</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 问teacher ...会被调用几次</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><blockquote>
 <p>默认开启<code>proxyBeanMethods</code>那么会调用一次，如果关闭则会调用两次。</p>
 <p>原理：开启<code>proxyBeanMethods</code>会在CGLIB的CALLBACK中设置了<code>BeanMethodInterceptor</code>回调，在@Bean修饰的方法被调用时候通过CGLIB代理进行拦截，从容器中返回@Bean创建的对象，保证了@Bean方法的<code>单例原则</code>。</p>

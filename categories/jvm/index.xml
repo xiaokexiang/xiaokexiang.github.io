@@ -7,22 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
-    <lastBuildDate>Tue, 14 Feb 2023 14:58:25 +0800</lastBuildDate><atom:link href="https://leejay.top/categories/jvm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 14 Feb 2023 14:58:25 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/categories/jvm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Java虚拟机概述</title>
       <link>https://leejay.top/post/jvm_in_action/</link>
       <pubDate>Tue, 14 Feb 2023 14:58:25 +0800</pubDate>
-      
       <guid>https://leejay.top/post/jvm_in_action/</guid>
-      <description>1. 类加载流程 Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。
-1.1 类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。
-其中验证、准备、解析统称为连接。
-需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。
-类初始化的六种情况 《Java虚拟机规范》中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：
-遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：
-使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。
-调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A.</description>
+      <description>1. 类加载流程 Java虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型。&#xA;1.1 类加载时机 类加载的生命周期 类型被加载到虚拟机内存中开始，到卸载出内存为止，整个生命周期经历如上七个阶段。&#xA;其中验证、准备、解析统称为连接。&#xA;需要注意的是：解析阶段顺序是不确定的，它可以在初始化阶段之后再开始。&#xA;类初始化的六种情况 《Java虚拟机规范》中规定了六种要立即对类进行”初始化“(加载、验证、准备自然需要在此之前执行)的情况：&#xA;遇到new、getstatic、putstatic、invokestatic这四条字节码指令时，类型没有过初始化，生成这四条字节码指令的场景有：&#xA;使用new关键字实例化对象。 // 会初始化A A a = new A(); 读取或设置一个类型的静态字段(final修饰、编译器进入常量池的静态字段除外)。 class B { // 会导致A类被初始化 static A a = new A(); public static void main(String[] args) { // 不会导致A类被初始化 System.out.print(A.HELLO_WORLD); } } class A { static final String HELLO_WORLD = &amp;#34;hello_world&amp;#34;; } 引用静态字符串常量不会导致持有该常量的类初始化。&#xA;调用一个类型的静态方法 class A { static void print() { System.out.print(&amp;#34;hello&amp;#34;); } public static void main(String[] args) { A.</description>
     </item>
-    
   </channel>
 </rss>
