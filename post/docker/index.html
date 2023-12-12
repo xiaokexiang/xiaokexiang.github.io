@@ -464,6 +464,34 @@ code.has-jax {
         
         
         
+        
+        
+        
+        
+        
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+        <ul class="nav">
+            
+            
+            <li class="nav-item">
+                <a class="nav-link" href="#tini">
+                    tini
+                </a>
+            </li>
+            
+            
+        </ul>
+        
+        </ul>
+        
+        </ul>
+        
+        
+        
+        
 
     </div>
 
@@ -591,7 +619,7 @@ code.has-jax {
 </span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ENTRYPOINT [&#34;ls&#34;, &#34;-l&#34;]</span><span style="color:#960050;background-color:#1e0010">
 </span></span></span></code></pre></div><blockquote>
 <ul>
-<li>镜像build后，若执行docker run image -h,那么会提示错误信息。而将CMD换成ENTRYPOINT则不会。</li>
+<li>镜像build后，若执行docker run image -h,那么会提示错误信息（因为覆盖了ls -l 命令，执行的是-h）。而将CMD换成ENTRYPOINT则不会（会拼接，执行<code>ls -l -h</code>）。</li>
 </ul>
 </blockquote>
 <h3 id="env--arg">ENV &amp; ARG<a href="#env--arg" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
@@ -604,7 +632,25 @@ code.has-jax {
 </span></span></span></code></pre></div><blockquote>
 <ul>
 <li>如果此处不使用<code>sh -c</code>执行命令，那么并不会正确显示ENV变量。</li>
+<li>如果在一行中执行多个命令，需要使用<code>-c</code>显示指定。</li>
 </ul>
+</blockquote>
+<h3 id="tini">tini<a href="#tini" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h3>
+<p>tini（Tiny Init的缩写）是一个轻量级的初始化系统，用于解决在容器环境中启动进程时可能遇到的一些问题。它设计用于替代传统的init系统，如systemd或sysvinit，以提供更好的容器进程管理。</p>
+<blockquote>
+<ul>
+<li>一般来说，docker容器启动时，容器内第一个启动的进程会被分配为PID1，通常PID1的进程被视为init进程，init进程负责启动和管理其他系统进程。</li>
+<li>当java进程成为PID1时，会出现JVM无法正确处理SIGTERM信号来优雅的终止进程。<code>jstack &lt;pid&gt;</code>命令也无法处理，因为无法处理<code>SIGQUIT</code>信号。</li>
+<li>tini被设计为更好地处理信号，并能够确保它们正确地传递给Java进程，以便在容器停止时进行优雅的关闭。</li>
+</ul>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-dockerfile" data-lang="dockerfile"><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> wget -O /sbin/tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-static-amd64<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> chmod +x /sbin/tini<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENTRYPOINT</span> [<span style="color:#e6db74">&#34;/sbin/tini&#34;</span>, <span style="color:#e6db74">&#34;--&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;sleep&#34;</span>, <span style="color:#e6db74">&#34;infinity&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></span></span></code></pre></div><blockquote>
+<p>top查看pid，tini进程的pid为1</p>
 </blockquote>
       </div></div>
 
