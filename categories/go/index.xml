@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on Keep Improving</title>
+    <link>https://leejay.top/categories/go/</link>
+    <description>Recent content in go on Keep Improving</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>苏ICP备18050258号-1</copyright>
+    <lastBuildDate>Fri, 03 Nov 2023 20:51:29 +0800</lastBuildDate>
+    <atom:link href="https://leejay.top/categories/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go语言实战</title>
+      <link>https://leejay.top/post/go/</link>
+      <pubDate>Fri, 03 Nov 2023 20:51:29 +0800</pubDate>
+      <guid>https://leejay.top/post/go/</guid>
+      <description>1.1 名称 函数、变量、常量、类型、语句标签和包都遵循: 字母或下划线开头，后面跟随任意数量的字符，数字和下划线，并且区分大小写。 若实体在函数中声明，那么实体只在函数局部有效。如果声明在函数外，将对包内所有源文件可见。 实体的第一个字母的大小写决定其可见性是否跨包，大写表示对包外是可见和可访问的。 1.2 声明 package main import &amp;#34;fmt&amp;#34; const commonConstant = &amp;#34;common&amp;#34; func main() { var a = commonConstant var b string // 会默认初始化为&amp;#34;&amp;#34; var c string = &amp;#34;c&amp;#34; var d = &amp;#34;d&amp;#34; e := &amp;#34;e&amp;#34; // 短变量声明 x, y := true, 2.3 // 一次定义多个变量 fmt.Println(a) // common fmt.Println(b) // &amp;#34;&amp;#34; fmt.Println(c) // c fmt.Println(d) // d fmt.Println(e) // e fmt.Println(x) fmt.Println(y) } 定义变量时如果不指定初始值，那么默认初始化为零值（int为0，string为&amp;quot;&amp;quot;&amp;hellip;） 1.3 变量 1.</description>
+    </item>
+  </channel>
+</rss>
