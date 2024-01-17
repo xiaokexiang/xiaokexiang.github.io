@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Queue on Keep Improving</title>
-    <link>https://leejay.top/categories/queue/</link>
+    <link>https://blog.leejay.top/categories/queue/</link>
     <description>Recent content in Queue on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Mon, 06 Jul 2020 19:20:56 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/queue/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/queue/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>BlockingDeque双端阻塞队列源码浅析</title>
-      <link>https://leejay.top/post/concurrent_blocking_deque/</link>
+      <link>https://blog.leejay.top/post/concurrent_blocking_deque/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
-      <guid>https://leejay.top/post/concurrent_blocking_deque/</guid>
+      <guid>https://blog.leejay.top/post/concurrent_blocking_deque/</guid>
       <description>BlockingDeque 双端队列，支持在队列的头尾出增加或获取数据，Deque接口中定义了相关的方法&#xA;public interface Deque&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加到队首 void addFirst(E e); // 添加到队尾 void addLast(E e); // 获取队首 boolean offerFirst(E e); // 获取队尾 boolean offerLast(E e); ... }&#x9;相比BlockingQueue的父接口Queue，Deque中定义了头尾操作数据的方法。&#xA;public interface BlockingDeque&amp;lt;E&amp;gt; extends BlockingQueue&amp;lt;E&amp;gt;, Deque&amp;lt;E&amp;gt; { void putFirst(E e) throws InterruptedException; void putLast(E e) throws InterruptedException; E takeFirst() throws InterruptedException; E takeLast() throws InterruptedException; ... } BlockingQueue继承了BlockingQueue和Deque接口。添加了一些抛出中断的方法。&#xA;LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列的实现。&#xA;构造 public class LinkedBlockingDeque&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements BlockingDeque&amp;lt;E&amp;gt;, java.io.Serializable { // 内部维护的静态内部类是双向节点 static final class Node&amp;lt;E&amp;gt; { E item; Node&amp;lt;E&amp;gt; prev;// 区别 Node&amp;lt;E&amp;gt; next; Node(E x) { item = x; } } // (first == null &amp;amp;&amp;amp; last == null) || // (first.</description>
     </item>
     <item>
       <title>BlockingQueue单向阻塞队列源码解析</title>
-      <link>https://leejay.top/post/concurrent_blocking_queue/</link>
+      <link>https://blog.leejay.top/post/concurrent_blocking_queue/</link>
       <pubDate>Sat, 04 Jul 2020 20:38:54 +0800</pubDate>
-      <guid>https://leejay.top/post/concurrent_blocking_queue/</guid>
+      <guid>https://blog.leejay.top/post/concurrent_blocking_queue/</guid>
       <description>BlockingQueue 概念 BlockingQueue带阻塞功能的线程安全队列，但队列已满时会阻塞添加者，当队列为空时会阻塞获取者。它本身是一个接口，具体的功能由它的实现类来完成。&#xA;接口方法 public interface BlockingQueue&amp;lt;E&amp;gt; extends Queue&amp;lt;E&amp;gt; { // 添加元素到队列中返回boolean，队列满抛出异常 boolean add(E e); // 添加元素到队列中，无返回值，抛出中断异常，队列满就阻塞 void put(E e) throws InterruptedException; // 添加元素返回boolea 队列满就返回false，非阻塞 boolean offer(E e); // 添加元素返回boolean，等待指定时间直到队列有空间可插入 boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException; // 从队首获取元素并删除，阻塞，支持等待时中断异常 E take() throws InterruptedException; // 获取队首元素并删除，若无元素等待执行时长，时间到还没有就返回null E poll(long timeout, TimeUnit unit) throws InterruptedException; // 返回理想状态下队列不阻塞可加入的元素数量，如果队列没有最大限制就返回 // Integer.max_value int remainingCapacity(); // 移除指定元素（1个或多个）若它存在(equals比较) // 若元素存在（或队列改变）返回true boolean remove(Object o); // 判断队列是否至少包含一个某元素 public boolean contains(Object o); // 移除队列中全部可用元素，添加到指定集合中，若元素添加失败可能导致元素不在 // 移除前和添加后的集合中 int drainTo(Collection&amp;lt;?</description>
     </item>
   </channel>

@@ -9,21 +9,21 @@
 <meta name="description" content="__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数 usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1 Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/linux_shell/" />
+<link rel="canonical" href="https://blog.leejay.top/post/linux_shell/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -35,11 +35,11 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Shell启动服务">
 <meta property="og:description" content="shell脚本通过jar方式启动java服务" />
-<meta property="og:url" content="https://leejay.top/post/linux_shell/" />
+<meta property="og:url" content="https://blog.leejay.top/post/linux_shell/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -70,7 +70,7 @@
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -132,7 +132,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/linux_shell/">Shell启动服务</a></h1>
+    <a href="https://blog.leejay.top/post/linux_shell/">Shell启动服务</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -145,9 +145,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/shell/">shell</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/shell/">shell</a>&nbsp;
     
-    #<a href="https://leejay.top/tags/linux/">linux</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/linux/">linux</a>&nbsp;
     
   </span>
   
@@ -278,7 +278,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/linux_cron/">
+            <a href="https://blog.leejay.top/post/linux_cron/">
                 <span class="button__icon">←</span>
                 <span class="button__text">Linux下cron定时器</span>
             </a>
@@ -286,7 +286,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/netty/">
+            <a href="https://blog.leejay.top/post/netty/">
                 <span class="button__text">Netty框架入门</span>
                 <span class="button__icon">→</span>
             </a>
@@ -315,8 +315,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

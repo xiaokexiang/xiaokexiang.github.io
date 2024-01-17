@@ -18,21 +18,21 @@ Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构�
 我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。 // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较 for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较 while (array[c] &amp;lt; array[p]) { // 交换位置和index int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0 if (p &amp;lt; 0) { break; } } } return array; } 该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/algorithm_binary_dump/" />
+<link rel="canonical" href="https://blog.leejay.top/post/algorithm_binary_dump/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -44,11 +44,11 @@ Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构�
 <meta property="og:type" content="article" />
 <meta property="og:title" content="二叉堆时间复杂度分析">
 <meta property="og:description" content="二叉堆的本质上是一颗完全二叉树。根节点存放的是这颗树的最大或最小元素。" />
-<meta property="og:url" content="https://leejay.top/post/algorithm_binary_dump/" />
+<meta property="og:url" content="https://blog.leejay.top/post/algorithm_binary_dump/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -79,7 +79,7 @@ Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构�
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -312,7 +312,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/algorithm_binary_dump/">二叉堆时间复杂度分析</a></h1>
+    <a href="https://blog.leejay.top/post/algorithm_binary_dump/">二叉堆时间复杂度分析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -325,7 +325,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/binarydump-/">BinaryDump </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/binarydump-/">BinaryDump </a>&nbsp;
     
   </span>
   
@@ -549,7 +549,7 @@ $sum(n) = n - log2n - 1$</li>
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/spring_mvc/">
+            <a href="https://blog.leejay.top/post/spring_mvc/">
                 <span class="button__icon">←</span>
                 <span class="button__text">SpringMVC使用注意</span>
             </a>
@@ -557,7 +557,7 @@ $sum(n) = n - log2n - 1$</li>
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_future/">
+            <a href="https://blog.leejay.top/post/concurrent_future/">
                 <span class="button__text">Future源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -586,8 +586,8 @@ $sum(n) = n - log2n - 1$</li>
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

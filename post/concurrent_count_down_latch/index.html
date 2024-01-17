@@ -12,21 +12,21 @@
 public class CountDownLatchTest { // 显示传入计数器值 private static final CountDownLatch LATCH = new CountDownLatch(2); public static void main(String[] args) { new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } // 子线程执行完毕就需要显式调用该方法 LATCH.countDown(); }).start(); new Thread(() -&amp;gt; { try { Thread.sleep(2000L); } catch (InterruptedException e) { e.printStackTrace(); } LATCH.countDown(); }).start(); System.out.println(&amp;#34;等待子线程结束任务 ...&amp;#34;); try { // 主线程阻塞直到计数器=0 LATCH.await(); } catch (InterruptedException e) { e." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_count_down_latch/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_count_down_latch/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -38,11 +38,11 @@ public class CountDownLatchTest { // 显示传入计数器值 private static fin
 <meta property="og:type" content="article" />
 <meta property="og:title" content="CountDownLatch源码解析">
 <meta property="og:description" content="CountDownLatch适用于一个或一组线程任务需要等到条件满足之后才能继续执行的场景。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_count_down_latch/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_count_down_latch/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -73,7 +73,7 @@ public class CountDownLatchTest { // 显示传入计数器值 private static fin
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -294,7 +294,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_count_down_latch/">CountDownLatch源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_count_down_latch/">CountDownLatch源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -307,9 +307,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/countdownlatch-/">CountDownLatch </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/countdownlatch-/">CountDownLatch </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/aqs/">AQS</a>&nbsp;
     
   </span>
   
@@ -479,7 +479,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_cyclic_barrier/">
+            <a href="https://blog.leejay.top/post/concurrent_cyclic_barrier/">
                 <span class="button__icon">←</span>
                 <span class="button__text">CyclieBarrier源码解析</span>
             </a>
@@ -487,7 +487,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_read_write_lock/">
+            <a href="https://blog.leejay.top/post/concurrent_read_write_lock/">
                 <span class="button__text">ReadWriteLock源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -516,8 +516,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

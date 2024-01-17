@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spring AOP  on Keep Improving</title>
-    <link>https://leejay.top/categories/spring-aop/</link>
+    <link>https://blog.leejay.top/categories/spring-aop/</link>
     <description>Recent content in Spring AOP  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Wed, 12 May 2021 16:18:28 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/spring-aop/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/spring-aop/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>关于EnableAspectJAutoProxy注解引出的若干问题</title>
-      <link>https://leejay.top/post/enable_aspectj_auto_proxy/</link>
+      <link>https://blog.leejay.top/post/enable_aspectj_auto_proxy/</link>
       <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
-      <guid>https://leejay.top/post/enable_aspectj_auto_proxy/</guid>
+      <guid>https://blog.leejay.top/post/enable_aspectj_auto_proxy/</guid>
       <description>&lt;blockquote&gt;&#xA;&lt;p&gt;最近在阅读Spring AOP的源码(基于Spring 5.2.8.RELEASE)中，发现&lt;code&gt;@EnableAspectJAutoProxy&lt;/code&gt;注解中的&lt;code&gt;proxyTargetClass&lt;/code&gt;参数并不如注释（&lt;code&gt;是否创建基于子类的CGLIB代理&lt;/code&gt;）中说所的哪样生效。无论我设置成true/false都会使用CGLIB代理。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
   </channel>

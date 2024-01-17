@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>raspberrypi on Keep Improving</title>
-    <link>https://leejay.top/categories/raspberrypi/</link>
+    <link>https://blog.leejay.top/categories/raspberrypi/</link>
     <description>Recent content in raspberrypi on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Fri, 17 Mar 2023 15:43:00 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/raspberrypi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Raspberrypi搭建指南</title>
-      <link>https://leejay.top/post/raspberrypi/</link>
+      <link>https://blog.leejay.top/post/raspberrypi/</link>
       <pubDate>Fri, 17 Mar 2023 15:43:00 +0800</pubDate>
-      <guid>https://leejay.top/post/raspberrypi/</guid>
+      <guid>https://blog.leejay.top/post/raspberrypi/</guid>
       <description>前置工作 安装系统 使用Raspberry Pi Imager来烧录系统，这个工具是树莓派官网推荐烧录工具，内置了系统镜像下来，树莓派4B推荐使用64位系统。同时高级设置中支持设置账户密码（账户默认是pi，密码不设置默认为raspberry）和wifi密码，设置完成等待烧录完毕即可。&#xA;查找树莓派ip 使用Advanced IP Scanner工具来实现局域网ip扫描，通过制造商来筛选出ip地址。&#xA;开启root账户 # 输入root密码 sudo passwd root # 解锁root账户 sudo passwd --unlock root # 如果没安装ssh sudo apt install ssh # 如果出现password expiry information changed提示 # 修改sshd_config中的PermitRootLogin without-password为PermitRootLogin yes sudo vi /etc/ssh/sshd_config # 重启后使用root登陆 reboot 修改ubuntu镜像源 vi /etc/apt/sources.list deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy main restricted universe multiverse deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu-ports/ jammy-updates main restricted universe multiverse deb https://mirrors.</description>
     </item>
   </channel>

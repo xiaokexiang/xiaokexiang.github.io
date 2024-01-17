@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>kmp  on Keep Improving</title>
-    <link>https://leejay.top/tags/kmp/</link>
+    <link>https://blog.leejay.top/tags/kmp/</link>
     <description>Recent content in kmp  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Wed, 08 Jun 2022 15:52:15 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/kmp/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/kmp/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kmp算法浅析</title>
-      <link>https://leejay.top/post/algorithm_kmp/</link>
+      <link>https://blog.leejay.top/post/algorithm_kmp/</link>
       <pubDate>Wed, 08 Jun 2022 15:52:15 +0800</pubDate>
-      <guid>https://leejay.top/post/algorithm_kmp/</guid>
+      <guid>https://blog.leejay.top/post/algorithm_kmp/</guid>
       <description>KMP算法：一种字符串搜索算法。是第一个用于字符串匹配的线性时间算法。&#xA;暴力匹配 在字符串匹配中，若我们使用暴力破解对主串和子串进行匹配，当匹配失败就回退到主串的下一个字符重新开始匹配。在最坏的情况下，此种方式的时间复杂度为O(m*n)。匹配流程下图所示。&#xA;KMP算法 基本概念 KMP算法（由Knuth、Morris、Pratt三人共同发表），其特点就是在一次字符串的遍历过程中就可以匹配出子串。其时间复杂度是O(m+n)。&#xA;KMP算法中的核心概念就是基于最大公共前后缀生成next数组，在匹配失败的时候避免了暴力算法中的回退所带来的高时间复杂度问题。&#xA;在理解KMP算法的核心概念最大公共前后缀之前，我们需要先明白前缀和后缀的含义。&#xA;前缀：在字符串中除了最后一个字符外，所有以第一个字符开始的连续子串。&#xA;后缀：在字符串中除了第一个字符外，所有以最后一个字符结尾的连续子串。&#xA;由此可以得出最大公共前后缀：在字符串里所有前缀和后缀相等的子串中最长的那个(不能超过字符串长度)。&#xA;graph LR A(&#34;ABAA&#34;) A --&gt; B(&#34;最大前缀: ABA&#34;) A --&gt; C(&#34;最大后缀: BAA&#34;) A --&gt; D(&#34;最大公共前后缀: A&#34;) 基于最大公共前后缀生成的next数组就是用于记录子串中不同位置的最大公共前后缀长度。也就是当匹配失败的时候，子串需要回退的位置。那么next数组是如何计算的呢？参考下图手算next数组流程。&#xA;next数组的第一位默认是-1，即当匹配失败的时候，子串往后移动一位继续匹配。 next数组的作用：若子串的第n个位置的与主串不匹配，那么需要将子串回退到next[n]的位置再次进行匹配。 计算next[n]最大公共前后缀的子串范围是$P_0P_1&amp;hellip;P_{n-1}$。 代码推导 next数组推导 若计算next[i+1]的值时，必然已经知道next[i]的值（类似动态规划）。 假设next[i]=k，根据最大公共前后缀定义，那么此时必有：$C_0C_1&amp;hellip;C_{k-1}=C_{i-k}&amp;hellip;C_{i-1}$。 若$C_k=C_i$，则 $next[i+1] = k + 1$。 若$C_k != C_i$, 若 $next[k] = z$，根据最大公共前后缀定义，此时必有：$C0&amp;hellip;C_{z-1} = C_{k-z}&amp;hellip;C_{k-1} = C_{i-k}&amp;hellip;C_{i-k+z-1} = C_{i-z}&amp;hellip;C_{i-1}$，结合第二步的结果可得：$C0&amp;hellip;C_{z-1} = C_{i-z}&amp;hellip;C_{i-1}$。 若$ C_{k-z} = C_{i} $，那么 $ next[i+1] = z + 1$。如果不相等则重复上述流程，直到最长公共前后缀的值为0就停止循环查找。 private static int[] getNext(char[] array) { final int length = array.</description>
     </item>
   </channel>

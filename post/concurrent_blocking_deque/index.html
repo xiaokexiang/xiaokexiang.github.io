@@ -13,21 +13,21 @@ LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列�
 构造 public class LinkedBlockingDeque&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements BlockingDeque&amp;lt;E&amp;gt;, java.io.Serializable { // 内部维护的静态内部类是双向节点 static final class Node&amp;lt;E&amp;gt; { E item; Node&amp;lt;E&amp;gt; prev;// 区别 Node&amp;lt;E&amp;gt; next; Node(E x) { item = x; } } // (first == null &amp;amp;&amp;amp; last == null) || // (first." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_blocking_deque/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_blocking_deque/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -39,11 +39,11 @@ LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列�
 <meta property="og:type" content="article" />
 <meta property="og:title" content="BlockingDeque双端阻塞队列源码浅析">
 <meta property="og:description" content="基于ReentrantLock、Condition实现的`双端阻塞队列`，支持在队首和队尾获取/添加数据。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_blocking_deque/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_blocking_deque/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -76,7 +76,7 @@ LinkedBlockingDeque 我们以LinkedBlockingDeque为切入点了解双端队列�
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -457,7 +457,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_blocking_deque/">BlockingDeque双端阻塞队列源码浅析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_blocking_deque/">BlockingDeque双端阻塞队列源码浅析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -470,7 +470,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/blockingdeque-/">BlockingDeque </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/blockingdeque-/">BlockingDeque </a>&nbsp;
     
   </span>
   
@@ -773,7 +773,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_copy_on_write_arraylist/">
+            <a href="https://blog.leejay.top/post/concurrent_copy_on_write_arraylist/">
                 <span class="button__icon">←</span>
                 <span class="button__text">CopyOnWriteArrayList源码解析</span>
             </a>
@@ -781,7 +781,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_blocking_queue/">
+            <a href="https://blog.leejay.top/post/concurrent_blocking_queue/">
                 <span class="button__text">BlockingQueue单向阻塞队列源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -810,8 +810,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

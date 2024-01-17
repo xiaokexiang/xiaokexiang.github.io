@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ConcurrentLinkedQueue  on Keep Improving</title>
-    <link>https://leejay.top/tags/concurrentlinkedqueue/</link>
+    <link>https://blog.leejay.top/tags/concurrentlinkedqueue/</link>
     <description>Recent content in ConcurrentLinkedQueue  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Sat, 11 Jul 2020 14:53:34 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/concurrentlinkedqueue/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/concurrentlinkedqueue/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ConcurrentLinkedQueue源码浅析</title>
-      <link>https://leejay.top/post/concurrent_linked_queue/</link>
+      <link>https://blog.leejay.top/post/concurrent_linked_queue/</link>
       <pubDate>Sat, 11 Jul 2020 14:53:34 +0800</pubDate>
-      <guid>https://leejay.top/post/concurrent_linked_queue/</guid>
+      <guid>https://blog.leejay.top/post/concurrent_linked_queue/</guid>
       <description>ConcurrentLinkedQueue 特性 基于链表的无界线程安全队列。 队列顺序是FIFO先进先出的顺序。队首是插入最久的元素，队尾是最新的元素。 使用场景：许多线程将共享对一个公共集合的访问，不支持null。 内部的并发操作通过自旋 + CAS实现。与LinkedBlockingQueue独占锁不同。 构造 public class ConcurrentLinkedQueue&amp;lt;E&amp;gt; extends AbstractQueue&amp;lt;E&amp;gt; implements Queue&amp;lt;E&amp;gt;, java.io.Serializable { // head头节点 private transient volatile Node&amp;lt;E&amp;gt; head; // tail尾节点 private transient volatile Node&amp;lt;E&amp;gt; tail; // 不用传递初始容量 public ConcurrentLinkedQueue() { // 初始化head和tail，哨兵节点 head = tail = new Node&amp;lt;E&amp;gt;(null); } // 私有静态内部类，用于构成链表的节点（单向链表） // 核心是通过CAS来实现并发操作 private static class Node&amp;lt;E&amp;gt; { volatile E item; // 标记next节点 volatile修饰的 volatile Node&amp;lt;E&amp;gt; next; // 构造 Node(E item) { // CAS添加item UNSAFE.</description>
     </item>
   </channel>

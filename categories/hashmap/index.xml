@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>HashMap on Keep Improving</title>
-    <link>https://leejay.top/categories/hashmap/</link>
+    <link>https://blog.leejay.top/categories/hashmap/</link>
     <description>Recent content in HashMap on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Wed, 07 Apr 2021 11:03:14 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/hashmap/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/hashmap/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HashMap的几点注意事项</title>
-      <link>https://leejay.top/post/hashmap/</link>
+      <link>https://blog.leejay.top/post/hashmap/</link>
       <pubDate>Wed, 07 Apr 2021 11:03:14 +0800</pubDate>
-      <guid>https://leejay.top/post/hashmap/</guid>
+      <guid>https://blog.leejay.top/post/hashmap/</guid>
       <description>HashMap的几点注意事项 数组的创建时机 final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) { Node&amp;lt;K,V&amp;gt;[] tab; Node&amp;lt;K,V&amp;gt; p; int n, i; if ((tab = table) == null || (n = tab.length) == 0) n = (tab = resize()).length; // 省略代码 } static final int DEFAULT_INITIAL_CAPACITY = 1 &amp;lt;&amp;lt; 4 final Node&amp;lt;K,V&amp;gt;[] resize() { // 省略代码 else { // 初始容量16 newCap = DEFAULT_INITIAL_CAPACITY; newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY); } Node&amp;lt;K,V&amp;gt;[] newTab = (Node&amp;lt;K,V&amp;gt;[])new Node[newCap]; // 省略代码 return newTab; } static final float DEFAULT_LOAD_FACTOR = 0.</description>
     </item>
   </channel>

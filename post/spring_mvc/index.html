@@ -10,21 +10,21 @@
 public class LoginInterceptor implements HandlerInterceptor { private final Logger log = LoggerFactory.getLogger(this.getClass()); @Override public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { log.info(&amp;#34;request is coming in ...&amp;#34;); return false; } } public class SpringCloudEurekaServerApplication implements WebMvcConfigurer { @Bean public LoginInterceptor loginInterceptor() { return new LoginInterceptor(); } @Override public void addInterceptors(InterceptorRegistry registry) { registry.addInterceptor(loginInterceptor()).addPathPatterns(&amp;#34;/**&amp;#34;); } } WebMvcConfigurer 和 WebMvcConfigurationSupport 存在WebMvcConfigurationSupport则WebMvcConfigurer不生效 @ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class }) @ConditionalOnMissingBean(WebMvcConfigurationSupport." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/spring_mvc/" />
+<link rel="canonical" href="https://blog.leejay.top/post/spring_mvc/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -36,11 +36,11 @@ public class LoginInterceptor implements HandlerInterceptor { private final Logg
 <meta property="og:type" content="article" />
 <meta property="og:title" content="SpringMVC使用注意">
 <meta property="og:description" content="SpringMVC中的拦截器、事件使用的相关注意事项" />
-<meta property="og:url" content="https://leejay.top/post/spring_mvc/" />
+<meta property="og:url" content="https://blog.leejay.top/post/spring_mvc/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -71,7 +71,7 @@ public class LoginInterceptor implements HandlerInterceptor { private final Logg
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -276,7 +276,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/spring_mvc/">SpringMVC使用注意</a></h1>
+    <a href="https://blog.leejay.top/post/spring_mvc/">SpringMVC使用注意</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -289,9 +289,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/springmvc-/">SpringMVC </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/springmvc-/">SpringMVC </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/springboot-/">SpringBoot </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/springboot-/">SpringBoot </a>&nbsp;
     
   </span>
   
@@ -468,7 +468,7 @@ io.spring.server.event.MyListener3
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/netty/">
+            <a href="https://blog.leejay.top/post/netty/">
                 <span class="button__icon">←</span>
                 <span class="button__text">Netty框架入门</span>
             </a>
@@ -476,7 +476,7 @@ io.spring.server.event.MyListener3
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/algorithm_binary_dump/">
+            <a href="https://blog.leejay.top/post/algorithm_binary_dump/">
                 <span class="button__text">二叉堆时间复杂度分析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -505,8 +505,8 @@ io.spring.server.event.MyListener3
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

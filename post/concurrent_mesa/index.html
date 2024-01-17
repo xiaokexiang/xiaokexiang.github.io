@@ -11,21 +11,21 @@
 执行流程 多个线程进入入口等待队列enterQueue，JVM会保证只有一个线程能进入管程内部，Synchronized中进入管程的线程随机。 进入管程后通过条件变量判断当前线程是否能执行操作，如果不能跳到step3，否则跳到step4。 条件变量调用阻塞方法，将当前线程放入varQueue，等待其他线程唤醒，跳回step1。 执行相应操作，执行完毕后调用notify/notifyAll等唤醒操作，唤醒对应varQueue中的一个或多个等待线程。 被唤醒的线程会从varQueue放入enterQueue中，再次执行step1。 被唤醒的线程不会立即执行，会被放入enterQueue，等待JVM下一次选择运行，而正在运行的线程会继续执行，直到程序执行完毕。 " />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_mesa/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_mesa/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -37,11 +37,11 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="MESA模型结构分析">
 <meta property="og:description" content="Java中`管理临界区资源`的管理策略。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_mesa/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_mesa/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -72,7 +72,7 @@
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -249,7 +249,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_mesa/">MESA模型结构分析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_mesa/">MESA模型结构分析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -262,9 +262,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/mesa-/">MESA </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/mesa-/">MESA </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1/">线程通信</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1/">线程通信</a>&nbsp;
     
   </span>
   
@@ -309,7 +309,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_volatile/">
+            <a href="https://blog.leejay.top/post/concurrent_volatile/">
                 <span class="button__icon">←</span>
                 <span class="button__text">volatile关键字浅析</span>
             </a>
@@ -317,7 +317,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_thread_local/">
+            <a href="https://blog.leejay.top/post/concurrent_thread_local/">
                 <span class="button__text">ThreadLocal内存泄漏分析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -346,8 +346,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

@@ -10,21 +10,21 @@
 tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可能不成功 &amp;lt; 0 获取共享锁失败 &amp;gt; 0 获取共享锁成功，后续获取可能成功 tryAcquireShared protected int tryAcquireShared(int acquires) { return nonfairTryAcquireShared(acquires); } // 默认是采用了非公平获取锁的方式 final int nonfairTryAcquireShared(int acquires) { for (;;) { int available = getState(); int remaining = available - acquires; // 如果remaining&amp;gt;=0时就一直自旋CAS修改state状态 if (remaining &amp;lt; 0 || compareAndSetState(available, remaining)) return remaining; } } 为什么remaining=0的时候也要尝试去修改状态，因为这个时候可能有其他线程释放了共享锁，所以有概率能获取到锁。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_semaphore/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_semaphore/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -36,11 +36,11 @@ tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可�
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Semaphore共享锁源码解析">
 <meta property="og:description" content="Semaphore是基于AQS的`可重入共享锁`，具有公平和非公平模式。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_semaphore/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_semaphore/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -71,7 +71,7 @@ tryAcquireShared 值 是否获取锁 0 获取共享锁成功，后续获取可�
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -364,7 +364,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_semaphore/">Semaphore共享锁源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_semaphore/">Semaphore共享锁源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -377,9 +377,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/semaphore-/">Semaphore </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/semaphore-/">Semaphore </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/aqs/">AQS</a>&nbsp;
     
   </span>
   
@@ -602,7 +602,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_read_write_lock/">
+            <a href="https://blog.leejay.top/post/concurrent_read_write_lock/">
                 <span class="button__icon">←</span>
                 <span class="button__text">ReadWriteLock源码解析</span>
             </a>
@@ -610,7 +610,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_condition/">
+            <a href="https://blog.leejay.top/post/concurrent_condition/">
                 <span class="button__text">Condition源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -639,8 +639,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

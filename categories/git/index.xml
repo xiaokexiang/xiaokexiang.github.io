@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>git on Keep Improving</title>
-    <link>https://leejay.top/categories/git/</link>
+    <link>https://blog.leejay.top/categories/git/</link>
     <description>Recent content in git on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Wed, 25 Aug 2021 16:39:56 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/git/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git Command</title>
-      <link>https://leejay.top/post/git_command/</link>
+      <link>https://blog.leejay.top/post/git_command/</link>
       <pubDate>Wed, 25 Aug 2021 16:39:56 +0800</pubDate>
-      <guid>https://leejay.top/post/git_command/</guid>
+      <guid>https://blog.leejay.top/post/git_command/</guid>
       <description>本地仓库的操作 本地仓库提交 # 本地提交 git commit -m &amp;#34;message&amp;#34; 分支 分支的创建基于``基于某个提交及它的父提交，当前所在的分支会用*`标识&#xA;# 创建分支（分支的创建基于某个提交） git branch ${branch_name} # 切换到这个分支 git checkout ${branch_name} # 创建并切换到这个分支 git checkout -b ${branch_name} # 将source分支指向目标分支或目标版本 git branch -f &amp;lt;source_branch_name&amp;gt; &amp;lt;dest_branch_name|version num&amp;gt; # 删除指定分支 git branch [-D|-d] &amp;lt;branch_name&amp;gt; 合并 merge 将某个分支A上不被当前分支B包含的提交记录合并到当前分支B上。会在当前分支B下创建一个新的合并记录，此时分支B会包含分支A的所有提交记录。&#xA;# 将${branch_name}分支提交记录覆盖到当前分支 git merge ${branch_name} rebase 相比于merge，rebase会从当前分支和目标分支的共同父节点P开始，将当前分支P点后的提交记录都复制到目标分支的最新节点后，最终看起来就像只有一条分支（rebase后的commit id和原来不一致了）。&#xA;# 将当前分支合并到${branch_name}上 # git rebase a 会将当前分支的提交记录复制到分支a后面 git rebase [-i] ${branch_name} # 将child分支的提交记录移到parent的提交记录后 git rebase ${parent_branch} ${child_branch} HEAD HEAD 是一个对当前检出记录的符号引用，指向你正在其基础上进行工作的提交记录。HEAD 总是指向当前分支上最近一次提交记录。</description>
     </item>
   </channel>

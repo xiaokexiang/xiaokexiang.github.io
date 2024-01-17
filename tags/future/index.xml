@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Future  on Keep Improving</title>
-    <link>https://leejay.top/tags/future/</link>
+    <link>https://blog.leejay.top/tags/future/</link>
     <description>Recent content in Future  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Sun, 19 Jul 2020 17:11:13 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/future/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/future/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Future源码解析</title>
-      <link>https://leejay.top/post/concurrent_future/</link>
+      <link>https://blog.leejay.top/post/concurrent_future/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
-      <guid>https://leejay.top/post/concurrent_future/</guid>
+      <guid>https://blog.leejay.top/post/concurrent_future/</guid>
       <description>Future public interface Future&amp;lt;V&amp;gt; { // 获取任务结果 V get() throws InterruptedException, ExecutionException; // 获取任务结果，带超时机制 V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException; // 任务是否完成 boolean isDone(); // 任务是否取消 boolean isCancelled(); // 取消任务 boolean cancel(boolean mayInterruptIfRunning); } ThreadPoolExecutor中的submit方法是由他的父类AbstractExecutorService实现的&#xA;public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象 RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法 execute(ftask); // 返回FutureTask return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); } FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); } FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。</description>
     </item>
   </channel>

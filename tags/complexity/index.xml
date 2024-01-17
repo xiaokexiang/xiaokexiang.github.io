@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Complexity  on Keep Improving</title>
-    <link>https://leejay.top/tags/complexity/</link>
+    <link>https://blog.leejay.top/tags/complexity/</link>
     <description>Recent content in Complexity  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Tue, 14 Apr 2020 14:41:02 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/complexity/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/complexity/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Complexity概念浅析</title>
-      <link>https://leejay.top/post/algorithm_complexity/</link>
+      <link>https://blog.leejay.top/post/algorithm_complexity/</link>
       <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
-      <guid>https://leejay.top/post/algorithm_complexity/</guid>
+      <guid>https://blog.leejay.top/post/algorithm_complexity/</guid>
       <description>算法 算法是指用来操作数据和解决程序问题的一组方法。对于相同的问题，使用不同的算法，虽然最后的结果一致，但是消耗的时间和资源有很大的区别。&#xA;我们从时间和空间两个方面来衡量:&#xA;时间维度：是指执行当前算法所消耗的时间，我们通常用「时间复杂度」来描述。 空间维度：是指执行当前算法需要占用多少内存空间，我们通常用「空间复杂度」来描述。 时间复杂度 一个算法所消耗的时间，从理论上是不能算出来的，我们需要实际的测试。一个算法花费的时间与算法中语句的执行次数成正比。一个算法中语句执行次数称为语句频度或「时间频度」(记为T(n))。&#xA;在时间频度T(n)中，n为问题的规模，当n不断变化的时候，时间频度T(n)也会不断变化。我们通过引入时间复杂度(Time Complexity)的概念来体现T(n)呈现什么样的规律。&#xA;算法的时间复杂度也就是算法的时间度量，记作：T(n) = O(f(n))。它表示随着问题规模n的增大，算法执行时间的增长率和f(n)的增长率相同，称作算法的渐进时间复杂度，简称「时间复杂度」。&#xA;O(f(n))表示方法称为「 大O符号表示法 」，又称为渐进符号，是用于描述函数渐进行为的数学符号。&#xA;常见的时间复杂度量级有：&#xA;常数阶 $$ O(1) $$ 表示该算法的执行时间(或执行时占用空间)总为一个常量，不论输入数据集是大是小，只要没有循环等复杂结构，那么该代码时间复杂度就是O(1)。&#xA;int one() { int i = 1; int j = 2; return i + j; } 上述代码执行时，它消耗的时间并不会随着代码某个变量增长而增长，无论代码有多长，时间复杂度都是O(1)。&#xA;线性阶 $$ O(n) $$ 表示一个算法的性能会随着输入数据大小变化而线性变化。&#xA;void two(int n) { for (i = 1; i &amp;lt;= n; i++) { j = i; j++; } } for循环中的代码会执行n遍，因此它消耗的时间是随着n的变化而变化的，此类代码时间复杂度用O(n)表示。&#xA;平方阶 $$ O(n ^ {2}) $$ 表示一个算法的性能会随着输入数据的增长而呈现二次增长，常见于两重循环嵌套。</description>
     </item>
   </channel>

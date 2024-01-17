@@ -10,21 +10,21 @@
 使用方法 创建表 CREATE TABLE IF NOT EXISTS `kube_event` ( `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT &amp;#39;event primary key&amp;#39;, `name` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event name&amp;#39;, `namespace` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event namespace&amp;#39;, `event_id` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event_id&amp;#39;, `type` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event type Warning or Normal&amp;#39;, `reason` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event reason&amp;#39;, `message` text NOT NULL COMMENT &amp;#39;event message&amp;#39;, `kind` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event kind&amp;#39;, `first_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event first occurrence time&amp;#39;, `last_occurrence_time` varchar(64) NOT NULL DEFAULT &amp;#39;&amp;#39; COMMENT &amp;#39;event last occurrence time&amp;#39;, `cluster` varchar(64) DEFAULT NULL COMMENT &amp;#39;cluster&amp;#39;, `source` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT &amp;#39;source&amp;#39;, PRIMARY KEY (`id`), UNIQUE KEY `event_id_index` (`event_id`) ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COMMENT=&amp;#39;Event info tables&amp;#39;; 执行yaml apiVersion: apps/v1 kind: Deployment metadata: labels: name: kube-eventer name: kube-eventer namespace: kube-system spec: replicas: 1 selector: matchLabels: app: kube-eventer template: metadata: labels: app: kube-eventer annotations:	scheduler." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/kube_eventer/" />
+<link rel="canonical" href="https://blog.leejay.top/post/kube_eventer/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -36,11 +36,11 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Kube Eventer基于mysql的使用">
 <meta property="og:description" content="kube-eventer是阿里开源的一款k8s pod告警组件，支持多种告警方式。" />
-<meta property="og:url" content="https://leejay.top/post/kube_eventer/" />
+<meta property="og:url" content="https://blog.leejay.top/post/kube_eventer/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -71,7 +71,7 @@
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -236,7 +236,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/kube_eventer/">Kube Eventer基于mysql的使用</a></h1>
+    <a href="https://blog.leejay.top/post/kube_eventer/">Kube Eventer基于mysql的使用</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -249,7 +249,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/kubernetes-/">kubernetes </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/kubernetes-/">kubernetes </a>&nbsp;
     
   </span>
   
@@ -398,7 +398,7 @@ A: 使用<a href="https://github.com/jinriyang/kube-eventer">此版本</a>，将
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/decimal/">
+            <a href="https://blog.leejay.top/post/decimal/">
                 <span class="button__icon">←</span>
                 <span class="button__text">Java中的进制与位运算</span>
             </a>
@@ -406,7 +406,7 @@ A: 使用<a href="https://github.com/jinriyang/kube-eventer">此版本</a>，将
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/mirai/">
+            <a href="https://blog.leejay.top/post/mirai/">
                 <span class="button__text">Mirai安装教程</span>
                 <span class="button__icon">→</span>
             </a>
@@ -435,8 +435,8 @@ A: 使用<a href="https://github.com/jinriyang/kube-eventer">此版本</a>，将
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

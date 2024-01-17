@@ -10,21 +10,21 @@
 public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt; task) { if (task == null) throw new NullPointerException(); // 封装callable对象 RunnableFuture&amp;lt;T&amp;gt; ftask = newTaskFor(task); // 再调用线程池的execute方法 execute(ftask); // 返回FutureTask return ftask; } // 将callable作为参数传入FutureTask对象 protected &amp;lt;T&amp;gt; RunnableFuture&amp;lt;T&amp;gt; newTaskFor(Callable&amp;lt;T&amp;gt; callable) { return new FutureTask&amp;lt;T&amp;gt;(callable); } FutureTask 类的继承结构 public class FutureTask&amp;lt;V&amp;gt; implements RunnableFuture&amp;lt;V&amp;gt; { } public interface RunnableFuture&amp;lt;V&amp;gt; extends Runnable, Future&amp;lt;V&amp;gt; { void run(); } FutureTask实现了RunnableFuture，而RunnableFuture继承了Runnable和Future。那么FutureTask即拥有Runnable特性，可以配合线程池执行，又拥有了Future特性，可以获取执行结果。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_future/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_future/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -36,11 +36,11 @@ public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Future源码解析">
 <meta property="og:description" content="因为原有的线程执行`无法获取到返回结果`，所以为了弥补线程无返回值的问题，才诞生了Future类。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_future/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_future/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -73,7 +73,7 @@ public &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(Callable&amp;lt;T&amp;gt
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -422,7 +422,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_future/">Future源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_future/">Future源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -435,9 +435,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/future-/">Future </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/future-/">Future </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/futuretask/">FutureTask</a>&nbsp;
     
   </span>
   
@@ -844,7 +844,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/algorithm_binary_dump/">
+            <a href="https://blog.leejay.top/post/algorithm_binary_dump/">
                 <span class="button__icon">←</span>
                 <span class="button__text">二叉堆时间复杂度分析</span>
             </a>
@@ -852,7 +852,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_thread_pool/">
+            <a href="https://blog.leejay.top/post/concurrent_thread_pool/">
                 <span class="button__text">ThreadPool线程池源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -881,8 +881,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Spring Security on Keep Improving</title>
-    <link>https://leejay.top/tags/spring-security/</link>
+    <link>https://blog.leejay.top/tags/spring-security/</link>
     <description>Recent content in Spring Security on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Fri, 19 Mar 2021 17:47:21 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/spring-security/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/spring-security/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Spring Security基础入门</title>
-      <link>https://leejay.top/post/spring_security_in_action/</link>
+      <link>https://blog.leejay.top/post/spring_security_in_action/</link>
       <pubDate>Fri, 19 Mar 2021 17:47:21 +0800</pubDate>
-      <guid>https://leejay.top/post/spring_security_in_action/</guid>
+      <guid>https://blog.leejay.top/post/spring_security_in_action/</guid>
       <description>Spring Security入门 依赖与配置 maven依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Security配置 @Configuration public class WebSecurityConfig extends WebSecurityConfigurerAdapter { /** * 自定义用户管理系统 */ @Bean public UserDetailsManager userDetailsManager() { UserManager userManager = new UserManager(); userManager.createUser(innerUser()); return userManager; } private UserDetails innerUser() { // load user by username 模拟从数据库获取用户权限等信息 List&amp;lt;GrantedAuthority&amp;gt; authorities = new ArrayList&amp;lt;&amp;gt;(); // 添加 ADMIN &amp;amp; USER 权限 authorities.add(new SimpleGrantedAuthority(&amp;#34;USER&amp;#34;)); authorities.add(new SimpleGrantedAuthority(&amp;#34;ADMIN&amp;#34;)); // 一般数据库用户密码存入时会先加密，此处只是模拟加密后的用户信息 // 使用UserDetails.User$UserBuilder构建user return User.withUsername(&amp;#34;jack&amp;#34;) .</description>
     </item>
   </channel>

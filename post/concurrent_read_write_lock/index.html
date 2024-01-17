@@ -13,21 +13,21 @@ state 与独占锁、共享锁的state的使用不同，因为需要表示两种
 abstract static class Sync extends AbstractQueuedSynchronizer { static final int SHARED_SHIFT = 16; static final int SHARED_UNIT = (1 &amp;lt;&amp;lt; SHARED_SHIFT); // 读锁和写锁的count不能超过MAX_COUNT static final int MAX_COUNT = (1 &amp;lt;&amp;lt; SHARED_SHIFT) - 1; static final int EXCLUSIVE_MASK = (1 &amp;lt;&amp;lt; SHARED_SHIFT) - 1; // 返回读锁的count static int sharedCount(int c) { return c &amp;gt;&amp;gt;&amp;gt; SHARED_SHIFT; } // 返回写锁的count static int exclusiveCount(int c) { return c &amp;amp; EXCLUSIVE_MASK; } } 读锁和写锁的count不能超过MAX_COUNT即2^16-1。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_read_write_lock/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_read_write_lock/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -39,11 +39,11 @@ abstract static class Sync extends AbstractQueuedSynchronizer { static final int
 <meta property="og:type" content="article" />
 <meta property="og:title" content="ReadWriteLock源码解析">
 <meta property="og:description" content="具备`独占锁和共享锁`两者特性的读写锁，适用于读操作多于写操作的场景。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_read_write_lock/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_read_write_lock/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -74,7 +74,7 @@ abstract static class Sync extends AbstractQueuedSynchronizer { static final int
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -543,7 +543,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_read_write_lock/">ReadWriteLock源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_read_write_lock/">ReadWriteLock源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -556,9 +556,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/reentrantreadwritelock-/">ReentrantReadWriteLock </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/reentrantreadwritelock-/">ReentrantReadWriteLock </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/aqs/">AQS</a>&nbsp;
     
   </span>
   
@@ -1253,7 +1253,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_count_down_latch/">
+            <a href="https://blog.leejay.top/post/concurrent_count_down_latch/">
                 <span class="button__icon">←</span>
                 <span class="button__text">CountDownLatch源码解析</span>
             </a>
@@ -1261,7 +1261,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_semaphore/">
+            <a href="https://blog.leejay.top/post/concurrent_semaphore/">
                 <span class="button__text">Semaphore共享锁源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -1290,8 +1290,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

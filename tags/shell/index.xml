@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>shell on Keep Improving</title>
-    <link>https://leejay.top/tags/shell/</link>
+    <link>https://blog.leejay.top/tags/shell/</link>
     <description>Recent content in shell on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Tue, 29 Dec 2020 18:29:04 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/shell/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Shell启动服务</title>
-      <link>https://leejay.top/post/linux_shell/</link>
+      <link>https://blog.leejay.top/post/linux_shell/</link>
       <pubDate>Tue, 29 Dec 2020 18:29:04 +0800</pubDate>
-      <guid>https://leejay.top/post/linux_shell/</guid>
+      <guid>https://blog.leejay.top/post/linux_shell/</guid>
       <description>__dir__=/www/server/code/service-platform __web__=ruoyi-web __admin__=ruoyi-admin __app__=(&amp;#34;$__web__&amp;#34; &amp;#34;$__admin__&amp;#34;) # 使用说明，用来提示输入参数 usage() { echo &amp;#34;Usage: sh deploy.sh [start|stop|restart|status]&amp;#34; exit 1 } pull() { cd $__dir__ git pull echo &amp;#34;git pull code success&amp;#34; } build_parent() { mvn clean install -Dmaven.test.skip=true -f $__dir__/pom.xml } build_module() { mvn clean package -Dmaven.test.skip=true -f $__dir__/$1/pom.xml echo &amp;#34;############# $1 Build success #############&amp;#34; } is_exist() { pid=$(ps -ef | grep $1 | grep -v grep | awk &amp;#39;{print $2}&amp;#39;) #如果不存在返回1，存在返回0 if [ -z &amp;#34;${pid}&amp;#34; ]; then return 1 else return 0 fi } backup() { __jar__=$1-$2.</description>
     </item>
   </channel>

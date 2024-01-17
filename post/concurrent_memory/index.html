@@ -15,21 +15,21 @@ happen-before(JVM层面) 为了明确多线程场景下那么可以重排序，�
 class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;// step 1 c = 1;// step 2 } int get() { int d = c;// step 3 return a;// step 4 } } 因为step1和step2在同一块内存中，所以step1 happen-before step2，同理step3 happen before step4，且因为c是volatile变量，根据volatile变量的写 happen-before volatile变量的读，以及happen-before传递性，step1 的结果一定对step4可见。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_memory/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_memory/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -41,11 +41,11 @@ class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;/
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Java内存可见性">
 <meta property="og:description" content="多线程中的内存可见性问题。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_memory/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_memory/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -76,7 +76,7 @@ class Test { private int a = 0; private volatile int c = 0; void set() { a = 5;/
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -309,7 +309,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_memory/">Java内存可见性</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_memory/">Java内存可见性</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -322,7 +322,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7-/">内存可见性 </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/%E5%86%85%E5%AD%98%E5%8F%AF%E8%A7%81%E6%80%A7-/">内存可见性 </a>&nbsp;
     
   </span>
   
@@ -384,7 +384,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_thread_local/">
+            <a href="https://blog.leejay.top/post/concurrent_thread_local/">
                 <span class="button__icon">←</span>
                 <span class="button__text">ThreadLocal内存泄漏分析</span>
             </a>
@@ -392,7 +392,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/algorithm_complexity/">
+            <a href="https://blog.leejay.top/post/algorithm_complexity/">
                 <span class="button__text">Complexity概念浅析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -421,8 +421,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

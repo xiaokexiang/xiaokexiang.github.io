@@ -13,21 +13,21 @@
 ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 private final BlockingQueue&amp;lt;Runnable&amp;gt; workQueue; private volatile int corePoolSize; private volatile int maximumPoolSize; private volatile long keepAliveTime; // 线程工厂，用于定义创建线程的方式，主要是定义线程name等相关参数 private volatile ThreadFactory threadFactory; // 拒绝策略有4种内置的策略 private volatile RejectedExecutionHandler handler; // 参数最多的构造函数 public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue&amp;lt;Runnable&amp;gt; workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) { if (corePoolSize &amp;lt; 0 || maximumPoolSize &amp;lt;= 0 || maximumPoolSize &amp;lt; corePoolSize || keepAliveTime &amp;lt; 0) throw new IllegalArgumentException(); if (workQueue == null || threadFactory == null || handler == null) throw new NullPointerException(); this." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_thread_pool/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_thread_pool/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -39,11 +39,11 @@ ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 pr
 <meta property="og:type" content="article" />
 <meta property="og:title" content="ThreadPool线程池源码解析">
 <meta property="og:description" content="`ThreadPool`可以避免单个线程创建带来的系统资源的消耗，并且能够实现线程的复用，有效节省系统资源。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_thread_pool/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_thread_pool/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -76,7 +76,7 @@ ThreadPoolExecutor 构造 // 阻塞队列，具体实现由构造函数决定 pr
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -925,7 +925,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_thread_pool/">ThreadPool线程池源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_thread_pool/">ThreadPool线程池源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -938,7 +938,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/threadpool-/">ThreadPool </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/threadpool-/">ThreadPool </a>&nbsp;
     
   </span>
   
@@ -2005,7 +2005,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_future/">
+            <a href="https://blog.leejay.top/post/concurrent_future/">
                 <span class="button__icon">←</span>
                 <span class="button__text">Future源码解析</span>
             </a>
@@ -2013,7 +2013,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_hash_map/">
+            <a href="https://blog.leejay.top/post/concurrent_hash_map/">
                 <span class="button__text">ConcurrentHashMap源码浅析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -2042,8 +2042,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

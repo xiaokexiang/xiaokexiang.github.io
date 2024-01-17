@@ -2,207 +2,207 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Keep Improving</title>
-    <link>https://leejay.top/categories/</link>
+    <link>https://blog.leejay.top/categories/</link>
     <description>Recent content in Categories on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Fri, 03 Nov 2023 20:51:29 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>go</title>
-      <link>https://leejay.top/categories/go/</link>
+      <link>https://blog.leejay.top/categories/go/</link>
       <pubDate>Fri, 03 Nov 2023 20:51:29 +0800</pubDate>
-      <guid>https://leejay.top/categories/go/</guid>
+      <guid>https://blog.leejay.top/categories/go/</guid>
       <description></description>
     </item>
     <item>
       <title>raspberrypi</title>
-      <link>https://leejay.top/categories/raspberrypi/</link>
+      <link>https://blog.leejay.top/categories/raspberrypi/</link>
       <pubDate>Fri, 17 Mar 2023 15:43:00 +0800</pubDate>
-      <guid>https://leejay.top/categories/raspberrypi/</guid>
+      <guid>https://blog.leejay.top/categories/raspberrypi/</guid>
       <description></description>
     </item>
     <item>
       <title>Jvm</title>
-      <link>https://leejay.top/categories/jvm/</link>
+      <link>https://blog.leejay.top/categories/jvm/</link>
       <pubDate>Tue, 14 Feb 2023 14:58:25 +0800</pubDate>
-      <guid>https://leejay.top/categories/jvm/</guid>
+      <guid>https://blog.leejay.top/categories/jvm/</guid>
       <description></description>
     </item>
     <item>
       <title>elasticsearch</title>
-      <link>https://leejay.top/categories/elasticsearch/</link>
+      <link>https://blog.leejay.top/categories/elasticsearch/</link>
       <pubDate>Thu, 09 Feb 2023 14:17:55 +0800</pubDate>
-      <guid>https://leejay.top/categories/elasticsearch/</guid>
+      <guid>https://blog.leejay.top/categories/elasticsearch/</guid>
       <description></description>
     </item>
     <item>
       <title>algorithm</title>
-      <link>https://leejay.top/categories/algorithm/</link>
+      <link>https://blog.leejay.top/categories/algorithm/</link>
       <pubDate>Wed, 08 Jun 2022 15:52:15 +0800</pubDate>
-      <guid>https://leejay.top/categories/algorithm/</guid>
+      <guid>https://blog.leejay.top/categories/algorithm/</guid>
       <description></description>
     </item>
     <item>
       <title>Java</title>
-      <link>https://leejay.top/categories/java/</link>
+      <link>https://blog.leejay.top/categories/java/</link>
       <pubDate>Thu, 12 May 2022 17:55:10 +0800</pubDate>
-      <guid>https://leejay.top/categories/java/</guid>
+      <guid>https://blog.leejay.top/categories/java/</guid>
       <description></description>
     </item>
     <item>
       <title>grpc</title>
-      <link>https://leejay.top/categories/grpc/</link>
+      <link>https://blog.leejay.top/categories/grpc/</link>
       <pubDate>Fri, 22 Apr 2022 16:29:25 +0800</pubDate>
-      <guid>https://leejay.top/categories/grpc/</guid>
+      <guid>https://blog.leejay.top/categories/grpc/</guid>
       <description></description>
     </item>
     <item>
       <title>tinyproxy</title>
-      <link>https://leejay.top/categories/tinyproxy/</link>
+      <link>https://blog.leejay.top/categories/tinyproxy/</link>
       <pubDate>Fri, 15 Apr 2022 10:40:36 +0800</pubDate>
-      <guid>https://leejay.top/categories/tinyproxy/</guid>
+      <guid>https://blog.leejay.top/categories/tinyproxy/</guid>
       <description></description>
     </item>
     <item>
       <title>kubernetes</title>
-      <link>https://leejay.top/categories/kubernetes/</link>
+      <link>https://blog.leejay.top/categories/kubernetes/</link>
       <pubDate>Mon, 21 Mar 2022 15:03:59 +0800</pubDate>
-      <guid>https://leejay.top/categories/kubernetes/</guid>
+      <guid>https://blog.leejay.top/categories/kubernetes/</guid>
       <description></description>
     </item>
     <item>
       <title>mirai</title>
-      <link>https://leejay.top/categories/mirai/</link>
+      <link>https://blog.leejay.top/categories/mirai/</link>
       <pubDate>Mon, 07 Mar 2022 10:21:01 +0800</pubDate>
-      <guid>https://leejay.top/categories/mirai/</guid>
+      <guid>https://blog.leejay.top/categories/mirai/</guid>
       <description></description>
     </item>
     <item>
       <title>SSO </title>
-      <link>https://leejay.top/categories/sso/</link>
+      <link>https://blog.leejay.top/categories/sso/</link>
       <pubDate>Mon, 22 Nov 2021 15:30:48 +0800</pubDate>
-      <guid>https://leejay.top/categories/sso/</guid>
+      <guid>https://blog.leejay.top/categories/sso/</guid>
       <description></description>
     </item>
     <item>
       <title>事务</title>
-      <link>https://leejay.top/categories/%E4%BA%8B%E5%8A%A1/</link>
+      <link>https://blog.leejay.top/categories/%E4%BA%8B%E5%8A%A1/</link>
       <pubDate>Mon, 06 Sep 2021 16:06:48 +0800</pubDate>
-      <guid>https://leejay.top/categories/%E4%BA%8B%E5%8A%A1/</guid>
+      <guid>https://blog.leejay.top/categories/%E4%BA%8B%E5%8A%A1/</guid>
       <description></description>
     </item>
     <item>
       <title>git</title>
-      <link>https://leejay.top/categories/git/</link>
+      <link>https://blog.leejay.top/categories/git/</link>
       <pubDate>Wed, 25 Aug 2021 16:39:56 +0800</pubDate>
-      <guid>https://leejay.top/categories/git/</guid>
+      <guid>https://blog.leejay.top/categories/git/</guid>
       <description></description>
     </item>
     <item>
       <title>Mysql</title>
-      <link>https://leejay.top/categories/mysql/</link>
+      <link>https://blog.leejay.top/categories/mysql/</link>
       <pubDate>Fri, 23 Jul 2021 09:51:37 +0800</pubDate>
-      <guid>https://leejay.top/categories/mysql/</guid>
+      <guid>https://blog.leejay.top/categories/mysql/</guid>
       <description></description>
     </item>
     <item>
       <title>Spring</title>
-      <link>https://leejay.top/categories/spring/</link>
+      <link>https://blog.leejay.top/categories/spring/</link>
       <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
-      <guid>https://leejay.top/categories/spring/</guid>
+      <guid>https://blog.leejay.top/categories/spring/</guid>
       <description></description>
     </item>
     <item>
       <title>Spring AOP </title>
-      <link>https://leejay.top/categories/spring-aop/</link>
+      <link>https://blog.leejay.top/categories/spring-aop/</link>
       <pubDate>Wed, 12 May 2021 16:18:28 +0800</pubDate>
-      <guid>https://leejay.top/categories/spring-aop/</guid>
+      <guid>https://blog.leejay.top/categories/spring-aop/</guid>
       <description></description>
     </item>
     <item>
       <title>Docker</title>
-      <link>https://leejay.top/categories/docker/</link>
+      <link>https://blog.leejay.top/categories/docker/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
-      <guid>https://leejay.top/categories/docker/</guid>
+      <guid>https://blog.leejay.top/categories/docker/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>https://leejay.top/categories/linux/</link>
+      <link>https://blog.leejay.top/categories/linux/</link>
       <pubDate>Fri, 16 Apr 2021 11:02:51 +0800</pubDate>
-      <guid>https://leejay.top/categories/linux/</guid>
+      <guid>https://blog.leejay.top/categories/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>HashMap</title>
-      <link>https://leejay.top/categories/hashmap/</link>
+      <link>https://blog.leejay.top/categories/hashmap/</link>
       <pubDate>Wed, 07 Apr 2021 11:03:14 +0800</pubDate>
-      <guid>https://leejay.top/categories/hashmap/</guid>
+      <guid>https://blog.leejay.top/categories/hashmap/</guid>
       <description></description>
     </item>
     <item>
       <title>Redis</title>
-      <link>https://leejay.top/categories/redis/</link>
+      <link>https://blog.leejay.top/categories/redis/</link>
       <pubDate>Thu, 28 Jan 2021 11:10:39 +0800</pubDate>
-      <guid>https://leejay.top/categories/redis/</guid>
+      <guid>https://blog.leejay.top/categories/redis/</guid>
       <description></description>
     </item>
     <item>
       <title>Shell</title>
-      <link>https://leejay.top/categories/shell/</link>
+      <link>https://blog.leejay.top/categories/shell/</link>
       <pubDate>Tue, 29 Dec 2020 18:29:04 +0800</pubDate>
-      <guid>https://leejay.top/categories/shell/</guid>
+      <guid>https://blog.leejay.top/categories/shell/</guid>
       <description></description>
     </item>
     <item>
       <title>Netty</title>
-      <link>https://leejay.top/categories/netty/</link>
+      <link>https://blog.leejay.top/categories/netty/</link>
       <pubDate>Mon, 14 Dec 2020 17:58:49 +0800</pubDate>
-      <guid>https://leejay.top/categories/netty/</guid>
+      <guid>https://blog.leejay.top/categories/netty/</guid>
       <description></description>
     </item>
     <item>
       <title>Concurrent</title>
-      <link>https://leejay.top/categories/concurrent/</link>
+      <link>https://blog.leejay.top/categories/concurrent/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
-      <guid>https://leejay.top/categories/concurrent/</guid>
+      <guid>https://blog.leejay.top/categories/concurrent/</guid>
       <description></description>
     </item>
     <item>
       <title>Future</title>
-      <link>https://leejay.top/categories/future/</link>
+      <link>https://blog.leejay.top/categories/future/</link>
       <pubDate>Sun, 19 Jul 2020 17:11:13 +0800</pubDate>
-      <guid>https://leejay.top/categories/future/</guid>
+      <guid>https://blog.leejay.top/categories/future/</guid>
       <description></description>
     </item>
     <item>
       <title>ThreadPool</title>
-      <link>https://leejay.top/categories/threadpool/</link>
+      <link>https://blog.leejay.top/categories/threadpool/</link>
       <pubDate>Fri, 17 Jul 2020 17:01:26 +0800</pubDate>
-      <guid>https://leejay.top/categories/threadpool/</guid>
+      <guid>https://blog.leejay.top/categories/threadpool/</guid>
       <description></description>
     </item>
     <item>
       <title>Collection</title>
-      <link>https://leejay.top/categories/collection/</link>
+      <link>https://blog.leejay.top/categories/collection/</link>
       <pubDate>Tue, 14 Jul 2020 16:58:36 +0800</pubDate>
-      <guid>https://leejay.top/categories/collection/</guid>
+      <guid>https://blog.leejay.top/categories/collection/</guid>
       <description></description>
     </item>
     <item>
       <title>Queue</title>
-      <link>https://leejay.top/categories/queue/</link>
+      <link>https://blog.leejay.top/categories/queue/</link>
       <pubDate>Mon, 06 Jul 2020 19:20:56 +0800</pubDate>
-      <guid>https://leejay.top/categories/queue/</guid>
+      <guid>https://blog.leejay.top/categories/queue/</guid>
       <description></description>
     </item>
     <item>
       <title>Complexity</title>
-      <link>https://leejay.top/categories/complexity/</link>
+      <link>https://blog.leejay.top/categories/complexity/</link>
       <pubDate>Tue, 14 Apr 2020 14:41:02 +0800</pubDate>
-      <guid>https://leejay.top/categories/complexity/</guid>
+      <guid>https://blog.leejay.top/categories/complexity/</guid>
       <description></description>
     </item>
   </channel>

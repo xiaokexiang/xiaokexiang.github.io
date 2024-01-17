@@ -9,21 +9,21 @@
 <meta name="description" content="Spring Security入门 依赖与配置 maven依赖 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-security&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-web&amp;lt;/artifactId&amp;gt; &amp;lt;/dependency&amp;gt; Spring Security配置 @Configuration public class WebSecurityConfig extends WebSecurityConfigurerAdapter { /** * 自定义用户管理系统 */ @Bean public UserDetailsManager userDetailsManager() { UserManager userManager = new UserManager(); userManager.createUser(innerUser()); return userManager; } private UserDetails innerUser() { // load user by username 模拟从数据库获取用户权限等信息 List&amp;lt;GrantedAuthority&amp;gt; authorities = new ArrayList&amp;lt;&amp;gt;(); // 添加 ADMIN &amp;amp; USER 权限 authorities.add(new SimpleGrantedAuthority(&amp;#34;USER&amp;#34;)); authorities.add(new SimpleGrantedAuthority(&amp;#34;ADMIN&amp;#34;)); // 一般数据库用户密码存入时会先加密，此处只是模拟加密后的用户信息 // 使用UserDetails.User$UserBuilder构建user return User.withUsername(&amp;#34;jack&amp;#34;) ." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/spring_security_in_action/" />
+<link rel="canonical" href="https://blog.leejay.top/post/spring_security_in_action/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -35,11 +35,11 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Spring Security基础入门">
 <meta property="og:description" content="Spring Security作为Java Web的安全框架，用于实现安全控制。" />
-<meta property="og:url" content="https://leejay.top/post/spring_security_in_action/" />
+<meta property="og:url" content="https://blog.leejay.top/post/spring_security_in_action/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -70,7 +70,7 @@
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -1687,7 +1687,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/spring_security_in_action/">Spring Security基础入门</a></h1>
+    <a href="https://blog.leejay.top/post/spring_security_in_action/">Spring Security基础入门</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -1700,7 +1700,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/spring-security/">Spring Security</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/spring-security/">Spring Security</a>&nbsp;
     
   </span>
   
@@ -3428,7 +3428,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/hashmap/">
+            <a href="https://blog.leejay.top/post/hashmap/">
                 <span class="button__icon">←</span>
                 <span class="button__text">HashMap的几点注意事项</span>
             </a>
@@ -3436,7 +3436,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/redis_in_action/">
+            <a href="https://blog.leejay.top/post/redis_in_action/">
                 <span class="button__text">Redis基础入门</span>
                 <span class="button__icon">→</span>
             </a>
@@ -3465,8 +3465,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

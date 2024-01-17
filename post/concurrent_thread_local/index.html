@@ -13,21 +13,21 @@ Thread生命周期还没有结束，ThreadLocal对象被回收后且没有调用
 我们可以看出内存泄漏的触发条件比较苛刻的，但确实会发生，其实只要线程Thread的生命周期结束，那么Thread的ThreadLocalMap也不会存在强引用，那么ThreadLocalMap中的value最终也会被回收。，所以在使用ThreadLocal时，除了需要密切关注Thread和ThreadLocal的生命周期，还需要在每次使用完之后调用remove方法，这样做还有一个问题就是：" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_thread_local/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_thread_local/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -39,11 +39,11 @@ Thread生命周期还没有结束，ThreadLocal对象被回收后且没有调用
 <meta property="og:type" content="article" />
 <meta property="og:title" content="ThreadLocal内存泄漏分析">
 <meta property="og:description" content="ThreadLocal的内存泄露问题。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_thread_local/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_thread_local/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -74,7 +74,7 @@ Thread生命周期还没有结束，ThreadLocal对象被回收后且没有调用
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -239,7 +239,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_thread_local/">ThreadLocal内存泄漏分析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_thread_local/">ThreadLocal内存泄漏分析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -252,9 +252,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/threadlocal-/">ThreadLocal </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/threadlocal-/">ThreadLocal </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>&nbsp;
     
   </span>
   
@@ -352,7 +352,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_mesa/">
+            <a href="https://blog.leejay.top/post/concurrent_mesa/">
                 <span class="button__icon">←</span>
                 <span class="button__text">MESA模型结构分析</span>
             </a>
@@ -360,7 +360,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_memory/">
+            <a href="https://blog.leejay.top/post/concurrent_memory/">
                 <span class="button__text">Java内存可见性</span>
                 <span class="button__icon">→</span>
             </a>
@@ -389,8 +389,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

@@ -10,21 +10,21 @@
 final ConditionObject newCondition() { return new ConditionObject(); } public class ConditionObject implements Condition { /** First node of condition queue. */ private transient Node firstWaiter; /** Last node of condition queue. */ private transient Node lastWaiter; public ConditionObject() { } } await // 执行await时肯定已经获取了锁，所以不需要CAS操作 public final void await() throws InterruptedException { // 如果当前线程已中断就抛出中断异常 if (Thread.interrupted()) throw new InterruptedException(); // 将当前线程添加到等待队列 Node node = addConditionWaiter(); // 线程阻塞之前必须要先释放锁，否则会死锁，这里是全部释放，包括重入锁 int savedState = fullyRelease(node); int interruptMode = 0; // 判断node是否在AQS同步队列里面，初始是在条件队列里面 while (!" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_condition/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_condition/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -36,11 +36,11 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Condition源码解析">
 <meta property="og:description" content="Condition接口提供了类似Object.wait/notify的监视器方法，与Lock(基于AQS的锁)配合可以实现`等待/通知`模式。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_condition/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_condition/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -71,7 +71,7 @@ final ConditionObject newCondition() { return new ConditionObject(); } public cl
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -133,7 +133,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_condition/">Condition源码解析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_condition/">Condition源码解析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -146,9 +146,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/condition-/">Condition </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/condition-/">Condition </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/aqs/">AQS</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/aqs/">AQS</a>&nbsp;
     
   </span>
   
@@ -356,7 +356,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_semaphore/">
+            <a href="https://blog.leejay.top/post/concurrent_semaphore/">
                 <span class="button__icon">←</span>
                 <span class="button__text">Semaphore共享锁源码解析</span>
             </a>
@@ -364,7 +364,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_reentrant_lock/">
+            <a href="https://blog.leejay.top/post/concurrent_reentrant_lock/">
                 <span class="button__text">ReentrantLock源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -393,8 +393,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

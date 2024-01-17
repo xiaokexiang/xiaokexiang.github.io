@@ -13,21 +13,21 @@ CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作c
 /** * var1: 这里就是AtomicInteger对象 * var2: AotmicInteger 中的成员变量，long型整数，变量在类中的内存偏移量 * 可以通过unsafe.objectFieldOffset(Field var1)来获得 * var4：变量的旧值 * var5: 变量的新值 */ public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5) Unsafe类提供了三种类型的CAS操作：int、long、Object，分别对应compareAndSwapInt()、compareAndSwapLong()、compareAndSwapObject()。" />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_cas/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_cas/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -39,11 +39,11 @@ CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作c
 <meta property="og:type" content="article" />
 <meta property="og:title" content="CAS乐观锁浅析">
 <meta property="og:description" content="Java并发中`乐观锁的实现`，大部分并发框架都基于CAS实现。" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_cas/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_cas/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -74,7 +74,7 @@ CAS的相关方法都被封装在Unsafe类中，我们以AtomicInteger中操作c
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -379,7 +379,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_cas/">CAS乐观锁浅析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_cas/">CAS乐观锁浅析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -392,9 +392,9 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/cas-/">CAS </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/cas-/">CAS </a>&nbsp;
     
-    #<a href="https://leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/%E5%8E%9F%E5%AD%90%E6%80%A7/">原子性</a>&nbsp;
     
   </span>
   
@@ -662,7 +662,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_reentrant_lock/">
+            <a href="https://blog.leejay.top/post/concurrent_reentrant_lock/">
                 <span class="button__icon">←</span>
                 <span class="button__text">ReentrantLock源码解析</span>
             </a>
@@ -670,7 +670,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_volatile/">
+            <a href="https://blog.leejay.top/post/concurrent_volatile/">
                 <span class="button__text">volatile关键字浅析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -699,8 +699,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

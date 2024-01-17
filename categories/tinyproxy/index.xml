@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tinyproxy on Keep Improving</title>
-    <link>https://leejay.top/categories/tinyproxy/</link>
+    <link>https://blog.leejay.top/categories/tinyproxy/</link>
     <description>Recent content in tinyproxy on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Fri, 15 Apr 2022 10:40:36 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/tinyproxy/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/tinyproxy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Tinyproxy轻量代理使用教程</title>
-      <link>https://leejay.top/post/tiny_proxy/</link>
+      <link>https://blog.leejay.top/post/tiny_proxy/</link>
       <pubDate>Fri, 15 Apr 2022 10:40:36 +0800</pubDate>
-      <guid>https://leejay.top/post/tiny_proxy/</guid>
+      <guid>https://blog.leejay.top/post/tiny_proxy/</guid>
       <description>Tinyproxy是一个轻量级的HTTP / HTTPS代理守护进程，快速且小巧。&#xA;Tinyproxy的安装 基于Docker安装 使用monokal/tinyproxy的镜像,dockerhub上的使用已经很清楚了，按照描述:&#xA;docker run -d --name=&amp;#39;tinyproxy&amp;#39; -p &amp;lt;Host_Port&amp;gt;:8888 --env BASIC_AUTH_USER=&amp;lt;username&amp;gt; --env BASIC_AUTH_PASSWORD=&amp;lt;password&amp;gt; --env TIMEOUT=&amp;lt;timeout&amp;gt; monokal/tinyproxy:latest &amp;lt;ACL&amp;gt; Set &amp;lt;Host_Port&amp;gt; to the port you wish the proxy to be accessible from.&#xA;Set to &amp;lsquo;ANY&amp;rsquo; to allow unrestricted proxy access, or one or more space seperated IP/CIDR addresses for tighter security.&#xA;Basic auth is optional.&#xA;Timeout is optional.&#xA;curl测试 curl -x http://&amp;lt;your_username&amp;gt;:&amp;lt;your_password&amp;gt;@&amp;lt;tinyproxy_ip&amp;gt;:&amp;lt;tinyproxy_port&amp;gt; http://httpbin.org/ip 如果代理需要用户名密码验证，但是没有传递，那么会出现407 Proxy Authentication Required提示。 如果代理的用户名密码错误，会出现Unauthorized提示。 如果访问代理的ip地址不在tinyproxy的access名单中，会出现Access denied提示。 RestTemplate中使用代理 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
     </item>
   </channel>

@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>mirai on Keep Improving</title>
-    <link>https://leejay.top/categories/mirai/</link>
+    <link>https://blog.leejay.top/categories/mirai/</link>
     <description>Recent content in mirai on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Mon, 07 Mar 2022 10:21:01 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/categories/mirai/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/categories/mirai/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Mirai安装教程</title>
-      <link>https://leejay.top/post/mirai/</link>
+      <link>https://blog.leejay.top/post/mirai/</link>
       <pubDate>Mon, 07 Mar 2022 10:21:01 +0800</pubDate>
-      <guid>https://leejay.top/post/mirai/</guid>
+      <guid>https://blog.leejay.top/post/mirai/</guid>
       <description>&lt;h2 id=&#34;mirai&#34;&gt;Mirai&lt;/h2&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://github.com/mamoe/mirai&#34;&gt;mirai&lt;/a&gt; 是一个在全平台下运行，提供 QQ Android 协议支持的高效率机器人库。&lt;/p&gt;&#xA;&lt;/blockquote&gt;</description>
     </item>
   </channel>

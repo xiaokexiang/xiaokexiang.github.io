@@ -11,21 +11,21 @@
 @Slf4j public class StampedLockTest { private static final StampedLock LOCK = new StampedLock(); private static int x, y; static void add() { long stamp = LOCK.writeLock(); try { x &#43;= 1; y &#43;= 1; } finally { LOCK.unlockWrite(stamp); } } static void print() { // 尝试乐观读 long stamp = LOCK.tryOptimisticRead(); int currentX = x， currentY = y; // 如果stamp修改了，这时再加悲观读锁 if (!LOCK.validate(stamp)) { log.info(&amp;#34;value has changed ...&amp;#34;); stamp = LOCK." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://leejay.top/post/concurrent_stamped_lock/" />
+<link rel="canonical" href="https://blog.leejay.top/post/concurrent_stamped_lock/" />
 
 
 
 
-<link rel="stylesheet" href="https://leejay.top/assets/style.css">
+<link rel="stylesheet" href="https://blog.leejay.top/assets/style.css">
 
 
 
 
 
 
-<link rel="apple-touch-icon" href="https://leejay.top/img/favicon.png">
+<link rel="apple-touch-icon" href="https://blog.leejay.top/img/favicon.png">
 
-  <link rel="shortcut icon" href="https://leejay.top/img/favicon.png">
+  <link rel="shortcut icon" href="https://blog.leejay.top/img/favicon.png">
 
 
 
@@ -37,11 +37,11 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="StampedLock读写锁源码浅析">
 <meta property="og:description" content="为了实现更快的读写锁模式而诞生的框架，基于`乐观锁`、`自旋&#43;CAS`、`类似AQS`的逻辑实现" />
-<meta property="og:url" content="https://leejay.top/post/concurrent_stamped_lock/" />
+<meta property="og:url" content="https://blog.leejay.top/post/concurrent_stamped_lock/" />
 <meta property="og:site_name" content="Keep Improving" />
 
   
-    <meta property="og:image" content="https://leejay.top/img/favicon.png">
+    <meta property="og:image" content="https://blog.leejay.top/img/favicon.png">
   
 
 <meta property="og:image:width" content="2048">
@@ -72,7 +72,7 @@
   <header class="header">
   <div class="header__inner">
     <div class="header__logo">
-      <a href="https://leejay.top">
+      <a href="https://blog.leejay.top/">
   <div class="logo">
     HelloWorld
   </div>
@@ -477,7 +477,7 @@ code.has-jax {
 
   
   <h1 class="post-title">
-    <a href="https://leejay.top/post/concurrent_stamped_lock/">StampedLock读写锁源码浅析</a></h1>
+    <a href="https://blog.leejay.top/post/concurrent_stamped_lock/">StampedLock读写锁源码浅析</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -490,7 +490,7 @@ code.has-jax {
   
   <span class="post-tags">
     
-    #<a href="https://leejay.top/tags/stampedlock-/">StampedLock </a>&nbsp;
+    #<a href="https://blog.leejay.top/tags/stampedlock-/">StampedLock </a>&nbsp;
     
   </span>
   
@@ -1206,7 +1206,7 @@ code.has-jax {
     <div class="pagination__buttons">
         
         <span class="button previous">
-            <a href="https://leejay.top/post/concurrent_blocking_queue/">
+            <a href="https://blog.leejay.top/post/concurrent_blocking_queue/">
                 <span class="button__icon">←</span>
                 <span class="button__text">BlockingQueue单向阻塞队列源码解析</span>
             </a>
@@ -1214,7 +1214,7 @@ code.has-jax {
         
         
         <span class="button next">
-            <a href="https://leejay.top/post/concurrent_cyclic_barrier/">
+            <a href="https://blog.leejay.top/post/concurrent_cyclic_barrier/">
                 <span class="button__text">CyclieBarrier源码解析</span>
                 <span class="button__icon">→</span>
             </a>
@@ -1243,8 +1243,8 @@ code.has-jax {
   </div>
 </footer>
 
-<script src="https://leejay.top/assets/main.js"></script>
-<script src="https://leejay.top/assets/prism.js"></script>
+<script src="https://blog.leejay.top/assets/main.js"></script>
+<script src="https://blog.leejay.top/assets/prism.js"></script>
 
 
 

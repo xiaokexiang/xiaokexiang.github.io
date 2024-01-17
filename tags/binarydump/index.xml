@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>BinaryDump  on Keep Improving</title>
-    <link>https://leejay.top/tags/binarydump/</link>
+    <link>https://blog.leejay.top/tags/binarydump/</link>
     <description>Recent content in BinaryDump  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Sat, 01 Aug 2020 11:10:01 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/binarydump/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/binarydump/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>二叉堆时间复杂度分析</title>
-      <link>https://leejay.top/post/algorithm_binary_dump/</link>
+      <link>https://blog.leejay.top/post/algorithm_binary_dump/</link>
       <pubDate>Sat, 01 Aug 2020 11:10:01 +0800</pubDate>
-      <guid>https://leejay.top/post/algorithm_binary_dump/</guid>
+      <guid>https://blog.leejay.top/post/algorithm_binary_dump/</guid>
       <description>二叉堆概念 二叉堆本质上是一颗完全二叉树，它的根节点又叫做堆顶。二叉堆分为：&#xA;最大堆：最大堆的任何一个父节点的值，都大于或等于它左、右节点的值。&#xA;最小堆：最小堆的任何一个父节点的值，都小于或等于它左、右节点的值。&#xA;根据定义可以推导出，二叉堆的堆顶存放的是这棵树的最大或最小元素。&#xA;我们采用数组(物理结构)构建二叉堆(逻辑结构)，二叉堆的元素满足以下特性：&#xA;假设父节点的index为0(记为i=0)，那么它的左子节点index为2n + 1，右子节点index为2n + 2。&#xA;同样，如果当前节点的index=0，那么它的父节点index为(i-1)/2 或 (i-2)/2，取决于i % 2 == 0是否成立。&#xA;Java中的PriorityBlockingQueue底层就是使用最小二叉堆的逻辑结构实现的。&#xA;二叉堆推导 构建 对于二叉堆的构建，我们选择最小二叉堆推导，对于最小二叉堆构建存在两种思路：&#xA;我们从数组队尾开始遍历，将当前元素和它的所有父爷节点比较交换，直到当前元素的最顶层父节点。直到数组遍历完毕。 // 计算当前index的父节点index int prev(int c) { return c % 2 != 0 ? (c - 1) &amp;gt;&amp;gt;&amp;gt; 1 : (c - 2) &amp;gt;&amp;gt;&amp;gt; 1; } private int[] build(int[] array) { // 计算队尾节点index int last = array.length - 1; // 从队尾开始往前比较,队首不需要比较 for (int i = last; i &amp;gt; 0; i--) { int c = i; int p = prev(c); // 如果当前节点小于父节点，那么继续循环比较 while (array[c] &amp;lt; array[p]) { // 交换位置和index int temp = array[p]; array[p] = array[c]; array[c] = temp; c = p; p = prev(c); // 跳出循环的条件:parentIndex&amp;lt;0 if (p &amp;lt; 0) { break; } } } return array; } 该方法时间复杂度：我们假设数组有n个元素，那么一共需要判断n-1个元素，每个元素最多交换logn次(即树高度)，所以时间复杂度为：O(nlogn)。</description>
     </item>
   </channel>

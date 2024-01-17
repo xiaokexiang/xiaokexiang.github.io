@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>grpc  on Keep Improving</title>
-    <link>https://leejay.top/tags/grpc/</link>
+    <link>https://blog.leejay.top/tags/grpc/</link>
     <description>Recent content in grpc  on Keep Improving</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>苏ICP备18050258号-1</copyright>
     <lastBuildDate>Fri, 22 Apr 2022 16:29:25 +0800</lastBuildDate>
-    <atom:link href="https://leejay.top/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://blog.leejay.top/tags/grpc/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Grpc快速入门</title>
-      <link>https://leejay.top/post/grpc/</link>
+      <link>https://blog.leejay.top/post/grpc/</link>
       <pubDate>Fri, 22 Apr 2022 16:29:25 +0800</pubDate>
-      <guid>https://leejay.top/post/grpc/</guid>
+      <guid>https://blog.leejay.top/post/grpc/</guid>
       <description>Grpc快速入门 grpc是一款高性能、开源的通用Rpc框架。由google开源，默认使用protobuf作为定义接口的语言(IDL)和底层的消息交换格式，使用Http/2作为传输协议。&#xA;Rpc简介 Rpc(remote procedure call)，即远程过程调用。服务器A上的服务想调用服务器B上的服务提供的方法，因为不存在于同一个内存空间，不能直接调用，需要通过网络来表达调用的语义和传达调用的数据。&#xA;Rpc像调用本地方法一样去调用远程方法。&#xA;Http与Rpc Rpc是一个完整的远程调用方法，通常包括通信协议（http和tcp）和序列化协议（json、xml、protobuf等）。&#xA;Http与Tcp 为什么使用自定义tcp协议实现进程通信？&#xA;http传输协议头中包含冗余的部分，且使用了文本编码（body仍是二进制编码），非常占用字节数。使用自定义tcp协议，能够有效提升传输效率，提升性能。&#xA;Grpc与Restful Grpc Restful 消息编码 protobuf json 传输协议 Http/2 Http 传输形式 支持流式传输 不支持流式传输 Grpc概述 使用protobuf作为IDL和底层消息的交换格式。 protobuf支持多种语言，所以Grpc也是跨语言的。 客户端持有存根(Stub)提供与服务器相同的方法。 Grpc-Java 使用Java语言作为客户端和服务端的语言来演示grpc的实现。&#xA;pom配置 &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;grpc-netty-shaded&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.45.1&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;runtime&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;grpc-protobuf&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.45.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;io.grpc&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;grpc-stub&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.45.1&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;!-- necessary for Java 9+ --&amp;gt; &amp;lt;groupId&amp;gt;org.apache.tomcat&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;annotations-api&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;6.0.53&amp;lt;/version&amp;gt; &amp;lt;scope&amp;gt;provided&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;build&amp;gt; &amp;lt;extensions&amp;gt; &amp;lt;extension&amp;gt; &amp;lt;groupId&amp;gt;kr.motd.maven&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;os-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.6.2&amp;lt;/version&amp;gt; &amp;lt;/extension&amp;gt; &amp;lt;/extensions&amp;gt; &amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-maven-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;excludes&amp;gt; &amp;lt;exclude&amp;gt; &amp;lt;groupId&amp;gt;org.</description>
     </item>
   </channel>
